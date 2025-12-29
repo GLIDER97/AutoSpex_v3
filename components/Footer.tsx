@@ -17,7 +17,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 lg:grid-cols-5 gap-12">
         
         {/* Column 1: Brand & Desc */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 lg:col-span-1">
            <a href="#" onClick={(e) => handleNav(e, 'home')} className="flex items-center gap-2 mb-6 cursor-pointer">
              <div className="bg-gradient-to-tr from-brand-primary to-orange-600 rounded-lg p-1.5 shadow-lg shadow-orange-500/20 dark:shadow-orange-900/20">
                <Zap className="w-5 h-5 text-white" />
@@ -32,7 +32,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
              The ultimate free diagnostic tool for car owners. We translate complex automotive data into plain English, helping you save money on repairs and drive safer.
            </p>
            <div className="flex gap-4">
-             {/* Social placeholders */}
              <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-brand-primary dark:hover:text-white hover:border-brand-primary transition-colors cursor-pointer">
                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg>
              </div>
@@ -42,101 +41,49 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
            </div>
         </div>
 
-        {/* Column 2: Tools */}
+        {/* Column 2: Diagnostic Tools */}
         <div>
-          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Free Tools</h4>
+          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Diagnostics</h4>
           <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li>
-              <a 
-                href="#"
-                onClick={(e) => handleNav(e, 'fault-code-decoder')}
-                className="hover:text-brand-primary cursor-pointer transition-colors flex items-center gap-2"
-              >
-                OBD Fault Decoder
-              </a>
-            </li>
-            <li>
-              <a 
-                href="#"
-                onClick={(e) => handleNav(e, 'vin-lookup')}
-                className="hover:text-brand-primary cursor-pointer transition-colors flex items-center gap-2"
-              >
-                VIN Decoder
-              </a>
-            </li>
-            <li>
-              <a 
-                href="#"
-                onClick={(e) => handleNav(e, 'insurance-estimator')}
-                className="hover:text-brand-primary cursor-pointer transition-colors flex items-center gap-2"
-              >
-                Insurance Estimator
-              </a>
-            </li>
-            <li>
-              <a 
-                href="#"
-                onClick={(e) => handleNav(e, 'affordability-predictor')}
-                className="hover:text-brand-primary cursor-pointer transition-colors flex items-center gap-2"
-              >
-                Price & Affordability
-              </a>
-            </li>
-             <li>
-              <a 
-                href="#"
-                onClick={(e) => handleNav(e, 'mpg-calculator')}
-                className="hover:text-brand-primary cursor-pointer transition-colors flex items-center gap-2"
-              >
-                MPG Calculator
-              </a>
-            </li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'fault-code-decoder')} className="hover:text-brand-primary transition-colors">OBD Fault Decoder</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'vin-lookup')} className="hover:text-brand-primary transition-colors">VIN Spec Lookup</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'maintenance-validator')} className="hover:text-brand-primary transition-colors">Repair Cost Auditor</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'plate-generator')} className="hover:text-brand-primary transition-colors">Vanity Plate Creator</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'wrap-designer')} className="hover:text-brand-primary transition-colors">AI Wrap Designer</a></li>
           </ul>
         </div>
 
-        {/* Column 3: Resources */}
+        {/* Column 3: Financial Analysis */}
         <div>
-          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Resources</h4>
+          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Financials</h4>
           <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li className="hover:text-brand-primary cursor-pointer transition-colors">Blog & Guides</li>
-            <li className="hover:text-brand-primary cursor-pointer transition-colors">Diagnostic Tutorials</li>
-            <li className="hover:text-brand-primary cursor-pointer transition-colors">Error Code Library</li>
-            <li>
-              <a 
-                href="#"
-                onClick={(e) => handleNav(e, 'about-us')}
-                className="hover:text-brand-primary cursor-pointer transition-colors"
-              >
-                About Us
-              </a>
-            </li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'insurance-estimator')} className="hover:text-brand-primary transition-colors">Insurance Estimator</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'affordability-predictor')} className="hover:text-brand-primary transition-colors">Price & Affordability</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'ownership-calculator')} className="hover:text-brand-primary transition-colors">Ownership Cost (TCO)</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'value-shock-calculator')} className="hover:text-brand-primary transition-colors">Resale Value Shock</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'mpg-calculator')} className="hover:text-brand-primary transition-colors">MPG & Fuel Analyzer</a></li>
           </ul>
         </div>
 
-        {/* Column 4: Legal */}
+        {/* Column 4: Platform Hubs */}
+        <div>
+          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Platform</h4>
+          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+            <li><a href="#" onClick={(e) => handleNav(e, 'mechanic-finder')} className="hover:text-brand-primary transition-colors">Find Local Mechanic</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'resource-recalls')} className="hover:text-brand-primary transition-colors">Recalls & Safety</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'resource-coupons')} className="hover:text-brand-primary transition-colors">Service Coupons</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'about-us')} className="hover:text-brand-primary transition-colors">About AutoSpex</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'contact-us')} className="hover:text-brand-primary transition-colors">Contact Support</a></li>
+          </ul>
+        </div>
+
+        {/* Column 5: Legal */}
         <div>
           <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Legal</h4>
           <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li>
-              <a href="#" onClick={(e) => handleNav(e, 'privacy-policy')} className="hover:text-brand-primary cursor-pointer transition-colors">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={(e) => handleNav(e, 'terms-of-service')} className="hover:text-brand-primary cursor-pointer transition-colors">
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={(e) => handleNav(e, 'cookie-policy')} className="hover:text-brand-primary cursor-pointer transition-colors">
-                Cookie Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={(e) => handleNav(e, 'contact-us')} className="hover:text-brand-primary cursor-pointer transition-colors">
-                Contact Us
-              </a>
-            </li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'privacy-policy')} className="hover:text-brand-primary transition-colors">Privacy Policy</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'terms-of-service')} className="hover:text-brand-primary transition-colors">Terms of Service</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, 'cookie-policy')} className="hover:text-brand-primary transition-colors">Cookie Policy</a></li>
           </ul>
         </div>
       </div>
