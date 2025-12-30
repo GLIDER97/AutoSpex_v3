@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoogleGenAI, Type } from "@google/genai";
-import { 
-  ShieldAlert, ShoppingCart, Zap, ArrowRight, 
+import {
+  ShieldAlert, ShoppingCart, Zap, ArrowRight,
   Car, ShieldCheck, ExternalLink, Star, DollarSign,
   Award, Globe, CheckCircle2, MapPin, RefreshCw,
   Search, Clock, AlertTriangle, Info, ChevronRight,
@@ -12,7 +13,6 @@ import CouponLeadForm from './CouponLeadForm';
 
 interface ResourceHubProps {
   type: 'recalls' | 'toolkits' | 'coupons';
-  onNavigate: (view: string) => void;
 }
 
 const ESSENTIAL_DRIVERS_GEAR = [
@@ -72,14 +72,15 @@ const ESSENTIAL_DRIVERS_GEAR = [
   }
 ];
 
-const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
+const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
+  const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [loadingStatus, setLoadingStatus] = useState('Initializing Scanner...');
-  
+
   // Coupon Form State
   const [isCouponFormOpen, setIsCouponFormOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
@@ -87,7 +88,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
   const fetchDynamicContent = async (query?: string) => {
     setLoading(true);
     setError(null);
-    
+
     // UI Status messaging for transparency
     const statusMessages = [
       "Accessing official databases...",
@@ -104,7 +105,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
+
       let prompt = '';
       let schema: any = {};
 
@@ -266,18 +267,18 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
 
   return (
     <div className="w-full max-w-7xl mx-auto py-12 px-4 sm:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
-      <CouponLeadForm 
-        isOpen={isCouponFormOpen} 
-        onClose={() => setIsCouponFormOpen(false)} 
-        couponData={selectedCoupon} 
+
+      <CouponLeadForm
+        isOpen={isCouponFormOpen}
+        onClose={() => setIsCouponFormOpen(false)}
+        couponData={selectedCoupon}
       />
 
       {/* Dynamic Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 mb-16">
-        <div 
+        <div
           className={`flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left transition-all duration-300 ${type === 'recalls' ? 'cursor-pointer hover:opacity-80 active:scale-[0.98]' : ''}`}
-          onClick={() => type === 'recalls' && onNavigate('vin-lookup')}
+          onClick={() => type === 'recalls' && navigate('/vin-lookup')}
         >
           {header.icon && (
             <div className={`p-6 rounded-[2.5rem] ${header.bg} shadow-2xl border border-white/10 shrink-0`}>
@@ -303,24 +304,24 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
         {/* Action / Search Bar (Restored for Recalls) */}
         {type === 'recalls' && (
           <div className="w-full lg:w-auto shrink-0">
-             <form onSubmit={handleSearch} className="group relative">
-               <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-600 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-               <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-1.5">
-                  <div className="pl-4 text-slate-400">
-                    <Search className="w-5 h-5" />
-                  </div>
-                  <input 
-                    type="text" 
-                    placeholder="Search Make (e.g. Ford)" 
-                    className="w-full lg:w-64 p-3 bg-transparent border-none text-slate-900 dark:text-white font-bold placeholder-slate-400 focus:ring-0 outline-none"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <button type="submit" className="px-6 py-3 rounded-2xl bg-red-600 text-white font-black text-sm hover:bg-red-700 transition-all">
-                    Audit Make
-                  </button>
-               </div>
-             </form>
+            <form onSubmit={handleSearch} className="group relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-600 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-1.5">
+                <div className="pl-4 text-slate-400">
+                  <Search className="w-5 h-5" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search Make (e.g. Ford)"
+                  className="w-full lg:w-64 p-3 bg-transparent border-none text-slate-900 dark:text-white font-bold placeholder-slate-400 focus:ring-0 outline-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit" className="px-6 py-3 rounded-2xl bg-red-600 text-white font-black text-sm hover:bg-red-700 transition-all">
+                  Audit Make
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </div>
@@ -337,15 +338,15 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
             </div>
             <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary/40 shadow-[0_0_15px_rgba(245,158,11,0.5)] rounded-full animate-[scan_2s_ease-in-out_infinite]" />
           </div>
-          
+
           <div className="text-center space-y-4">
-             <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{loadingStatus}</h3>
-             <div className="flex items-center justify-center gap-2">
-                <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce"></span>
-                <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce delay-100"></span>
-                <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce delay-200"></span>
-             </div>
-             <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Syncing with official US market safety datasets...</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{loadingStatus}</h3>
+            <div className="flex items-center justify-center gap-2">
+              <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce"></span>
+              <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce delay-100"></span>
+              <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce delay-200"></span>
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Syncing with official US market safety datasets...</p>
           </div>
 
           <style>{`
@@ -358,24 +359,23 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
         </div>
       ) : error ? (
         <div className="bg-red-50 dark:bg-red-950/20 border-2 border-red-200 dark:border-red-800 rounded-[2.5rem] p-12 text-center mb-20">
-           <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-6" />
-           <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Feed Connection Interrupted</h3>
-           <p className="text-slate-600 dark:text-slate-400 mb-8">{error}</p>
-           <button onClick={() => fetchDynamicContent()} className="px-8 py-3 bg-red-600 text-white font-black rounded-2xl flex items-center gap-2 mx-auto hover:bg-red-700 transition-all">
-             <RefreshCw className="w-5 h-5" /> Retry Sync
-           </button>
+          <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-6" />
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Feed Connection Interrupted</h3>
+          <p className="text-slate-600 dark:text-slate-400 mb-8">{error}</p>
+          <button onClick={() => fetchDynamicContent()} className="px-8 py-3 bg-red-600 text-white font-black rounded-2xl flex items-center gap-2 mx-auto hover:bg-red-700 transition-all">
+            <RefreshCw className="w-5 h-5" /> Retry Sync
+          </button>
         </div>
       ) : (
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
             {items.map((item: any, idx) => (
               <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col">
-                
+
                 {type === 'recalls' && (
                   <>
-                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border ${
-                      item.urgency === 'Critical' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
-                    }`}>
+                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border ${item.urgency === 'Critical' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
+                      }`}>
                       <ShieldAlert className="w-3 h-3" /> {item.urgency} Risk Alert
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight">
@@ -389,9 +389,9 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                       <span className="mt-2 block italic opacity-80">{item.summary}</span>
                     </p>
                     <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
-                       <a 
-                        href={`https://www.nhtsa.gov/recalls?q=${item.make}+${item.model}`} 
-                        target="_blank" 
+                      <a
+                        href={`https://www.nhtsa.gov/recalls?q=${item.make}+${item.model}`}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="w-full py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-xl"
                       >
@@ -405,20 +405,20 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                   <>
                     {/* High Quality Product Image Display */}
                     <div className="aspect-square w-full rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 mb-6 flex items-center justify-center overflow-hidden transition-colors">
-                       {item.imageUrl ? (
-                         <img 
-                          src={item.imageUrl} 
-                          alt={item.name} 
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=400';
                           }}
-                         />
-                       ) : (
-                         <div className="relative">
-                            <ImageIcon className="w-12 h-12 text-slate-200 dark:text-slate-600" />
-                         </div>
-                       )}
+                        />
+                      ) : (
+                        <div className="relative">
+                          <ImageIcon className="w-12 h-12 text-slate-200 dark:text-slate-600" />
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
@@ -433,9 +433,9 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                       <strong>Best for:</strong> {item.bestFor}<br />
                       <span className="text-xs text-slate-400 font-bold block mt-2">Verified Brand: {item.brand}</span>
                     </p>
-                    <a 
-                      href={`https://www.amazon.com/s?k=${encodeURIComponent(item.name + ' ' + item.brand)}`} 
-                      target="_blank" 
+                    <a
+                      href={`https://www.amazon.com/s?k=${encodeURIComponent(item.name + ' ' + item.brand)}`}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-orange-500 text-slate-900 font-black text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20"
                     >
@@ -455,7 +455,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                       <strong>Partner:</strong> {item.shop}<br />
                       <span className="text-xs text-slate-400 font-bold block mt-2">Active in: {item.validIn}</span>
                     </p>
-                    <button 
+                    <button
                       onClick={() => handleClaimCoupon(item)}
                       className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-500/20"
                     >
@@ -485,10 +485,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                 {ESSENTIAL_DRIVERS_GEAR.map((item, i) => (
                   <div key={i} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all group flex flex-col relative overflow-hidden">
                     <div className="aspect-video w-full rounded-2xl bg-slate-50 dark:bg-slate-800 mb-6 flex items-center justify-center overflow-hidden">
-                      <img 
-                        src={item.img} 
-                        alt={item.name} 
-                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" 
+                      <img
+                        src={item.img}
+                        alt={item.name}
+                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
                     <div className="flex-grow flex flex-col">
@@ -500,9 +500,9 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                       <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 mb-6 leading-snug h-10">
                         {item.name}
                       </h3>
-                      <a 
-                        href={item.url} 
-                        target="_blank" 
+                      <a
+                        href={item.url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs hover:opacity-90 transition-all mt-auto"
                       >
@@ -523,71 +523,71 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
       {/* Trust & Methodology Section */}
       <div className="bg-slate-950 rounded-[3rem] p-12 sm:p-20 border border-slate-800 shadow-2xl relative overflow-hidden text-center sm:text-left">
         <div className="absolute top-0 right-0 p-12 opacity-5 hidden sm:block">
-           <Bot className="w-64 h-64 text-brand-primary -rotate-12" />
+          <Bot className="w-64 h-64 text-brand-primary -rotate-12" />
         </div>
         <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-black uppercase tracking-widest mb-8 border border-brand-primary/20">
-               <ShieldCheck className="w-4 h-4" /> Verified Data Engine
+              <ShieldCheck className="w-4 h-4" /> Verified Data Engine
             </div>
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">Automated Automotive Intelligence</h2>
             <p className="text-slate-400 text-lg leading-relaxed mb-10 font-medium">
               The AutoSpex Resource Hub uses high-fidelity AI to audit global automotive datasets. We provide US drivers with a transparent look at safety hazards, maintenance savings, and professional-grade tools.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-8 justify-center sm:justify-start">
-               <div className="flex flex-col items-center sm:items-start gap-2">
-                  <div className="text-2xl font-black text-white">1.2M+</div>
-                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Safety Records Audited</div>
-               </div>
-               <div className="h-10 w-px bg-slate-800 hidden sm:block"></div>
-               <div className="flex flex-col items-center sm:items-start gap-2">
-                  <div className="text-2xl font-black text-white">98.4%</div>
-                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Match Accuracy</div>
-               </div>
-               <div className="h-10 w-px bg-slate-800 hidden sm:block"></div>
-               <div className="flex flex-col items-center sm:items-start gap-2">
-                  <div className="text-2xl font-black text-white">24/7</div>
-                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Auto-Update Cycle</div>
-               </div>
+              <div className="flex flex-col items-center sm:items-start gap-2">
+                <div className="text-2xl font-black text-white">1.2M+</div>
+                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Safety Records Audited</div>
+              </div>
+              <div className="h-10 w-px bg-slate-800 hidden sm:block"></div>
+              <div className="flex flex-col items-center sm:items-start gap-2">
+                <div className="text-2xl font-black text-white">98.4%</div>
+                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Match Accuracy</div>
+              </div>
+              <div className="h-10 w-px bg-slate-800 hidden sm:block"></div>
+              <div className="flex flex-col items-center sm:items-start gap-2">
+                <div className="text-2xl font-black text-white">24/7</div>
+                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Auto-Update Cycle</div>
+              </div>
             </div>
           </div>
-          
+
           <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/10 shadow-2xl">
-             <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0">
-                   <Target className="w-6 h-6" />
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-2xl bg-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0">
+                <Target className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-black text-white leading-tight">Our Monetization Integrity</h3>
+            </div>
+            <p className="text-slate-400 text-sm leading-relaxed mb-8 font-medium">
+              To keep these tools free, we partner with verified US services. If you purchase through our toolkits or check a VIN, we may earn a small commission at no extra cost to you. This directly funds our live database access.
+            </p>
+            <div className="space-y-4">
+              {[
+                { icon: <ShieldCheck className="w-5 h-5 text-green-500" />, text: "Authorized Dealer Referral Network" },
+                { icon: <Globe className="w-5 h-5 text-blue-500" />, text: "Direct US Government Data Access" },
+                { icon: <Award className="w-5 h-5 text-orange-500" />, text: "Zero Sponsored Content - Merit Only" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-4 text-xs font-black text-slate-200">
+                  {item.icon} {item.text}
                 </div>
-                <h3 className="text-2xl font-black text-white leading-tight">Our Monetization Integrity</h3>
-             </div>
-             <p className="text-slate-400 text-sm leading-relaxed mb-8 font-medium">
-               To keep these tools free, we partner with verified US services. If you purchase through our toolkits or check a VIN, we may earn a small commission at no extra cost to you. This directly funds our live database access.
-             </p>
-             <div className="space-y-4">
-                {[
-                  { icon: <ShieldCheck className="w-5 h-5 text-green-500" />, text: "Authorized Dealer Referral Network" },
-                  { icon: <Globe className="w-5 h-5 text-blue-500" />, text: "Direct US Government Data Access" },
-                  { icon: <Award className="w-5 h-5 text-orange-500" />, text: "Zero Sponsored Content - Merit Only" }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 text-xs font-black text-slate-200">
-                    {item.icon} {item.text}
-                  </div>
-                ))}
-             </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="mt-20 flex flex-col items-center gap-8 no-print">
-         <button 
-           onClick={() => fetchDynamicContent()}
-           className="group flex items-center gap-3 px-10 py-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-black hover:border-blue-500 transition-all shadow-xl"
-         >
-           <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-           Sync Latest Feed
-         </button>
-         <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest max-w-sm text-center">
-            *As an Amazon and partner Associate, AutoSpex earns from qualifying purchases. Data is provided for informational safety audits only.
-         </p>
+        <button
+          onClick={() => fetchDynamicContent()}
+          className="group flex items-center gap-3 px-10 py-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-black hover:border-blue-500 transition-all shadow-xl"
+        >
+          <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+          Sync Latest Feed
+        </button>
+        <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest max-w-sm text-center">
+          *As an Amazon and partner Associate, AutoSpex earns from qualifying purchases. Data is provided for informational safety audits only.
+        </p>
       </div>
     </div>
   );
