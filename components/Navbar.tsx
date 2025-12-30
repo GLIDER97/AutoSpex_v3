@@ -53,9 +53,6 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme, onNavigate }) 
 
   const handleNavClick = (e: React.MouseEvent, view: string) => {
     e.preventDefault();
-    // Disable navigation for the DIY Toolkits resource
-    if (view === 'resource-toolkits') return;
-    
     onNavigate(view);
     setIsMobileMenuOpen(false);
   };
@@ -141,12 +138,12 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme, onNavigate }) 
                         key={idx} 
                         href="#" 
                         onClick={(e) => handleNavClick(e, item.view)} 
-                        className={`flex items-center gap-3 p-2.5 rounded-xl transition-colors group/item ${item.view === 'resource-toolkits' ? 'cursor-default opacity-60' : 'hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                        className="flex items-center gap-3 p-2.5 rounded-xl transition-colors group/item hover:bg-slate-50 dark:hover:bg-slate-800"
                       >
-                        <div className={`p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 ${item.view !== 'resource-toolkits' ? 'group-hover/item:bg-blue-500/10 group-hover/item:text-blue-500' : ''} transition-colors`}>
+                        <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover/item:bg-blue-500/10 group-hover/item:text-blue-500 transition-colors">
                           {item.icon}
                         </div>
-                        <span className={`text-sm font-medium text-slate-700 dark:text-slate-200 ${item.view !== 'resource-toolkits' ? 'group-hover/item:text-slate-900 dark:group-hover/item:text-white' : ''}`}>{item.name}</span>
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover/item:text-slate-900 dark:group-hover/item:text-white">{item.name}</span>
                       </a>
                     ))}
                   </div>
@@ -200,12 +197,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme, onNavigate }) 
                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Resources</h3>
                   <div className="space-y-1">
                     {resources.map((item, idx) => (
-                      <a 
-                        key={idx} 
-                        href="#" 
-                        onClick={(e) => handleNavClick(e, item.view)} 
-                        className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${item.view === 'resource-toolkits' ? 'cursor-default opacity-60' : 'hover:bg-slate-50 dark:hover:bg-slate-900'}`}
-                      >
+                      <a key={idx} href="#" onClick={(e) => handleNavClick(e, item.view)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                         <div className="text-slate-400 dark:text-slate-500">{item.icon}</div>
                         <span className="font-medium text-slate-700 dark:text-slate-200">{item.name}</span>
                       </a>

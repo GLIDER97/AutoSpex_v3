@@ -8,6 +8,7 @@ import {
   Search, Clock, AlertTriangle, Info, ChevronRight,
   Target, Bot, Gauge, Image as ImageIcon, Wrench, Package
 } from './Icons';
+import CouponLeadForm from './CouponLeadForm';
 
 interface ResourceHubProps {
   type: 'recalls' | 'toolkits' | 'coupons';
@@ -78,6 +79,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [loadingStatus, setLoadingStatus] = useState('Initializing Scanner...');
+  
+  // Coupon Form State
+  const [isCouponFormOpen, setIsCouponFormOpen] = useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
 
   const fetchDynamicContent = async (query?: string) => {
     setLoading(true);
@@ -223,6 +228,11 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
     }
   };
 
+  const handleClaimCoupon = (item: any) => {
+    setSelectedCoupon(item);
+    setIsCouponFormOpen(true);
+  };
+
   const getHeaderInfo = () => {
     switch (type) {
       case 'recalls': return {
@@ -237,7 +247,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
         title: "DIY Fixes & Toolkits",
         subtitle: "AI Curated Enthusiast Gear",
         desc: "Stop paying dealer markups. We find the exact tools and parts used by master technicians for reliable home repairs.",
-        icon: null, // Removed per screenshot request
+        icon: null,
         color: "text-blue-500",
         bg: "bg-blue-50 dark:bg-blue-950/20"
       };
@@ -257,6 +267,12 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
   return (
     <div className="w-full max-w-7xl mx-auto py-12 px-4 sm:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
+      <CouponLeadForm 
+        isOpen={isCouponFormOpen} 
+        onClose={() => setIsCouponFormOpen(false)} 
+        couponData={selectedCoupon} 
+      />
+
       {/* Dynamic Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 mb-16">
         <div 
@@ -440,7 +456,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type, onNavigate }) => {
                       <span className="text-xs text-slate-400 font-bold block mt-2">Active in: {item.validIn}</span>
                     </p>
                     <button 
-                      onClick={() => window.print()}
+                      onClick={() => handleClaimCoupon(item)}
                       className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-500/20"
                     >
                       Claim Digital Coupon <ExternalLink className="w-4 h-4" />

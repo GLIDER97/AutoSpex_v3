@@ -15,6 +15,7 @@ import PlateGenerator from './components/PlateGenerator';
 import WrapDesigner from './components/WrapDesigner';
 import MechanicFinder from './components/MechanicFinder';
 import ResourceHub from './components/ResourceHub';
+import DiyToolkits from './components/DiyToolkits';
 import { PrivacyPolicy, TermsOfService, CookiePolicy, ContactUs, AboutUs } from './components/LegalPages';
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
       case 'wrap-designer': return <WrapDesigner />;
       case 'mechanic-finder': return <MechanicFinder />;
       case 'resource-recalls': return <ResourceHub type="recalls" onNavigate={handleNavigate} />;
+      case 'resource-toolkits': return <DiyToolkits />;
       case 'resource-coupons': return <ResourceHub type="coupons" onNavigate={handleNavigate} />;
       case 'privacy-policy': return <PrivacyPolicy />;
       case 'terms-of-service': return <TermsOfService />;
