@@ -1,57 +1,69 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import LoadingSpinner from './components/LoadingSpinner';
 
-// Page Components
-import HomePage from './components/HomePage';
-import FaultCodeDecoder from './components/FaultCodeDecoder';
-import VinLookup from './components/VinLookup';
-import InsuranceEstimator from './components/InsuranceEstimator';
-import MpgCalculator from './components/MpgCalculator';
-import AffordabilityPredictor from './components/AffordabilityPredictor';
-import MaintenanceValidator from './components/MaintenanceValidator';
-import ValueShockCalculator from './components/ValueShockCalculator';
-import OwnershipCalculator from './components/OwnershipCalculator';
-import PlateGenerator from './components/PlateGenerator';
-import WrapDesigner from './components/WrapDesigner';
-import MechanicFinder from './components/MechanicFinder';
-import ResourceHub from './components/ResourceHub';
-import DiyToolkits from './components/DiyToolkits';
+// Lazy Load Pages
+const HomePage = React.lazy(() => import('./components/HomePage'));
+const FaultCodeDecoder = React.lazy(() => import('./components/FaultCodeDecoder'));
+const VinLookup = React.lazy(() => import('./components/VinLookup'));
+const InsuranceEstimator = React.lazy(() => import('./components/InsuranceEstimator'));
+const MpgCalculator = React.lazy(() => import('./components/MpgCalculator'));
+const AffordabilityPredictor = React.lazy(() => import('./components/AffordabilityPredictor'));
+const MaintenanceValidator = React.lazy(() => import('./components/MaintenanceValidator'));
+const ValueShockCalculator = React.lazy(() => import('./components/ValueShockCalculator'));
+const OwnershipCalculator = React.lazy(() => import('./components/OwnershipCalculator'));
+const PlateGenerator = React.lazy(() => import('./components/PlateGenerator'));
+const WrapDesigner = React.lazy(() => import('./components/WrapDesigner'));
+const MechanicFinder = React.lazy(() => import('./components/MechanicFinder'));
+const ResourceHub = React.lazy(() => import('./components/ResourceHub'));
+const DiyToolkits = React.lazy(() => import('./components/DiyToolkits'));
+const LegalPages = React.lazy(() => import('./components/LegalPages').then(module => ({ default: module.PrivacyPolicy })));
+// Actually, LegalPages exports multiple components. React.lazy expects a default export.
+// We should import normally for small pages or wrap them. 
+// For now, let's keep LegalPages sync if they are small, or just lazy load the component file if it was a default export.
+// The code says: import { PrivacyPolicy ... } from './LegalPages'
+// So we can't easily lazy load named exports without intermediate format: React.lazy(() => import('./LegalPages').then(module => ({ default: module.PrivacyPolicy })))
+// Let's keep LegalPages synchronous to avoid complexity for now, or just lazy load the heavy tools.
+
+// For named exports, we'll keep using the direct import for now to avoid the `then` chain complexity for multiple exports from same file
 import { PrivacyPolicy, TermsOfService, CookiePolicy, ContactUs, AboutUs } from './components/LegalPages';
 
 const AppRoutes: React.FC = () => {
   return (
-    <Routes>
-      {/* Home */}
-      <Route path="/" element={<HomePage />} />
-      
-      {/* Tools */}
-      <Route path="/fault-code-decoder" element={<FaultCodeDecoder />} />
-      <Route path="/vin-lookup" element={<VinLookup />} />
-      <Route path="/insurance-estimator" element={<InsuranceEstimator />} />
-      <Route path="/mpg-calculator" element={<MpgCalculator />} />
-      <Route path="/affordability-predictor" element={<AffordabilityPredictor />} />
-      <Route path="/maintenance-validator" element={<MaintenanceValidator />} />
-      <Route path="/value-shock-calculator" element={<ValueShockCalculator />} />
-      <Route path="/ownership-calculator" element={<OwnershipCalculator />} />
-      <Route path="/plate-generator" element={<PlateGenerator />} />
-      <Route path="/wrap-designer" element={<WrapDesigner />} />
-      <Route path="/mechanic-finder" element={<MechanicFinder />} />
-      
-      {/* Resources */}
-      <Route path="/recalls" element={<ResourceHub type="recalls" />} />
-      <Route path="/diy-toolkits" element={<DiyToolkits />} />
-      <Route path="/coupons" element={<ResourceHub type="coupons" />} />
-      
-      {/* Legal Pages */}
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route path="/cookie-policy" element={<CookiePolicy />} />
-      <Route path="/contact" element={<ContactUs />} />
-      <Route path="/about" element={<AboutUs />} />
-      
-      {/* Fallback - redirect to home */}
-      <Route path="*" element={<HomePage />} />
-    </Routes>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        {/* Home */}
+        <Route path="/" element={<HomePage />} />
+
+        {/* Tools */}
+        <Route path="/fault-code-decoder" element={<FaultCodeDecoder />} />
+        <Route path="/vin-lookup" element={<VinLookup />} />
+        <Route path="/insurance-estimator" element={<InsuranceEstimator />} />
+        <Route path="/mpg-calculator" element={<MpgCalculator />} />
+        <Route path="/affordability-predictor" element={<AffordabilityPredictor />} />
+        <Route path="/maintenance-validator" element={<MaintenanceValidator />} />
+        <Route path="/value-shock-calculator" element={<ValueShockCalculator />} />
+        <Route path="/ownership-calculator" element={<OwnershipCalculator />} />
+        <Route path="/plate-generator" element={<PlateGenerator />} />
+        <Route path="/wrap-designer" element={<WrapDesigner />} />
+        <Route path="/mechanic-finder" element={<MechanicFinder />} />
+
+        {/* Resources */}
+        <Route path="/recalls" element={<ResourceHub type="recalls" />} />
+        <Route path="/diy-toolkits" element={<DiyToolkits />} />
+        <Route path="/coupons" element={<ResourceHub type="coupons" />} />
+
+        {/* Legal Pages */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/about" element={<AboutUs />} />
+
+        {/* Fallback - redirect to home */}
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </Suspense>
   );
 };
 

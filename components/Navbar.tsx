@@ -78,8 +78,8 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     <>
       <nav
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${scrolled
-            ? 'bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm'
-            : 'bg-transparent border-transparent'
+          ? 'bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm'
+          : 'bg-transparent border-transparent'
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,7 +106,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
 
               <div className="relative group" onMouseEnter={() => setActiveDropdown('tools')} onMouseLeave={() => setActiveDropdown(null)}>
                 <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-                  Features <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'tools' ? 'rotate-180' : ''}`} />
+                  Free Tools <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'tools' ? 'rotate-180' : ''}`} />
                 </button>
                 <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-4 w-64 transition-all duration-200 ${activeDropdown === 'tools' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                   <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-2 overflow-hidden max-h-[80vh] overflow-y-auto custom-scrollbar">
@@ -179,7 +179,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                   <Home className="w-5 h-5 text-slate-500" /> Home
                 </Link>
                 <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Features</h3>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Free Tools</h3>
                   <div className="space-y-1">
                     {tools.map((item, idx) => (
                       <Link key={idx} to={item.path} onClick={closeMobileMenu} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
