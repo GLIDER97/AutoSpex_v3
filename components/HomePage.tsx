@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
                     </span>
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 text-xl sm:text-2xl leading-relaxed mb-10 max-w-2xl mx-auto">
-                    Stop guessing. AutoSpex uses AI and official government databases to decode your vehicle data instantly. No signups. No hidden fees.
+                    Stop guessing. AutoSpex uses AI and official US government databases to decode your vehicle data instantly. No signups. No hidden fees.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 mb-16">
                     <Link
