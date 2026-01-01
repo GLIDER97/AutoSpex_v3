@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Users, Phone, Mail, MapPin, CheckCircle2, RefreshCw, ArrowRight, Zap, ShieldCheck } from './Icons';
+import { saveLead } from '../utils/leadStorage';
 
 interface CouponLeadFormProps {
   isOpen: boolean;
@@ -35,33 +36,30 @@ const CouponLeadForm: React.FC<CouponLeadFormProps> = ({ isOpen, onClose, coupon
       email: formData.email,
       phone: formData.phone || 'Not provided',
       zip: formData.zip,
-      claimedCoupon: {
-        shop: couponData?.shop,
-        offer: couponData?.offer,
-        savingValue: couponData?.savingValue
-      },
+      shop: couponData?.shop,
+      offer: couponData?.offer,
+      savingValue: couponData?.savingValue,
       source: 'Service_Coupons_Claim_Tool'
     };
 
-    // Log for simulation of storage in digital_coupon_leads.json
-    console.log("Saving lead to digital_coupon_leads.json:", leadEntry);
 
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 1500);
+
+    await saveLead('digital_coupon_leads.json', leadEntry);
+
+    setLoading(false);
+    setSubmitted(true);
   };
 
   return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={onClose} />
-      
+
       <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-        
+
         {!submitted && (
           <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800">
-            <div 
-              className="h-full bg-emerald-500 transition-all duration-500" 
+            <div
+              className="h-full bg-emerald-500 transition-all duration-500"
               style={{ width: `${(step / 2) * 100}%` }}
             />
           </div>
@@ -87,30 +85,30 @@ const CouponLeadForm: React.FC<CouponLeadFormProps> = ({ isOpen, onClose, coupon
                   <div className="space-y-4">
                     <div className="relative">
                       <Users className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
-                        type="text" 
-                        required 
+                      <input
+                        type="text"
+                        required
                         placeholder="Full Name"
-                        value={formData.name} 
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                       />
                     </div>
                     <div className="relative">
                       <Mail className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
-                        type="email" 
-                        required 
+                      <input
+                        type="email"
+                        required
                         placeholder="Email Address"
-                        value={formData.email} 
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                       />
                     </div>
                   </div>
 
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={handleNext}
                     disabled={!formData.name || !formData.email}
                     className="w-full py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-xl shadow-emerald-500/10"
@@ -128,22 +126,22 @@ const CouponLeadForm: React.FC<CouponLeadFormProps> = ({ isOpen, onClose, coupon
                   <div className="space-y-4">
                     <div className="relative">
                       <Phone className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
-                        type="tel" 
+                      <input
+                        type="tel"
                         placeholder="Phone Number (Optional)"
-                        value={formData.phone} 
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                       />
                     </div>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
-                        type="text" 
-                        required 
+                      <input
+                        type="text"
+                        required
                         placeholder="ZIP Code"
-                        value={formData.zip} 
-                        onChange={(e) => setFormData({...formData, zip: e.target.value.replace(/\D/g, '').slice(0, 5)})}
+                        value={formData.zip}
+                        onChange={(e) => setFormData({ ...formData, zip: e.target.value.replace(/\D/g, '').slice(0, 5) })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                       />
                     </div>
@@ -151,8 +149,8 @@ const CouponLeadForm: React.FC<CouponLeadFormProps> = ({ isOpen, onClose, coupon
 
                   <div className="flex gap-4">
                     <button type="button" onClick={handleBack} className="flex-1 py-4 font-bold text-slate-500">Back</button>
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       disabled={loading || formData.zip.length < 5}
                       className="flex-[2] py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
@@ -171,7 +169,7 @@ const CouponLeadForm: React.FC<CouponLeadFormProps> = ({ isOpen, onClose, coupon
               <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-xs mx-auto font-medium leading-relaxed">
                 Your coupon details will be mailed to you shortly.
               </p>
-              <button 
+              <button
                 onClick={onClose}
                 className="px-10 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:opacity-90 transition-all shadow-xl"
               >

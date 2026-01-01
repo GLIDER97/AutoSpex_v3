@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 /* Added DollarSign to imports */
 import { X, ChevronRight, Users, Phone, Mail, MapPin, Wrench, CheckCircle2, RefreshCw, ArrowRight, DollarSign } from './Icons';
 import { MaintenanceRequest } from '../types';
+import { saveLead } from '../utils/leadStorage';
 
 interface SecondOpinionFormProps {
   isOpen: boolean;
@@ -33,43 +34,39 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
 
     const leadEntry = {
       timestamp: new Date().toISOString(),
-      contact: {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        zip: formData.zip
-      },
-      auditInputs: {
-        year: maintenanceRequest.year,
-        make: maintenanceRequest.make,
-        model: maintenanceRequest.model,
-        service: maintenanceRequest.service,
-        originalZip: maintenanceRequest.zip,
-        quoteAmount: maintenanceRequest.quoteAmount
-      },
+      // Contact
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      zip: formData.zip,
+      // Audit Inputs
+      vehicleYear: maintenanceRequest.year,
+      vehicleMake: maintenanceRequest.make,
+      vehicleModel: maintenanceRequest.model,
+      serviceNeeded: maintenanceRequest.service,
+      originalZip: maintenanceRequest.zip,
+      quoteAmount: maintenanceRequest.quoteAmount,
       source: 'Repair_Overcharge_Validator_SecondOpinion'
     };
 
     // Simulate saving to Car_repair_leads.json
-    console.log("Saving lead to Car_repair_leads.json:", leadEntry);
+    await saveLead('Car_repair_leads.json', leadEntry);
 
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 1500);
+    setLoading(false);
+    setSubmitted(true);
   };
 
   return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={onClose} />
-      
+
       <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-        
+
         {/* Progress Bar */}
         {!submitted && (
           <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800">
-            <div 
-              className="h-full bg-red-600 transition-all duration-500" 
+            <div
+              className="h-full bg-red-600 transition-all duration-500"
               style={{ width: `${(step / 2) * 100}%` }}
             />
           </div>
@@ -91,29 +88,29 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
 
                   <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                     <div className="flex items-center gap-3 mb-4">
-                       <div className="p-2 rounded-xl bg-red-500/10 text-red-500">
-                          <Wrench className="w-5 h-5" />
-                       </div>
-                       <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Service Task</p>
-                          <p className="font-bold text-slate-900 dark:text-white">{maintenanceRequest.service}</p>
-                       </div>
+                      <div className="p-2 rounded-xl bg-red-500/10 text-red-500">
+                        <Wrench className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Service Task</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{maintenanceRequest.service}</p>
+                      </div>
                     </div>
                     {maintenanceRequest.quoteAmount && (
-                       <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-green-500/10 text-green-500">
-                             <DollarSign className="w-5 h-5" />
-                          </div>
-                          <div>
-                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Current Quote</p>
-                             <p className="font-bold text-slate-900 dark:text-white">${maintenanceRequest.quoteAmount}</p>
-                          </div>
-                       </div>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-green-500/10 text-green-500">
+                          <DollarSign className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Current Quote</p>
+                          <p className="font-bold text-slate-900 dark:text-white">${maintenanceRequest.quoteAmount}</p>
+                        </div>
+                      </div>
                     )}
                   </div>
 
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={handleNext}
                     className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-slate-900/10"
                   >
@@ -130,33 +127,33 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
                   <div className="grid grid-cols-1 gap-4">
                     <div className="relative">
                       <Users className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
+                      <input
                         type="text" required placeholder="Full Name"
-                        value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
                       />
                     </div>
                     <div className="relative">
                       <Phone className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
+                      <input
                         type="tel" required placeholder="Phone Number"
-                        value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
                       />
                     </div>
                     <div className="relative">
                       <Mail className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
+                      <input
                         type="email" required placeholder="Email Address"
-                        value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
                       />
                     </div>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <input 
+                      <input
                         type="text" required placeholder="ZIP Code"
-                        value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})}
+                        value={formData.zip} onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                         className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
                       />
                     </div>
@@ -164,8 +161,8 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
 
                   <div className="flex gap-4">
                     <button type="button" onClick={handleBack} className="flex-1 py-4 font-bold text-slate-500">Back</button>
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       disabled={loading}
                       className="flex-[2] py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                     >
@@ -184,7 +181,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
               <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-xs mx-auto font-medium">
                 Your lead is submitted successfully. Our certified car mechanic will contact you soon.
               </p>
-              <button 
+              <button
                 onClick={onClose}
                 className="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl"
               >

@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GoogleGenAI, Type } from "@google/genai";
-import { 
-  TrendingUp, Car, DollarSign, PieChart, CheckCircle2, 
-  AlertTriangle, MapPin, Calculator, ChevronRight, Lock, 
+import {
+  TrendingUp, Car, DollarSign, PieChart, CheckCircle2,
+  AlertTriangle, MapPin, Calculator, ChevronRight, Lock,
   Zap, Info, Target, Users, Star, MessageSquare, ChevronDown,
   X, RefreshCw, ArrowRight, ShieldCheck, Mail, Phone, ShoppingCart, Globe, Award
 } from './Icons';
 import { AffordabilityData, PredictionResult } from '../types';
+import { saveLead } from '../utils/leadStorage';
 
 const INITIAL_DATA: AffordabilityData = {
   vehicle: {
@@ -96,7 +97,7 @@ const AffordabilityPredictor: React.FC = () => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
+
       const prompt = `
         Estimate the current US dealer retail price range for a used ${data.vehicle.year} ${data.vehicle.make} ${data.vehicle.model} ${data.vehicle.trim} in ZIP code ${data.vehicle.zip}.
         
@@ -132,10 +133,10 @@ const AffordabilityPredictor: React.FC = () => {
       const estimatedApr = APR_MAP[data.finance.creditScore];
       const loanPrincipal = marketData.fairMarketValue - parseFloat(data.finance.downPayment || '0');
       const monthlyPayment = calculateLoanPayment(loanPrincipal, estimatedApr, data.finance.termMonths);
-      
+
       const income = parseFloat(data.finance.monthlyIncome);
       const debt = parseFloat(data.finance.monthlyDebt || '0');
-      
+
       const dtiFrontEnd = (monthlyPayment / income) * 100;
       const dtiBackEnd = ((monthlyPayment + debt) / income) * 100;
 
@@ -150,7 +151,7 @@ const AffordabilityPredictor: React.FC = () => {
         verdictColor = 'text-yellow-500';
       }
 
-      const maxSafePayment = income * 0.10; 
+      const maxSafePayment = income * 0.10;
 
       setResult({
         marketValue: {
@@ -185,24 +186,31 @@ const AffordabilityPredictor: React.FC = () => {
 
     const leadEntry = {
       timestamp: new Date().toISOString(),
-      contact: leadContact,
-      userInputs: {
-        vehicle: data.vehicle,
-        finance: data.finance
-      },
-      analysisResults: {
-        marketValue: result?.marketValue,
-        affordability: result?.affordability
-      },
+      // Contact Info
+      contactName: leadContact.name,
+      contactEmail: leadContact.email,
+      contactPhone: leadContact.phone,
+      // Vehicle Inputs
+      vehicleYear: data.vehicle.year,
+      vehicleMake: data.vehicle.make,
+      vehicleModel: data.vehicle.model,
+      vehicleTrim: data.vehicle.trim,
+      vehicleZip: data.vehicle.zip,
+      // Finance Inputs
+      monthlyIncome: data.finance.monthlyIncome,
+      monthlyDebt: data.finance.monthlyDebt,
+      creditScore: data.finance.creditScore,
+      downPayment: data.finance.downPayment,
+      termMonths: data.finance.termMonths,
       source: 'Affordability_Predictor_PreApproval'
     };
 
-    console.log("Storing new lead in Car-affordability_leads.json:", leadEntry);
 
-    setTimeout(() => {
-      setLeadLoading(false);
-      setLeadSubmitted(true);
-    }, 1500);
+
+    await saveLead('Car-affordability_leads.json', leadEntry);
+
+    setLeadLoading(false);
+    setLeadSubmitted(true);
   };
 
   const renderLeadModal = () => {
@@ -228,32 +236,32 @@ const AffordabilityPredictor: React.FC = () => {
               <div className="space-y-4 mb-8">
                 <div className="relative">
                   <Users className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                  <input 
+                  <input
                     type="text" required placeholder="Full Name"
-                    value={leadContact.name} onChange={(e) => setLeadContact({...leadContact, name: e.target.value})}
+                    value={leadContact.name} onChange={(e) => setLeadContact({ ...leadContact, name: e.target.value })}
                     className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
                   />
                 </div>
                 <div className="relative">
                   <Phone className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                  <input 
+                  <input
                     type="tel" required placeholder="Phone Number"
-                    value={leadContact.phone} onChange={(e) => setLeadContact({...leadContact, phone: e.target.value})}
+                    value={leadContact.phone} onChange={(e) => setLeadContact({ ...leadContact, phone: e.target.value })}
                     className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
                   />
                 </div>
                 <div className="relative">
                   <Mail className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                  <input 
+                  <input
                     type="email" required placeholder="Email Address"
-                    value={leadContact.email} onChange={(e) => setLeadContact({...leadContact, email: e.target.value})}
+                    value={leadContact.email} onChange={(e) => setLeadContact({ ...leadContact, email: e.target.value })}
                     className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
                   />
                 </div>
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={leadLoading}
                 className="w-full py-4 bg-brand-primary text-slate-900 font-black rounded-2xl hover:bg-orange-400 transition-all flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20"
               >
@@ -269,7 +277,7 @@ const AffordabilityPredictor: React.FC = () => {
               <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-xs mx-auto">
                 A lending specialist will contact you shortly with your pre-approval details.
               </p>
-              <button 
+              <button
                 onClick={() => setIsLeadModalOpen(false)}
                 className="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl"
               >
@@ -288,61 +296,61 @@ const AffordabilityPredictor: React.FC = () => {
       <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
         <Car className="w-6 h-6 text-brand-primary" /> Vehicle Details
       </h3>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Year</label>
-           <input 
-             type="text" 
-             placeholder="2021" 
-             value={data.vehicle.year} 
-             onChange={(e) => updateVehicle('year', e.target.value)} 
-             className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
-           />
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Year</label>
+          <input
+            type="text"
+            placeholder="2021"
+            value={data.vehicle.year}
+            onChange={(e) => updateVehicle('year', e.target.value)}
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+          />
         </div>
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Make</label>
-           <input 
-             type="text" 
-             placeholder="Honda" 
-             value={data.vehicle.make} 
-             onChange={(e) => updateVehicle('make', e.target.value)} 
-             className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
-           />
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Make</label>
+          <input
+            type="text"
+            placeholder="Honda"
+            value={data.vehicle.make}
+            onChange={(e) => updateVehicle('make', e.target.value)}
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+          />
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Model</label>
-        <input 
-          type="text" 
-          placeholder="Civic" 
-          value={data.vehicle.model} 
-          onChange={(e) => updateVehicle('model', e.target.value)} 
+        <input
+          type="text"
+          placeholder="Civic"
+          value={data.vehicle.model}
+          onChange={(e) => updateVehicle('model', e.target.value)}
           className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trim (Optional)</label>
-           <input 
-             type="text" 
-             placeholder="EX-L" 
-             value={data.vehicle.trim} 
-             onChange={(e) => updateVehicle('trim', e.target.value)} 
-             className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
-           />
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trim (Optional)</label>
+          <input
+            type="text"
+            placeholder="EX-L"
+            value={data.vehicle.trim}
+            onChange={(e) => updateVehicle('trim', e.target.value)}
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+          />
         </div>
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Zip Code</label>
-           <input 
-             type="text" 
-             placeholder="90210" 
-             value={data.vehicle.zip} 
-             onChange={(e) => updateVehicle('zip', e.target.value.replace(/\D/g,'').slice(0,5))} 
-             className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
-           />
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Zip Code</label>
+          <input
+            type="text"
+            placeholder="90210"
+            value={data.vehicle.zip}
+            onChange={(e) => updateVehicle('zip', e.target.value.replace(/\D/g, '').slice(0, 5))}
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+          />
         </div>
       </div>
     </div>
@@ -353,87 +361,86 @@ const AffordabilityPredictor: React.FC = () => {
       <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
         <DollarSign className="w-6 h-6 text-green-500" /> Financial Profile
       </h3>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Gross Monthly Income</label>
-           <div className="relative">
-             <span className="absolute left-4 top-3.5 text-slate-400 font-bold">$</span>
-             <input 
-               type="number" 
-               placeholder="4500" 
-               value={data.finance.monthlyIncome} 
-               onChange={(e) => updateFinance('monthlyIncome', e.target.value)} 
-               className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
-             />
-           </div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Gross Monthly Income</label>
+          <div className="relative">
+            <span className="absolute left-4 top-3.5 text-slate-400 font-bold">$</span>
+            <input
+              type="number"
+              placeholder="4500"
+              value={data.finance.monthlyIncome}
+              onChange={(e) => updateFinance('monthlyIncome', e.target.value)}
+              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+            />
+          </div>
         </div>
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Other Monthly Debts</label>
-           <div className="relative">
-             <span className="absolute left-4 top-3.5 text-slate-400 font-bold">$</span>
-             <input 
-               type="number" 
-               placeholder="1200" 
-               value={data.finance.monthlyDebt} 
-               onChange={(e) => updateFinance('monthlyDebt', e.target.value)} 
-               className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
-             />
-           </div>
-           <p className="text-xs text-slate-500 mt-1">Rent, Student Loans, Credit Cards</p>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Other Monthly Debts</label>
+          <div className="relative">
+            <span className="absolute left-4 top-3.5 text-slate-400 font-bold">$</span>
+            <input
+              type="number"
+              placeholder="1200"
+              value={data.finance.monthlyDebt}
+              onChange={(e) => updateFinance('monthlyDebt', e.target.value)}
+              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+            />
+          </div>
+          <p className="text-xs text-slate-500 mt-1">Rent, Student Loans, Credit Cards</p>
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Credit Score Range</label>
         <div className="grid grid-cols-4 gap-2">
-           {[
-             { id: 'excellent', label: '720+', color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-500' },
-             { id: 'good', label: '660-719', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-500' },
-             { id: 'fair', label: '600-659', color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-500' },
-             { id: 'poor', label: '< 600', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-500' },
-           ].map(opt => (
-              <button
-                key={opt.id}
-                onClick={() => updateFinance('creditScore', opt.id)}
-                className={`p-3 rounded-xl border text-center transition-all ${
-                  data.finance.creditScore === opt.id 
-                    ? `${opt.color} shadow-sm border-2` 
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-400'
+          {[
+            { id: 'excellent', label: '720+', color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-500' },
+            { id: 'good', label: '660-719', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-500' },
+            { id: 'fair', label: '600-659', color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-500' },
+            { id: 'poor', label: '< 600', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-500' },
+          ].map(opt => (
+            <button
+              key={opt.id}
+              onClick={() => updateFinance('creditScore', opt.id)}
+              className={`p-3 rounded-xl border text-center transition-all ${data.finance.creditScore === opt.id
+                ? `${opt.color} shadow-sm border-2`
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-400'
                 }`}
-              >
-                <div className="text-sm font-bold capitalize">{opt.id}</div>
-                <div className="text-xs opacity-75">{opt.label}</div>
-              </button>
-           ))}
+            >
+              <div className="text-sm font-bold capitalize">{opt.id}</div>
+              <div className="text-xs opacity-75">{opt.label}</div>
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Down Payment</label>
-           <div className="relative">
-             <span className="absolute left-4 top-3.5 text-slate-400 font-bold">$</span>
-             <input 
-               type="number" 
-               placeholder="2000" 
-               value={data.finance.downPayment} 
-               onChange={(e) => updateFinance('downPayment', e.target.value)} 
-               className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
-             />
-           </div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Down Payment</label>
+          <div className="relative">
+            <span className="absolute left-4 top-3.5 text-slate-400 font-bold">$</span>
+            <input
+              type="number"
+              placeholder="2000"
+              value={data.finance.downPayment}
+              onChange={(e) => updateFinance('downPayment', e.target.value)}
+              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+            />
+          </div>
         </div>
         <div>
-           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Loan Term (Months)</label>
-           <select 
-             value={data.finance.termMonths}
-             onChange={(e) => updateFinance('termMonths', parseInt(e.target.value))}
-             className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
-           >
-             {[36, 48, 60, 72, 84].map(m => (
-               <option key={m} value={m}>{m} Months</option>
-             ))}
-           </select>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Loan Term (Months)</label>
+          <select
+            value={data.finance.termMonths}
+            onChange={(e) => updateFinance('termMonths', parseInt(e.target.value))}
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+          >
+            {[36, 48, 60, 72, 84].map(m => (
+              <option key={m} value={m}>{m} Months</option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
@@ -444,161 +451,161 @@ const AffordabilityPredictor: React.FC = () => {
 
     return (
       <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-500">
-        
+
         {/* Top Cards Grid */}
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          
+
           {/* Market Value Card */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
-             <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-xl bg-brand-primary/10 text-brand-primary">
-                   <Target className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-lg">True Market Price</h3>
-                  <p className="text-xs text-slate-500">Based on {data.vehicle.zip} market data</p>
-                </div>
-             </div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 rounded-xl bg-brand-primary/10 text-brand-primary">
+                <Target className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg">True Market Price</h3>
+                <p className="text-xs text-slate-500">Based on {data.vehicle.zip} market data</p>
+              </div>
+            </div>
 
-             <div className="mb-6 text-center">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Target Negotiation Price</p>
-                <div className="text-5xl font-black text-slate-900 dark:text-white mb-2">
-                  ${result.marketValue.negotiationTarget.toLocaleString()}
-                </div>
-                <p className="text-sm text-slate-500">Fair Value: ${result.marketValue.fair.toLocaleString()}</p>
-             </div>
+            <div className="mb-6 text-center">
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Target Negotiation Price</p>
+              <div className="text-5xl font-black text-slate-900 dark:text-white mb-2">
+                ${result.marketValue.negotiationTarget.toLocaleString()}
+              </div>
+              <p className="text-sm text-slate-500">Fair Value: ${result.marketValue.fair.toLocaleString()}</p>
+            </div>
 
-             <div className="relative pt-6 pb-2 px-2">
-                <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-full w-full relative">
-                   <div className="absolute top-0 bottom-0 bg-slate-300 dark:bg-slate-600 rounded-full" 
-                        style={{ 
-                          left: '0%', 
-                          width: '100%' 
-                        }}></div>
-                   <div className="absolute -top-1 w-1 h-6 bg-brand-primary left-1/2 -translate-x-1/2"></div>
-                </div>
-                <div className="flex justify-between text-xs font-bold text-slate-400 mt-2">
-                   <span>Low: ${result.marketValue.low.toLocaleString()}</span>
-                   <span>High: ${result.marketValue.high.toLocaleString()}</span>
-                </div>
-             </div>
+            <div className="relative pt-6 pb-2 px-2">
+              <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-full w-full relative">
+                <div className="absolute top-0 bottom-0 bg-slate-300 dark:bg-slate-600 rounded-full"
+                  style={{
+                    left: '0%',
+                    width: '100%'
+                  }}></div>
+                <div className="absolute -top-1 w-1 h-6 bg-brand-primary left-1/2 -translate-x-1/2"></div>
+              </div>
+              <div className="flex justify-between text-xs font-bold text-slate-400 mt-2">
+                <span>Low: ${result.marketValue.low.toLocaleString()}</span>
+                <span>High: ${result.marketValue.high.toLocaleString()}</span>
+              </div>
+            </div>
 
-             <div className="mt-6 space-y-2">
-                {result.marketContext.map((ctx, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                     <span className="w-1.5 h-1.5 rounded-full bg-brand-primary mt-1.5 flex-shrink-0"></span>
-                     {ctx}
-                  </div>
-                ))}
-             </div>
+            <div className="mt-6 space-y-2">
+              {result.marketContext.map((ctx, i) => (
+                <div key={i} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-primary mt-1.5 flex-shrink-0"></span>
+                  {ctx}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Affordability Card */}
           <div className="bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden text-white">
-             <div className="absolute top-0 right-0 p-6 opacity-5">
-                <PieChart className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
-             </div>
-             
-             <div className="relative z-10">
-               <div className="flex items-center gap-3 mb-6">
-                  <div className={`p-3 rounded-xl bg-white/10 ${result.affordability.verdictColor}`}>
-                     <PieChart className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-white text-lg">Affordability Check</h3>
-                    <p className={`text-sm font-bold ${result.affordability.verdictColor}`}>
-                       Verdict: {result.affordability.verdict}
-                    </p>
-                  </div>
-               </div>
+            <div className="absolute top-0 right-0 p-6 opacity-5">
+              <PieChart className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
+            </div>
 
-               <div className="grid grid-cols-2 gap-8 mb-6">
-                  <div>
-                     <p className="text-slate-400 text-xs font-bold uppercase mb-1">Est. Monthly Payment</p>
-                     <p className="text-3xl font-black text-white">
-                        ${result.affordability.monthlyPayment.toFixed(0)}
-                     </p>
-                     <p className="text-xs text-slate-400 mt-1">@ {result.affordability.estimatedApr}% APR</p>
-                  </div>
-                  <div>
-                     <p className="text-slate-400 text-xs font-bold uppercase mb-1">Max Safe Payment</p>
-                     <p className="text-3xl font-black text-white opacity-80">
-                        ${result.affordability.maxSafePayment.toFixed(0)}
-                     </p>
-                     <p className="text-xs text-slate-400 mt-1">10% of Income</p>
-                  </div>
-               </div>
-
-               <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                  <div className="flex justify-between items-center mb-2">
-                     <span className="text-sm font-medium text-slate-300">Car Payment to Income</span>
-                     <span className={`text-sm font-bold ${result.affordability.verdictColor}`}>
-                        {result.affordability.dtiFrontEnd.toFixed(1)}%
-                     </span>
-                  </div>
-                  <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
-                     <div 
-                       className={`h-full rounded-full transition-all duration-1000 ${result.affordability.dtiFrontEnd > 15 ? 'bg-red-500' : result.affordability.dtiFrontEnd > 10 ? 'bg-yellow-500' : 'bg-green-500'}`}
-                       style={{ width: `${Math.min(100, (result.affordability.dtiFrontEnd / 20) * 100)}%` }}
-                     ></div>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-2">
-                     Experts recommend keeping car payments below 10% of gross monthly income.
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className={`p-3 rounded-xl bg-white/10 ${result.affordability.verdictColor}`}>
+                  <PieChart className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-lg">Affordability Check</h3>
+                  <p className={`text-sm font-bold ${result.affordability.verdictColor}`}>
+                    Verdict: {result.affordability.verdict}
                   </p>
-               </div>
-             </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-8 mb-6">
+                <div>
+                  <p className="text-slate-400 text-xs font-bold uppercase mb-1">Est. Monthly Payment</p>
+                  <p className="text-3xl font-black text-white">
+                    ${result.affordability.monthlyPayment.toFixed(0)}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">@ {result.affordability.estimatedApr}% APR</p>
+                </div>
+                <div>
+                  <p className="text-slate-400 text-xs font-bold uppercase mb-1">Max Safe Payment</p>
+                  <p className="text-3xl font-black text-white opacity-80">
+                    ${result.affordability.maxSafePayment.toFixed(0)}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">10% of Income</p>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-slate-300">Car Payment to Income</span>
+                  <span className={`text-sm font-bold ${result.affordability.verdictColor}`}>
+                    {result.affordability.dtiFrontEnd.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-1000 ${result.affordability.dtiFrontEnd > 15 ? 'bg-red-500' : result.affordability.dtiFrontEnd > 10 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                    style={{ width: `${Math.min(100, (result.affordability.dtiFrontEnd / 20) * 100)}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-slate-400 mt-2">
+                  Experts recommend keeping car payments below 10% of gross monthly income.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* MONETIZATION ACTION SECTION */}
         <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-8 sm:p-12 mb-8 border border-white/5 shadow-2xl relative overflow-hidden text-white">
-           <div className="absolute top-0 right-0 p-8 opacity-5">
-              <Zap className="w-64 h-64 text-white" />
-           </div>
-           
-           <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                 <h2 className="text-3xl font-black mb-4">Secure This Deal.</h2>
-                 <p className="text-slate-400 leading-relaxed font-medium mb-6">
-                    Ready to move forward? Get pre-approved for financing or check local inventory matching this exact profile instantly.
-                 </p>
-                 <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
-                       <CheckCircle2 className="w-5 h-5 text-green-500" />
-                       <span className="text-sm font-bold text-slate-300">Real rates based on your profile</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                       <CheckCircle2 className="w-5 h-5 text-green-500" />
-                       <span className="text-sm font-bold text-slate-300">Secure matching with authorized lenders</span>
-                    </div>
-                 </div>
-              </div>
+          <div className="absolute top-0 right-0 p-8 opacity-5">
+            <Zap className="w-64 h-64 text-white" />
+          </div>
 
+          <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-black mb-4">Secure This Deal.</h2>
+              <p className="text-slate-400 leading-relaxed font-medium mb-6">
+                Ready to move forward? Get pre-approved for financing or check local inventory matching this exact profile instantly.
+              </p>
               <div className="flex flex-col gap-4">
-                 <button 
-                    onClick={() => { setLeadSubmitted(false); setIsLeadModalOpen(true); }}
-                    className="w-full py-5 bg-brand-primary text-slate-900 font-black rounded-2xl hover:bg-orange-400 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-brand-primary/20 animate-slow-glow"
-                 >
-                    Get Pre-Approved <ShieldCheck className="w-5 h-5" />
-                 </button>
-                 
-                 <a 
-                    href="https://www.carvana.com/cars" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black rounded-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-3"
-                 >
-                    Find This Car Near Me <ShoppingCart className="w-5 h-5" />
-                 </a>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <span className="text-sm font-bold text-slate-300">Real rates based on your profile</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <span className="text-sm font-bold text-slate-300">Secure matching with authorized lenders</span>
+                </div>
               </div>
-           </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => { setLeadSubmitted(false); setIsLeadModalOpen(true); }}
+                className="w-full py-5 bg-brand-primary text-slate-900 font-black rounded-2xl hover:bg-orange-400 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-brand-primary/20 animate-slow-glow"
+              >
+                Get Pre-Approved <ShieldCheck className="w-5 h-5" />
+              </button>
+
+              <a
+                href="https://www.carvana.com/cars"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black rounded-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-3"
+              >
+                Find This Car Near Me <ShoppingCart className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
         </div>
 
-        <button 
-           onClick={() => { setResult(null); setStep(1); setLeadSubmitted(false); }}
-           className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+        <button
+          onClick={() => { setResult(null); setStep(1); setLeadSubmitted(false); }}
+          className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
         >
-           Start New Analysis
+          Start New Analysis
         </button>
       </div>
     );
@@ -606,7 +613,7 @@ const AffordabilityPredictor: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
+
       {renderLeadModal()}
 
       {!result && (
@@ -621,7 +628,7 @@ const AffordabilityPredictor: React.FC = () => {
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             True Car Price <br className="hidden sm:block" />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-orange-600">
-               & Affordability Predictor
+              & Affordability Predictor
             </span>
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
@@ -631,249 +638,246 @@ const AffordabilityPredictor: React.FC = () => {
       )}
 
       <div className="w-full max-w-4xl">
-         {!result ? (
-            <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative">
-               
-               <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-900">
-                  <div className={`h-full bg-brand-primary transition-all duration-500 ease-out`} style={{ width: `${(step/2)*100}%` }}></div>
-               </div>
+        {!result ? (
+          <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative">
 
-               <div className="p-6 sm:p-10">
-                  {step === 1 && renderStep1()}
-                  {step === 2 && renderStep2()}
-
-                  <div className="mt-10 flex items-center justify-between">
-                     {step > 1 ? (
-                        <button 
-                          onClick={() => setStep(prev => prev - 1)}
-                          className="px-6 py-3 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white font-medium transition-colors"
-                        >
-                           Back
-                        </button>
-                     ) : <div></div>}
-                     
-                     {step < 2 ? (
-                        <button 
-                          onClick={() => {
-                             if(!data.vehicle.year || !data.vehicle.make || !data.vehicle.model) return;
-                             setStep(prev => prev + 1);
-                          }}
-                          disabled={!data.vehicle.year || !data.vehicle.make}
-                          className="px-8 py-3 rounded-xl bg-brand-primary text-slate-900 font-bold hover:bg-orange-400 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-primary/20"
-                        >
-                           Next Step <ChevronRight className="w-4 h-4" />
-                        </button>
-                     ) : (
-                        <button 
-                          onClick={handlePredict}
-                          disabled={loading}
-                          className="px-8 py-3 rounded-xl bg-brand-primary text-slate-900 font-bold hover:bg-orange-400 transition-all flex items-center gap-2 shadow-lg shadow-brand-primary/20 disabled:opacity-50"
-                        >
-                           {loading ? 'Analyzing Market...' : 'Analyze Price & Budget'} <Zap className="w-4 h-4" />
-                        </button>
-                     )}
-                  </div>
-                  {error && (
-                    <div className="mt-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm text-center">
-                       {error}
-                    </div>
-                  )}
-               </div>
+            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-900">
+              <div className={`h-full bg-brand-primary transition-all duration-500 ease-out`} style={{ width: `${(step / 2) * 100}%` }}></div>
             </div>
-         ) : (
-            renderResult()
-         )}
+
+            <div className="p-6 sm:p-10">
+              {step === 1 && renderStep1()}
+              {step === 2 && renderStep2()}
+
+              <div className="mt-10 flex items-center justify-between">
+                {step > 1 ? (
+                  <button
+                    onClick={() => setStep(prev => prev - 1)}
+                    className="px-6 py-3 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white font-medium transition-colors"
+                  >
+                    Back
+                  </button>
+                ) : <div></div>}
+
+                {step < 2 ? (
+                  <button
+                    onClick={() => {
+                      if (!data.vehicle.year || !data.vehicle.make || !data.vehicle.model) return;
+                      setStep(prev => prev + 1);
+                    }}
+                    disabled={!data.vehicle.year || !data.vehicle.make}
+                    className="px-8 py-3 rounded-xl bg-brand-primary text-slate-900 font-bold hover:bg-orange-400 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-primary/20"
+                  >
+                    Next Step <ChevronRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handlePredict}
+                    disabled={loading}
+                    className="px-8 py-3 rounded-xl bg-brand-primary text-slate-900 font-bold hover:bg-orange-400 transition-all flex items-center gap-2 shadow-lg shadow-brand-primary/20 disabled:opacity-50"
+                  >
+                    {loading ? 'Analyzing Market...' : 'Analyze Price & Budget'} <Zap className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+              {error && (
+                <div className="mt-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm text-center">
+                  {error}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          renderResult()
+        )}
       </div>
 
       {!result && (
         <div className="w-full max-w-7xl px-4 flex flex-col items-center">
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-500 dark:text-slate-400 text-sm font-medium">
-                <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-green-500" /> Secure Data Handling
+          {/* Trust Indicators */}
+          <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-500 dark:text-slate-400 text-sm font-medium">
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4 text-green-500" /> Secure Data Handling
+            </div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-brand-primary" /> Real-Time Market Data
+            </div>
+            <div className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-blue-500" /> Professional Financial Rules
+            </div>
+          </div>
+
+          {/* About the Price Predictor Section */}
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-24 w-full animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+            <div className="order-2 md:order-1">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Price Predictor</h2>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
+                Buying a car is one of the largest financial decisions you'll make. Our predictor acts as your personal financial auditor, using <span className="font-bold text-brand-primary">Google's Technology</span> to establish a "True Market Value" for any vehicle in your specific neighborhood.
+              </p>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
+                We don't just look at national averages. We pull real-time data on supply, demand, and recent sales in your ZIP code to give you a negotiation target that dealers actually respect. We then overlay professional US lending standards to tell you exactly how that car fits into your monthly budget.
+              </p>
+            </div>
+            <div className="order-1 md:order-2 bg-brand-primary/5 dark:bg-brand-primary/10 rounded-[3rem] p-10 sm:p-14 border border-brand-primary/10 dark:border-brand-primary/20 relative overflow-hidden shadow-2xl">
+              <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-brand-primary/10 -rotate-12" />
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Market Intelligence</h3>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
+                Access the same pricing data used by professional dealers. Our engine validates local market fluctuations to ensure you never overpay for a used or new vehicle.
+              </p>
+              <div className="flex items-center gap-3 text-brand-primary font-black text-sm relative z-10">
+                <ShieldCheck className="w-6 h-6" /> VERIFIED MARKET DATA
+              </div>
+            </div>
+          </div>
+
+          {/* Why Use This Tool Section */}
+          <div className="w-full mb-24 text-center">
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
+              Why Drivers Trust AutoSpex Pricing
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: <Lock className="w-8 h-8 text-green-500" />,
+                  title: "No Credit Check",
+                  desc: "Check your buying power without a 'hard pull' affecting your official credit score."
+                },
+                {
+                  icon: <Zap className="w-8 h-8 text-blue-500" />,
+                  title: "Instant Accuracy",
+                  desc: "Our AI processes millions of sales records to provide a pinpoint fair market price."
+                },
+                {
+                  icon: <Award className="w-8 h-8 text-amber-500" />,
+                  title: "Safety First",
+                  desc: "We use conservative DTI ratios to ensure you don't become 'car-poor'."
+                },
+                {
+                  icon: <Target className="w-8 h-8 text-purple-500" />,
+                  title: "Negotiation Power",
+                  desc: "Walk into the dealership with the exact target price you should pay for that model."
+                },
+              ].map((item, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                  <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-brand-primary" /> Real-Time Market Data
+              ))}
+            </div>
+          </div>
+
+          {/* How It Works Section */}
+          <div className="w-full mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
+              How to Audit Your Car Purchase
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
+                <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-brand-primary flex items-center justify-center mb-4">
+                  <Car className="w-7 h-7" />
                 </div>
-                <div className="flex items-center gap-2">
-                <Info className="w-4 h-4 text-blue-500" /> Professional Financial Rules
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Vehicle & Location</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                  Enter the car you want and your zip code to get real-time local market pricing data.
+                </p>
+              </div>
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
+                <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
+                  <DollarSign className="w-7 h-7" />
                 </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Financial Check</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                  Input your details to establish affordability benchmarks based on current US lending standards.
+                </p>
+              </div>
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
+                  <PieChart className="w-7 h-7" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Instant Verdict</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                  See if it's a smart buy or a financial trap and connect with lenders for real-time rates.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonials Section */}
+          <div className="w-full mb-24">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
+              Stories from Smart Buyers
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { name: "Sarah J.", loc: "Atlanta, GA", text: "Realized the dealer markup was $4k over fair market value. Used this tool to negotiate them down instantly.", stars: 5 },
+                { name: "Mike T.", loc: "Denver, CO", text: "I almost bought a truck that would have eaten 25% of my monthly income. This tool saved me from a huge mistake.", stars: 5 },
+                { name: "David L.", loc: "Phoenix, AZ", text: "Simple, fast, and honest. The affordability breakdown showed me exactly what I could actually afford safely.", stars: 5 },
+              ].map((review, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex gap-1 mb-4 text-brand-primary">
+                    {[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
+                  </div>
+                  <p className="text-slate-700 dark:text-slate-300 mb-6 italic text-sm leading-relaxed">"{review.text}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold">
+                      {review.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">{review.name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{review.loc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="w-full max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-2">
+                <MessageSquare className="w-6 h-6 text-brand-primary" />
+                Frequently Asked Questions
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400">Common questions about affordability and pricing.</p>
             </div>
 
-            {/* About the Price Predictor Section */}
-            <div className="grid md:grid-cols-2 gap-12 items-center mb-24 w-full animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                <div className="order-2 md:order-1">
-                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Price Predictor</h2>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                        Buying a car is one of the largest financial decisions you'll make. Our predictor acts as your personal financial auditor, using <span className="font-bold text-brand-primary">Google's Technology</span> to establish a "True Market Value" for any vehicle in your specific neighborhood.
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div
+                  key={index}
+                  className={`border rounded-2xl transition-all duration-300 overflow-hidden ${openFaqIndex === index
+                    ? 'bg-white dark:bg-slate-900 border-brand-primary/30 shadow-lg shadow-brand-primary/5'
+                    : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                    }`}
+                >
+                  <button
+                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                    className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                  >
+                    <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
+                      {faq.question}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${openFaqIndex === index ? 'rotate-180 text-brand-primary' : ''
+                        }`}
+                    />
+                  </button>
+                  <div
+                    className={`transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                  >
+                    <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0 font-medium">
+                      {faq.answer}
                     </p>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                        We don't just look at national averages. We pull real-time data on supply, demand, and recent sales in your ZIP code to give you a negotiation target that dealers actually respect. We then overlay professional US lending standards to tell you exactly how that car fits into your monthly budget.
-                    </p>
+                  </div>
                 </div>
-                <div className="order-1 md:order-2 bg-brand-primary/5 dark:bg-brand-primary/10 rounded-[3rem] p-10 sm:p-14 border border-brand-primary/10 dark:border-brand-primary/20 relative overflow-hidden shadow-2xl">
-                    <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-brand-primary/10 -rotate-12" />
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Market Intelligence</h3>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
-                       Access the same pricing data used by professional dealers. Our engine validates local market fluctuations to ensure you never overpay for a used or new vehicle.
-                    </p>
-                    <div className="flex items-center gap-3 text-brand-primary font-black text-sm relative z-10">
-                       <ShieldCheck className="w-6 h-6" /> VERIFIED MARKET DATA
-                    </div>
-                </div>
+              ))}
             </div>
-
-            {/* Why Use This Tool Section */}
-            <div className="w-full mb-24 text-center">
-                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                    Why Drivers Trust AutoSpex Pricing
-                </h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {[
-                        { 
-                            icon: <Lock className="w-8 h-8 text-green-500" />, 
-                            title: "No Credit Check", 
-                            desc: "Check your buying power without a 'hard pull' affecting your official credit score." 
-                        },
-                        { 
-                            icon: <Zap className="w-8 h-8 text-blue-500" />, 
-                            title: "Instant Accuracy", 
-                            desc: "Our AI processes millions of sales records to provide a pinpoint fair market price." 
-                        },
-                        { 
-                            icon: <Award className="w-8 h-8 text-amber-500" />, 
-                            title: "Safety First", 
-                            desc: "We use conservative DTI ratios to ensure you don't become 'car-poor'." 
-                        },
-                        { 
-                            icon: <Target className="w-8 h-8 text-purple-500" />, 
-                            title: "Negotiation Power", 
-                            desc: "Walk into the dealership with the exact target price you should pay for that model." 
-                        },
-                    ].map((item, i) => (
-                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
-                            <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
-                                {item.icon}
-                            </div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* How It Works Section */}
-            <div className="w-full mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                How to Audit Your Car Purchase
-                </h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
-                    <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-brand-primary flex items-center justify-center mb-4">
-                    <Car className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Vehicle & Location</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                    Enter the car you want and your zip code to get real-time local market pricing data.
-                    </p>
-                </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
-                    <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
-                    <DollarSign className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Financial Check</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                    Input your details to establish affordability benchmarks based on current US lending standards.
-                    </p>
-                </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
-                    <PieChart className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Instant Verdict</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                    See if it's a smart buy or a financial trap and connect with lenders for real-time rates.
-                    </p>
-                </div>
-                </div>
-            </div>
-
-            {/* Testimonials Section */}
-            <div className="w-full mb-24">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                Stories from Smart Buyers
-                </h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                {[
-                    { name: "Sarah J.", loc: "Atlanta, GA", text: "Realized the dealer markup was $4k over fair market value. Used this tool to negotiate them down instantly.", stars: 5 },
-                    { name: "Mike T.", loc: "Denver, CO", text: "I almost bought a truck that would have eaten 25% of my monthly income. This tool saved me from a huge mistake.", stars: 5 },
-                    { name: "David L.", loc: "Phoenix, AZ", text: "Simple, fast, and honest. The affordability breakdown showed me exactly what I could actually afford safely.", stars: 5 },
-                ].map((review, i) => (
-                    <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
-                    <div className="flex gap-1 mb-4 text-brand-primary">
-                        {[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                    </div>
-                    <p className="text-slate-700 dark:text-slate-300 mb-6 italic text-sm leading-relaxed">"{review.text}"</p>
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold">
-                        {review.name.charAt(0)}
-                        </div>
-                        <div>
-                        <p className="text-sm font-bold text-slate-900 dark:text-white">{review.name}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{review.loc}</p>
-                        </div>
-                    </div>
-                    </div>
-                ))}
-                </div>
-            </div>
-
-            {/* FAQ Section */}
-            <div className="w-full max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="text-center mb-10">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-2">
-                        <MessageSquare className="w-6 h-6 text-brand-primary" />
-                        Frequently Asked Questions
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-400">Common questions about affordability and pricing.</p>
-                </div>
-                
-                <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <div 
-                            key={index} 
-                            className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
-                                openFaqIndex === index 
-                                ? 'bg-white dark:bg-slate-900 border-brand-primary/30 shadow-lg shadow-brand-primary/5' 
-                                : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                            }`}
-                        >
-                            <button
-                                onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                                className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
-                            >
-                                <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                                {faq.question}
-                                </span>
-                                <ChevronDown 
-                                className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${
-                                    openFaqIndex === index ? 'rotate-180 text-brand-primary' : ''
-                                }`} 
-                                />
-                            </button>
-                            <div 
-                                className={`transition-all duration-300 ease-in-out ${
-                                openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                                }`}
-                            >
-                                <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0 font-medium">
-                                {faq.answer}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+          </div>
         </div>
       )}
 
