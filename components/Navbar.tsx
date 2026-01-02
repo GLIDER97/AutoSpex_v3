@@ -156,6 +156,15 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               <button className="lg:hidden p-2.5 rounded-xl text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" onClick={() => setIsMobileMenuOpen(true)} aria-label="Menu">
                 <Menu className="w-5 h-5" />
               </button>
+              <a
+                href="https://forms.gle/XtuvETokH5R83r1q7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden lg:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-primary to-amber-500 text-white font-bold text-sm rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Give Feedback</span>
+              </a>
               <Link to="/" className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-slate-900/10">Get App</Link>
             </div>
           </div>
@@ -206,6 +215,16 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                       <Info className="w-4 h-4 text-slate-400" /> <span className="font-medium text-slate-700 dark:text-slate-200">About Us</span>
                     </Link>
                   </div>
+                  <a
+                    href="https://forms.gle/XtuvETokH5R83r1q7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-center w-full py-3.5 mb-3 rounded-xl bg-gradient-to-r from-brand-primary to-amber-500 text-white font-bold shadow-lg hover:shadow-xl transition-all"
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Give Feedback
+                  </a>
                   <Link to="/" onClick={closeMobileMenu} className="flex items-center justify-center w-full py-3.5 rounded-xl bg-brand-primary text-white font-bold shadow-lg shadow-brand-primary/20 hover:bg-amber-400 transition-colors">Download App</Link>
                 </div>
               </div>
