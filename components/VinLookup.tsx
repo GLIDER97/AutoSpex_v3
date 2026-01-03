@@ -597,7 +597,7 @@ const VinLookup: React.FC = () => {
           {/* Why Use This Tool Section */}
           <div className="w-full mb-24 text-center">
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-              Why Use AutoSpex VIN Decoder?
+              Why Use MyAutoSpex VIN Decoder?
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
@@ -689,7 +689,7 @@ const VinLookup: React.FC = () => {
                 {
                   name: "Marcus G.",
                   loc: "Chicago, IL",
-                  text: "I love that it's actually free. Most sites bait and switch you with a fee at the end, but AutoSpex is transparent and helpful.",
+                  text: "I love that it's actually free. Most sites bait and switch you with a fee at the end, but MyAutoSpex is transparent and helpful.",
                   stars: 5
                 }
               ].map((t, i) => (

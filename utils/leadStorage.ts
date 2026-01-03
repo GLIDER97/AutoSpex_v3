@@ -1,5 +1,5 @@
 /**
- * Lead Storage Utility for AutoSpex
+ * Lead Storage Utility for MyAutoSpex
  *
  * Sends lead data to Google Sheets via a deployed Google Apps Script Web App.
  * Configure the Web App URL in .env.local as VITE_GOOGLE_SHEETS_URL

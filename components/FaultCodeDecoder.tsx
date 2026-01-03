@@ -461,9 +461,9 @@ const FaultCodeDecoder: React.FC = () => {
                 <div className="w-full max-w-7xl px-4 mt-24 mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="order-2 md:order-1">
-                            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">About the AutoSpex Decoder</h2>
+                            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">About the MyAutoSpex Decoder</h2>
                             <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                                The AutoSpex OBD-II Decoder is a specialized diagnostic engine built to help US car owners understand their vehicle's health without needing a mechanical engineering degree.
+                                The MyAutoSpex OBD-II Decoder is a specialized diagnostic engine built to help US car owners understand their vehicle's health without needing a mechanical engineering degree.
                             </p>
                             <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                                 We combine a massive database of standard SAE J2012 fault codes with <span className="font-bold text-brand-primary">Google Gemini AI</span> to provide context-aware results. Whether it's a generic P0420 or a specific manufacturer-derived error, our system analyzes the technical data to give you localized repair cost estimates and safety assessments based on current US market averages.
@@ -498,7 +498,7 @@ const FaultCodeDecoder: React.FC = () => {
                 {/* WHY USE THIS TOOL SECTION */}
                 <div className="w-full max-w-7xl px-4 mb-20 text-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                     <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                        Why Drivers Choose AutoSpex
+                        Why Drivers Choose MyAutoSpex
                     </h2>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[

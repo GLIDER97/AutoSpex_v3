@@ -94,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-primary rounded-full border-2 border-white dark:border-slate-900"></div>
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white leading-none">AutoSpex</span>
+                <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white leading-none">MyAutoSpex</span>
                 <span className="text-[10px] font-semibold tracking-widest text-brand-primary uppercase mt-0.5">Vehicle Intelligence</span>
               </div>
             </Link>
@@ -179,7 +179,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center text-white"><Gauge className="w-5 h-5" /></div>
-                  <span className="font-bold text-lg text-slate-900 dark:text-white">AutoSpex</span>
+                  <span className="font-bold text-lg text-slate-900 dark:text-white">MyAutoSpex</span>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"><X className="w-6 h-6" /></button>
               </div>

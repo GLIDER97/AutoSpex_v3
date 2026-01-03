@@ -1,6 +1,6 @@
 # Google Sheets Lead Storage Setup Guide
 
-This guide explains how to set up Google Sheets as the backend storage for AutoSpex lead forms.
+This guide explains how to set up Google Sheets as the backend storage for MyAutoSpex lead forms.
 
 ## Prerequisites
 - A Google account
@@ -12,7 +12,7 @@ This guide explains how to set up Google Sheets as the backend storage for AutoS
 
 1. Go to [Google Sheets](https://sheets.google.com)
 2. Click **"+ Blank"** to create a new spreadsheet
-3. Rename it to: `AutoSpex Leads` (or your preferred name)
+3. Rename it to: `MyAutoSpex Leads` (or your preferred name)
 4. Note the spreadsheet URL — you'll need it later
 
 ---
@@ -24,7 +24,7 @@ This guide explains how to set up Google Sheets as the backend storage for AutoS
 3. Delete any existing code in the editor
 4. Copy the entire contents of `GoogleAppsScript.js` (in this folder) and paste it into the editor
 5. Click **File → Save** (or Ctrl+S)
-6. Name the project: `AutoSpex Lead Handler`
+6. Name the project: `MyAutoSpex Lead Handler`
 
 ---
 
@@ -33,14 +33,14 @@ This guide explains how to set up Google Sheets as the backend storage for AutoS
 1. In the Apps Script editor, click **Deploy → New deployment**
 2. Click the gear icon next to "Select type" and choose **Web app**
 3. Configure the deployment:
-   - **Description**: `AutoSpex Lead Storage v1`
+   - **Description**: `MyAutoSpex Lead Storage v1`
    - **Execute as**: `Me`
    - **Who has access**: `Anyone`
 4. Click **Deploy**
 5. **Authorize the app** when prompted:
    - Click "Review permissions"
    - Select your Google account
-   - Click "Advanced" → "Go to AutoSpex Lead Handler (unsafe)"
+   - Click "Advanced" → "Go to MyAutoSpex Lead Handler (unsafe)"
    - Click "Allow"
 6. **Copy the Web App URL** — it looks like:
    ```
@@ -94,7 +94,7 @@ This guide explains how to set up Google Sheets as the backend storage for AutoS
 2. **Verify the URL**: Ensure `VITE_GOOGLE_SHEETS_URL` is correctly set in `.env.local`
 3. **Test the Web App**: Visit your Web App URL directly in a browser — you should see:
    ```json
-   {"status":"ok","message":"AutoSpex Lead Storage Web App is running"}
+   {"status":"ok","message":"MyAutoSpex Lead Storage Web App is running"}
    ```
 4. **Check Permissions**: Ensure the Web App is deployed with "Anyone" access
 

@@ -383,7 +383,7 @@ const MaintenanceValidator: React.FC = () => {
                 <div className="order-2 md:order-1">
                     <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Cost Validator</h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                        The AutoSpex Overcharge Validator is a specialized diagnostic engine built to protect US car owners from predatory repair pricing. We aggregate proprietary labor guides and national parts datasets to provide a transparent financial audit of any mechanic's quote.
+                        The MyAutoSpex Overcharge Validator is a specialized diagnostic engine built to protect US car owners from predatory repair pricing. We aggregate proprietary labor guides and national parts datasets to provide a transparent financial audit of any mechanic's quote.
                     </p>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                         Our system doesn't just give national averages; it analyzes the <span className="font-bold text-red-500">cost-of-living index</span> for your specific ZIP code, ensuring that the labor rate we use for comparison matches the economic reality of your neighborhood shops.
@@ -404,7 +404,7 @@ const MaintenanceValidator: React.FC = () => {
             {/* Why Use This Tool Section */}
             <div className="w-full mb-24 text-center">
                 <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                    Why Drivers Trust AutoSpex
+                    Why Drivers Trust MyAutoSpex
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[

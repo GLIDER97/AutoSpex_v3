@@ -9,7 +9,7 @@ interface SEOProps {
 const SEO: React.FC<SEOProps> = ({ title, description, canonical }) => {
     useEffect(() => {
         // Update Title
-        document.title = title + " | AutoSpex";
+        document.title = title + " | MyAutoSpex";
 
         // Update Meta Description
         const metaDesc = document.querySelector('meta[name="description"]');

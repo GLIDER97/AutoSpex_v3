@@ -162,7 +162,7 @@ const DiyToolkits: React.FC = () => {
           <ShieldCheck className="w-4 h-4 text-green-500" /> Professional Grade Recommendations
         </p>
         <p className="mt-2 text-[10px] text-slate-500 italic max-w-xs mx-auto">
-          *As an Amazon Associate, AutoSpex earns from qualifying purchases. Products are selected for performance and utility.
+          *As an Amazon Associate, MyAutoSpex earns from qualifying purchases. Products are selected for performance and utility.
         </p>
       </div>
     </div>

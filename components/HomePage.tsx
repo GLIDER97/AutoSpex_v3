@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
                     </span>
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 text-xl sm:text-2xl leading-relaxed mb-10 max-w-2xl mx-auto">
-                    Stop guessing. AutoSpex uses AI and official US government databases to decode your vehicle data instantly. No signups. No hidden fees.
+                    Stop guessing. MyAutoSpex uses AI and official US government databases to decode your vehicle data instantly. No signups. No hidden fees.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 mb-16">
                     <Link
@@ -205,7 +205,7 @@ const HomePage: React.FC = () => {
             <div className="w-full bg-slate-50 dark:bg-slate-900/30 border-y border-slate-200 dark:border-slate-800/50 py-24 mb-24 px-4">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-4">The AutoSpex Method</h2>
+                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-4">The MyAutoSpex Method</h2>
                         <p className="text-slate-500 max-w-xl mx-auto">How we turn cryptic automotive codes into actionable intelligence for you.</p>
                     </div>
                     <div className="grid md:grid-cols-3 gap-12 relative">
@@ -284,7 +284,7 @@ const HomePage: React.FC = () => {
             <div className="max-w-7xl px-4 mb-24 w-full">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-4">Trusted by 50,000+ Drivers</h2>
-                    <p className="text-slate-500">Real stories from vehicle owners who saved money using AutoSpex.</p>
+                    <p className="text-slate-500">Real stories from vehicle owners who saved money using MyAutoSpex.</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
                     {[
@@ -358,14 +358,14 @@ const HomePage: React.FC = () => {
                         </div>
                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-[2rem]">
                             <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                                "AutoSpex exists because the automotive industry is built on information asymmetry. We give you back the data that belongs to you, so you can make informed decisions about your most important asset."
+                                "MyAutoSpex exists because the automotive industry is built on information asymmetry. We give you back the data that belongs to you, so you can make informed decisions about your most important asset."
                             </p>
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-full bg-brand-primary/20 flex items-center justify-center">
                                     <Users className="w-6 h-6 text-brand-primary" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-white text-sm">AutoSpex Engineering Team</h4>
+                                    <h4 className="font-bold text-white text-sm">MyAutoSpex Engineering Team</h4>
                                     <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Built in Austin, TX</p>
                                 </div>
                             </div>

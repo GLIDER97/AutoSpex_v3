@@ -178,7 +178,7 @@ const PlateGenerator: React.FC = () => {
             <form onSubmit={handleGenerate} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                     <Car className="w-4 h-4 text-orange-500" /> Car Model
                   </label>
                   <input 
@@ -191,7 +191,7 @@ const PlateGenerator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-orange-500" /> Hobbies & Interests
                   </label>
                   <input 
@@ -206,7 +206,7 @@ const PlateGenerator: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                     <Smile className="w-4 h-4 text-orange-500" /> The Vibe
                   </label>
                   <select 
@@ -223,7 +223,7 @@ const PlateGenerator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                     <Info className="w-4 h-4 text-orange-500" /> State (Limits)
                   </label>
                   <select 
@@ -359,7 +359,7 @@ const PlateGenerator: React.FC = () => {
             </div>
             
             <p className="text-center text-[10px] text-slate-400 font-medium italic mt-4">
-               *As an Amazon Associate, AutoSpex earns from qualifying purchases.
+               *As an Amazon Associate, MyAutoSpex earns from qualifying purchases.
             </p>
           </div>
         )}
@@ -373,7 +373,7 @@ const PlateGenerator: React.FC = () => {
             <div className="order-2 md:order-1">
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">Personalize Your Ride</h2>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                    A license plate is more than just a legal requirement—it's a statement. The <span className="text-orange-500 font-bold">AutoSpex Plate Generator</span> uses Google Gemini AI to analyze your vehicle's specs and your personal interests to craft the perfect 7-character combinations.
+                    A license plate is more than just a legal requirement—it's a statement. The <span className="text-orange-500 font-bold">MyAutoSpex Plate Generator</span> uses Google Gemini AI to analyze your vehicle's specs and your personal interests to craft the perfect 7-character combinations.
                 </p>
                 <div className="space-y-4">
                    {[

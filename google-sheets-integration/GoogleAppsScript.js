@@ -1,7 +1,7 @@
 /**
- * Google Apps Script for AutoSpex Lead Storage
+ * Google Apps Script for MyAutoSpex Lead Storage
  * 
- * This script receives lead data from the AutoSpex application
+ * This script receives lead data from the MyAutoSpex application
  * and stores it in the corresponding sheet within this Google Sheets workbook.
  * 
  * Deploy this as a Web App with:
@@ -78,7 +78,7 @@ function doPost(e) {
 function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify({
         status: 'ok',
-        message: 'AutoSpex Lead Storage Web App is running',
+        message: 'MyAutoSpex Lead Storage Web App is running',
         version: '1.0.0'
     })).setMimeType(ContentService.MimeType.JSON);
 }

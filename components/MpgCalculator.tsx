@@ -671,7 +671,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                ))}
             </div>
             <p className="text-center text-[10px] text-slate-400 mt-8 font-medium italic">
-               *As an Amazon Associate, AutoSpex earns from qualifying purchases.
+               *As an Amazon Associate, MyAutoSpex earns from qualifying purchases.
             </p>
           </div>
       </div>
@@ -690,7 +690,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
               <div className="order-2 md:order-1">
                   <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the MPG Auditor</h2>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                      The AutoSpex MPG Calculator & Cost Analyzer is a dual-purpose financial utility designed to help US drivers understand the literal cost of their commute. We combine real-time fuel market prices with official factory efficiency data to build a complete profile of your vehicle's energy consumption.
+                      The MyAutoSpex MPG Calculator & Cost Analyzer is a dual-purpose financial utility designed to help US drivers understand the literal cost of their commute. We combine real-time fuel market prices with official factory efficiency data to build a complete profile of your vehicle's energy consumption.
                   </p>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                       Our system doesn't just calculate math; it acts as a mechanical diagnostic tool. By comparing your "Observed MPG" against the <span className="font-bold text-emerald-500">factory EPA ratings</span> for your specific make and model, we can identify hidden mechanical inefficiencies that are costing you hundreds of dollars at the pump every year.

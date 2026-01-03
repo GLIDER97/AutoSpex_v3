@@ -88,7 +88,7 @@ const WrapDesigner: React.FC = () => {
     if (!generatedImage) return;
     const link = document.createElement('a');
     link.href = generatedImage;
-    link.download = `AutoSpex-Wrap-${request.vehicleType.replace(' ', '-')}.png`;
+    link.download = `MyAutoSpex-Wrap-${request.vehicleType.replace(' ', '-')}.png`;
     link.click();
   };
 
@@ -111,7 +111,7 @@ const WrapDesigner: React.FC = () => {
     },
     {
       question: "Is this tool free?",
-      answer: "Yes, the AI Wrap Designer is part of the AutoSpex free utility suite. We provide it to help car enthusiasts explore their creativity before committing to expensive physical modifications."
+      answer: "Yes, the AI Wrap Designer is part of the MyAutoSpex free utility suite. We provide it to help car enthusiasts explore their creativity before committing to expensive physical modifications."
     }
   ];
 
@@ -137,7 +137,7 @@ const WrapDesigner: React.FC = () => {
                <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center">
                   <Gauge className="w-4 h-4 text-black" strokeWidth={3} />
                </div>
-               <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">AutoSpex AI Visualizer</span>
+               <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">MyAutoSpex AI Visualizer</span>
             </div>
             <p className="text-[8px] text-white/40 uppercase tracking-widest">Created with AI Wrap Designer | Automotive Concept Studio</p>
           </div>
@@ -190,7 +190,7 @@ const WrapDesigner: React.FC = () => {
           <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 sticky top-24">
             <form onSubmit={handleGenerate} className="space-y-6">
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                   <Car className="w-4 h-4 text-blue-500" /> Vehicle Type
                 </label>
                 <select 
@@ -207,7 +207,7 @@ const WrapDesigner: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-blue-500" /> Design Vision
                 </label>
                 <textarea 
@@ -220,7 +220,7 @@ const WrapDesigner: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                   <ImageIcon className="w-4 h-4 text-blue-500" /> Art Style
                 </label>
                 <div className="relative">
@@ -278,7 +278,7 @@ const WrapDesigner: React.FC = () => {
                        <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center">
                           <Gauge className="w-4 h-4 text-black" strokeWidth={3} />
                        </div>
-                       <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">AutoSpex AI Visualizer</span>
+                       <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">MyAutoSpex AI Visualizer</span>
                     </div>
                     <p className="text-[8px] text-white/40 uppercase tracking-widest">Created with AI Wrap Designer | Automotive Concept Studio</p>
                   </div>
@@ -309,7 +309,7 @@ const WrapDesigner: React.FC = () => {
                  <button 
                   onClick={() => {
                     if (navigator.share) {
-                      navigator.share({ title: 'My Custom Car Wrap', text: 'Check out this design I created with AutoSpex AI!', url: window.location.href });
+                      navigator.share({ title: 'My Custom Car Wrap', text: 'Check out this design I created with MyAutoSpex AI!', url: window.location.href });
                     }
                   }}
                   className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-sm"
@@ -344,7 +344,7 @@ const WrapDesigner: React.FC = () => {
             <div>
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">About the Visualizer</h2>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                    Car modifications start with a spark of imagination. The <span className="text-blue-600 font-bold">AutoSpex AI Wrap Designer</span> takes that spark and renders it into professional-grade advertising creative.
+                    Car modifications start with a spark of imagination. The <span className="text-blue-600 font-bold">MyAutoSpex AI Wrap Designer</span> takes that spark and renders it into professional-grade advertising creative.
                 </p>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                     By combining your creative prompts with our automotive photography engine, we bridge the gap between "I have an idea" and "I can see the result." Whether you're planning a fleet of SUVs or a one-off Supercar masterpiece, our AI handles the lighting, perspective, and material physics for you.

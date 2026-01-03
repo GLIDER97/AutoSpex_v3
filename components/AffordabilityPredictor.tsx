@@ -733,7 +733,7 @@ const AffordabilityPredictor: React.FC = () => {
           {/* Why Use This Tool Section */}
           <div className="w-full mb-24 text-center">
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-              Why Drivers Trust AutoSpex Pricing
+              Why Drivers Trust MyAutoSpex Pricing
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[

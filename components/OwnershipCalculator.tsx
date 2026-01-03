@@ -419,7 +419,7 @@ const OwnershipCalculator: React.FC = () => {
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">About the TCO Auditor</h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                        Most car buyers only focus on the sticker price or the monthly loan payment. The <span className="text-blue-600 font-bold">AutoSpex TCO Auditor</span> uses artificial intelligence to look under the financial hood.
+                        Most car buyers only focus on the sticker price or the monthly loan payment. The <span className="text-blue-600 font-bold">MyAutoSpex TCO Auditor</span> uses artificial intelligence to look under the financial hood.
                     </p>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
                         Our engine processes millions of data points from US automotive markets—including real-time fuel prices, actuarial risk tables, and historical depreciation curves—to show you what your vehicle actually costs to own per month.
@@ -461,7 +461,7 @@ const OwnershipCalculator: React.FC = () => {
             {/* Why Use This Tool Section */}
             <div className="w-full px-4 text-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-75">
                 <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                    Why Trust AutoSpex Financials?
+                    Why Trust MyAutoSpex Financials?
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[

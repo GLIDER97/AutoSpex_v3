@@ -445,7 +445,7 @@ const ValueShockCalculator: React.FC = () => {
                 <div className="order-2 md:order-1">
                     <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Value Shock Predictor</h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                        The AutoSpex Resale Value Shock Calculator is a specialized financial engine built to protect car owners from the single largest cost of vehicle ownership: <span className="font-bold text-purple-600">Depreciation</span>. While gas and maintenance are visible, the thousands of dollars vanishing from your vehicle's value often go unnoticed until it's time to sell.
+                        The MyAutoSpex Resale Value Shock Calculator is a specialized financial engine built to protect car owners from the single largest cost of vehicle ownership: <span className="font-bold text-purple-600">Depreciation</span>. While gas and maintenance are visible, the thousands of dollars vanishing from your vehicle's value often go unnoticed until it's time to sell.
                     </p>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                         Our system uses advanced AI to process real-time market volatility data across the United States. By analyzing supply/demand for your specific model and factoring in mileage milestones, we provide a transparent audit of your vehicle's wealth-erosion rate.
@@ -466,7 +466,7 @@ const ValueShockCalculator: React.FC = () => {
             {/* Why Use This Tool Section */}
             <div className="w-full mb-24 text-center">
                 <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                    Why Drivers Trust AutoSpex Valuation
+                    Why Drivers Trust MyAutoSpex Valuation
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[

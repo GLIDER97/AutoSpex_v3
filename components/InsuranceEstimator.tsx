@@ -661,7 +661,7 @@ const InsuranceEstimator: React.FC = () => {
             <div className="order-2 md:order-1">
               <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Estimator</h2>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                AutoSpex uses a proprietary risk-modeling engine to provide unbiased insurance estimates. Unlike lead-capture sites that show artificial "low" prices, our tool analyzes real-world actuarial factors specific to the US market.
+                MyAutoSpex uses a proprietary risk-modeling engine to provide unbiased insurance estimates. Unlike lead-capture sites that show artificial "low" prices, our tool analyzes real-world actuarial factors specific to the US market.
               </p>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                 By entering your vehicle type, age, and ZIP code, we pull data from regional risk tables used by major carriers to establish a "Fair Price" benchmark. This empowers you to identify when you're being overcharged or when a specific model might be unexpectedly expensive to insure.
@@ -682,7 +682,7 @@ const InsuranceEstimator: React.FC = () => {
           {/* Why Use This Tool Section */}
           <div className="w-full max-w-7xl px-4 mb-24 text-center">
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-              Why Drivers Trust AutoSpex
+              Why Drivers Trust MyAutoSpex
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[

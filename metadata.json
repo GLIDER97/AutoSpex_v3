@@ -1,6 +1,6 @@
 {
-  "name": "AutoSpex_v3",
-  "description": "AutoSpex - Professional OBD-II fault code decoder. Diagnose check engine lights with AI-powered insights.",
+  "name": "MyAutoSpex_v3",
+  "description": "MyAutoSpex - Professional OBD-II fault code decoder. Diagnose check engine lights with AI-powered insights.",
   "requestFramePermissions": [
     "camera",
     "microphone",

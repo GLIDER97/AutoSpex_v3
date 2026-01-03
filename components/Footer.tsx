@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-lg text-slate-900 dark:text-white leading-none">
-                AutoSpex
+                MyAutoSpex
               </span>
             </div>
           </Link>
@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
             <li><Link to="/mechanic-finder" className="hover:text-brand-primary transition-colors">Find Local Mechanic</Link></li>
             <li><Link to="/recalls" className="hover:text-brand-primary transition-colors">Recalls & Safety</Link></li>
             <li><Link to="/coupons" className="hover:text-brand-primary transition-colors">Service Coupons</Link></li>
-            <li><Link to="/about" className="hover:text-brand-primary transition-colors">About AutoSpex</Link></li>
+            <li><Link to="/about" className="hover:text-brand-primary transition-colors">About MyAutoSpex</Link></li>
             <li><Link to="/contact" className="hover:text-brand-primary transition-colors">Contact Support</Link></li>
           </ul>
         </div>
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-slate-200 dark:border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 dark:text-slate-600 text-[13px]">
-        <p>© {new Date().getFullYear()} AutoSpex. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} MyAutoSpex. All rights reserved.</p>
         <p>Data provided for informational purposes only. Consult a professional mechanic for repairs.</p>
       </div>
     </footer>

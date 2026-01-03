@@ -513,7 +513,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                 ))}
               </div>
               <p className="text-center text-[10px] text-slate-400 mt-8 font-medium italic">
-                *As an Amazon Associate, AutoSpex earns from qualifying purchases. These products are selected for utility and performance.
+                *As an Amazon Associate, MyAutoSpex earns from qualifying purchases. These products are selected for utility and performance.
               </p>
             </div>
           )}
@@ -532,7 +532,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
             </div>
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">Automated Automotive Intelligence</h2>
             <p className="text-slate-400 text-lg leading-relaxed mb-10 font-medium">
-              The AutoSpex Resource Hub uses high-fidelity AI to audit global automotive datasets. We provide US drivers with a transparent look at safety hazards, maintenance savings, and professional-grade tools.
+              The MyAutoSpex Resource Hub uses high-fidelity AI to audit global automotive datasets. We provide US drivers with a transparent look at safety hazards, maintenance savings, and professional-grade tools.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-8 justify-center sm:justify-start">
               <div className="flex flex-col items-center sm:items-start gap-2">
@@ -586,7 +586,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
           Sync Latest Feed
         </button>
         <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest max-w-sm text-center">
-          *As an Amazon and partner Associate, AutoSpex earns from qualifying purchases. Data is provided for informational safety audits only.
+          *As an Amazon and partner Associate, MyAutoSpex earns from qualifying purchases. Data is provided for informational safety audits only.
         </p>
       </div>
     </div>

@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     question: "Can I book a repair through this site?",
-    answer: "AutoSpex provides the data and direct contact links for local shops. You will need to contact the individual mechanic directly to schedule an appointment."
+    answer: "MyAutoSpex provides the data and direct contact links for local shops. You will need to contact the individual mechanic directly to schedule an appointment."
   },
   {
     question: "Is this service free?",
@@ -304,7 +304,7 @@ const MechanicFinder: React.FC = () => {
           <div className="order-2 md:order-1">
             <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-8 leading-tight">Built for <br /> Diagnostic Reliability</h2>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-8 text-lg font-medium">
-              Finding a mechanic you can trust shouldn't be a gamble. The <span className="text-blue-600 font-bold">AutoSpex Finder</span> combines real-time data auditing with local quality benchmarks to highlight shops that prioritize diagnostic accuracy and fair pricing.
+              Finding a mechanic you can trust shouldn't be a gamble. The <span className="text-blue-600 font-bold">MyAutoSpex Finder</span> combines real-time data auditing with local quality benchmarks to highlight shops that prioritize diagnostic accuracy and fair pricing.
             </p>
             <div className="space-y-5">
               {[
