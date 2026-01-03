@@ -6,6 +6,13 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AppRoutes from './routes';
 
+// Type declaration for Google Tag Manager dataLayer
+declare global {
+  interface Window {
+    dataLayer?: Array<Record<string, any>>;
+  }
+}
+
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const location = useLocation();
@@ -21,6 +28,17 @@ function App() {
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // Push route changes to GTM dataLayer for SPA tracking
+  useEffect(() => {
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'page_view',
+        page_path: location.pathname,
+        page_title: document.title
+      });
+    }
   }, [location.pathname]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);

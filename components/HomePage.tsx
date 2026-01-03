@@ -175,10 +175,10 @@ const HomePage: React.FC = () => {
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 mb-16">
                     <Link
-                        to="/ownership-calculator"
+                        to="/fault-code-decoder"
                         className="px-8 py-4 rounded-2xl bg-brand-primary text-slate-900 font-bold text-lg hover:bg-orange-400 transition-all shadow-xl shadow-orange-500/20 flex items-center gap-2 hover:scale-105 active:scale-95"
                     >
-                        Car Ownership Calculator <ArrowRight className="w-5 h-5" />
+                        Decode Check Engine Light <ArrowRight className="w-5 h-5" />
                     </Link>
                     <Link
                         to="/wrap-designer"

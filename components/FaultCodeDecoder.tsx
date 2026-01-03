@@ -466,7 +466,7 @@ const FaultCodeDecoder: React.FC = () => {
                                 The MyAutoSpex OBD-II Decoder is a specialized diagnostic engine built to help US car owners understand their vehicle's health without needing a mechanical engineering degree.
                             </p>
                             <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                                We combine a massive database of standard SAE J2012 fault codes with <span className="font-bold text-brand-primary">Google Gemini AI</span> to provide context-aware results. Whether it's a generic P0420 or a specific manufacturer-derived error, our system analyzes the technical data to give you localized repair cost estimates and safety assessments based on current US market averages.
+                                We combine a massive database of standard SAE J2012 fault codes with <span className="font-bold text-brand-primary">Intelligent AI</span> to provide context-aware results. Whether it's a generic P0420 or a specific manufacturer-derived error, our system analyzes the technical data to give you localized repair cost estimates and safety assessments based on current US market averages.
                             </p>
                         </div>
                         <div className="order-1 md:order-2 bg-slate-900 rounded-[3rem] p-10 border border-slate-800 shadow-2xl relative overflow-hidden text-white">
