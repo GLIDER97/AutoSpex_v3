@@ -9,18 +9,18 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 description="Decode your check engine light for free. Get 2026 USA repair cost estimates, symptoms, and causes for OBD2 codes."
             />
 
-            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-6 sm:px-8 lg:px-12">
                 <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
 
                     {/* Hero / Header Section */}
-                    <header className="px-8 pt-12 pb-10 sm:px-12 bg-slate-50/50 dark:bg-slate-800/20 border-b border-slate-100 dark:border-slate-800">
+                    <header className="px-6 pt-12 pb-10 sm:px-12 bg-slate-50/50 dark:bg-slate-800/20 border-b border-slate-100 dark:border-slate-800">
                         <div className="flex items-center gap-3 mb-6">
                             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 tracking-wide uppercase">
                                 Articles & Guides
                             </span>
                             <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Updated Jan 2026</span>
                         </div>
-                        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
+                        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
                             Free Check Engine Light Decoder 2026: <span className="text-blue-600 dark:text-blue-400">Codes & USA Repair Costs</span>
                         </h1>
                         <div className="flex items-center justify-between">
@@ -36,7 +36,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                         </div>
                     </header>
 
-                    <article className="prose prose-lg prose-slate dark:prose-invert max-w-none px-8 py-10 sm:px-12">
+                    <article className="prose prose-lg prose-slate dark:prose-invert max-w-none px-6 py-10 sm:px-12">
 
                         {/* Introduction */}
                         <div className="my-10 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">

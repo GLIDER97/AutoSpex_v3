@@ -56,9 +56,15 @@ function App() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-100" />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-100" />
 
-          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex flex-col items-center">
-            <AppRoutes />
-          </div>
+          {location.pathname === '/free-obd2-code-decoder-repair-costs' ? (
+            <div className="relative z-10 w-full">
+              <AppRoutes />
+            </div>
+          ) : (
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex flex-col items-center">
+              <AppRoutes />
+            </div>
+          )}
         </main>
 
         <Footer />
