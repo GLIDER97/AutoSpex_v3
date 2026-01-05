@@ -17,6 +17,8 @@ const WrapDesigner = React.lazy(() => import('./components/WrapDesigner'));
 const MechanicFinder = React.lazy(() => import('./components/MechanicFinder'));
 const ResourceHub = React.lazy(() => import('./components/ResourceHub'));
 const DiyToolkits = React.lazy(() => import('./components/DiyToolkits'));
+const Blog = React.lazy(() => import('./components/Blog'));
+const FreeObd2CodeDecoderPost = React.lazy(() => import('./components/FreeObd2CodeDecoderPost'));
 const LegalPages = React.lazy(() => import('./components/LegalPages').then(module => ({ default: module.PrivacyPolicy })));
 // Actually, LegalPages exports multiple components. React.lazy expects a default export.
 // We should import normally for small pages or wrap them. 
@@ -52,6 +54,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/recalls" element={<ResourceHub type="recalls" />} />
         <Route path="/diy-toolkits" element={<DiyToolkits />} />
         <Route path="/coupons" element={<ResourceHub type="coupons" />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/free-obd2-code-decoder-repair-costs" element={<FreeObd2CodeDecoderPost />} />
 
         {/* Legal Pages */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />

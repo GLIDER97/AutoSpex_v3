@@ -72,6 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     { name: 'Recalls & Safety', icon: <ShieldAlert className="w-4 h-4" />, path: '/recalls' },
     { name: 'DIY Toolkits', icon: <ShoppingCart className="w-4 h-4" />, path: '/diy-toolkits' },
     { name: 'Service Coupons', icon: <Zap className="w-4 h-4" />, path: '/coupons' },
+    { name: 'Articles', icon: <BookOpen className="w-4 h-4" />, path: '/blog' },
   ];
 
   return (
