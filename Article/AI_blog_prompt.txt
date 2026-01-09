@@ -12,8 +12,8 @@ Your goal is to convert the provided HTML content into a flawless, production-re
 
 ### 1. File Location & Naming
 - Create a new file in `/Article/posts/`.
-- Name the file using PascalCase based on the title (e.g., `MyNewPost.tsx`).
-- **CRITICAL**: The filename and the URL slug will match. The system uses a dynamic loader, so simply creating this file makes it live at `/article/MyNewPost`.
+- Name the file using kebab-case based on the title (e.g., `my-new-post.tsx`).
+- **CRITICAL**: The filename and the URL slug will match. The system uses a dynamic loader, so simply creating this file makes it live at `/article/my-new-post`.
 
 ### 2. Template Usage
 - You MUST wrap the entire content in the `<BlogTemplate>` component.
@@ -36,7 +36,7 @@ export const meta = {
     authorRole: "Auto Tech Expert",
     category: "Articles & Guides",
     featuredImage: img1, // The main image for the card
-    slug: 'your-url-slug', // Must match filename (e.g. MyNewPost -> my-new-post)
+    slug: 'your-url-slug', // Must match filename (e.g. my-new-post.tsx -> my-new-post)
 };
 
 const MyNewPost: React.FC = () => {
