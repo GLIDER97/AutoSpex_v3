@@ -10,21 +10,42 @@ interface BlogPost {
   featuredImage: string;
   slug: string;
   author: string;
+  href?: string;
+  date?: string;
 }
 
-const BLOG_POSTS: BlogPost[] = [
-  {
-    id: '1',
-    title: 'Free Check Engine Light Decoder 2026: Codes & USA Repair Costs',
-    excerpt: "Hey there, fellow driver—picture this: You're cruising down I-95 in Florida, the sun's dipping low, and suddenly, that dreaded amber check engine light flickers on your dashboard.",
-    featuredImage: '/blogs/featured_image_article1.png',
-    slug: 'free-obd2-code-decoder-repair-costs',
-    author: 'Keesha Lauren'
+// 1. Get all post modules (eagerly loading to get exports)
+const postModules = import.meta.glob('../Article/posts/*.tsx', { eager: true });
+
+// 2. Transform modules into BlogPost array
+const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
+  const mod = postModules[path] as any;
+  const meta = mod.meta;
+
+  if (!meta) {
+    console.warn(`Blog post at ${path} is missing 'export const meta'.`);
+    return null;
   }
-];
+
+  // Derive slug from filename if not provided
+  const filename = path.split('/').pop()?.replace('.tsx', '') || '';
+  const autoSlug = filename; // or some kebab-case transform if needed
+
+  return {
+    id: path, // Unique ID from path
+    title: meta.title,
+    excerpt: meta.description || meta.excerpt || '',
+    featuredImage: meta.featuredImage, // Resolved import or string
+    slug: meta.slug || autoSlug,
+    author: meta.authorName || meta.author,
+    href: meta.href, // Optional override for legacy links
+    date: meta.date
+  };
+}).filter(Boolean) as BlogPost[];
+
 
 const Blog: React.FC = () => {
-  // ... (rest of component logic remains same until return)
+
   return (
     <div className="w-full max-w-7xl mx-auto py-12 px-4 sm:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
@@ -50,7 +71,7 @@ const Blog: React.FC = () => {
         {BLOG_POSTS.map((post) => (
           <Link
             key={post.id}
-            to={`/${post.slug}`}
+            to={post.href || `/article/${post.slug}`} // Use href override if present (legacy), else /article/slug
             className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300"
           >
             {/* Featured Image */}
@@ -60,7 +81,7 @@ const Blog: React.FC = () => {
                 alt={post.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => {
-                  // Fallback placeholder if image is missing
+                  // Fallback placeholder
                   (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YxZjVmOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBQbGFjZWhvbGRlcjwvdGV4dD48L3N2Zz4=';
                 }}
               />
@@ -93,7 +114,7 @@ const Blog: React.FC = () => {
         ))}
       </div>
 
-      {/* Empty State for additional posts (when grid has fewer than 9 items) */}
+      {/* Empty State */}
       {BLOG_POSTS.length === 0 && (
         <div className="text-center py-16">
           <BookOpen className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
@@ -106,4 +127,3 @@ const Blog: React.FC = () => {
 };
 
 export default Blog;
-
