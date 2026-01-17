@@ -42,7 +42,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 Whether you're a DIY enthusiast or just want to avoid getting overcharged at the shop, this article will equip you with the knowledge to decode those pesky lights and keep your vehicle running smoothly.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                By the end, you'll know why investing in a reliable OBD-II fault code decoder can save you time, money, and frustration. And if you're looking for top-notch tools, check out our <a href="/fault-code-decoder?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> for instant diagnostics and step-by-step fixes.
+                By the end, you'll know why investing in a reliable OBD-II fault code decoder can save you time, money, and frustration. And if you're looking for top-notch tools, check out our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> for instant diagnostics and step-by-step fixes.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -131,7 +131,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             </p>
             <ol className="list-decimal pl-6 mb-6 leading-loose text-slate-600 dark:text-slate-300 space-y-2">
                 <li><strong>P0300 - Random Misfire</strong>: Symptoms include rough idling or power loss. Causes: Faulty spark plugs, bad fuel, or vacuum leaks. Fix: Replace plugs every 30,000 miles—crucial for California's ethanol-blended gas.</li>
-                <li><strong>P0420 - Catalyst Efficiency Low</strong>: Often due to a worn catalytic converter. In CA, this fails smog instantly. Tip: Use our <a href="/maintenance-validator?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Repair Overcharge Validator</a> to ensure you're not paying too much for a replacement.</li>
+                <li><strong>P0420 - Catalyst Efficiency Low</strong>: Often due to a worn catalytic converter. In CA, this fails smog instantly. Tip: Use our <a href="/maintenance-validator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Repair Overcharge Validator</a> to ensure you're not paying too much for a replacement.</li>
                 <li><strong>P0171 - System Too Lean</strong>: Air-fuel mixture imbalance from dirty MAF sensors or leaks. Common in dusty Central Valley areas.</li>
                 <li><strong>P0442 - EVAP Leak Small</strong>: Evaporative emissions system leak, like a loose gas cap. Easy fix, but ignore it and face smog failure.</li>
                 <li><strong>P0500 - Vehicle Speed Sensor Malfunction</strong>: Affects transmission and ABS; critical for highway-heavy LA commutes.</li>
@@ -142,7 +142,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 <li><strong>P0600 - Serial Communication Link</strong>: ECM glitches, rare but serious.</li>
             </ol>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                For a full list, our <a href="/fault-code-decoder?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> breaks down thousands of codes with repair advice.
+                For a full list, our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> breaks down thousands of codes with repair advice.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -168,7 +168,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 Pro tip: In California, if your vehicle is 2000 or newer, it skips the tailpipe test but must pass OBD-II. Always verify with BAR (Bureau of Automotive Repair) standards.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                If decoding overwhelms you, head to our <a href="/mechanic-finder?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Find a Mechanic Nearby</a> tool to locate trusted pros in your area, from Bay Area to Inland Empire.
+                If decoding overwhelms you, head to our <a href="/mechanic-finder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Find a Mechanic Nearby</a> tool to locate trusted pros in your area, from Bay Area to Inland Empire.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -183,10 +183,10 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 As a mechanic, I swear by quality tools. Start with a basic OBD-II scanner ($20-50) for codes, or go pro with Bluetooth models ($100+) for live data. Apps like Torque Pro pair with ELM327 adapters for smartphone diagnostics.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                For comprehensive help, our site's <a href="/fault-code-decoder?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> offers free lookups and guides. Pair it with maintenance tools to avoid overcharges—use the <a href="/maintenance-validator?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Repair Overcharge Validator</a> to compare quotes.
+                For comprehensive help, our site's <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> offers free lookups and guides. Pair it with maintenance tools to avoid overcharges—use the <a href="/maintenance-validator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Repair Overcharge Validator</a> to compare quotes.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Remember, fixing codes can impact resale value. Check yours with the <a href="/value-shock-calculator?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Resale Value Check & Depreciation Analyzer</a> to see how repairs boost your car's worth.
+                Remember, fixing codes can impact resale value. Check yours with the <a href="/value-shock-calculator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Resale Value Check & Depreciation Analyzer</a> to see how repairs boost your car's worth.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -205,7 +205,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 Legal note: Tampering with OBD-II is illegal under CA law, risking fines up to $5,000. Always repair legitimately.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Insurance-wise, unresolved codes could hike rates. Use our <a href="/insurance-estimator?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">US Based Car Insurance Estimator</a> to gauge impacts.
+                Insurance-wise, unresolved codes could hike rates. Use our <a href="/insurance-estimator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">US Based Car Insurance Estimator</a> to gauge impacts.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -216,7 +216,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 While DIY is great, some codes signal serious issues like P0600 (ECM failure) requiring specialized equipment. Signs to seek help: Persistent CEL after resets, unusual noises, or performance drops.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                In California, certified smog stations can diagnose during tests. Use <a href="/mechanic-finder?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Find a Mechanic Nearby</a> for ASE-certified experts.
+                In California, certified smog stations can diagnose during tests. Use <a href="/mechanic-finder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Find a Mechanic Nearby</a> for ASE-certified experts.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -233,7 +233,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 <li>Monitor tire pressure for chassis codes.</li>
             </ul>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Track depreciation with <a href="/value-shock-calculator?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Resale Value Check & Depreciation Analyzer</a> to stay ahead.
+                Track depreciation with <a href="/value-shock-calculator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Resale Value Check & Depreciation Analyzer</a> to stay ahead.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -244,7 +244,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
                 Mastering OBD-II fault code decoders transforms you from a passive driver to an informed one, especially in emissions-conscious California.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                With the right tools and know-how, you'll save on repairs, pass smogs effortlessly, and enjoy safer roads. Start today with our <a href="/fault-code-decoder?referrer=grok.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a>, and explore more resources like mechanic finders and validators on MyAutoSpex.com.
+                With the right tools and know-how, you'll save on repairs, pass smogs effortlessly, and enjoy safer roads. Start today with our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a>, and explore more resources like mechanic finders and validators on MyAutoSpex.com.
             </p>
 
         </BlogTemplate>
