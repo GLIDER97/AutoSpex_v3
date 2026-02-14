@@ -12,6 +12,7 @@ interface BlogPost {
   author: string;
   href?: string;
   date?: string;
+  timestamp?: number;
 }
 
 // 1. Get all post modules (eagerly loading to get exports)
@@ -27,9 +28,14 @@ const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
     return null;
   }
 
+
   // Derive slug from filename if not provided
   const filename = path.split('/').pop()?.replace('.tsx', '') || '';
   const autoSlug = filename; // or some kebab-case transform if needed
+
+  const dateStr = meta.date ? String(meta.date) : '';
+  const dateObj = dateStr ? new Date(dateStr) : null;
+  const timestamp = dateObj && !isNaN(dateObj.getTime()) ? dateObj.getTime() : 0;
 
   return {
     id: path, // Unique ID from path
@@ -39,9 +45,13 @@ const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
     slug: meta.slug || autoSlug,
     author: meta.authorName || meta.author,
     href: meta.href, // Optional override for legacy links
-    date: meta.date
+    date: meta.date,
+    timestamp: timestamp // Add timestamp for easier sorting
   };
 }).filter(Boolean) as BlogPost[];
+
+// Sort posts by date (newest first)
+BLOG_POSTS.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
 
 const Blog: React.FC = () => {
