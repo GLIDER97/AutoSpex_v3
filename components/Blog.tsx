@@ -13,6 +13,7 @@ interface BlogPost {
   href?: string;
   date?: string;
   timestamp?: number;
+  displayDate?: string;
 }
 
 // 1. Get all post modules (eagerly loading to get exports)
@@ -37,6 +38,11 @@ const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
   const dateObj = dateStr ? new Date(dateStr) : null;
   const timestamp = dateObj && !isNaN(dateObj.getTime()) ? dateObj.getTime() : 0;
 
+  // Format display date (e.g., Feb 15, 2026)
+  const displayDate = dateObj && !isNaN(dateObj.getTime())
+    ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)
+    : dateStr;
+
   return {
     id: path, // Unique ID from path
     title: meta.title,
@@ -46,7 +52,8 @@ const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
     author: meta.authorName || meta.author,
     href: meta.href, // Optional override for legacy links
     date: meta.date,
-    timestamp: timestamp // Add timestamp for easier sorting
+    timestamp: timestamp, // Add timestamp for easier sorting
+    displayDate: displayDate
   };
 }).filter(Boolean) as BlogPost[];
 
@@ -85,7 +92,7 @@ const Blog: React.FC = () => {
             className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300"
           >
             {/* Featured Image */}
-            <div className="aspect-video w-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="aspect-video w-full bg-slate-100 dark:bg-slate-800 overflow-hidden relative">
               <img
                 src={post.featuredImage}
                 alt={post.title}
@@ -95,6 +102,13 @@ const Blog: React.FC = () => {
                   (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YxZjVmOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBQbGFjZWhvbGRlcjwvdGV4dD48L3N2Zz4=';
                 }}
               />
+              {/* Date Badge */}
+              {post.displayDate && (
+                <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-blue-600" />
+                  {post.displayDate}
+                </div>
+              )}
             </div>
 
             {/* Content */}

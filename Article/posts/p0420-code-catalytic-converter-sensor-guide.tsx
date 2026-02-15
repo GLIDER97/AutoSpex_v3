@@ -7,7 +7,7 @@ import imgHero from '../assets/Featured images/P0420 Code.png';
 export const meta = {
     title: "P0420 Code: Is Your Catalytic Converter Actually Dead or Is It a $50 Sensor?",
     description: "Expert guide on P0420 code causes, 2026 catalytic converter replacement costs, and how to avoid $2,800 repair bills when the fix might be a $50 sensor.",
-    date: "Feb 15, 2026 07:00:00",
+    date: "2026-02-15T15:32:43",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Diagnostic Guides",

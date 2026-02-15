@@ -31,7 +31,7 @@ import img1 from '../assets/YOUR_IMAGE_1.jpg';
 export const meta = {
     title: "YOUR TITLE",
     description: "YOUR DESCRIPTION (Used for SEO and Excerpt)",
-    date: "Jan 2026",
+    date: "YYYY-MM-DDTHH:mm:ss", // CRITICAL: Use current ISO timestamp (e.g. 2026-02-15T20:30:00)
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert",
     category: "Articles & Guides",

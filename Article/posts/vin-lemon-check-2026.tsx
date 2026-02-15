@@ -8,7 +8,7 @@ import imgHero from '../assets/image6.jpg';
 export const meta = {
     title: "Don't Buy a Lemon: 5 Things a VIN Reveals That a Seller Won't in 2026",
     description: "Uncover hidden VIN secrets that expose engine swaps, title washing, odometer fraud, and salvage scams. Your complete 2026 guide to avoiding lemons on Facebook Marketplace and Craigslist.",
-    date: "Feb 15, 2026 09:00:00",
+    date: "2026-02-15T03:17:32",
     authorName: "John Smith",
     authorRole: "Private Investigator • 8+ Years Exp.",
     category: "Buyer Protection",

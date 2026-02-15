@@ -7,7 +7,7 @@ import imgHero from '../assets/Featured images/Gas Saver.png';
 export const meta = {
     title: "The True Cost of Your 30-Mile Commute: Is Your 'Gas Saver' Actually Saving You Money in 2026?",
     description: "Calculate the real cost of your daily drive in 2026. Discover why '35 MPG' stickers are a lie, hidden insurance costs, and the break-even point for hybrids vs. paid-off beaters.",
-    date: "Feb 15, 2026 11:00:00",
+    date: "2026-02-15T15:36:43",
     authorName: "John Smith",
     authorRole: "Financial & Automotive Reviewer • 8+ Years Exp.",
     category: "Financial Guides",

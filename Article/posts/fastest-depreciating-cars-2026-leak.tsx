@@ -7,7 +7,7 @@ import imgHero from '../assets/Featured images/Minimalist cartoon.png';
 export const meta = {
     title: "The $20-a-Day Leak: Which Cars Lose Value the Fastest in 2026?",
     description: "Discover which cars are losing value fastest in 2026. Expert analysis on luxury EV depreciation, Section 179 tax loopholes, and how to stop the daily financial bleed.",
-    date: "Feb 15, 2026 08:00:00",
+    date: "2026-02-15T15:24:27",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Financial Guides",

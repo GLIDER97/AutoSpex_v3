@@ -8,7 +8,7 @@ import imgHero from '../assets/Featured images/vanityplate.png';
 export const meta = {
     title: "7-Letter Genius: 50+ Personalized License Plate Ideas for Tesla, Jeep, and Ford (2026 Edition)",
     description: "Find the perfect vanity plate for your Tesla, Jeep, or Ford. 50+ creative ideas, DMV tips, banned plate rules, and state-by-state fees for 2026.",
-    date: "Feb 15, 2026 12:00:00",
+    date: "2026-02-15T16:03:07",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Car Culture",

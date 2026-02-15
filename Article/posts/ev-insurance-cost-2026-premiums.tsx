@@ -7,7 +7,7 @@ import imgHero from '../assets/Featured images/surprise.png';
 export const meta = {
     title: "Surprise Premiums: Why Insuring an EV Might Cost More Than Your Car Payment in 2026",
     description: "Discover why EV insurance costs 49% more in 2026. Learn about gigacasting total loss risks, battery protection costs, and which EVs are cheapest to insure.",
-    date: "Feb 15, 2026 10:00:00",
+    date: "2026-02-15T15:39:44",
     authorName: "John Smith",
     authorRole: "Financial & Automotive Reviewer • 8+ Years Exp.",
     category: "Financial Guides",

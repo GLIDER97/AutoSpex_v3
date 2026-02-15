@@ -13,7 +13,7 @@ import imgFeatured from '../assets/check_engine_featured.jpg';
 export const meta = {
     title: "What Does Your Check Engine Light Code Mean? Free Instant Decoder Tool with Repair Costs Explained (2026)",
     description: "Your 2026 guide to understanding check engine light codes. Use our free decoder tool for instant explanations, symptoms, and USA repair cost estimates.",
-    date: "Feb 15, 2026 03:00:00",
+    date: "2026-02-09T01:34:07",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Articles & Guides",

@@ -9,7 +9,7 @@ import imgCalc from '../assets/image2.jpg'; // Calculator image
 export const meta = {
     title: "Are You Being Overcharged? How to Audit Your Mechanic's Quote in 3 Minutes",
     description: "Learn how to spot mechanic overcharges, understand labor rates, and audit your repair estimate in just 3 minutes with our expert guide.",
-    date: "Feb 15, 2026 06:00:00",
+    date: "2026-02-15T15:29:48",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Money Saving Guides",

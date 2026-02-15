@@ -21,7 +21,7 @@ import imgConclusion from '../assets/image7.png'; // Was image7.png
 export const meta = {
     title: "Free Check Engine Light Decoder 2026: Codes & USA Repair Costs",
     description: "Decode your check engine light for free. Get 2026 USA repair cost estimates, symptoms, and causes for OBD2 codes.",
-    date: "Feb 15, 2026 05:00:00",
+    date: "2026-02-09T01:34:07",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Articles & Guides",

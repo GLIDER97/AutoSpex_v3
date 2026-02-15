@@ -13,7 +13,7 @@ import imgTools from '../assets/obd2_guide_tools.png';
 export const meta = {
     title: "Ultimate Guide to OBD-II Fault Code Decoders: Diagnose and Fix Your Car Like a Pro in California",
     description: "Expert guide to OBD-II fault code decoders for California drivers. Learn to diagnose check engine lights, pass smog checks, and save money with this comprehensive mechanic-written guide.",
-    date: "Feb 15, 2026 04:00:00",
+    date: "2026-02-09T01:34:07",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Articles & Guides",
