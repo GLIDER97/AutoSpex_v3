@@ -2,8 +2,7 @@ import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
 import SEO from '../../components/SEO';
 
-// Using existing assets - image7.png is not used as featured in other posts
-import imgHero from '../assets/image1.jpg'; // Featured image
+import imgHero from '../assets/Featured images/Generated_Image.png'; // Featured image
 import imgScanner from '../assets/image4.png'; // Scanner image
 import imgCalc from '../assets/image2.jpg'; // Calculator image
 

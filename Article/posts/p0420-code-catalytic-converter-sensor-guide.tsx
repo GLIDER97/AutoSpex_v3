@@ -2,8 +2,7 @@ import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
 import SEO from '../../components/SEO';
 
-// Using existing assets
-import imgHero from '../assets/image3.jpg'; // Featured image
+import imgHero from '../assets/Featured images/P0420 Code.png';
 
 export const meta = {
     title: "P0420 Code: Is Your Catalytic Converter Actually Dead or Is It a $50 Sensor?",

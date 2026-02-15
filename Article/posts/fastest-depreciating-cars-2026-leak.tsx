@@ -2,8 +2,7 @@ import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
 import SEO from '../../components/SEO';
 
-// Using existing asset - image2.jpg likely depicts calculation/money based on previous usage
-import imgHero from '../assets/image2.jpg';
+import imgHero from '../assets/Featured images/Minimalist cartoon.png';
 
 export const meta = {
     title: "The $20-a-Day Leak: Which Cars Lose Value the Fastest in 2026?",

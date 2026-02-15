@@ -2,8 +2,7 @@ import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
 import SEO from '../../components/SEO';
 
-// Using check_engine_image1.jpg - not used as featured image in other posts (only content image)
-import imgHero from '../assets/check_engine_image1.jpg';
+import imgHero from '../assets/Featured images/Gas Saver.png';
 
 export const meta = {
     title: "The True Cost of Your 30-Mile Commute: Is Your 'Gas Saver' Actually Saving You Money in 2026?",

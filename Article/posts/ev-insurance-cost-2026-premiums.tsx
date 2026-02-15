@@ -2,8 +2,7 @@ import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
 import SEO from '../../components/SEO';
 
-// Using image4.png - not used as featured image in other posts
-import imgHero from '../assets/image4.png';
+import imgHero from '../assets/Featured images/surprise.png';
 
 export const meta = {
     title: "Surprise Premiums: Why Insuring an EV Might Cost More Than Your Car Payment in 2026",
