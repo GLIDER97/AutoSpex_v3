@@ -9,9 +9,9 @@ import imgCalc from '../assets/image2.jpg'; // Calculator image
 export const meta = {
     title: "Are You Being Overcharged? How to Audit Your Mechanic's Quote in 3 Minutes",
     description: "Learn how to spot mechanic overcharges, understand labor rates, and audit your repair estimate in just 3 minutes with our expert guide.",
-    date: "Feb 2026",
+    date: "Feb 15, 2026 06:00:00",
     authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorRole: "Auto Tech Expert â€¢ 15+ Years Exp.",
     category: "Money Saving Guides",
     featuredImage: imgHero,
     slug: 'mechanic-quote-audit-guide',
@@ -32,7 +32,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
             </div>
 
             <p className="lead text-xl text-slate-600 dark:text-slate-300 mt-12 !leading-loose">
-                You know that sinking feeling when the service advisor slides the estimate across the counter and the total makes your stomach drop? That's your wallet's survival instinct kicking in—and it's usually right.
+                You know that sinking feeling when the service advisor slides the estimate across the counter and the total makes your stomach drop? That's your wallet's survival instinct kicking inâ€”and it's usually right.
             </p>
             <p>
                 Here's the truth nobody at the dealership wants you to know: The average shop markup on parts hit 250-400% in 2026, and labor rates now vary by up to $80 per hour within the same zip code. Translation? You could pay $1,200 for a brake job at one shop and $450 for the identical service three blocks away.
@@ -62,7 +62,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
 
             {/* Experience Block 1 */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                "Last month, a client brought me an estimate for a 'failing throttle position sensor.' The shop quoted $520 total—$280 for the part, $240 for labor. I pulled up the part online: $38 retail. The actual labor? Thirty minutes max. That's a 736% markup on the part alone, plus they tripled the labor time. The client took the printout back to the shop. They suddenly 'found a coupon' and dropped the price to $290. Funny how that works."
+                "Last month, a client brought me an estimate for a 'failing throttle position sensor.' The shop quoted $520 totalâ€”$280 for the part, $240 for labor. I pulled up the part online: $38 retail. The actual labor? Thirty minutes max. That's a 736% markup on the part alone, plus they tripled the labor time. The client took the printout back to the shop. They suddenly 'found a coupon' and dropped the price to $290. Funny how that works."
             </div>
 
             {/* Step 1 */}
@@ -70,7 +70,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
                 Step 1: Decode the Warning Light Before They Do
             </h2>
             <p>
-                Your check engine light is not a diagnosis—it's a clue. And you don't need to pay someone $175 to read that clue for you.
+                Your check engine light is not a diagnosisâ€”it's a clue. And you don't need to pay someone $175 to read that clue for you.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">What You Need to Know About OBD2 Fault Codes</h3>
             <p>
@@ -126,7 +126,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
             <p>Every legitimate estimate should break down into three components:</p>
             <ul className="list-disc pl-6 space-y-2 marker:text-green-500">
                 <li>Parts cost (with specific part numbers)</li>
-                <li>Labor hours (not just total cost—actual hours)</li>
+                <li>Labor hours (not just total costâ€”actual hours)</li>
                 <li>Shop fees (if they exceed $50, ask why)</li>
             </ul>
             <p className="mt-4">Red flags that scream overcharge:</p>
@@ -139,7 +139,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
 
             <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-2xl my-10 text-white shadow-xl">
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                    <span>🚀</span> Your Secret Weapon: The Repair Validator
+                    <span>ðŸš€</span> Your Secret Weapon: The Repair Validator
                 </h3>
                 <p className="text-blue-100 text-lg mb-6">
                     This is where you stop guessing and start knowing. Use a <a href="/maintenance-validator" className="text-white font-black underline decoration-2 decoration-white/30 hover:decoration-white transition-all">car repair & overcharge validator</a> to cross-reference every line item on that estimate.
@@ -174,7 +174,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
 
             {/* Experience Block 2 */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                "A client texted me a quote for 'transmission service' on her 2021 Camry: $840. The shop listed 'specialized Honda transmission fluid' (her car is a Toyota—first mistake), 6 quarts at $45 each, plus $570 labor. I ran it through the validator. Fair price: $240-$290. The 'specialized fluid' was regular ATF marked up 380%. She brought the validator results to the shop. They 'recalculated' to $315. Same service. She saved $525 in three minutes."
+                "A client texted me a quote for 'transmission service' on her 2021 Camry: $840. The shop listed 'specialized Honda transmission fluid' (her car is a Toyotaâ€”first mistake), 6 quarts at $45 each, plus $570 labor. I ran it through the validator. Fair price: $240-$290. The 'specialized fluid' was regular ATF marked up 380%. She brought the validator results to the shop. They 'recalculated' to $315. Same service. She saved $525 in three minutes."
             </div>
 
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">The Hidden Fees You Should Challenge</h3>
@@ -182,7 +182,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
                 Shop supply fees are the biggest scam going. Shops charge 3-10% of your bill for "rags, degreaser, and disposal." On a $1,000 repair, that's $100 for $8 worth of materials.
             </p>
             <p>
-                <strong>How to handle it:</strong> Ask them to itemize shop fees. If they refuse, ask them to remove it. Many will fold immediately. Hidden shop supply fees are not standard—they're negotiable.
+                <strong>How to handle it:</strong> Ask them to itemize shop fees. If they refuse, ask them to remove it. Many will fold immediately. Hidden shop supply fees are not standardâ€”they're negotiable.
             </p>
 
             {/* Step 3 */}
@@ -201,7 +201,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
                         "I ran the parts pricing on this estimate. You're charging $240 for a part that retails for $85. I'm fine with a markup, but 280% is outside market range. Can you adjust that?"
                     </p>
                     <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-                        ✓ Why it works: You're not accusing—you're stating facts. Most service advisors will drop 30-50% of egregious markups when confronted with numbers.
+                        âœ“ Why it works: You're not accusingâ€”you're stating facts. Most service advisors will drop 30-50% of egregious markups when confronted with numbers.
                     </p>
                 </div>
 
@@ -214,7 +214,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
                         "This quote shows $560 in labor but doesn't list the hours. What's your hourly rate, and how many hours does this job book at?"
                     </p>
                     <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-                        ✓ Why it works: Forces transparency. If they say "$140/hour for 4 hours," you can counter with "The factory service manual lists this as 1.8 hours." Watch them squirm.
+                        âœ“ Why it works: Forces transparency. If they say "$140/hour for 4 hours," you can counter with "The factory service manual lists this as 1.8 hours." Watch them squirm.
                     </p>
                 </div>
 
@@ -227,7 +227,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
                         "I used a repair cost validator that shows fair market for this service is $430-$510 in this zip code. Your quote is $780. Can you explain the difference?"
                     </p>
                     <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-                        ✓ Why it works: You're not saying they're wrong—you're asking them to justify their pricing. Half the time, they'll "find a discount."
+                        âœ“ Why it works: You're not saying they're wrongâ€”you're asking them to justify their pricing. Half the time, they'll "find a discount."
                     </p>
                 </div>
             </div>
@@ -237,10 +237,10 @@ const MechanicQuoteAuditPost: React.FC = () => {
 
             {/* Step 4 */}
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
-                Step 4: The Bigger Picture—Is This Car Even Worth Fixing?
+                Step 4: The Bigger Pictureâ€”Is This Car Even Worth Fixing?
             </h2>
             <p>
-                Sometimes the quote isn't padded—the repair is just expensive. A $3,500 transmission rebuild on a car worth $4,000 isn't a ripoff. It's a bad investment.
+                Sometimes the quote isn't paddedâ€”the repair is just expensive. A $3,500 transmission rebuild on a car worth $4,000 isn't a ripoff. It's a bad investment.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">The 50% Rule</h3>
             <p>
@@ -270,7 +270,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
             <figure className="my-10">
                 <img src={imgCalc} alt="Cost of Ownership Comparison" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
                 <figcaption className="text-center text-sm text-slate-500 mt-3 italic">
-                    A calculator showing total cost of ownership comparison—$6,000 repair + 24 months of increased insurance ($1,440) vs. $8,500 replacement vehicle cost.
+                    A calculator showing total cost of ownership comparisonâ€”$6,000 repair + 24 months of increased insurance ($1,440) vs. $8,500 replacement vehicle cost.
                 </figcaption>
             </figure>
 
@@ -283,17 +283,17 @@ const MechanicQuoteAuditPost: React.FC = () => {
                     <div>
                         <h4 className="font-bold text-green-600 dark:text-green-400 mb-2 uppercase text-sm tracking-wide">When you Actually need the dealership</h4>
                         <ul className="space-y-2 text-sm">
-                            <li className="flex gap-2"><span>✅</span> Warranty work (obviously)</li>
-                            <li className="flex gap-2"><span>✅</span> Complex computer reprogramming</li>
-                            <li className="flex gap-2"><span>✅</span> Recall repairs</li>
+                            <li className="flex gap-2"><span>âœ…</span> Warranty work (obviously)</li>
+                            <li className="flex gap-2"><span>âœ…</span> Complex computer reprogramming</li>
+                            <li className="flex gap-2"><span>âœ…</span> Recall repairs</li>
                         </ul>
                     </div>
                     <div>
                         <h4 className="font-bold text-red-600 dark:text-red-400 mb-2 uppercase text-sm tracking-wide">When You're Wasting Money</h4>
                         <ul className="space-y-2 text-sm">
-                            <li className="flex gap-2"><span>❌</span> Oil changes ($89 vs. $35 elsewhere)</li>
-                            <li className="flex gap-2"><span>❌</span> Brake service (200% markup average)</li>
-                            <li className="flex gap-2"><span>❌</span> Battery replacement (they'll charge $340 for a $120 battery)</li>
+                            <li className="flex gap-2"><span>âŒ</span> Oil changes ($89 vs. $35 elsewhere)</li>
+                            <li className="flex gap-2"><span>âŒ</span> Brake service (200% markup average)</li>
+                            <li className="flex gap-2"><span>âŒ</span> Battery replacement (they'll charge $340 for a $120 battery)</li>
                         </ul>
                     </div>
                 </div>
@@ -305,7 +305,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
             <ol className="list-decimal pl-6 space-y-4 marker:text-blue-600 text-lg font-medium text-slate-800 dark:text-slate-200">
                 <li>Get the code with an OBD2 scanner before the shop does</li>
                 <li>Run the estimate through a <a href="/maintenance-validator" className="text-blue-600 dark:text-blue-400 underline">maintenance validator</a> within 60 seconds of receiving it</li>
-                <li>Challenge line items using the scripts above—in person, not over the phone</li>
+                <li>Challenge line items using the scripts aboveâ€”in person, not over the phone</li>
             </ol>
             <p className="mt-8 text-lg">
                 The math: Three minutes of your time typically saves $200-$600 per repair. Do this twice a year, and you've just pocketed $400-$1,200 that would've gone straight into shop profit margins.
@@ -314,12 +314,12 @@ const MechanicQuoteAuditPost: React.FC = () => {
             <div className="mt-16 bg-blue-600 text-white rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-[100px] opacity-10 pointer-events-none" />
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-black mb-4">⚠️ DON'T SIGN THAT ESTIMATE YET</h3>
+                    <h3 className="text-3xl font-black mb-4">âš ï¸ DON'T SIGN THAT ESTIMATE YET</h3>
                     <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-                        Run your quote through the Maintenance Validator and see exactly how much you're overpaying. Your wallet will thank you—and that service advisor will suddenly "remember" they have a coupon.
+                        Run your quote through the Maintenance Validator and see exactly how much you're overpaying. Your wallet will thank youâ€”and that service advisor will suddenly "remember" they have a coupon.
                     </p>
                     <a href="/maintenance-validator" className="inline-block px-8 py-4 bg-white text-blue-600 font-bold rounded-full hover:bg-blue-50 transition-colors transform hover:-translate-y-1 shadow-lg">
-                        Check My Repair Quote Now →
+                        Check My Repair Quote Now â†’
                     </a>
                 </div>
             </div>
@@ -329,3 +329,4 @@ const MechanicQuoteAuditPost: React.FC = () => {
 };
 
 export default MechanicQuoteAuditPost;
+

@@ -7,9 +7,9 @@ import imgHero from '../assets/Featured images/P0420 Code.png';
 export const meta = {
     title: "P0420 Code: Is Your Catalytic Converter Actually Dead or Is It a $50 Sensor?",
     description: "Expert guide on P0420 code causes, 2026 catalytic converter replacement costs, and how to avoid $2,800 repair bills when the fix might be a $50 sensor.",
-    date: "Feb 2026",
+    date: "Feb 15, 2026 07:00:00",
     authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorRole: "Auto Tech Expert â€¢ 15+ Years Exp.",
     category: "Diagnostic Guides",
     featuredImage: imgHero,
     slug: 'p0420-code-catalytic-converter-sensor-guide',
@@ -33,7 +33,7 @@ const P0420CatalyticConverterPost: React.FC = () => {
             <div className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-l-4 border-red-600 p-8 my-12 rounded-r-2xl">
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-4">Quick Verdict: What P0420 Actually Means</h2>
                 <p className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4">
-                    <strong>P0420 = "Catalyst System Efficiency Below Threshold (Bank 1)"</strong> — But here's what they don't tell you: 60% of P0420 codes are NOT caused by a dead catalytic converter.
+                    <strong>P0420 = "Catalyst System Efficiency Below Threshold (Bank 1)"</strong> â€” But here's what they don't tell you: 60% of P0420 codes are NOT caused by a dead catalytic converter.
                 </p>
                 <p className="text-slate-700 dark:text-slate-300">
                     I've seen dealerships quote $2,800 for a P0420 when the fix was a loose gas cap or a $40 gasket. Let's stop the bleeding.
@@ -56,7 +56,7 @@ const P0420CatalyticConverterPost: React.FC = () => {
                 What P0420 Actually Monitors (The Technical Truth)
             </h2>
             <p>
-                Your car doesn't have a "catalytic converter health sensor." What it monitors is something called <strong>Oxygen Storage Capacity</strong>—basically, how well that ceramic honeycomb inside your exhaust is storing and releasing oxygen during combustion cleanup.
+                Your car doesn't have a "catalytic converter health sensor." What it monitors is something called <strong>Oxygen Storage Capacity</strong>â€”basically, how well that ceramic honeycomb inside your exhaust is storing and releasing oxygen during combustion cleanup.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">The Upstream vs. Downstream O2 Sensor Dance</h3>
             <p>
@@ -73,13 +73,13 @@ const P0420CatalyticConverterPost: React.FC = () => {
 
             <div className="bg-blue-600 text-white rounded-2xl p-8 my-10 shadow-xl">
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                    <span>🔍</span> Before You Spend a Dime
+                    <span>ðŸ”</span> Before You Spend a Dime
                 </h3>
                 <p className="text-blue-100 text-lg mb-6">
                     Use the <a href="/fault-code-decoder" className="text-white font-black underline decoration-2 decoration-white/30 hover:decoration-white transition-all">OBD2 fault code decoder</a> to check for "Pending" codes like <strong>P0138</strong> (Downstream O2 Sensor High Voltage) or <strong>P0171</strong> (System Too Lean). These codes tell you the <em>real</em> problem.
                 </p>
                 <div className="bg-white/10 p-4 rounded-lg text-sm">
-                    <strong>Pro Tip:</strong> If you see P0420 <em>plus</em> P0138 or P0133 (O2 Sensor Slow Response), congratulations—you just diagnosed a bad sensor, not a $2,000 catalytic converter.
+                    <strong>Pro Tip:</strong> If you see P0420 <em>plus</em> P0138 or P0133 (O2 Sensor Slow Response), congratulationsâ€”you just diagnosed a bad sensor, not a $2,000 catalytic converter.
                 </div>
             </div>
 
@@ -90,7 +90,7 @@ const P0420CatalyticConverterPost: React.FC = () => {
 
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">1. Exhaust Leaks: The Silent Saboteur</h3>
             <p>
-                An exhaust leak upstream of the downstream O2 sensor pumps extra oxygen into the system. That sensor reads "lean" constantly, the computer panics, and boom—P0420.
+                An exhaust leak upstream of the downstream O2 sensor pumps extra oxygen into the system. That sensor reads "lean" constantly, the computer panics, and boomâ€”P0420.
             </p>
             <p>
                 <strong>USA Model Hot Spots:</strong> Ford F-150s (2015-2022) are notorious for cracked exhaust manifolds. Honda Civics (2016-2020) love to blow manifold-to-downpipe gaskets. These are $40-$150 fixes, not $2,500 catastrophes.
@@ -101,12 +101,12 @@ const P0420CatalyticConverterPost: React.FC = () => {
 
             {/* Experience Block 1 */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                A 2018 Toyota RAV4 owner called me in tears, convinced she needed to sell her car. Dealership quoted $2,650 for a new catalytic converter. I asked her to do a cold-start exhaust leak test. She found a pinhole in the flex pipe—$85 at a muffler shop. P0420 never came back. She's still driving that RAV4 today.
+                A 2018 Toyota RAV4 owner called me in tears, convinced she needed to sell her car. Dealership quoted $2,650 for a new catalytic converter. I asked her to do a cold-start exhaust leak test. She found a pinhole in the flex pipeâ€”$85 at a muffler shop. P0420 never came back. She's still driving that RAV4 today.
             </div>
 
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">2. The "Lazy" O2 Sensor: Age Is the Enemy</h3>
             <p>
-                Oxygen sensors don't fail dramatically—they <em>degrade</em>. After 80,000-120,000 miles, they get "lazy." Response time slows. Voltage readings drift. The computer sees inconsistent data and assumes the worst.
+                Oxygen sensors don't fail dramaticallyâ€”they <em>degrade</em>. After 80,000-120,000 miles, they get "lazy." Response time slows. Voltage readings drift. The computer sees inconsistent data and assumes the worst.
             </p>
             <p>
                 <strong>The Math:</strong> A new downstream O2 sensor costs $50-$150 (parts + labor at an independent shop). A CARB-compliant catalytic converter in California? Try $1,800-$2,800 in 2026.
@@ -235,16 +235,16 @@ const P0420CatalyticConverterPost: React.FC = () => {
 
             <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-2xl my-10 text-white shadow-xl">
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                    <span>💰</span> Stop the Overcharge Before It Happens
+                    <span>ðŸ’°</span> Stop the Overcharge Before It Happens
                 </h3>
                 <p className="text-blue-100 text-lg mb-6">
                     Got a quote for P0420 repair? Use the <a href="/maintenance-validator" className="text-white font-black underline decoration-2 decoration-white/30 hover:decoration-white transition-all">car repair & overcharge validator</a> to cross-check every line item. Red flags to watch for:
                 </p>
                 <ul className="space-y-2 text-blue-100">
-                    <li>✗ "Diagnostic fee" over $150 (P0420 is a 5-minute scan)</li>
-                    <li>✗ "Shop supplies" fees exceeding 5% of total</li>
-                    <li>✗ Labor hours above 3.0 (most cat replacements are 1.5-2.5 hours)</li>
-                    <li>✗ No breakdown between Federal and CARB pricing (if you're in a CARB state)</li>
+                    <li>âœ— "Diagnostic fee" over $150 (P0420 is a 5-minute scan)</li>
+                    <li>âœ— "Shop supplies" fees exceeding 5% of total</li>
+                    <li>âœ— Labor hours above 3.0 (most cat replacements are 1.5-2.5 hours)</li>
+                    <li>âœ— No breakdown between Federal and CARB pricing (if you're in a CARB state)</li>
                 </ul>
             </div>
 
@@ -253,7 +253,7 @@ const P0420CatalyticConverterPost: React.FC = () => {
                 The Financial Decision: Fix It or Move On?
             </h2>
             <p>
-                Here's the brutal truth about high-mileage vehicles: Sometimes the repair isn't overpriced—it's just not worth it.
+                Here's the brutal truth about high-mileage vehicles: Sometimes the repair isn't overpricedâ€”it's just not worth it.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">When to Walk Away</h3>
             <p>
@@ -289,7 +289,7 @@ const P0420CatalyticConverterPost: React.FC = () => {
             {/* Mechanic's Verdict */}
             <div className="mt-16 bg-slate-900 dark:bg-slate-800 text-white rounded-3xl p-8 sm:p-12 border-4 border-blue-500 shadow-2xl">
                 <div className="flex items-center gap-3 mb-6">
-                    <span className="text-5xl">🔧</span>
+                    <span className="text-5xl">ðŸ”§</span>
                     <h3 className="text-3xl font-black">Mechanic's Verdict</h3>
                 </div>
                 <div className="space-y-4 text-lg text-slate-200">
@@ -313,12 +313,12 @@ const P0420CatalyticConverterPost: React.FC = () => {
             <div className="mt-16 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-[100px] opacity-10 pointer-events-none" />
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-black mb-4">⚠️ Got a P0420 Repair Quote?</h3>
+                    <h3 className="text-3xl font-black mb-4">âš ï¸ Got a P0420 Repair Quote?</h3>
                     <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
                         Don't gamble on guesswork. Use the <strong>Maintenance Validator</strong> to verify you're not paying $2,500 for a $150 sensor job. Thirty seconds could save you thousands.
                     </p>
                     <a href="/maintenance-validator" className="inline-block px-8 py-4 bg-white text-blue-600 font-bold rounded-full hover:bg-blue-50 transition-colors transform hover:-translate-y-1 shadow-lg">
-                        Validate My Quote Now →
+                        Validate My Quote Now â†’
                     </a>
                 </div>
             </div>

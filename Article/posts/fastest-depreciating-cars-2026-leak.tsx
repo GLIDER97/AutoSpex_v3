@@ -7,9 +7,9 @@ import imgHero from '../assets/Featured images/Minimalist cartoon.png';
 export const meta = {
     title: "The $20-a-Day Leak: Which Cars Lose Value the Fastest in 2026?",
     description: "Discover which cars are losing value fastest in 2026. Expert analysis on luxury EV depreciation, Section 179 tax loopholes, and how to stop the daily financial bleed.",
-    date: "Feb 2026",
+    date: "Feb 15, 2026 08:00:00",
     authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorRole: "Auto Tech Expert â€¢ 15+ Years Exp.",
     category: "Financial Guides",
     featuredImage: imgHero,
     slug: 'fastest-depreciating-cars-2026-leak',
@@ -42,7 +42,7 @@ const Depreciation2026Post: React.FC = () => {
                 Stop checking your gas mileage. Your car's real cost isn't at the pump; it's the $20 to $40 vanishing from your resale value every single morning.
             </p>
             <p>
-                While you're worrying about saving 15 cents a gallon, your driveway is silently eating your net worth. I've watched grown men cry in my service bay—not because of a repair bill, but because they tried to trade in a car they bought three years ago, only to find out they owe $12,000 more than it's worth.
+                While you're worrying about saving 15 cents a gallon, your driveway is silently eating your net worth. I've watched grown men cry in my service bayâ€”not because of a repair bill, but because they tried to trade in a car they bought three years ago, only to find out they owe $12,000 more than it's worth.
             </p>
             <p>
                 In 2026, the game has changed completely. The "used car gold rush" of the early 20s is over. We are now in the era of <strong>Tech Obsolescence</strong>. A 2024 electric vehicle isn't just "used" anymore; it's practically vintage tech compared to the 2026 solid-state battery models hitting showroom floors.
@@ -96,7 +96,7 @@ const Depreciation2026Post: React.FC = () => {
 
             {/* Experience Block */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                "Small business owner client of mine bought a 2023 Luxury EV SUV for $90,000, thinking it was the future. He brought it in last week for tires and asked me to appraise it for a trade-in on a 2026 model. The number? $35,000. He lost $55,000 in 36 months—that's $1,500 vanishing every single month. He's still making $1,400 payments on a car worth less than a base-model Camry."
+                "Small business owner client of mine bought a 2023 Luxury EV SUV for $90,000, thinking it was the future. He brought it in last week for tires and asked me to appraise it for a trade-in on a 2026 model. The number? $35,000. He lost $55,000 in 36 monthsâ€”that's $1,500 vanishing every single month. He's still making $1,400 payments on a car worth less than a base-model Camry."
             </div>
 
             {/* The "Section 179" Catch-22 */}
@@ -111,7 +111,7 @@ const Depreciation2026Post: React.FC = () => {
             </p>
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-xl border border-yellow-200 dark:border-yellow-800 my-6">
                 <h4 className="font-bold text-yellow-800 dark:text-yellow-400 mb-2 flex items-center gap-2">
-                    <span>⚠️</span> The Trap for Passenger Vehicles
+                    <span>âš ï¸</span> The Trap for Passenger Vehicles
                 </h4>
                 <p className="text-sm text-slate-700 dark:text-slate-300">
                     Don't get cute. The "Luxury Auto Limit" for vehicles <em>under</em> 6,000 lbs is capped at $32,000 for 2026. If you buy a $80,000 sedan, you cannot write off the whole thing instantly. You will eat that depreciation raw.
@@ -126,18 +126,18 @@ const Depreciation2026Post: React.FC = () => {
                 When to Hold vs. When to Fold (The Financial Logic)
             </h2>
             <p>
-                We are seeing a massive <strong>Negative Equity Trap</strong> in 2026. People who bought cars at peak pricing in 2023–2024 are now underwater.
+                We are seeing a massive <strong>Negative Equity Trap</strong> in 2026. People who bought cars at peak pricing in 2023â€“2024 are now underwater.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">The Logic Gate</h3>
             <ul className="list-none space-y-4">
                 <li className="flex gap-4 items-start bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800">
-                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-600 font-bold shrink-0">🛑</div>
+                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-600 font-bold shrink-0">ðŸ›‘</div>
                     <div>
                         <strong>FOLD (Sell Now) IF:</strong> Your car is a "Zombie Model" (discontinued) and warranty is expiring. The value will only crater further as parts become scarce. Cut your losses.
                     </div>
                 </li>
                 <li className="flex gap-4 items-start bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800">
-                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 font-bold shrink-0">🤝</div>
+                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 font-bold shrink-0">ðŸ¤</div>
                     <div>
                         <strong>HOLD (Keep Driving) IF:</strong> You have negative equity but the car is reliable. Trading it in now means rolling that debt into a new loan at 10% interest. You'll be paying $1,100 a month for a Civic. Drive it until the wheels fall off.
                     </div>
@@ -172,7 +172,7 @@ const Depreciation2026Post: React.FC = () => {
             {/* Mechanic's Verdict */}
             <div className="mt-16 bg-slate-900 dark:bg-slate-800 text-white rounded-3xl p-8 sm:p-12 border-4 border-blue-500 shadow-2xl">
                 <div className="flex items-center gap-3 mb-6">
-                    <span className="text-5xl">🔧</span>
+                    <span className="text-5xl">ðŸ”§</span>
                     <h3 className="text-3xl font-black">Mechanic's Verdict</h3>
                 </div>
                 <div className="space-y-4 text-lg text-slate-200">
@@ -187,7 +187,7 @@ const Depreciation2026Post: React.FC = () => {
                     </p>
                     <div className="mt-8 text-center sm:text-left">
                         <a href="/ownership-calculator" className="inline-block px-8 py-4 bg-white text-blue-600 font-bold rounded-full hover:bg-blue-50 transition-colors transform hover:-translate-y-1 shadow-lg">
-                            Run Ownership Numbers Now →
+                            Run Ownership Numbers Now â†’
                         </a>
                     </div>
                 </div>
@@ -198,3 +198,4 @@ const Depreciation2026Post: React.FC = () => {
 };
 
 export default Depreciation2026Post;
+
