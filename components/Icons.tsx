@@ -1,12 +1,12 @@
 
-import { 
-  Search, 
-  AlertTriangle, 
-  CheckCircle2, 
-  History, 
-  Info, 
-  ChevronRight, 
-  Zap, 
+import {
+  Search,
+  AlertTriangle,
+  CheckCircle2,
+  History,
+  Info,
+  ChevronRight,
+  Zap,
   Settings,
   X,
   Gauge,
@@ -70,14 +70,14 @@ import {
   Package
 } from 'lucide-react';
 
-export { 
-  Search, 
-  AlertTriangle, 
-  CheckCircle2, 
-  History, 
-  Info, 
-  ChevronRight, 
-  Zap, 
+export {
+  Search,
+  AlertTriangle,
+  CheckCircle2,
+  History,
+  Info,
+  ChevronRight,
+  Zap,
   Settings,
   X,
   Gauge,

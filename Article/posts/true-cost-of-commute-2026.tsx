@@ -9,7 +9,7 @@ export const meta = {
     description: "Calculate the real cost of your daily drive in 2026. Discover why '35 MPG' stickers are a lie, hidden insurance costs, and the break-even point for hybrids vs. paid-off beaters.",
     date: "Feb 15, 2026 11:00:00",
     authorName: "John Smith",
-    authorRole: "Financial & Automotive Reviewer â€¢ 8+ Years Exp.",
+    authorRole: "Financial & Automotive Reviewer • 8+ Years Exp.",
     category: "Financial Guides",
     featuredImage: imgHero,
     slug: 'true-cost-of-commute-2026',
@@ -68,7 +68,7 @@ const CommuteCost2026Post: React.FC = () => {
                 Your morning commute has a secret enemy: The <strong>Cold Start Penalty</strong>.
             </p>
             <p>
-                Engines are designed to run hot. For the first 5 minutes of your driveâ€”that critical window where you're crawling out of your subdivisionâ€”your car is dumping extra fuel into the cylinders to warm up the catalytic converter. In a 30-mile commute, that inefficiency accounts for nearly <strong>30% of your total fuel waste</strong>.
+                Engines are designed to run hot. For the first 5 minutes of your drive—that critical window where you're crawling out of your subdivision—your car is dumping extra fuel into the cylinders to warm up the catalytic converter. In a 30-mile commute, that inefficiency accounts for nearly <strong>30% of your total fuel waste</strong>.
             </p>
             <p>
                 If your commute is under 15 miles, you are basically driving a gas-powered heater.
@@ -110,7 +110,7 @@ const CommuteCost2026Post: React.FC = () => {
 
             <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl border border-red-200 dark:border-red-800 my-6">
                 <h4 className="font-bold text-red-800 dark:text-red-400 mb-2 flex items-center gap-2">
-                    <span>ðŸš‘</span> The "Premium Trap"
+                    <span></span> The "Premium Trap"
                 </h4>
                 <p className="text-sm text-slate-700 dark:text-slate-300">
                     You might save $50/month on gas, but if your insurance jumps $60/month because you bought a "High-Tech" vehicle, you're losing money. Before you celebrate your MPG, check the <a href="/insurance-estimator" className="font-bold underline text-red-700 dark:text-red-400">insurance cost estimator</a>.
@@ -137,7 +137,7 @@ const CommuteCost2026Post: React.FC = () => {
 
             {/* Experience Block */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                "Met a commuter in Houston last month. He swapped his 2019 V6 Tacomaâ€”which he owned free and clearâ€”for a new Prius Prime to 'beat the commute.' His insurance doubled because of the zip code and the car's value. His interest rate was 9%. He did the math three months later and realized he was literally working an extra 10 hours a month just to pay for the 'gas savings' he was getting. He sold the Prius at a loss."
+                "Met a commuter in Houston last month. He swapped his 2019 V6 Tacoma—which he owned free and clear—for a new Prius Prime to 'beat the commute.' His insurance doubled because of the zip code and the car's value. His interest rate was 9%. He did the math three months later and realized he was literally working an extra 10 hours a month just to pay for the 'gas savings' he was getting. He sold the Prius at a loss."
             </div>
 
             <p>
@@ -150,7 +150,7 @@ const CommuteCost2026Post: React.FC = () => {
                     Need to know the truth?
                 </p>
                 <p className="text-slate-700 dark:text-slate-300 mt-2">
-                    Use the <a href="/ownership-calculator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car ownership calculator</a> to find your specific "Magic Number"â€”the exact month where a new efficient car stops costing you money and starts paying you back. (Hint: It's usually Year 6).
+                    Use the <a href="/ownership-calculator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car ownership calculator</a> to find your specific "Magic Number"—the exact month where a new efficient car stops costing you money and starts paying you back. (Hint: It's usually Year 6).
                 </p>
             </div>
 
@@ -171,22 +171,22 @@ const CommuteCost2026Post: React.FC = () => {
             {/* Savvy Verdict CTA */}
             <div className="mt-16 bg-slate-900 dark:bg-slate-800 text-white rounded-3xl p-8 sm:p-12 border-4 border-green-500 shadow-2xl">
                 <div className="flex items-center gap-3 mb-6">
-                    <span className="text-5xl">ðŸ§ </span>
+                    <span className="text-5xl"> </span>
                     <h3 className="text-3xl font-black">The Savvy Verdict: Knowledge is Power (And Cash)</h3>
                 </div>
                 <div className="space-y-4 text-lg text-slate-200">
                     <p>
-                        Stop trusting the sticker. Itâ€™s a marketing brochure, not a contract.
+                        Stop trusting the sticker. It’s a marketing brochure, not a contract.
                     </p>
                     <p>
-                        If your commute is draining your bank account, the answer usually isn't a new carâ€”it's driving the one you have smarter, or finding one that's cheaper to <em>own</em>, not just cheaper to fuel.
+                        If your commute is draining your bank account, the answer usually isn't a new car—it's driving the one you have smarter, or finding one that's cheaper to <em>own</em>, not just cheaper to fuel.
                     </p>
                     <p className="pt-4 border-t border-slate-700">
                         <strong className="text-green-400">Final Step:</strong> Before you head to the gas station, audit your drive.
                     </p>
                     <div className="mt-8 text-center sm:text-left">
                         <a href="/mpg-calculator" className="inline-block px-8 py-4 bg-white text-green-600 font-bold rounded-full hover:bg-green-50 transition-colors transform hover:-translate-y-1 shadow-lg">
-                            Run Your Fuel Audit Now â†’
+                            Run Your Fuel Audit Now →
                         </a>
                     </div>
                 </div>

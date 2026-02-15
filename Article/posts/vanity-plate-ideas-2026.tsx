@@ -60,7 +60,7 @@ const VanityPlatePost: React.FC = () => {
                 On top of that, states like Texas and Florida are cracking down hard on "edgy" tags. The "FAFO" and "CARTEL" era is officially over—DMV gatekeepers are using AI screening tools in 2026 to catch anything remotely offensive, including mirror-image tricks.
             </p>
             <p className="font-bold text-slate-800 dark:text-slate-100">
-                So how do you stand out without getting rejected? I've compiled 50+ ideas organized by brand, personality, and hobbyâ€”plus the DMV hacks nobody tells you about.
+                So how do you stand out without getting rejected? I've compiled 50+ ideas organized by brand, personality, and hobby—plus the DMV hacks nobody tells you about.
             </p>
 
             {/* Tesla Section */}
@@ -68,7 +68,7 @@ const VanityPlatePost: React.FC = () => {
                 Tesla Plates: The Tech Nerd Collection
             </h2>
             <p>
-                Tesla owners are a special breed. You didn't just buy a car; you joined a cultâ€”respectfully. Your plate should scream "I'm saving the planet AND I'm faster than your V8."
+                Tesla owners are a special breed. You didn't just buy a car; you joined a cult—respectfully. Your plate should scream "I'm saving the planet AND I'm faster than your V8."
             </p>
 
             <div className="grid sm:grid-cols-3 gap-4 my-8">
@@ -162,7 +162,7 @@ const VanityPlatePost: React.FC = () => {
                 Ford Plates: The Workhorse Collection
             </h2>
             <p>
-                Ford people don't drive carsâ€”they drive tools. Whether it's a Coyote V8 Mustang or an F-150 hauling a boat, your plate should say "Built Tough" without actually saying it (because someone already took that one).
+                Ford people don't drive cars—they drive tools. Whether it's a Coyote V8 Mustang or an F-150 hauling a boat, your plate should say "Built Tough" without actually saying it (because someone already took that one).
             </p>
 
             <div className="grid sm:grid-cols-3 gap-4 my-8">

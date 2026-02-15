@@ -10,7 +10,7 @@ export const meta = {
     description: "Uncover hidden VIN secrets that expose engine swaps, title washing, odometer fraud, and salvage scams. Your complete 2026 guide to avoiding lemons on Facebook Marketplace and Craigslist.",
     date: "Feb 15, 2026 09:00:00",
     authorName: "John Smith",
-    authorRole: "Private Investigator â€¢ 8+ Years Exp.",
+    authorRole: "Private Investigator • 8+ Years Exp.",
     category: "Buyer Protection",
     featuredImage: imgHero,
     slug: 'vin-lemon-check-2026',
@@ -33,7 +33,7 @@ const VinLemonCheckPost: React.FC = () => {
             {/* 30-Second Fraud Check */}
             <div className="bg-gradient-to-br from-red-600 to-orange-600 text-white p-8 rounded-2xl my-12 shadow-2xl">
                 <h2 className="text-2xl font-black mb-4 flex items-center gap-2">
-                    <span>âš¡</span> 30-Second Fraud Check
+                    <span>⚡</span> 30-Second Fraud Check
                 </h2>
                 <div className="space-y-3 text-lg">
                     <p className="font-bold">Before you test drive ANY used car:</p>
@@ -52,7 +52,7 @@ const VinLemonCheckPost: React.FC = () => {
                 A fresh coat of wax and a "Detailed Today" sign are the oldest tricks in the book. But while a seller can scrub a floor mat, they can't scrub a car's DNA.
             </p>
             <p>
-                Listen, I've been tracking down stolen cars, odometer fraud, and salvage flips for eight years. The 2026 used car market is a minefield. Facebook Marketplace and Craigslist are crawling with "curbstoners"â€”unlicensed dealers who flip salvaged wrecks as "personal vehicles" to dodge dealer licensing laws.
+                Listen, I've been tracking down stolen cars, odometer fraud, and salvage flips for eight years. The 2026 used car market is a minefield. Facebook Marketplace and Craigslist are crawling with "curbstoners"—unlicensed dealers who flip salvaged wrecks as "personal vehicles" to dodge dealer licensing laws.
             </p>
             <p>
                 Here's the deal: Your average seller is banking on you being lazy. They're hoping you'll fall for the sob story about their "grandma's car" or the "recent upgrade" excuse. But a 17-digit VIN tells the truth they won't.
@@ -75,7 +75,7 @@ const VinLemonCheckPost: React.FC = () => {
             <ul className="list-disc pl-6 space-y-2 marker:text-red-500">
                 <li>Insurance companies can deny claims on modified vehicles</li>
                 <li>Emissions testing failures (especially in California, New York, Texas)</li>
-                <li>Warranty instantly voidâ€”even if the seller claims there's "still coverage"</li>
+                <li>Warranty instantly void—even if the seller claims there's "still coverage"</li>
                 <li>Unknown service history on the replacement engine</li>
             </ul>
 
@@ -94,7 +94,7 @@ const VinLemonCheckPost: React.FC = () => {
                 Secret #2: Title Washing & The "Ghost" Maintenance
             </h2>
             <p>
-                Here's how the scam works in 2026: A car gets totaled in Florida. Insurance declares it a salvage. The scammer then registers it in a state with lax title lawsâ€”Mississippi, New Jersey, or Georgiaâ€”where the "salvage" brand magically disappears. They flip it back to a clean-title state like Texas or California and sell it as if nothing happened.
+                Here's how the scam works in 2026: A car gets totaled in Florida. Insurance declares it a salvage. The scammer then registers it in a state with lax title laws—Mississippi, New Jersey, or Georgia—where the "salvage" brand magically disappears. They flip it back to a clean-title state like Texas or California and sell it as if nothing happened.
             </p>
             <p>
                 These "title-washed" cars are ticking time bombs. Flood damage cars from Hurricane Ian in 2023? Still circulating in 2026 with squeaky-clean paperwork.
@@ -102,7 +102,7 @@ const VinLemonCheckPost: React.FC = () => {
 
             {/* Experience Block */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                "I worked a case in Tampa last year. Buyer found a 2023 BMW X5 on Facebook Marketplaceâ€”$38,000, 'clean title,' seller said it was a lease return. We ran the VIN through the NMVTIS database. Turns out it was a Hurricane Ian flood recovery vehicle that had been registered in Mississippi for six months to wash the salvage brand. The buyer walked. Two months later, that same VIN popped up on a 'Buy Here Pay Here' lot in Atlanta for $42,000. Someone bought it. That car is a lawsuit waiting to happen."
+                "I worked a case in Tampa last year. Buyer found a 2023 BMW X5 on Facebook Marketplace—$38,000, 'clean title,' seller said it was a lease return. We ran the VIN through the NMVTIS database. Turns out it was a Hurricane Ian flood recovery vehicle that had been registered in Mississippi for six months to wash the salvage brand. The buyer walked. Two months later, that same VIN popped up on a 'Buy Here Pay Here' lot in Atlanta for $42,000. Someone bought it. That car is a lawsuit waiting to happen."
             </div>
 
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">How to Catch Title Washing</h3>
@@ -117,7 +117,7 @@ const VinLemonCheckPost: React.FC = () => {
 
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-xl border border-yellow-200 dark:border-yellow-800 my-6">
                 <h4 className="font-bold text-yellow-800 dark:text-yellow-400 mb-2 flex items-center gap-2">
-                    <span>ðŸ”</span> The "Ghost Maintenance" Test
+                    <span></span> The "Ghost Maintenance" Test
                 </h4>
                 <p className="text-sm text-slate-700 dark:text-slate-300">
                     Seller claims they just did a "$2,000 transmission rebuild"? Cross-reference that with the <a href="/maintenance-validator" className="font-bold underline">Car repair & overcharge validator</a>. Plug in the car's make, model, and year. If the math doesn't match 2026 labor rates for your area, they're lying to justify the price.
@@ -129,21 +129,21 @@ const VinLemonCheckPost: React.FC = () => {
                 Secret #3: The "Odometer vs. Reality" Math
             </h2>
             <p>
-                Digital odometers in 2026 are being hacked with "mileage blockers"â€”devices that freeze the odometer while the car racks up real miles. A car that shows 42,000 miles might actually have 142,000.
+                Digital odometers in 2026 are being hacked with "mileage blockers"—devices that freeze the odometer while the car racks up real miles. A car that shows 42,000 miles might actually have 142,000.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">The Forensic Checklist</h3>
             <div className="grid sm:grid-cols-2 gap-4 my-6">
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl">
-                    <h4 className="font-bold text-slate-900 dark:text-white mb-2">ðŸ”´ Red Flags</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white mb-2"> Red Flags</h4>
                     <ul className="text-sm space-y-1 text-slate-600 dark:text-slate-300">
-                        <li>â€¢ Worn brake pedal rubber (100k+ miles)</li>
-                        <li>â€¢ Driver seat bolster collapsed</li>
-                        <li>â€¢ Steering wheel leather peeling</li>
-                        <li>â€¢ Brake rotors with deep grooves</li>
+                        <li>• Worn brake pedal rubber (100k+ miles)</li>
+                        <li>• Driver seat bolster collapsed</li>
+                        <li>• Steering wheel leather peeling</li>
+                        <li>• Brake rotors with deep grooves</li>
                     </ul>
                 </div>
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl">
-                    <h4 className="font-bold text-slate-900 dark:text-white mb-2">âœ… The Math Test</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white mb-2">✅ The Math Test</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
                         Use the <a href="/ownership-calculator" className="text-blue-600 dark:text-blue-400 underline">Car ownership calculator</a>. Input the car's age and claimed mileage. If projected maintenance costs are 3x higher than the mileage suggests, the odometer is lying.
                     </p>
@@ -175,10 +175,10 @@ const VinLemonCheckPost: React.FC = () => {
                 Secret #5: The Financial "Red Zone" (The Trap)
             </h2>
             <p>
-                You found a "steal"â€”a 2022 Nissan Altima for $14,000 when the market price is $18,000. The VIN reveals why: 4 previous owners in 24 months. That's a financial black hole.
+                You found a "steal"—a 2022 Nissan Altima for $14,000 when the market price is $18,000. The VIN reveals why: 4 previous owners in 24 months. That's a financial black hole.
             </p>
             <p>
-                Cars that churn through owners like that have hidden problemsâ€”chronic transmission issues, electrical gremlins, or frame damage the last four people couldn't afford to fix.
+                Cars that churn through owners like that have hidden problems—chronic transmission issues, electrical gremlins, or frame damage the last four people couldn't afford to fix.
             </p>
 
             <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-2xl border border-red-200 dark:border-red-800 my-8">
@@ -199,7 +199,7 @@ const VinLemonCheckPost: React.FC = () => {
             {/* Mechanic's Verdict */}
             <div className="mt-16 bg-slate-900 dark:bg-slate-800 text-white rounded-3xl p-8 sm:p-12 border-4 border-red-600 shadow-2xl">
                 <div className="flex items-center gap-3 mb-6">
-                    <span className="text-5xl">ðŸ”</span>
+                    <span className="text-5xl"></span>
                     <h3 className="text-3xl font-black">Investigator's Final Word</h3>
                 </div>
                 <div className="space-y-4 text-lg text-slate-200">
@@ -219,12 +219,12 @@ const VinLemonCheckPost: React.FC = () => {
             <div className="mt-16 bg-gradient-to-br from-red-600 to-orange-600 text-white rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-[100px] opacity-10 pointer-events-none" />
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-black mb-4">âš ï¸ DON'T GET SCAMMED</h3>
+                    <h3 className="text-3xl font-black mb-4">⚠️ DON'T GET SCAMMED</h3>
                     <p className="text-lg text-red-100 mb-8 max-w-2xl mx-auto">
                         Before you hand over cash, crypto, or sign anything, run a full VIN history check. You're 60 seconds away from knowing if you're buying a gem or a grenade.
                     </p>
                     <a href="/vin-lookup" className="inline-block px-8 py-4 bg-white text-red-600 font-bold rounded-full hover:bg-red-50 transition-colors transform hover:-translate-y-1 shadow-lg">
-                        Run VIN Check Now â†’
+                        Run VIN Check Now →
                     </a>
                 </div>
             </div>
