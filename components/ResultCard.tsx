@@ -119,7 +119,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, onCodeClick, veh
           </div>
 
           {/* Plain English Explanation */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none">
              <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
                <Info className="w-5 h-5 text-blue-500" />
                Plain English Explanation
@@ -131,7 +131,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, onCodeClick, veh
 
            {/* Technical Details Grid */}
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none">
               <div className="flex items-center gap-2 mb-4 text-slate-900 dark:text-slate-100 font-semibold">
                 <AlertTriangle className="w-4 h-4 text-brand-primary" />
                 <h3>Symptoms</h3>
@@ -139,14 +139,14 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, onCodeClick, veh
               <ul className="space-y-3">
                 {data.symptoms.slice(0, 5).map((symptom, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
-                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-primary flex-shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-primary shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
                     {symptom}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none">
               <div className="flex items-center gap-2 mb-4 text-slate-900 dark:text-slate-100 font-semibold">
                 <CheckCircle2 className="w-4 h-4 text-green-500 dark:text-green-400" />
                 <h3>Likely Causes</h3>
@@ -154,7 +154,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, onCodeClick, veh
               <ul className="space-y-3">
                 {data.causes.slice(0, 5).map((cause, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
-                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-500 dark:bg-green-400 flex-shrink-0 shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-500 dark:bg-green-400 shrink-0 shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>
                     {cause}
                   </li>
                 ))}
@@ -173,7 +173,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, onCodeClick, veh
 
                <h3 className="text-white font-bold text-xl mb-6 flex items-center gap-2 relative z-10">
                  What To Do Next?
-                 <div className="h-px bg-slate-800 flex-grow ml-2"></div>
+                 <div className="h-px bg-slate-800 grow ml-2"></div>
                </h3>
                
                <div className="space-y-6 relative z-10">
@@ -238,7 +238,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, onCodeClick, veh
                     <button 
                       key={code}
                       onClick={() => onCodeClick(code)}
-                      className="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-brand-primary/50 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer group w-full shadow-sm dark:shadow-none"
+                      className="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-brand-primary/50 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer group w-full shadow-xs dark:shadow-none"
                     >
                       <span className="font-mono font-bold text-slate-600 dark:text-slate-400 group-hover:text-brand-primary transition-colors text-sm">{code}</span>
                     </button>

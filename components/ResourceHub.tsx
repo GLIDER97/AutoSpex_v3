@@ -331,9 +331,9 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
 
         {/* Action / Search Bar (Restored for Recalls) */}
         {type === 'recalls' && (
-          <div className="w-full lg:w-[26rem] shrink-0">
+          <div className="w-full lg:w-104 shrink-0">
             <form onSubmit={handleSearch} className="group relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-600 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+              <div className="absolute -inset-1 bg-linear-to-r from-red-500 to-orange-600 rounded-4xl blur-sm opacity-20 group-hover:opacity-40 transition duration-500"></div>
               <div className="relative bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-xl p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-3 px-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   <Search className="w-4 h-4" /> Check your vehicle
@@ -351,7 +351,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                       aria-label={field.label}
                       placeholder={field.placeholder}
                       {...(field.type === 'number' ? { min: 1950, max: new Date().getFullYear() + 1, inputMode: 'numeric' as const } : {})}
-                      className="w-full min-w-0 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white font-bold placeholder-slate-400 focus:ring-2 focus:ring-red-500 outline-none"
+                      className="w-full min-w-0 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white font-bold placeholder-slate-400 focus:ring-2 focus:ring-red-500 outline-hidden"
                       value={recallForm[field.key]}
                       onChange={(e) => setRecallForm((prev) => ({ ...prev, [field.key]: e.target.value }))}
                     />
@@ -413,7 +413,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
           )}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
             {items.map((item: any, idx) => (
-              <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col">
+              <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col">
 
                 {type === 'recalls' && (
                   <>
@@ -428,7 +428,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                     <div className="text-xs font-black text-blue-500 uppercase tracking-widest mb-4">
                       Component: {item.component.replace(/:/g, ' › ')}
                     </div>
-                    <div className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed flex-grow space-y-3">
+                    <div className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed grow space-y-3">
                       <p className="line-clamp-5">{item.summary}</p>
                       {item.consequence && <p><strong>Risk:</strong> {item.consequence}</p>}
                       {item.remedy && <p className="line-clamp-3"><strong>Remedy:</strong> {item.remedy}</p>}
@@ -476,8 +476,8 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                       </div>
                       <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{item.category}</span>
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 leading-tight min-h-[3.5rem]">{item.name}</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 leading-relaxed flex-grow">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 leading-tight min-h-14">{item.name}</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 leading-relaxed grow">
                       <strong>Best for:</strong> {item.bestFor}<br />
                       <span className="text-xs text-slate-400 font-bold block mt-2">Verified Brand: {item.brand}</span>
                     </p>
@@ -499,7 +499,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                     </div>
                     <div className="text-4xl font-black text-emerald-600 mb-2">{item.savingValue}</div>
                     <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">{item.offer}</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed flex-grow">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed grow">
                       <strong>Partner:</strong> {item.shop}<br />
                       <span className="text-xs text-slate-400 font-bold block mt-2">Active in: {item.validIn}</span>
                     </p>
@@ -523,7 +523,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                   <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Master Technician Essentials</h2>
                   <p className="text-slate-500 text-lg font-medium">Standard gear every driver should carry for roadside safety and diagnostics.</p>
                 </div>
-                <div className="flex items-center gap-2 text-orange-500 bg-orange-500/5 px-5 py-2.5 rounded-full border border-orange-500/20 shadow-sm">
+                <div className="flex items-center gap-2 text-orange-500 bg-orange-500/5 px-5 py-2.5 rounded-full border border-orange-500/20 shadow-xs">
                   <Star className="w-5 h-5 fill-current" />
                   <span className="text-xs font-black uppercase tracking-widest">Driver Essentials</span>
                 </div>
@@ -531,7 +531,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {ESSENTIAL_DRIVERS_GEAR.map((item, i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all group flex flex-col relative overflow-hidden">
+                  <div key={i} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-2xl transition-all group flex flex-col relative overflow-hidden">
                     <div className="aspect-video w-full rounded-2xl bg-slate-50 dark:bg-slate-800 mb-6 flex items-center justify-center overflow-hidden">
                       <img
                         src={item.img}
@@ -539,7 +539,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                         className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
-                    <div className="flex-grow flex flex-col">
+                    <div className="grow flex flex-col">
                       <div className="inline-flex mb-3">
                         <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500">
                           {item.tag}

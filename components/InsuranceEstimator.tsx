@@ -200,18 +200,18 @@ const InsuranceEstimator: React.FC = () => {
           value={formData.zipCode}
           onChange={(e) => updateForm('zipCode', e.target.value.replace(/\D/g, '').slice(0, 5))}
           placeholder="e.g. 90210"
-          className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+          className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all"
         />
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         <div className="col-span-1">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Year</label>
-          <input type="text" placeholder="2020" value={formData.year} onChange={(e) => updateForm('year', e.target.value)} className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+          <input type="text" placeholder="2020" value={formData.year} onChange={(e) => updateForm('year', e.target.value)} className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden" />
         </div>
         <div className="col-span-2">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Make & Model</label>
-          <input type="text" placeholder="Toyota Camry" value={formData.model} onChange={(e) => updateForm('model', e.target.value)} className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+          <input type="text" placeholder="Toyota Camry" value={formData.model} onChange={(e) => updateForm('model', e.target.value)} className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden" />
         </div>
       </div>
 
@@ -394,14 +394,14 @@ const InsuranceEstimator: React.FC = () => {
               <Zap className="w-5 h-5 text-brand-primary fill-current" />
               Underwriter Analysis
             </h3>
-            <div className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium space-y-4 flex-grow">
+            <div className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium space-y-4 grow">
               {aiAnalysis ? (
                 <p className="animate-in fade-in">{aiAnalysis}</p>
               ) : (
                 <div className="flex flex-col gap-4 animate-pulse">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4"></div>
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-full"></div>
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-5/6"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-sm w-3/4"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-sm w-full"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-sm w-5/6"></div>
                 </div>
               )}
             </div>
@@ -447,7 +447,7 @@ const InsuranceEstimator: React.FC = () => {
         </div>
 
         <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
+          <div className="bg-linear-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
               <ShieldCheck className="w-32 h-32 text-white" />
             </div>
@@ -489,7 +489,7 @@ const InsuranceEstimator: React.FC = () => {
                           <input
                             type="text" required placeholder="Full Name"
                             value={contactInfo.name} onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
-                            className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-none transition-all"
+                            className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-hidden transition-all"
                           />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -498,7 +498,7 @@ const InsuranceEstimator: React.FC = () => {
                             <input
                               type="tel" required placeholder="Phone Number"
                               value={contactInfo.phone} onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
-                              className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-none transition-all"
+                              className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-hidden transition-all"
                             />
                           </div>
                           <div className="relative">
@@ -506,7 +506,7 @@ const InsuranceEstimator: React.FC = () => {
                             <input
                               type="email" required placeholder="Email Address"
                               value={contactInfo.email} onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
-                              className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-none transition-all"
+                              className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-hidden transition-all"
                             />
                           </div>
                         </div>
@@ -523,7 +523,7 @@ const InsuranceEstimator: React.FC = () => {
                         <button
                           type="submit"
                           disabled={leadLoading}
-                          className="flex-[2] py-4 bg-white text-indigo-900 font-black rounded-2xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+                          className="flex-2 py-4 bg-white text-indigo-900 font-black rounded-2xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
                         >
                           {leadLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Submit for Quotes'}
                         </button>
@@ -581,7 +581,7 @@ const InsuranceEstimator: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Fair Price <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-500 to-purple-600">
               US Based Car Insurance Estimator
             </span>
           </h1>
@@ -706,7 +706,7 @@ const InsuranceEstimator: React.FC = () => {
                   desc: "Discover how simple changes like deductibles or car choices impact your wallet."
                 },
               ].map((item, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                   <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
                     {item.icon}
                   </div>
@@ -722,7 +722,7 @@ const InsuranceEstimator: React.FC = () => {
               How It Works
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                 <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-4">
                   <MapPin className="w-7 h-7" />
                 </div>
@@ -731,7 +731,7 @@ const InsuranceEstimator: React.FC = () => {
                   Provide your ZIP code and vehicle details to establish the base actuarial risk for your area.
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                 <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
                   <Users className="w-7 h-7" />
                 </div>
@@ -740,7 +740,7 @@ const InsuranceEstimator: React.FC = () => {
                   Choose your age bracket, driving history, and credit tier. Information is used for accurate matching.
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                 <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
                   <DollarSign className="w-7 h-7" />
                 </div>
@@ -776,11 +776,11 @@ const InsuranceEstimator: React.FC = () => {
                   stars: 5
                 }
               ].map((t, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:shadow-xl transition-all">
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col hover:shadow-xl transition-all">
                   <div className="flex gap-1 mb-6 text-indigo-500">
                     {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
                   </div>
-                  <p className="text-slate-700 dark:text-slate-300 italic mb-8 flex-grow">"{t.text}"</p>
+                  <p className="text-slate-700 dark:text-slate-300 italic mb-8 grow">"{t.text}"</p>
                   <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
                     <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center font-black text-sm">
                       {t.name.charAt(0)}
@@ -815,7 +815,7 @@ const InsuranceEstimator: React.FC = () => {
                 >
                   <button
                     onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                    className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                   >
                     <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                       {faq.question}

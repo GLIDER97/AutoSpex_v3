@@ -166,7 +166,7 @@ const OwnershipCalculator: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Vehicle Ownership <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-600">
                Cost Calculator
             </span>
           </h1>
@@ -191,7 +191,7 @@ const OwnershipCalculator: React.FC = () => {
                         <select 
                             value={request.carType}
                             onChange={(e) => updateRequest('carType', e.target.value)}
-                            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
+                            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all cursor-pointer"
                         >
                             <option value="Sedan">Sedan</option>
                             <option value="SUV">SUV</option>
@@ -208,7 +208,7 @@ const OwnershipCalculator: React.FC = () => {
                             <input 
                                 type="number" placeholder="35000" value={request.purchasePrice} 
                                 onChange={(e) => updateRequest('purchasePrice', e.target.value)} 
-                                className="w-full p-3 pl-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono"
+                                className="w-full p-3 pl-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all font-mono"
                             />
                         </div>
                     </div>
@@ -220,7 +220,7 @@ const OwnershipCalculator: React.FC = () => {
                             <input 
                                 type="text" placeholder="90210" value={request.zipCode} 
                                 onChange={(e) => updateRequest('zipCode', e.target.value)} 
-                                className="w-full p-3 pl-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                className="w-full p-3 pl-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all"
                                 maxLength={5}
                             />
                         </div>
@@ -237,7 +237,7 @@ const OwnershipCalculator: React.FC = () => {
                         <select 
                             value={request.annualMiles}
                             onChange={(e) => updateRequest('annualMiles', e.target.value)}
-                            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
+                            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all cursor-pointer"
                         >
                             <option value="5k">5k miles</option>
                             <option value="10k">10k miles</option>
@@ -251,7 +251,7 @@ const OwnershipCalculator: React.FC = () => {
                         <select 
                             value={request.ownershipPeriod}
                             onChange={(e) => updateRequest('ownershipPeriod', e.target.value)}
-                            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
+                            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all cursor-pointer"
                         >
                             <option value="3 years">3 years</option>
                             <option value="5 years">5 years (Default)</option>
@@ -335,7 +335,7 @@ const OwnershipCalculator: React.FC = () => {
                   </div>
 
                   {/* Insurance Switcher Lead Gen CTA */}
-                  <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl animate-in zoom-in-95 duration-500 delay-300">
+                  <div className="bg-linear-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl animate-in zoom-in-95 duration-500 delay-300">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <ShieldCheck className="w-24 h-24 -rotate-12 translate-x-4 -translate-y-4" />
                     </div>
@@ -485,7 +485,7 @@ const OwnershipCalculator: React.FC = () => {
                             desc: "We use actuarial standards to predict depreciation curves over 3 and 5-year periods." 
                         },
                     ].map((item, i) => (
-                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                             <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
                                 {item.icon}
                             </div>
@@ -497,7 +497,7 @@ const OwnershipCalculator: React.FC = () => {
             </div>
 
             {/* How To Audit Your Costs Section (REDESIGNED) */}
-            <div className="w-full bg-slate-950 dark:bg-[#020617] py-24 px-4 -mx-4 sm:mx-0 sm:rounded-[3rem] border-y sm:border border-slate-900">
+            <div className="w-full bg-slate-950 dark:bg-brand-dark py-24 px-4 -mx-4 sm:mx-0 sm:rounded-[3rem] border-y sm:border border-slate-900">
                 <div className="max-w-5xl mx-auto">
                     <h2 className="text-3xl font-black text-white text-center mb-16">How to Audit Your Costs</h2>
                     <div className="grid md:grid-cols-3 gap-6">
@@ -583,7 +583,7 @@ const OwnershipCalculator: React.FC = () => {
                         >
                             <button
                                 onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                                className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                                className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                             >
                                 <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                                 {faq.question}

@@ -155,7 +155,7 @@ const MaintenanceValidator: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Car Repair <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-orange-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-red-500 to-orange-600">
                Overcharge Validator
             </span>
           </h1>
@@ -180,7 +180,7 @@ const MaintenanceValidator: React.FC = () => {
                                 placeholder="e.g. Brake Pads, Alternator, Timing Belt" 
                                 value={request.service} 
                                 onChange={(e) => updateRequest('service', e.target.value)} 
-                                className="w-full p-3 pl-12 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all font-medium"
+                                className="w-full p-3 pl-12 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all font-medium"
                             />
                         </div>
                     </div>
@@ -191,7 +191,7 @@ const MaintenanceValidator: React.FC = () => {
                             <input 
                                 type="text" placeholder="2018" value={request.year} 
                                 onChange={(e) => updateRequest('year', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
                             />
                         </div>
                         <div>
@@ -199,7 +199,7 @@ const MaintenanceValidator: React.FC = () => {
                             <input 
                                 type="text" placeholder="Toyota" value={request.make} 
                                 onChange={(e) => updateRequest('make', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
                             />
                         </div>
                     </div>
@@ -210,7 +210,7 @@ const MaintenanceValidator: React.FC = () => {
                             <input 
                                 type="text" placeholder="Camry" value={request.model} 
                                 onChange={(e) => updateRequest('model', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
                             />
                         </div>
                         <div>
@@ -220,7 +220,7 @@ const MaintenanceValidator: React.FC = () => {
                                 <input 
                                     type="text" placeholder="90210" value={request.zip} 
                                     onChange={(e) => updateRequest('zip', e.target.value)} 
-                                    className="w-full p-3 pl-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all"
+                                    className="w-full p-3 pl-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
                                 />
                             </div>
                         </div>
@@ -236,7 +236,7 @@ const MaintenanceValidator: React.FC = () => {
                         <input 
                             type="number" placeholder="0.00" value={request.quoteAmount} 
                             onChange={(e) => updateRequest('quoteAmount', e.target.value)} 
-                            className="w-full p-4 pl-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all text-2xl font-bold text-slate-900 dark:text-white"
+                            className="w-full p-4 pl-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all text-2xl font-bold text-slate-900 dark:text-white"
                         />
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -319,7 +319,7 @@ const MaintenanceValidator: React.FC = () => {
                  <div className="md:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg">
                     <h3 className="font-bold text-slate-900 dark:text-white mb-6">Price Spectrum</h3>
                     <div className="relative pt-8 pb-4 px-2">
-                        <div className="h-6 w-full rounded-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500 relative"></div>
+                        <div className="h-6 w-full rounded-full bg-linear-to-r from-green-400 via-yellow-400 to-red-500 relative"></div>
                         <div className="absolute top-0 w-full flex justify-between text-xs font-bold text-slate-400 mt-1">
                             <span className="transform -translate-x-1/2" style={{ left: '0%' }}>$0</span>
                             <span className="transform -translate-x-1/2" style={{ left: '33%' }}>Fair</span>
@@ -349,7 +349,7 @@ const MaintenanceValidator: React.FC = () => {
                  </div>
               </div>
 
-              <div className="bg-gradient-to-br from-red-600 to-orange-700 rounded-[2.5rem] p-8 sm:p-10 mb-8 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in zoom-in-95 duration-500">
+              <div className="bg-linear-to-br from-red-600 to-orange-700 rounded-[2.5rem] p-8 sm:p-10 mb-8 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in zoom-in-95 duration-500">
                  <div className="absolute top-0 right-0 p-8 opacity-5"><Wrench className="w-48 h-48 -rotate-12" /></div>
                  <div className="relative z-10 grid md:grid-cols-2 gap-10 items-center">
                     <div>
@@ -427,7 +427,7 @@ const MaintenanceValidator: React.FC = () => {
                             desc: "Instantly know if your car is safe for a road trip or if you need a tow truck immediately." 
                         },
                     ].map((item, i) => (
-                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                             <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
                             <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
                             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
@@ -440,17 +440,17 @@ const MaintenanceValidator: React.FC = () => {
             <div className="w-full mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">How to Audit Your Quote</h2>
                 <div className="grid md:grid-cols-3 gap-8">
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-brand-primary flex items-center justify-center mb-4"><Wrench className="w-7 h-7" /></div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Enter Details</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Tell us what needs fixing and your vehicle details so we can find the right parts and labor hours.</p>
                 </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4"><MapPin className="w-7 h-7" /></div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Localized Analysis</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">We use your ZIP code to determine the prevailing hourly labor rate for mechanics in your area.</p>
                 </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center mb-4"><Gavel className="w-7 h-7" /></div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Get The Verdict</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Instantly see if you're being overcharged with our visual "Rip-Off Scorecard" and negotiation tips.</p>
@@ -490,7 +490,7 @@ const MaintenanceValidator: React.FC = () => {
                 <div className="space-y-4">
                     {faqs.map((faq, index) => (
                         <div key={index} className={`border rounded-2xl transition-all duration-300 overflow-hidden ${openFaqIndex === index ? 'bg-white dark:bg-slate-900 border-brand-primary/30 shadow-lg shadow-brand-primary/5' : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}>
-                            <button onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)} className="w-full flex items-center justify-between p-5 text-left focus:outline-none">
+                            <button onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)} className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden">
                                 <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>{faq.question}</span>
                                 <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${openFaqIndex === index ? 'rotate-180 text-brand-primary' : ''}`} />
                             </button>

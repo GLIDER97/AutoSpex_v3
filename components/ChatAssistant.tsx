@@ -72,7 +72,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
   const TriggerCard = (
     <button 
       onClick={() => setIsOpen(true)}
-      className="w-full text-left group relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 shadow-xl shadow-blue-500/20 dark:shadow-blue-900/20 border border-blue-500/30 hover:scale-[1.02] transition-all duration-300"
+      className="w-full text-left group relative overflow-hidden bg-linear-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 shadow-xl shadow-blue-500/20 dark:shadow-blue-900/20 border border-blue-500/30 hover:scale-[1.02] transition-all duration-300"
     >
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
         <Bot className="w-32 h-32 -rotate-12 translate-x-8 -translate-y-8 text-white" />
@@ -96,10 +96,10 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
   );
 
   const Modal = isOpen ? createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-xs"
         onClick={() => setIsOpen(false)}
       />
 
@@ -109,7 +109,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
         {/* Header */}
         <div className="p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 relative z-20">
           <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-tr from-blue-500 to-indigo-600 p-2 rounded-xl shadow-lg shadow-blue-500/20">
+            <div className="bg-linear-to-tr from-blue-500 to-indigo-600 p-2 rounded-xl shadow-lg shadow-blue-500/20">
               <Bot className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -129,7 +129,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-grow overflow-y-auto p-4 space-y-6 custom-scrollbar bg-slate-50 dark:bg-slate-950/50">
+        <div className="grow overflow-y-auto p-4 space-y-6 custom-scrollbar bg-slate-50 dark:bg-slate-950/50">
           <div className="text-center py-4">
             <div className="inline-block px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[13px] text-slate-600 dark:text-slate-500">
               Diagnostic Session Started for {code}
@@ -152,7 +152,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
               {/* Message Bubble */}
               <div 
                 className={`
-                  max-w-[80%] rounded-2xl p-4 text-sm leading-relaxed shadow-sm
+                  max-w-[80%] rounded-2xl p-4 text-sm leading-relaxed shadow-xs
                   ${msg.role === 'user' 
                     ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tr-none border border-slate-200 dark:border-slate-700' 
                     : 'bg-blue-50 dark:bg-blue-900/20 text-slate-800 dark:text-slate-200 rounded-tl-none border border-blue-100 dark:border-blue-500/20'}
@@ -181,14 +181,14 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
         {/* Input Area */}
         <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shrink-0">
           <form onSubmit={handleSend} className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
+            <div className="absolute -inset-0.5 bg-linear-to-r from-blue-500 to-indigo-500 rounded-xl opacity-20 group-hover:opacity-40 transition duration-500 blur-sm"></div>
             <div className="relative flex items-center bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 focus-within:border-blue-500/50 transition-colors overflow-hidden">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about symptoms, fixes, or costs..."
-                className="w-full bg-transparent border-none py-3.5 pl-4 pr-12 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-none"
+                className="w-full bg-transparent border-none py-3.5 pl-4 pr-12 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-hidden"
               />
               <button 
                 type="submit"

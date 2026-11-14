@@ -114,10 +114,10 @@ const WrapDesigner: React.FC = () => {
   ];
 
   const FullscreenModal = generatedImage && isFullscreen ? createPortal(
-    <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center p-4 animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-200 bg-black/95 flex flex-col items-center justify-center p-4 animate-in fade-in duration-300">
       <button 
         onClick={() => setIsFullscreen(false)}
-        className="absolute top-6 right-6 z-[210] p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors backdrop-blur-md"
+        className="absolute top-6 right-6 z-210 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors backdrop-blur-md"
       >
         <X className="w-6 h-6" />
       </button>
@@ -130,7 +130,7 @@ const WrapDesigner: React.FC = () => {
             className="w-full h-auto max-h-[85vh] object-contain select-none"
           />
           
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 text-center pt-12 hidden sm:block">
+          <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black via-black/80 to-transparent p-6 text-center pt-12 hidden sm:block">
             <div className="flex items-center justify-center gap-2 mb-1">
                <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center">
                   <Gauge className="w-4 h-4 text-black" strokeWidth={3} />
@@ -172,7 +172,7 @@ const WrapDesigner: React.FC = () => {
         </div>
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
           AI Custom Car <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-500 to-indigo-600">
              Wrap Designer
           </span>
         </h1>
@@ -194,7 +194,7 @@ const WrapDesigner: React.FC = () => {
                 <select 
                   value={request.vehicleType}
                   onChange={(e) => updateRequest('vehicleType', e.target.value)}
-                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all cursor-pointer"
                 >
                   <option value="Supercar">Supercar</option>
                   <option value="Muscle Car">Muscle Car</option>
@@ -213,7 +213,7 @@ const WrapDesigner: React.FC = () => {
                   value={request.prompt}
                   onChange={(e) => updateRequest('prompt', e.target.value)}
                   rows={4}
-                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none text-sm leading-relaxed"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all resize-none text-sm leading-relaxed"
                 />
               </div>
 
@@ -225,7 +225,7 @@ const WrapDesigner: React.FC = () => {
                   <select 
                     value={request.artStyle}
                     onChange={(e) => updateRequest('artStyle', e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer appearance-none"
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all cursor-pointer appearance-none"
                   >
                     {ART_STYLES.map((style) => (
                       <option key={style} value={style}>{style}</option>
@@ -260,7 +260,7 @@ const WrapDesigner: React.FC = () => {
           {generatedImage ? (
             <div className="space-y-6 animate-in zoom-in-95 duration-500">
               <div className="relative group cursor-zoom-in" onClick={() => setIsFullscreen(true)}>
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[2rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+                <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-indigo-600 rounded-4xl blur-sm opacity-25 group-hover:opacity-40 transition duration-1000"></div>
                 
                 {/* The Branded Frame Container */}
                 <div className="relative bg-slate-950 rounded-[1.8rem] overflow-hidden border border-white/5 shadow-2xl">
@@ -271,7 +271,7 @@ const WrapDesigner: React.FC = () => {
                   />
                   
                   {/* Subtle Branded Footer Overlay - Hidden on mobile to avoid obscuring the car */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 text-center pt-12 hidden sm:block">
+                  <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black via-black/80 to-transparent p-6 text-center pt-12 hidden sm:block">
                     <div className="flex items-center justify-center gap-2 mb-1">
                        <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center">
                           <Gauge className="w-4 h-4 text-black" strokeWidth={3} />
@@ -300,7 +300,7 @@ const WrapDesigner: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                  <button 
                   onClick={handleDownload}
-                  className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-sm"
+                  className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-xs"
                  >
                     <Download className="w-5 h-5 text-blue-500" /> Save Design
                  </button>
@@ -310,7 +310,7 @@ const WrapDesigner: React.FC = () => {
                       navigator.share({ title: 'My Custom Car Wrap', text: 'Check out this design I created with MyAutoSpex AI!', url: window.location.href });
                     }
                   }}
-                  className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-sm"
+                  className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-xs"
                  >
                     <Share2 className="w-5 h-5 text-indigo-500" /> Share Concept
                  </button>
@@ -321,8 +321,8 @@ const WrapDesigner: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[2rem] bg-slate-50 dark:bg-slate-900/20 p-12 text-center group">
-               <div className="w-20 h-20 rounded-[2rem] bg-white dark:bg-slate-800 shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+            <div className="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-4xl bg-slate-50 dark:bg-slate-900/20 p-12 text-center group">
+               <div className="w-20 h-20 rounded-4xl bg-white dark:bg-slate-800 shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                   <ImageIcon className="w-10 h-10 text-slate-300 dark:text-slate-600" />
                </div>
                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Ready to Visualize?</h3>
@@ -415,7 +415,7 @@ const WrapDesigner: React.FC = () => {
                     >
                         <button
                             onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                            className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                            className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                         >
                             <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                             {faq.question}

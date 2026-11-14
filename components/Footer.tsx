@@ -1,88 +1,82 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Zap } from './Icons';
+import { cn } from '@/lib/utils';
+import { TOOL_CATEGORIES } from '../data/tools';
+import { SignMarker, Wordmark } from './brand';
+
+const FEEDBACK_URL = 'https://forms.gle/XtuvETokH5R83r1q7';
+
+const linkClass = cn(
+  'rounded-sm text-slate-300 transition-colors hover:text-white',
+  'outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sign-yellow',
+);
+
+const COMPANY_LINKS = [
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
+  { to: '/blog', label: 'Articles' },
+  { to: '/privacy-policy', label: 'Privacy policy' },
+  { to: '/terms-of-service', label: 'Terms of service' },
+  { to: '/cookie-policy', label: 'Cookie policy' },
+];
 
 const Footer: React.FC = () => {
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-950 py-16 relative z-20">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 lg:grid-cols-5 gap-12">
+    // The footer stays asphalt-dark in both themes: the road the signs stand on.
+    <footer className="relative z-20 bg-slate-900 text-slate-300">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-10 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_repeat(5,1fr)]">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link to="/" aria-label="MyAutoSpex home" className={cn('inline-block', linkClass)}>
+              <Wordmark inverted />
+            </Link>
+            <p className="mt-4 max-w-xs text-[0.9375rem] leading-relaxed text-slate-300">
+              Free tools that explain car problems and car costs in plain English. No account needed.
+            </p>
+            <a href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer" className={cn('mt-4 inline-block text-[0.9375rem] font-semibold text-white underline underline-offset-4', linkClass)}>
+              Send feedback
+            </a>
+          </div>
 
-        {/* Column 1: Brand & Desc */}
-        <div className="md:col-span-2 lg:col-span-1">
-          <Link to="/" className="flex items-center gap-2 mb-6 cursor-pointer">
-            <div className="bg-gradient-to-tr from-brand-primary to-orange-600 rounded-lg p-1.5 shadow-lg shadow-orange-500/20 dark:shadow-orange-900/20">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-lg text-slate-900 dark:text-white leading-none">
-                MyAutoSpex
-              </span>
-            </div>
-          </Link>
-          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-sm mb-6">
-            The ultimate free diagnostic tool for car owners. We translate complex automotive data into plain English, helping you save money on repairs and drive safer.
-          </p>
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-brand-primary dark:hover:text-white hover:border-brand-primary transition-colors cursor-pointer">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg>
-            </div>
-            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-brand-primary dark:hover:text-white hover:border-brand-primary transition-colors cursor-pointer">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>
+          <div className="grid gap-10 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-5">
+            {TOOL_CATEGORIES.map((category) => (
+              <div key={category.id}>
+                <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
+                  <SignMarker category={category.id} className="size-4" />
+                  {category.name}
+                </h2>
+                <ul className="space-y-2 text-[0.9375rem]">
+                  {category.tools.map((tool) => (
+                    <li key={tool.path}>
+                      <Link to={tool.path} className={linkClass}>
+                        {tool.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            <div>
+              <h2 className="mb-3 text-sm font-bold text-white">MyAutoSpex</h2>
+              <ul className="space-y-2 text-[0.9375rem]">
+                {COMPANY_LINKS.map((item) => (
+                  <li key={item.to}>
+                    <Link to={item.to} className={linkClass}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
 
-        {/* Column 2: Diagnostic Tools */}
-        <div>
-          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Diagnostics</h4>
-          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li><Link to="/fault-code-decoder" className="hover:text-brand-primary transition-colors">OBD Fault Decoder</Link></li>
-            <li><Link to="/vin-lookup" className="hover:text-brand-primary transition-colors">VIN Spec Lookup</Link></li>
-            <li><Link to="/maintenance-validator" className="hover:text-brand-primary transition-colors">Repair Cost Auditor</Link></li>
-            <li><Link to="/plate-generator" className="hover:text-brand-primary transition-colors">Vanity Plate Creator</Link></li>
-            <li><Link to="/wrap-designer" className="hover:text-brand-primary transition-colors">AI Wrap Designer</Link></li>
-          </ul>
+        <div className="mt-12 flex flex-col gap-2 border-t border-slate-700 pt-6 text-sm text-slate-400 md:flex-row md:justify-between">
+          <p>© {new Date().getFullYear()} MyAutoSpex</p>
+          <p className="max-w-[60ch]">
+            Estimates are for information only. Have a qualified mechanic confirm a diagnosis before you pay for a repair.
+          </p>
         </div>
-
-        {/* Column 3: Financial Analysis */}
-        <div>
-          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Financials</h4>
-          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li><Link to="/insurance-estimator" className="hover:text-brand-primary transition-colors">Insurance Estimator</Link></li>
-            <li><Link to="/affordability-predictor" className="hover:text-brand-primary transition-colors">Price & Affordability</Link></li>
-            <li><Link to="/ownership-calculator" className="hover:text-brand-primary transition-colors">Ownership Cost (TCO)</Link></li>
-            <li><Link to="/value-shock-calculator" className="hover:text-brand-primary transition-colors">Resale Value Shock</Link></li>
-            <li><Link to="/mpg-calculator" className="hover:text-brand-primary transition-colors">MPG & Fuel Analyzer</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 4: Platform Hubs */}
-        <div>
-          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Platform</h4>
-          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li><Link to="/mechanic-finder" className="hover:text-brand-primary transition-colors">Find Local Mechanic</Link></li>
-            <li><Link to="/recalls" className="hover:text-brand-primary transition-colors">Recalls & Safety</Link></li>
-            <li><Link to="/coupons" className="hover:text-brand-primary transition-colors">Service Coupons</Link></li>
-            <li><Link to="/about" className="hover:text-brand-primary transition-colors">About MyAutoSpex</Link></li>
-            <li><Link to="/contact" className="hover:text-brand-primary transition-colors">Contact Support</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 5: Legal */}
-        <div>
-          <h4 className="font-bold text-slate-900 dark:text-white mb-6 text-sm uppercase tracking-wider">Legal</h4>
-          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-            <li><Link to="/privacy-policy" className="hover:text-brand-primary transition-colors">Privacy Policy</Link></li>
-            <li><Link to="/terms-of-service" className="hover:text-brand-primary transition-colors">Terms of Service</Link></li>
-            <li><Link to="/cookie-policy" className="hover:text-brand-primary transition-colors">Cookie Policy</Link></li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-slate-200 dark:border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 dark:text-slate-600 text-[13px]">
-        <p>© {new Date().getFullYear()} MyAutoSpex. All rights reserved.</p>
-        <p>Data provided for informational purposes only. Consult a professional mechanic for repairs.</p>
       </div>
     </footer>
   );

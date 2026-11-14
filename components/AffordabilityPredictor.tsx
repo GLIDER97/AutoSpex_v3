@@ -214,7 +214,7 @@ const AffordabilityPredictor: React.FC = () => {
   const renderLeadModal = () => {
     if (!isLeadModalOpen) return null;
     return createPortal(
-      <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
+      <div className="fixed inset-0 z-200 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
         <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setIsLeadModalOpen(false)} />
         <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 p-8 sm:p-10">
           <button onClick={() => setIsLeadModalOpen(false)} className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
@@ -237,7 +237,7 @@ const AffordabilityPredictor: React.FC = () => {
                   <input
                     type="text" required placeholder="Full Name"
                     value={leadContact.name} onChange={(e) => setLeadContact({ ...leadContact, name: e.target.value })}
-                    className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                    className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                   />
                 </div>
                 <div className="relative">
@@ -245,7 +245,7 @@ const AffordabilityPredictor: React.FC = () => {
                   <input
                     type="tel" required placeholder="Phone Number"
                     value={leadContact.phone} onChange={(e) => setLeadContact({ ...leadContact, phone: e.target.value })}
-                    className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                    className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                   />
                 </div>
                 <div className="relative">
@@ -253,7 +253,7 @@ const AffordabilityPredictor: React.FC = () => {
                   <input
                     type="email" required placeholder="Email Address"
                     value={leadContact.email} onChange={(e) => setLeadContact({ ...leadContact, email: e.target.value })}
-                    className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                    className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                   />
                 </div>
               </div>
@@ -303,7 +303,7 @@ const AffordabilityPredictor: React.FC = () => {
             placeholder="2021"
             value={data.vehicle.year}
             onChange={(e) => updateVehicle('year', e.target.value)}
-            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all"
           />
         </div>
         <div>
@@ -313,7 +313,7 @@ const AffordabilityPredictor: React.FC = () => {
             placeholder="Honda"
             value={data.vehicle.make}
             onChange={(e) => updateVehicle('make', e.target.value)}
-            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all"
           />
         </div>
       </div>
@@ -325,7 +325,7 @@ const AffordabilityPredictor: React.FC = () => {
           placeholder="Civic"
           value={data.vehicle.model}
           onChange={(e) => updateVehicle('model', e.target.value)}
-          className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+          className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all"
         />
       </div>
 
@@ -337,7 +337,7 @@ const AffordabilityPredictor: React.FC = () => {
             placeholder="EX-L"
             value={data.vehicle.trim}
             onChange={(e) => updateVehicle('trim', e.target.value)}
-            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all"
           />
         </div>
         <div>
@@ -347,7 +347,7 @@ const AffordabilityPredictor: React.FC = () => {
             placeholder="90210"
             value={data.vehicle.zip}
             onChange={(e) => updateVehicle('zip', e.target.value.replace(/\D/g, '').slice(0, 5))}
-            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all"
           />
         </div>
       </div>
@@ -370,7 +370,7 @@ const AffordabilityPredictor: React.FC = () => {
               placeholder="4500"
               value={data.finance.monthlyIncome}
               onChange={(e) => updateFinance('monthlyIncome', e.target.value)}
-              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-hidden transition-all"
             />
           </div>
         </div>
@@ -383,7 +383,7 @@ const AffordabilityPredictor: React.FC = () => {
               placeholder="1200"
               value={data.finance.monthlyDebt}
               onChange={(e) => updateFinance('monthlyDebt', e.target.value)}
-              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-hidden transition-all"
             />
           </div>
           <p className="text-xs text-slate-500 mt-1">Rent, Student Loans, Credit Cards</p>
@@ -403,7 +403,7 @@ const AffordabilityPredictor: React.FC = () => {
               key={opt.id}
               onClick={() => updateFinance('creditScore', opt.id)}
               className={`p-3 rounded-xl border text-center transition-all ${data.finance.creditScore === opt.id
-                ? `${opt.color} shadow-sm border-2`
+                ? `${opt.color} shadow-xs border-2`
                 : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-400'
                 }`}
             >
@@ -424,7 +424,7 @@ const AffordabilityPredictor: React.FC = () => {
               placeholder="2000"
               value={data.finance.downPayment}
               onChange={(e) => updateFinance('downPayment', e.target.value)}
-              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+              className="w-full p-3 pl-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-hidden transition-all"
             />
           </div>
         </div>
@@ -433,7 +433,7 @@ const AffordabilityPredictor: React.FC = () => {
           <select
             value={data.finance.termMonths}
             onChange={(e) => updateFinance('termMonths', parseInt(e.target.value))}
-            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+            className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 outline-hidden transition-all"
           >
             {[36, 48, 60, 72, 84].map(m => (
               <option key={m} value={m}>{m} Months</option>
@@ -491,7 +491,7 @@ const AffordabilityPredictor: React.FC = () => {
             <div className="mt-6 space-y-2">
               {result.marketContext.map((ctx, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-primary mt-1.5 flex-shrink-0"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-primary mt-1.5 shrink-0"></span>
                   {ctx}
                 </div>
               ))}
@@ -556,7 +556,7 @@ const AffordabilityPredictor: React.FC = () => {
         </div>
 
         {/* MONETIZATION ACTION SECTION */}
-        <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-8 sm:p-12 mb-8 border border-white/5 shadow-2xl relative overflow-hidden text-white">
+        <div className="bg-linear-to-br from-indigo-900 to-slate-900 rounded-[2.5rem] p-8 sm:p-12 mb-8 border border-white/5 shadow-2xl relative overflow-hidden text-white">
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <Zap className="w-64 h-64 text-white" />
           </div>
@@ -625,7 +625,7 @@ const AffordabilityPredictor: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             True Car Price <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-orange-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-brand-primary to-orange-600">
               & Affordability Predictor
             </span>
           </h1>
@@ -756,7 +756,7 @@ const AffordabilityPredictor: React.FC = () => {
                   desc: "Walk into the dealership with the exact target price you should pay for that model."
                 },
               ].map((item, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                   <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
                     {item.icon}
                   </div>
@@ -773,7 +773,7 @@ const AffordabilityPredictor: React.FC = () => {
               How to Audit Your Car Purchase
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs group hover:border-brand-primary/50 transition-colors">
                 <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-brand-primary flex items-center justify-center mb-4">
                   <Car className="w-7 h-7" />
                 </div>
@@ -782,7 +782,7 @@ const AffordabilityPredictor: React.FC = () => {
                   Enter the car you want and your zip code to get real-time local market pricing data.
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs group hover:border-brand-primary/50 transition-colors">
                 <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
                   <DollarSign className="w-7 h-7" />
                 </div>
@@ -791,7 +791,7 @@ const AffordabilityPredictor: React.FC = () => {
                   Input your details to establish affordability benchmarks based on current US lending standards.
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-brand-primary/50 transition-colors">
+              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs group hover:border-brand-primary/50 transition-colors">
                 <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
                   <PieChart className="w-7 h-7" />
                 </div>
@@ -814,7 +814,7 @@ const AffordabilityPredictor: React.FC = () => {
                 { name: "Mike T.", loc: "Denver, CO", text: "I almost bought a truck that would have eaten 25% of my monthly income. This tool saved me from a huge mistake.", stars: 5 },
                 { name: "David L.", loc: "Phoenix, AZ", text: "Simple, fast, and honest. The affordability breakdown showed me exactly what I could actually afford safely.", stars: 5 },
               ].map((review, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
                   <div className="flex gap-1 mb-4 text-brand-primary">
                     {[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
                   </div>
@@ -854,7 +854,7 @@ const AffordabilityPredictor: React.FC = () => {
                 >
                   <button
                     onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                    className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                   >
                     <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                       {faq.question}

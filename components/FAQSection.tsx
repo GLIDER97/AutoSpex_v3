@@ -49,7 +49,7 @@ const FAQSection: React.FC = () => {
           >
             <button
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+              className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
             >
               <span className={`font-semibold pr-4 ${openIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                 {faq.question}

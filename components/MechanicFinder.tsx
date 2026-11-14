@@ -163,7 +163,7 @@ const MechanicFinder: React.FC = () => {
                 alt="Stylized USA Map"
                 className="w-full h-full object-cover opacity-[0.2] dark:opacity-[0.4] transition-opacity duration-1000"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white dark:from-slate-950 dark:via-transparent dark:to-slate-950" />
+              <div className="absolute inset-0 bg-linear-to-b from-white via-transparent to-white dark:from-slate-950 dark:via-transparent dark:to-slate-950" />
             </div>
           ) : (
             <div className="w-full h-full bg-slate-100 dark:bg-slate-900 opacity-20 animate-pulse" />
@@ -177,7 +177,7 @@ const MechanicFinder: React.FC = () => {
           </div>
           <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-slate-900 dark:text-white mb-6 leading-[1.05]">
             Find Trusted <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-500 via-indigo-500 to-blue-600">
               Local Mechanics
             </span>
           </h1>
@@ -188,7 +188,7 @@ const MechanicFinder: React.FC = () => {
           {/* Interactive Search Bar */}
           <div className="w-full max-w-xl mx-auto mb-16">
             <form onSubmit={handleSearch} className="group relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+              <div className="absolute -inset-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-3xl blur-sm opacity-25 group-hover:opacity-50 transition duration-500"></div>
               <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-2">
                 <div className="pl-5 text-slate-400">
                   <Search className="w-6 h-6" />
@@ -198,7 +198,7 @@ const MechanicFinder: React.FC = () => {
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
                   placeholder="Enter your 5-digit ZIP code"
-                  className="w-full p-4 bg-transparent border-none text-slate-900 dark:text-white font-black text-lg placeholder-slate-400 focus:ring-0 outline-none"
+                  className="w-full p-4 bg-transparent border-none text-slate-900 dark:text-white font-black text-lg placeholder-slate-400 focus:ring-0 outline-hidden"
                 />
                 <button
                   type="submit"
@@ -244,7 +244,7 @@ const MechanicFinder: React.FC = () => {
               <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Best Matches for {searchedZip}</h2>
               <p className="text-slate-500 text-lg font-medium">We found these top-rated specialists in your neighborhood.</p>
             </div>
-            <div className="flex items-center gap-2 text-blue-600 bg-blue-600/5 px-5 py-2.5 rounded-full border border-blue-600/20 shadow-sm">
+            <div className="flex items-center gap-2 text-blue-600 bg-blue-600/5 px-5 py-2.5 rounded-full border border-blue-600/20 shadow-xs">
               <ShieldCheck className="w-5 h-5" />
               <span className="text-xs font-black uppercase tracking-widest">Verified Listings</span>
             </div>
@@ -261,7 +261,7 @@ const MechanicFinder: React.FC = () => {
                   <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                     <Wrench className="w-7 h-7" />
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 text-sm font-black shadow-sm">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 text-sm font-black shadow-xs">
                     <Star className="w-4 h-4 fill-current" /> {shop.rating}
                   </div>
                 </div>
@@ -318,7 +318,7 @@ const MechanicFinder: React.FC = () => {
               ))}
             </div>
           </div>
-          <div className="order-1 md:order-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-[3rem] p-10 sm:p-14 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden shadow-2xl">
+          <div className="order-1 md:order-2 bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-[3rem] p-10 sm:p-14 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden shadow-2xl">
             <Zap className="absolute -bottom-8 -right-8 w-64 h-64 text-blue-500/10 -rotate-12" />
             <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-6 relative z-10">Smart Matching</h3>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg font-medium mb-8">
@@ -344,14 +344,14 @@ const MechanicFinder: React.FC = () => {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className={`border rounded-[2rem] transition-all duration-300 overflow-hidden ${openFaqIndex === index
+                className={`border rounded-4xl transition-all duration-300 overflow-hidden ${openFaqIndex === index
                     ? 'bg-white dark:bg-slate-900 border-blue-500/30 shadow-2xl shadow-blue-500/10'
                     : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                   }`}
               >
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-7 text-left focus:outline-none"
+                  className="w-full flex items-center justify-between p-7 text-left focus:outline-hidden"
                 >
                   <span className={`font-bold pr-4 text-lg ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                     {faq.question}

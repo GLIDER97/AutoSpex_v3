@@ -155,7 +155,7 @@ const VinLookup: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Free VIN Number <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-600">
               Decoder & Specs Lookup
             </span>
           </h1>
@@ -168,7 +168,7 @@ const VinLookup: React.FC = () => {
       {/* Input Section */}
       <div className="w-full max-w-xl mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700 mb-8">
         <form onSubmit={handleSearch} className="relative group">
-          <div className={`absolute -inset-0.5 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500 bg-gradient-to-r from-blue-600 to-indigo-600`}></div>
+          <div className={`absolute -inset-0.5 rounded-2xl blur-sm opacity-30 group-hover:opacity-60 transition duration-500 bg-linear-to-r from-blue-600 to-indigo-600`}></div>
 
           <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden transition-colors">
             <div className="pl-4 text-slate-400">
@@ -177,7 +177,7 @@ const VinLookup: React.FC = () => {
 
             <input
               type="text"
-              className="w-full bg-transparent border-none text-slate-900 dark:text-white text-xl placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-none py-4 px-4 font-mono uppercase tracking-wider transition-colors"
+              className="w-full bg-transparent border-none text-slate-900 dark:text-white text-xl placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-hidden py-4 px-4 font-mono uppercase tracking-wider transition-colors"
               placeholder="ENTER 17-DIGIT VIN"
               value={vin}
               onChange={(e) => setVin(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
@@ -207,8 +207,8 @@ const VinLookup: React.FC = () => {
           </div>
         </form>
         {error && (
-          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-600 dark:text-red-400 animate-in slide-in-from-top-2 shadow-sm">
-            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-600 dark:text-red-400 animate-in slide-in-from-top-2 shadow-xs">
+            <AlertTriangle className="w-5 h-5 shrink-0" />
             <span className="font-medium">{error}</span>
           </div>
         )}
@@ -256,7 +256,7 @@ const VinLookup: React.FC = () => {
               </span>
             </div>
 
-            <div className="inline-flex items-center gap-3 sm:gap-4 px-6 py-4 sm:px-10 sm:py-5 rounded-2xl sm:rounded-[2rem] bg-blue-500/10 backdrop-blur-xl border-2 border-blue-500/30 text-blue-600 dark:text-blue-400 shadow-2xl shadow-blue-500/10 w-full sm:w-auto">
+            <div className="inline-flex items-center gap-3 sm:gap-4 px-6 py-4 sm:px-10 sm:py-5 rounded-2xl sm:rounded-4xl bg-blue-500/10 backdrop-blur-xl border-2 border-blue-500/30 text-blue-600 dark:text-blue-400 shadow-2xl shadow-blue-500/10 w-full sm:w-auto">
               <ShieldCheck className="w-6 h-6 sm:w-10 sm:h-10 animate-bounce shrink-0" />
               <span className="text-base sm:text-4xl font-black uppercase tracking-tight text-center sm:text-left">
                 IDENTITY VERIFIED: <span className="text-slate-900 dark:text-white">{result.year} {result.make} {result.model}</span>
@@ -290,7 +290,7 @@ const VinLookup: React.FC = () => {
               </div>
 
               {/* Visual Representation of Manufacturing */}
-              <div className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-700 flex flex-col items-center min-w-[140px]">
+              <div className="bg-slate-800/50 backdrop-blur-xs p-4 rounded-2xl border border-slate-700 flex flex-col items-center min-w-[140px]">
                 <Factory className="w-8 h-8 text-blue-500 mb-2" />
                 <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Assembled In</span>
                 <span className="text-white font-bold text-center leading-tight mt-1">
@@ -305,7 +305,7 @@ const VinLookup: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
 
             {/* Engine Specs */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-sm dark:shadow-none">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-xs dark:shadow-none">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
                   <Zap className="w-5 h-5" />
@@ -337,7 +337,7 @@ const VinLookup: React.FC = () => {
             </div>
 
             {/* Chassis Specs */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-sm dark:shadow-none">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-xs dark:shadow-none">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
                   <Car className="w-5 h-5" />
@@ -367,7 +367,7 @@ const VinLookup: React.FC = () => {
             </div>
 
             {/* Manufacturing Specs */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-sm dark:shadow-none">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-xs dark:shadow-none">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:bg-slate-700 group-hover:text-white transition-colors">
                   <MapPin className="w-5 h-5" />
@@ -393,7 +393,7 @@ const VinLookup: React.FC = () => {
 
           {/* MONETIZATION: GOODCAR AFFILIATE */}
           <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden group">
+            <div className="bg-linear-to-br from-slate-900 to-indigo-950 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                 <ShieldAlert className="w-32 h-32 text-white" />
               </div>
@@ -438,7 +438,7 @@ const VinLookup: React.FC = () => {
                   <div className="max-w-3xl mx-auto">
                     <div className="text-center mb-10">
                       <h3 className="text-2xl font-bold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-[0.2em]">Is this your next car?</h3>
-                      <div className="inline-block p-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-2xl shadow-blue-500/20">
+                      <div className="inline-block p-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-2xl shadow-blue-500/20">
                         <div className="bg-white dark:bg-slate-900 px-6 py-6 sm:px-10 sm:py-8 rounded-[0.9rem]">
                           <p className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight">
                             Check Insurance Rates for this <br className="sm:hidden" />
@@ -487,7 +487,7 @@ const VinLookup: React.FC = () => {
                                 value={leadData.zip}
                                 onChange={(e) => setLeadData({ ...leadData, zip: e.target.value.replace(/\D/g, '').slice(0, 5) })}
                                 placeholder="Enter Your ZIP Code"
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold"
+                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all font-bold"
                               />
                             </div>
                           </div>
@@ -497,7 +497,7 @@ const VinLookup: React.FC = () => {
                               type="button"
                               onClick={() => { if (leadData.zip.length === 5) setLeadStep(3); }}
                               disabled={leadData.zip.length < 5}
-                              className="flex-[2] py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all disabled:opacity-50"
+                              className="flex-2 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all disabled:opacity-50"
                             >
                               Next Step
                             </button>
@@ -513,7 +513,7 @@ const VinLookup: React.FC = () => {
                               <input
                                 type="text" required placeholder="Full Name"
                                 value={leadData.name} onChange={(e) => setLeadData({ ...leadData, name: e.target.value })}
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all"
                               />
                             </div>
                             <div className="relative">
@@ -521,7 +521,7 @@ const VinLookup: React.FC = () => {
                               <input
                                 type="email" required placeholder="Email Address"
                                 value={leadData.email} onChange={(e) => setLeadData({ ...leadData, email: e.target.value })}
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all"
                               />
                             </div>
                             <div className="relative">
@@ -529,7 +529,7 @@ const VinLookup: React.FC = () => {
                               <input
                                 type="tel" required placeholder="Phone Number"
                                 value={leadData.phone} onChange={(e) => setLeadData({ ...leadData, phone: e.target.value })}
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all"
                               />
                             </div>
                           </div>
@@ -538,7 +538,7 @@ const VinLookup: React.FC = () => {
                             <button
                               type="submit"
                               disabled={leadLoading}
-                              className="flex-[2] py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+                              className="flex-2 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
                             >
                               {leadLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Get My Quote'}
                             </button>
@@ -622,7 +622,7 @@ const VinLookup: React.FC = () => {
                   desc: "Verify that a seller's claims match the official records for that specific VIN."
                 },
               ].map((item, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                   <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
                     {item.icon}
                   </div>
@@ -639,7 +639,7 @@ const VinLookup: React.FC = () => {
               Simple 3-Step Audit
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-blue-500/50 transition-colors">
+              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs group hover:border-blue-500/50 transition-colors">
                 <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-6 shadow-inner">
                   <Search className="w-8 h-8" />
                 </div>
@@ -648,7 +648,7 @@ const VinLookup: React.FC = () => {
                   Find the 17-digit code on your dashboard (driver's side), door jamb, or vehicle title.
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-indigo-500/50 transition-colors">
+              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs group hover:border-indigo-500/50 transition-colors">
                 <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-6 shadow-inner">
                   <Zap className="w-8 h-8" />
                 </div>
@@ -657,7 +657,7 @@ const VinLookup: React.FC = () => {
                   Type the alphanumeric VIN into our search bar. We validate the checksum instantly.
                 </p>
               </div>
-              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-green-500/50 transition-colors">
+              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs group hover:border-green-500/50 transition-colors">
                 <div className="w-16 h-16 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-6 shadow-inner">
                   <FileText className="w-8 h-8" />
                 </div>
@@ -693,11 +693,11 @@ const VinLookup: React.FC = () => {
                   stars: 5
                 }
               ].map((t, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:shadow-xl transition-all">
+                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col hover:shadow-xl transition-all">
                   <div className="flex gap-1 mb-6 text-blue-500">
                     {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
                   </div>
-                  <p className="text-slate-700 dark:text-slate-300 italic mb-8 flex-grow">"{t.text}"</p>
+                  <p className="text-slate-700 dark:text-slate-300 italic mb-8 grow">"{t.text}"</p>
                   <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
                     <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center font-black text-sm">
                       {t.name.charAt(0)}
@@ -726,14 +726,14 @@ const VinLookup: React.FC = () => {
               {vinFaqs.map((faq, index) => (
                 <div
                   key={index}
-                  className={`border rounded-[2rem] transition-all duration-300 overflow-hidden ${openFaqIndex === index
+                  className={`border rounded-4xl transition-all duration-300 overflow-hidden ${openFaqIndex === index
                     ? 'bg-white dark:bg-slate-900 border-blue-500/30 shadow-lg shadow-blue-500/5'
                     : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                 >
                   <button
                     onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
+                    className="w-full flex items-center justify-between p-6 text-left focus:outline-hidden"
                   >
                     <span className={`font-bold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                       {faq.question}

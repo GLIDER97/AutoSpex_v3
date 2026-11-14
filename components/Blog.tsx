@@ -67,13 +67,13 @@ const Blog: React.FC = () => {
 
       {/* Header */}
       <div className="text-center mb-16 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm font-bold text-blue-600 dark:text-blue-400 mb-8 shadow-sm">
+        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm font-bold text-blue-600 dark:text-blue-400 mb-8 shadow-xs">
           <BookOpen className="w-4 h-4" />
           Articles & Guides
         </div>
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
           Blog & <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-600">
             Resources
           </span>
         </h1>
@@ -103,7 +103,7 @@ const Blog: React.FC = () => {
               />
               {/* Date Badge */}
               {post.displayDate && (
-                <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm flex items-center gap-1.5">
+                <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 shadow-xs flex items-center gap-1.5">
                   <Calendar className="w-3 h-3 text-blue-600" />
                   {post.displayDate}
                 </div>

@@ -236,7 +236,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
         </div>
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
           MPG Calculator <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500">
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-emerald-500 to-teal-500">
              & Cost Analyzer
           </span>
         </h1>
@@ -319,7 +319,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                           type="number" 
                           value={commuteDistance} 
                           onChange={(e) => setCommuteDistance(Number(e.target.value))}
-                          className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-emerald-500 outline-none"
+                          className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-emerald-500 outline-hidden"
                         />
                         <span className="absolute right-4 top-3.5 text-sm text-slate-400">mi</span>
                       </div>
@@ -365,7 +365,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                         type="number" 
                         value={tripDistance} 
                         onChange={(e) => setTripDistance(Number(e.target.value))}
-                        className="w-full p-4 pl-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 font-mono text-lg font-bold focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-4 pl-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 font-mono text-lg font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
                       />
                       <MapPin className="absolute left-4 top-4.5 w-5 h-5 text-slate-400" />
                       <span className="absolute right-4 top-4.5 text-sm text-slate-400 font-bold">MILES</span>
@@ -377,14 +377,14 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                       <label className="font-semibold text-slate-700 dark:text-slate-300 mb-2 block">MPG</label>
                       <input 
                         type="number" value={mpg} onChange={(e) => setMpg(Number(e.target.value))}
-                        className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
                       />
                     </div>
                     <div>
                       <label className="font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Price/Gal</label>
                       <input 
                         type="number" step="0.01" value={fuelPrice} onChange={(e) => setFuelPrice(Number(e.target.value))}
-                        className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
                       />
                     </div>
                  </div>
@@ -428,17 +428,17 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                    <input 
                      type="text" placeholder="Year" required
                      value={vehicleYear} onChange={e => setVehicleYear(e.target.value)}
-                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-hidden"
                    />
                    <input 
                      type="text" placeholder="Make" required
                      value={vehicleMake} onChange={e => setVehicleMake(e.target.value)}
-                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-hidden"
                    />
                    <input 
                      type="text" placeholder="Model" required
                      value={vehicleModel} onChange={e => setVehicleModel(e.target.value)}
-                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-hidden"
                    />
                 </div>
                 
@@ -447,7 +447,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                   <input 
                      type="number" placeholder="e.g. 18.5" step="0.1" required
                      value={observedMpg} onChange={e => setObservedMpg(e.target.value)}
-                     className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xl font-bold focus:ring-2 focus:ring-indigo-500 outline-none"
+                     className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xl font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden"
                    />
                 </div>
 
@@ -470,7 +470,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                     value={epaVariantId}
                     disabled={loading}
                     onChange={e => handleVariantChange(e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500 outline-hidden"
                   >
                     {epaVariants.map(v => (
                       <option key={v.id} value={v.id}>{v.model} · {v.description}</option>
@@ -534,7 +534,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
 
            {/* Trip Results */}
            {mode === 'trip' && (
-             <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-right delay-100">
+             <div className="bg-linear-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-right delay-100">
                 <div className="absolute top-0 right-0 p-6 opacity-10">
                    <MapPin className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
                 </div>
@@ -617,7 +617,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                    <ul className="space-y-2">
                       {epaData.tips.map((tip, idx) => (
                         <li key={idx} className="text-sm text-slate-600 dark:text-slate-400 flex items-start gap-2">
-                           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0"></span>
+                           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0"></span>
                            {tip}
                         </li>
                       ))}
@@ -636,7 +636,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
       <div className="w-full max-w-5xl space-y-12 mb-20 px-4">
           
           {/* Fuel Rewards CTA */}
-          <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-[2.5rem] p-8 sm:p-12 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-bottom-4 duration-700">
+          <div className="bg-linear-to-br from-emerald-600 to-teal-700 rounded-[2.5rem] p-8 sm:p-12 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-bottom-4 duration-700">
              <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Fuel className="w-64 h-64 -rotate-12 translate-x-24 -translate-y-24" />
              </div>
@@ -690,14 +690,14 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                {MPG_PRODUCTS.map((product, idx) => (
                  <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-2xl transition-all group relative overflow-hidden">
                     <div className="h-32 flex items-center justify-center mb-6 relative">
-                       <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl -z-0 opacity-40 group-hover:opacity-60 transition-opacity" />
+                       <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl z-0 opacity-40 group-hover:opacity-60 transition-opacity" />
                        <img 
                          src={product.img} 
                          alt={product.name} 
                          className="max-h-full max-w-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-700" 
                        />
                     </div>
-                    <div className="flex-grow flex flex-col">
+                    <div className="grow flex flex-col">
                        <h3 className="font-bold text-slate-900 dark:text-white text-xs line-clamp-2 mb-6 leading-snug group-hover:text-emerald-500 transition-colors">
                          {product.name}
                        </h3>
@@ -779,7 +779,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                           desc: "Sudden drops in MPG are often the first sign of a major engine fault before the CEL even lights up." 
                       },
                   ].map((item, i) => (
-                      <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                      <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                           <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
                           <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
                           <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
@@ -794,7 +794,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                   How It Works
               </h2>
               <div className="grid md:grid-cols-3 gap-8">
-                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center mb-4">
                         <Calculator className="w-7 h-7" />
                     </div>
@@ -803,7 +803,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                         Pick 'Commute' to budget your daily drive, 'Trip' to plan fuel costs, or 'Audit' to check health.
                     </p>
                   </div>
-                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
                         <MapPin className="w-7 h-7" />
                     </div>
@@ -812,7 +812,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                         Enter your vehicle year/make/model and current gas prices in your specific neighborhood.
                     </p>
                   </div>
-                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-4">
                         <TrendingUp className="w-7 h-7" />
                     </div>
@@ -848,11 +848,11 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                           stars: 5
                       }
                   ].map((t, i) => (
-                      <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:shadow-xl transition-all">
+                      <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col hover:shadow-xl transition-all">
                           <div className="flex gap-1 mb-6 text-emerald-500">
                               {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
                           </div>
-                          <p className="text-slate-700 dark:text-slate-300 italic mb-8 flex-grow">"{t.text}"</p>
+                          <p className="text-slate-700 dark:text-slate-300 italic mb-8 grow">"{t.text}"</p>
                           <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
                               <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center font-black text-sm">
                                   {t.name.charAt(0)}
@@ -889,7 +889,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                   >
                       <button
                         onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                        className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                        className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                       >
                         <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                             {faq.question}

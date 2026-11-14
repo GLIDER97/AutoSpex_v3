@@ -52,7 +52,7 @@ const CodeInput: React.FC<CodeInputProps> = ({ onSearch, isLoading }) => {
           <div 
             className={`
               absolute -inset-0.5 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500
-              bg-gradient-to-r from-brand-primary to-orange-600
+              bg-linear-to-r from-brand-primary to-orange-600
               ${isFocused ? 'opacity-70 blur-md' : ''}
             `}
           ></div>
@@ -64,7 +64,7 @@ const CodeInput: React.FC<CodeInputProps> = ({ onSearch, isLoading }) => {
             
             <input
               type="text"
-              className="w-full bg-transparent border-none text-slate-900 dark:text-white text-xl placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-none py-4 px-4 font-mono uppercase tracking-wider transition-colors"
+              className="w-full bg-transparent border-none text-slate-900 dark:text-white text-xl placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-hidden py-4 px-4 font-mono uppercase tracking-wider transition-colors"
               placeholder="P0420"
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
@@ -135,21 +135,21 @@ const CodeInput: React.FC<CodeInputProps> = ({ onSearch, isLoading }) => {
               <input
                 type="text"
                 placeholder="Year"
-                className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
               />
               <input
                 type="text"
                 placeholder="Make"
-                className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
                 value={make}
                 onChange={(e) => setMake(e.target.value)}
               />
               <input
                 type="text"
                 placeholder="Model"
-                className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
               />

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { generateContent, Type } from '../utils/gemini';
 import CodeInput from './CodeInput';
 import ResultCard from './ResultCard';
@@ -10,263 +11,7 @@ import {
 } from './Icons';
 import { OBDCodeData, SeverityLevel, SearchHistoryItem, SafetyStatus, DIYDifficulty } from '../types';
 
-// COMPREHENSIVE US OBD-II DATABASE (Top 30+ Common Codes)
-const INITIAL_OBD_DATABASE: Record<string, OBDCodeData> = {
-  // --- AIR & FUEL METERING ---
-  'P0101': {
-    code: 'P0101',
-    title: 'Mass Air Flow (MAF) Circuit Range/Performance',
-    description: 'The Mass Air Flow sensor is sending a signal that is out of range for the current engine operating conditions.',
-    plainEnglish: 'The sensor that measures how much air is entering your engine is confused. It\'s sending data that doesn\'t match what the computer expects based on your speed and throttle position.',
-    symptoms: ['Engine stalling', 'Poor acceleration', 'Rough idling', 'Increased fuel consumption', 'Black smoke'],
-    causes: ['Dirty MAF sensor', 'Vacuum leak', 'Faulty MAF sensor', 'Clogged air filter'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$10 - $350',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Fuel & Air Metering',
-    similarCodes: ['P0100', 'P0102', 'P0103']
-  },
-  'P0106': {
-    code: 'P0106',
-    title: 'Manifold Absolute Pressure (MAP) Barometric Pressure Circuit Range/Performance',
-    description: 'The MAP sensor signal is erratic or does not correlate with the Throttle Position Sensor (TPS).',
-    plainEnglish: 'The sensor measuring engine vacuum isn\'t making sense. The car uses this to know how hard the engine is working.',
-    symptoms: ['Rough idle', 'Fuel smell', 'Poor fuel economy', 'Hesitation'],
-    causes: ['Faulty MAP sensor', 'Vacuum leak', 'Wiring issue', 'Carbon buildup on sensor'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$100 - $250',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Sensors',
-    similarCodes: ['P0107', 'P0108']
-  },
-  'P0113': {
-    code: 'P0113',
-    title: 'Intake Air Temperature Sensor 1 Circuit High',
-    description: 'The ECU sees a signal from the IAT sensor indicating an impossibly low temperature.',
-    plainEnglish: 'Your car thinks the air entering the engine is 40 degrees below zero. Usually a disconnected wire.',
-    symptoms: ['Hard starting in cold', 'Poor fuel economy', 'Failed emissions test'],
-    causes: ['Unplugged IAT sensor', 'Broken wire', 'Faulty sensor'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$50 - $150',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Sensors',
-    similarCodes: ['P0111', 'P0112']
-  },
-  'P0118': {
-    code: 'P0118',
-    title: 'Engine Coolant Temperature Sensor 1 Circuit High',
-    description: 'The Engine Coolant Temperature (ECT) sensor output is too high (indicating extreme cold).',
-    plainEnglish: 'The car thinks the engine is frozen solid. This causes it to dump extra fuel to try and "warm up".',
-    symptoms: ['Poor fuel economy', 'Black smoke', 'Hard start', 'Overheating indication issues'],
-    causes: ['Faulty ECT sensor', 'Open circuit in wiring', 'Low coolant'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$150 - $300',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Cooling System',
-    similarCodes: ['P0115', 'P0117']
-  },
-  'P0122': {
-    code: 'P0122',
-    title: 'Throttle Position Sensor A Circuit Low Input',
-    description: 'The TPS reports a voltage that is lower than the normal operating range.',
-    plainEnglish: 'The car doesn\'t know how far you are pressing the gas pedal.',
-    symptoms: ['Unresponsive throttle', 'Stalling', 'High idle', 'Surging'],
-    causes: ['Faulty TPS', 'Short to ground', 'Loose installation'],
-    severity: SeverityLevel.HIGH,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$120 - $250',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Fuel & Air Metering',
-    similarCodes: ['P0120', 'P0121']
-  },
-  'P0128': {
-    code: 'P0128',
-    title: 'Coolant Thermostat (Coolant Temp Below Regulating Temp)',
-    description: 'The engine is taking too long to reach operating temperature.',
-    plainEnglish: 'Your car is running too cold. The thermostat is likely stuck open.',
-    symptoms: ['Heater blows lukewarm air', 'Temperature gauge reads low', 'Decreased fuel economy'],
-    causes: ['Stuck open thermostat', 'Low coolant level', 'Faulty sensor'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$200 - $450',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Cooling System',
-    similarCodes: ['P0125']
-  },
-  'P0135': {
-    code: 'P0135',
-    title: 'O2 Sensor Heater Circuit (Bank 1 Sensor 1)',
-    description: 'The heating element inside the upstream Oxygen Sensor has failed.',
-    plainEnglish: 'The oxygen sensor heater is broken. The car will run fine once hot, but emissions will be high on start.',
-    symptoms: ['Check Engine Light only', 'Slight drop in fuel economy'],
-    causes: ['Failed O2 sensor heater', 'Blown fuse', 'Wiring damage'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$150 - $350',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Exhaust & Emissions',
-    similarCodes: ['P0141', 'P0155']
-  },
-  'P0138': {
-    code: 'P0138',
-    title: 'O2 Sensor Circuit High Voltage (Bank 1 Sensor 2)',
-    description: 'The rear oxygen sensor is reporting excessively high voltage (rich condition or short).',
-    plainEnglish: 'The sensor after the catalytic converter is seeing too much unburned fuel or has a wiring short.',
-    symptoms: ['Check Engine Light', 'High fuel consumption'],
-    causes: ['Faulty O2 sensor', 'Short to voltage', 'Running very rich'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$150 - $350',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Exhaust & Emissions',
-    similarCodes: ['P0137', 'P0139']
-  },
-  'P0141': {
-    code: 'P0141',
-    title: 'O2 Sensor Heater Circuit (Bank 1 Sensor 2)',
-    description: 'The heating element in the rear Oxygen Sensor has failed.',
-    plainEnglish: 'Same as P0135 but for the sensor after the catalytic converter. Purely for emissions monitoring.',
-    symptoms: ['Check Engine Light', 'Failed emissions'],
-    causes: ['Failed O2 sensor', 'Fuse', 'Wiring'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$150 - $350',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Exhaust & Emissions',
-    similarCodes: ['P0135', 'P0161']
-  },
-  'P0171': {
-    code: 'P0171',
-    title: 'System Too Lean (Bank 1)',
-    description: 'Too much air or not enough fuel on Bank 1.',
-    plainEnglish: 'Engine is "starving" for fuel. Usually a vacuum leak sucking in unmeasured air.',
-    symptoms: ['Hesitation', 'Stalling', 'Rough idle', 'Pinging'],
-    causes: ['Vacuum leak', 'Dirty MAF', 'Weak fuel pump', 'Clogged injector'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$100 - $400',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Fuel/Air Induction',
-    similarCodes: ['P0174', 'P0101']
-  },
-  'P0174': {
-    code: 'P0174',
-    title: 'System Too Lean (Bank 2)',
-    description: 'Too much air or not enough fuel on Bank 2.',
-    plainEnglish: 'Same as P0171 but on the other side of a V6/V8 engine.',
-    symptoms: ['Rough idle', 'Hesitation', 'Power loss'],
-    causes: ['Vacuum leak', 'Dirty MAF', 'PCV valve'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$100 - $400',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Fuel/Air Induction',
-    similarCodes: ['P0171']
-  },
-  // --- IGNITION SYSTEM ---
-  'P0300': {
-    code: 'P0300',
-    title: 'Random/Multiple Cylinder Misfire Detected',
-    description: 'Misfires occurring in multiple cylinders randomly.',
-    plainEnglish: 'The engine is skipping beats (misfiring) all over the place. Usually a global issue like fuel pressure or vacuum leak.',
-    symptoms: ['Flashing CEL', 'Shaking', 'Stalling', 'Gas smell'],
-    causes: ['Worn spark plugs', 'Vacuum leak', 'Low fuel pressure', 'Bad coil packs'],
-    severity: SeverityLevel.HIGH,
-    safetyStatus: SafetyStatus.STOP,
-    repairCostEstimate: '$150 - $800',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Ignition System',
-    similarCodes: ['P0301']
-  },
-  'P0301': {
-    code: 'P0301',
-    title: 'Cylinder 1 Misfire Detected',
-    description: 'Misfire detected specifically in Cylinder 1.',
-    plainEnglish: 'Cylinder #1 isn\'t firing. 90% of the time it\'s a plug or coil.',
-    symptoms: ['Rough idle', 'Shaking', 'Power loss'],
-    causes: ['Bad Spark Plug', 'Bad Ignition Coil', 'Injector'],
-    severity: SeverityLevel.HIGH,
-    safetyStatus: SafetyStatus.CAUTION,
-    repairCostEstimate: '$100 - $350',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Ignition System',
-    similarCodes: ['P0300']
-  },
-  'P0420': {
-    code: 'P0420',
-    title: 'Catalyst System Efficiency Below Threshold (Bank 1)',
-    description: 'The catalytic converter is not operating at maximum efficiency.',
-    plainEnglish: 'Your catalytic converter is "full" or worn out. It\'s not cleaning the exhaust enough.',
-    symptoms: ['Rotten egg smell', 'Failed emissions'],
-    causes: ['Failed Catalytic Converter', 'O2 Sensor', 'Exhaust leak'],
-    severity: SeverityLevel.MEDIUM,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$800 - $2500',
-    diyDifficulty: DIYDifficulty.HARD,
-    category: 'Exhaust System',
-    similarCodes: ['P0430', 'P0421', 'P0422', 'P0431', 'P0432']
-  },
-  'P0440': {
-    code: 'P0440',
-    title: 'Evaporative Emission Control System Malfunction',
-    description: 'General failure in the fuel vapor system.',
-    plainEnglish: 'Fuel vapor leak. Check the gas cap first.',
-    symptoms: ['Fuel smell', 'Hard start'],
-    causes: ['Loose Gas Cap', 'Purge Valve', 'Canister'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$0 - $250',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Evaporative Emissions',
-    similarCodes: ['P0442']
-  },
-  'P0442': {
-    code: 'P0442',
-    title: 'EVAP System Leak Detected (Small Leak)',
-    description: 'Minor leak in fuel tank vapor system.',
-    plainEnglish: 'Small vapor leak. Often the gas cap or a small hose crack.',
-    symptoms: ['Check Engine Light'],
-    causes: ['Gas Cap', 'Small hose leak'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$0 - $300',
-    diyDifficulty: DIYDifficulty.MODERATE,
-    category: 'Evaporative Emissions',
-    similarCodes: ['P0456']
-  },
-  'P0455': {
-    code: 'P0455',
-    title: 'EVAP System Leak Detected (Gross/Large Leak)',
-    description: 'Large leak in EVAP system.',
-    plainEnglish: 'Big leak. Did you forget the gas cap?',
-    symptoms: ['Strong fuel smell'],
-    causes: ['Missing Gas Cap', 'Stuck Open Purge Valve'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$20 - $300',
-    diyDifficulty: DIYDifficulty.EASY,
-    category: 'Evaporative Emissions',
-    similarCodes: ['P0440']
-  },
-  'P0456': {
-    code: 'P0456',
-    title: 'EVAP System Leak Detected (Very Small Leak)',
-    description: 'Tiny leak detected (0.020 inch).',
-    plainEnglish: 'Microscopic leak. Hard to find, but harmless.',
-    symptoms: ['Check Engine Light'],
-    causes: ['Gas Cap Seal', 'Charcoal Canister crack'],
-    severity: SeverityLevel.LOW,
-    safetyStatus: SafetyStatus.SAFE,
-    repairCostEstimate: '$100 - $400',
-    diyDifficulty: DIYDifficulty.HARD,
-    category: 'Evaporative Emissions',
-    similarCodes: ['P0442']
-  }
-};
+import { INITIAL_OBD_DATABASE } from '../data/obdCodes';
 
 const getUnknownCodeResult = (code: string): OBDCodeData => ({
   code: code,
@@ -403,6 +148,14 @@ const FaultCodeDecoder: React.FC = () => {
     }
   };
 
+  // Links like /fault-code-decoder?code=P0420 (from the homepage) open straight to that code.
+  const [searchParams] = useSearchParams();
+  const linkedCode = searchParams.get('code');
+  useEffect(() => {
+    if (linkedCode) handleSearch(linkedCode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linkedCode]);
+
   const addToHistory = (data: OBDCodeData) => {
     setHistory(prev => {
       const filtered = prev.filter(item => item.code !== data.code);
@@ -423,7 +176,7 @@ const FaultCodeDecoder: React.FC = () => {
             </div>
             <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             OBD-II Fault Code <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-orange-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-brand-primary to-orange-600">
                 Decoder & Repair Guide
             </span>
             </h1>
@@ -522,7 +275,7 @@ const FaultCodeDecoder: React.FC = () => {
                                 desc: "Get answers to follow-up questions from our AI Master Technician in real-time." 
                             },
                         ].map((benefit, i) => (
-                            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                                 <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
                                     {benefit.icon}
                                 </div>
@@ -539,7 +292,7 @@ const FaultCodeDecoder: React.FC = () => {
                     How to Decode Your Check Engine Light
                     </h2>
                     <div className="grid md:grid-cols-3 gap-8">
-                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                         <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-orange-500 flex items-center justify-center mb-4">
                         <Zap className="w-7 h-7" />
                         </div>
@@ -548,7 +301,7 @@ const FaultCodeDecoder: React.FC = () => {
                         Plug your OBD2 scanner into the port typically found under your dashboard.
                         </p>
                     </div>
-                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                         <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
                         <Search className="w-7 h-7" />
                         </div>
@@ -557,7 +310,7 @@ const FaultCodeDecoder: React.FC = () => {
                         Type the alphanumeric error code (e.g., P0300) into the box above.
                         </p>
                     </div>
-                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                         <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
                         <Wrench className="w-7 h-7" />
                         </div>

@@ -44,10 +44,10 @@ const AffiliateSection: React.FC = () => {
         {SCANNERS.map((scanner, idx) => (
           <div 
             key={idx} 
-            className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-2xl hover:shadow-brand-primary/5 transition-all group overflow-hidden"
+            className="bg-white dark:bg-slate-900 rounded-4xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-2xl hover:shadow-brand-primary/5 transition-all group overflow-hidden"
           >
             <div className="h-48 flex items-center justify-center mb-6 relative">
-              <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl -z-0 opacity-50" />
+              <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl z-0 opacity-50" />
               <img 
                 src={scanner.img} 
                 alt={scanner.name} 
@@ -55,7 +55,7 @@ const AffiliateSection: React.FC = () => {
               />
             </div>
             
-            <div className="flex-grow flex flex-col">
+            <div className="grow flex flex-col">
               <div className="flex items-center gap-1 mb-2 text-orange-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className={`w-3 h-3 ${i < Math.floor(scanner.rating) ? 'fill-current' : 'opacity-30'}`} />

@@ -22,7 +22,7 @@ const RecentScans: React.FC<RecentScansProps> = ({ history, onSelect }) => {
           <button
             key={`${item.code}-${index}`}
             onClick={() => onSelect(item.code)}
-            className="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 rounded-xl transition-all duration-200 group text-left shadow-sm dark:shadow-none"
+            className="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 rounded-xl transition-all duration-200 group text-left shadow-xs dark:shadow-none"
           >
             <div className="flex items-center gap-4 overflow-hidden">
               <span className="font-mono font-bold text-slate-700 dark:text-slate-200 group-hover:text-brand-primary transition-colors shrink-0">
