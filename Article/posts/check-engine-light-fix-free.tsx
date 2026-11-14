@@ -1,6 +1,6 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../../components/SEO';
 import img1 from '../assets/obd2_guide_featured.png';
 
 export const meta = {
@@ -17,12 +17,7 @@ export const meta = {
 const CheckEngineLightFix: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <Helmet>
-                <title>{meta.title} | AutoSpex</title>
-                <meta name="description" content={meta.description} />
-                <meta property="og:title" content={meta.title} />
-                <meta property="og:description" content={meta.description} />
-            </Helmet>
+            <SEO title={meta.title} description={meta.description} />
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
                 It's the most dreaded orange symbol on your dashboard. The Check Engine Light (CEL).

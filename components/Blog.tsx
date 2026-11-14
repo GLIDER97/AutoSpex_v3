@@ -16,13 +16,12 @@ interface BlogPost {
   displayDate?: string;
 }
 
-// 1. Get all post modules (eagerly loading to get exports)
-const postModules = import.meta.glob('../Article/posts/*.tsx', { eager: true });
+// 1. Load only each post's `meta` export, so the article bodies stay in their own lazily loaded chunks
+const postModules = import.meta.glob('../Article/posts/*.tsx', { eager: true, import: 'meta' });
 
 // 2. Transform modules into BlogPost array
 const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
-  const mod = postModules[path] as any;
-  const meta = mod.meta;
+  const meta = postModules[path] as any;
 
   if (!meta) {
     console.warn(`Blog post at ${path} is missing 'export const meta'.`);

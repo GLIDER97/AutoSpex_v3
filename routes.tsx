@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoadingSpinner from './components/LoadingSpinner';
+import NotFound from './components/NotFound';
 
 const ArticleLoader = React.lazy(() => import('./Article/components/ArticleLoader')); // Import Loader
 // Lazy Load Pages
@@ -53,6 +54,7 @@ const AppRoutes: React.FC = () => {
 
         {/* Resources */}
         <Route path="/recalls" element={<ResourceHub type="recalls" />} />
+        <Route path="/coupons" element={<ResourceHub type="coupons" />} />
         <Route path="/diy-toolkits" element={<DiyToolkits />} />
         <Route path="/blog" element={<Blog />} />
 
@@ -69,8 +71,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/about" element={<AboutUs />} />
 
-        {/* Fallback - redirect to home */}
-        <Route path="*" element={<HomePage />} />
+        {/* Unknown URLs get a real "not found" page (served with a 404 status by Vercel) */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

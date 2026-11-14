@@ -1,8 +1,19 @@
 {
-    "rewrites": [
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
         {
-            "source": "/(.*)",
-            "destination": "/index.html"
+            "source": "/free-obd2-code-decoder-repair-costs",
+            "destination": "/article/free-obd2-code-decoder-repair-costs",
+            "permanent": true
+        }
+    ],
+    "headers": [
+        {
+            "source": "/assets/(.*)",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+            ]
         }
     ]
 }

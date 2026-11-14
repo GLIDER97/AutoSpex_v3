@@ -42,6 +42,10 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  // The mobile menu is portalled into document.body, which only exists in the
+  // browser. Mount it after hydration so the build-time prerender can run.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -172,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
         </div>
       </nav>
 
-      {createPortal(
+      {mounted && createPortal(
         <div className={`relative z-[100] lg:hidden ${isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
           <div className={`fixed inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsMobileMenuOpen(false)} />
           <div className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white dark:bg-slate-950 shadow-2xl transform transition-transform duration-300 ease-out border-l border-slate-200 dark:border-slate-800 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>

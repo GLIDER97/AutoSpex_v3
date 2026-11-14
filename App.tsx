@@ -5,6 +5,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AppRoutes from './routes';
+import SEO from './components/SEO';
+import { findStaticPage } from './seo/site';
 
 // Type declaration for Google Tag Manager dataLayer
 declare global {
@@ -42,9 +44,15 @@ function App() {
   }, [location.pathname]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const pageMeta = findStaticPage(location.pathname);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-brand-primary selection:text-slate-900 flex flex-col font-sans transition-colors duration-300">
+
+      {/* Title, description and canonical for tool and info pages. Articles and the 404 page set their own. */}
+      {pageMeta && (
+        <SEO title={pageMeta.title} description={pageMeta.description} rawTitle={pageMeta.rawTitle} />
+      )}
 
       <ErrorBoundary>
         <Navbar
