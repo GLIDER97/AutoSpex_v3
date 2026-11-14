@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { GoogleGenAI } from "@google/genai";
+import { generateContent } from '../utils/gemini';
 import { MessageSquare, Send, Zap, X, Sparkles, Bot, RefreshCw } from './Icons';
 import { ChatMessage } from '../types';
 
@@ -38,9 +38,11 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
     setIsTyping(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const chat = ai.chats.create({
+      // Same as before: each question is sent on its own with the system
+      // instruction (a fresh chat per message, no earlier history).
+      const response = await generateContent({
         model: 'gemini-3-flash-preview',
+        contents: userMsg,
         config: {
           systemInstruction: `You are an expert automotive master technician. 
           You are assisting a vehicle owner with OBD-II fault code ${code}. 
@@ -50,9 +52,6 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ code }) => {
           Address the user directly. Keep responses concise but thorough.`,
         },
       });
-
-      // Prepare conversation history for the model
-      const response = await chat.sendMessage({ message: userMsg });
       const text = response.text;
 
       if (!text) throw new Error("No response from assistant");

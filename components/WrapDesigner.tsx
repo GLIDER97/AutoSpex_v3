@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { GoogleGenAI } from "@google/genai";
+import { generateContent } from '../utils/gemini';
 import { 
   Palette, Zap, Sparkles, MessageSquare, ChevronDown, 
   ArrowRight, RefreshCw, Star, Info, Lock, 
@@ -50,12 +50,10 @@ const WrapDesigner: React.FC = () => {
     setError(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
       // Prompt Expansion Logic
       const expandedPrompt = `A high-resolution, professional automotive photograph of a ${request.vehicleType} with a full custom vinyl wrap featuring ${request.prompt}. The style is ${request.artStyle}. The car is shown in a studio setting with cinematic lighting. 8k resolution, photorealistic, vinyl texture detail.`;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-2.5-flash-image',
         contents: [{ text: expandedPrompt }],
         config: {

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { generateContent } from '../utils/gemini';
 import {
   Search, MapPin, Star, Phone, Globe, Wrench, RefreshCw,
   ArrowRight, ShieldCheck, Zap, Info, MessageSquare,
@@ -56,8 +56,7 @@ const MechanicFinder: React.FC = () => {
   useEffect(() => {
     const generateMapBackground = async () => {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const response = await ai.models.generateContent({
+        const response = await generateContent({
           model: 'gemini-2.5-flash-image',
           contents: [{ text: 'A highly stylized, minimalist silhouette map of the United States of America. Blueprint aesthetic with glowing neon blue and indigo circuit lines on a deep navy background. Professional automotive technology style, semi-transparent, clean minimalist design, centered composition, high resolution.' }],
           config: {
@@ -107,14 +106,12 @@ const MechanicFinder: React.FC = () => {
       setSearchedZip(`${zipCode} (${locationName})`); // Update UI to show resolved location
 
       // 2. Search using Gemini with precise location grounding
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
       const prompt = `Search strictly for automotive mechanics and car repair shops that are physically located in or very near to ${locationName} (ZIP: ${zipCode}). 
       Center search around Latitude: ${lat}, Longitude: ${lon}.
       Provide a list of 9 top-rated local businesses. 
       For each, include full address and name.`;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: "gemini-2.5-flash",
         contents: [
           {

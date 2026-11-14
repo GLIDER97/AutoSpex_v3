@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import {
   TrendingUp, Car, DollarSign, PieChart, CheckCircle2,
   AlertTriangle, MapPin, Calculator, ChevronRight, Lock,
@@ -96,8 +96,6 @@ const AffordabilityPredictor: React.FC = () => {
     setError(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
       const prompt = `
         Estimate the current US dealer retail price range for a used ${data.vehicle.year} ${data.vehicle.make} ${data.vehicle.model} ${data.vehicle.trim} in ZIP code ${data.vehicle.zip}.
         
@@ -109,7 +107,7 @@ const AffordabilityPredictor: React.FC = () => {
         - marketContext (array of 3 short strings explaining price factors like supply, demand, region)
       `;
 
-      const aiResponse = await ai.models.generateContent({
+      const aiResponse = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {

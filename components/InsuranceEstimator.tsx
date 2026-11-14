@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { generateContent } from '../utils/gemini';
 import {
   ShieldCheck, TrendingUp, DollarSign, Award, ArrowRight,
   MapPin, Car, Users, CheckCircle2, AlertTriangle, Info,
@@ -108,7 +108,6 @@ const InsuranceEstimator: React.FC = () => {
 
     // AI Integration
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         Act as an expert insurance underwriter.
         I have estimated a monthly auto insurance premium of $${result.monthlyPremium.min} - $${result.monthlyPremium.max} for a driver with these details:
@@ -122,7 +121,7 @@ const InsuranceEstimator: React.FC = () => {
         Address the user directly as "you".
       `;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
       });

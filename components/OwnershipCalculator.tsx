@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import { 
   PieChart, DollarSign, Calculator, Info, Lock, Zap, 
   Car, ShieldCheck, MapPin, TrendingDown, Clock, 
@@ -41,7 +41,6 @@ const OwnershipCalculator: React.FC = () => {
     setError(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         Role: Act as an expert Automotive Financial Analyst.
         Objective: Immediately calculate the Total Cost of Ownership (TCO) for a vehicle based on the following user inputs. Use internal US automotive market data to provide realistic estimates for depreciation, fuel, insurance, and maintenance.
@@ -80,7 +79,7 @@ const OwnershipCalculator: React.FC = () => {
         }
       `;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {

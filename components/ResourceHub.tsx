@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import {
   ShieldAlert, ShoppingCart, Zap, ArrowRight,
   Car, ShieldCheck, ExternalLink, Star, DollarSign,
@@ -104,8 +104,6 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
     }, 1200);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
       let prompt = '';
       let schema: any = {};
 
@@ -197,7 +195,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
         };
       }
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {

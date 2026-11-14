@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import { 
   Calculator, 
   Fuel, 
@@ -112,7 +112,6 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
     setEpaData(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         Get the official EPA fuel economy ratings for a ${vehicleYear} ${vehicleMake} ${vehicleModel}.
         Return a JSON object with:
@@ -122,7 +121,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
         - tips (array of 3 strings, mechanical reasons why this specific car might get low mpg)
       `;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
         config: {

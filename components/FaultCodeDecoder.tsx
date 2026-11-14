@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import CodeInput from './CodeInput';
 import ResultCard from './ResultCard';
 import RecentScans from './RecentScans';
@@ -302,7 +302,6 @@ const FaultCodeDecoder: React.FC = () => {
 
   const fetchAIResult = async (code: string, vehicleInfo?: string): Promise<OBDCodeData> => {
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         You are an expert automotive mechanic. Provide detailed diagnostic information for OBD-II fault code ${code} ${vehicleInfo ? `for a ${vehicleInfo}` : 'for a standard US-market vehicle'}.
         
@@ -326,7 +325,7 @@ const FaultCodeDecoder: React.FC = () => {
         Do not use markdown formatting. Return raw JSON only.
       `;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
         config: {

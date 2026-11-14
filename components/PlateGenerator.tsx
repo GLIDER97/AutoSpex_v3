@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import { 
   Tag, Zap, Sparkles, MessageSquare, ChevronDown, 
   ArrowRight, RefreshCw, Star, Info, Lock, 
@@ -109,10 +109,9 @@ const PlateGenerator: React.FC = () => {
     setError(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `Generate 6 clever, creative vanity plate ideas for a ${request.carModel} in ${request.state} with hobbies ${request.hobbies} and vibe ${request.vibe}. Ensure they are 7 characters or less.`;
 
-      const response = await ai.models.generateContent({
+      const response = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {

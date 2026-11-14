@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import { 
   TrendingDown, TrendingUp, Car, DollarSign, Clock, 
   Hourglass, AlertCircle, AlertOctagon, Info, ChevronRight, 
@@ -40,7 +40,6 @@ const ValueShockCalculator: React.FC = () => {
     setResult(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         Act as a Used Car Market Analyst and Financial Auditor.
         Analyze the following vehicle for depreciation:
@@ -71,7 +70,7 @@ const ValueShockCalculator: React.FC = () => {
         }
       `;
 
-      const aiResponse = await ai.models.generateContent({
+      const aiResponse = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {

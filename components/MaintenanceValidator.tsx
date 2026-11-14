@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/gemini';
 import { 
   Gavel, ClipboardCheck, AlertTriangle, CheckCircle2, 
   AlertOctagon, Wrench, MapPin, DollarSign, ChevronRight, 
@@ -47,8 +47,6 @@ const MaintenanceValidator: React.FC = () => {
     }, 800);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
       // Optimized prompt for speed and strict output control to prevent JSON overflow/truncation
       const prompt = `
         Audit US auto repair: ${request.year} ${request.make} ${request.model}, ${request.service} (ZIP ${request.zip}). 
@@ -61,7 +59,7 @@ const MaintenanceValidator: React.FC = () => {
         - Use localized US parts/labor data.
       `;
 
-      const aiResponse = await ai.models.generateContent({
+      const aiResponse = await generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {
