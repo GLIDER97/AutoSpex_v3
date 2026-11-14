@@ -21,10 +21,9 @@ export interface PageMeta {
 export const STATIC_PAGES: PageMeta[] = [
   {
     path: '/',
-    title: 'MyAutoSpex: Free OBD2 Code Decoder, VIN Lookup & Car Cost Tools',
-    rawTitle: true,
+    title: 'Free OBD2 Code Decoder, VIN Lookup & Car Tools',
     description:
-      'Free car tools for drivers: decode check engine light codes, look up VIN specs, check recalls, audit repair quotes and estimate insurance, MPG and ownership costs.',
+      'Free car tools: decode check engine light codes, look up VIN specs, check recalls, audit repair quotes and estimate insurance, MPG and ownership costs.',
     priority: 1.0,
   },
   {
@@ -43,14 +42,14 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/recalls',
-    title: 'Vehicle Recall & Technical Service Bulletin Lookup',
+    title: 'Vehicle Recalls & Safety Alerts (NHTSA Data)',
     description:
-      'Check open safety recalls and technical service bulletins (TSBs) for your car using NHTSA data, and learn what to do next.',
+      'Check for open safety recalls and manufacturer alerts on your car using official NHTSA data, and learn what to do next.',
     priority: 0.8,
   },
   {
     path: '/maintenance-validator',
-    title: 'Car Repair Quote Checker: Are You Being Overcharged?',
+    title: 'Car Repair Quote Checker: Are You Overcharged?',
     description:
       "Check a mechanic's repair quote against fair price ranges for parts and labor, and find out if you are being overcharged before you pay.",
     priority: 0.8,
@@ -71,7 +70,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/affordability-predictor',
-    title: 'Car Affordability Calculator & True Price Predictor',
+    title: 'Car Affordability Calculator & Price Predictor',
     description:
       'Find out how much car you can really afford. Estimate the out-the-door price, monthly payment and total loan cost before you visit the dealer.',
     priority: 0.8,
@@ -134,7 +133,8 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/about',
-    title: 'About Us',
+    title: 'About MyAutoSpex: Free Tools for Drivers',
+    rawTitle: true,
     description:
       'MyAutoSpex builds free tools that help drivers understand fault codes, vehicle specs, repair quotes and the true cost of owning a car.',
     priority: 0.4,
