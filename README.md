@@ -31,3 +31,12 @@ rate-limits each IP. `npm run dev` serves the same endpoint locally.
 - Never expose the key to client code (no `define` in `vite.config.ts`, no `VITE_` prefix).
   After `npm run build`, `grep -r AIza dist/` must print nothing.
 - To use a new model or config option in a component, add it to the allowlist in `api/gemini.ts`.
+
+## Free government data (no key)
+
+Some tools use free public US government APIs instead of Gemini. The browser calls
+them directly (both allow cross-origin requests):
+
+- Recalls page: NHTSA recalls API (`api.nhtsa.gov`), see `utils/nhtsaRecalls.ts`.
+- MPG efficiency audit: EPA ratings from fueleconomy.gov web services, see `utils/fuelEconomy.ts`.
+- VIN lookup: NHTSA vPIC (`vpic.nhtsa.dot.gov`).

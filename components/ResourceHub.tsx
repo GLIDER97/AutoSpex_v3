@@ -1,7 +1,8 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateContent, Type } from '../utils/gemini';
+import { searchRecalls, latestFeaturedRecalls } from '../utils/nhtsaRecalls';
 import {
   ShieldAlert, ShoppingCart, Zap, ArrowRight,
   Car, ShieldCheck, ExternalLink, Star, DollarSign,
@@ -14,6 +15,15 @@ import CouponLeadForm from './CouponLeadForm';
 interface ResourceHubProps {
   type: 'recalls' | 'toolkits' | 'coupons';
 }
+
+interface RecallQuery {
+  year: string;
+  make: string;
+  model: string;
+}
+
+const formatReportDate = (isoDate: string) =>
+  new Date(`${isoDate}T00:00:00`).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
 const ESSENTIAL_DRIVERS_GEAR = [
   {
@@ -76,7 +86,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
   const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  // Recalls: year/make/model search form, the search being shown, and a line describing the results
+  const [recallForm, setRecallForm] = useState<RecallQuery>({ year: '', make: '', model: '' });
+  const [recallSearch, setRecallSearch] = useState<RecallQuery | null>(null);
+  const [feedNote, setFeedNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [loadingStatus, setLoadingStatus] = useState('Initializing Scanner...');
@@ -85,12 +98,45 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
   const [isCouponFormOpen, setIsCouponFormOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
 
-  const fetchDynamicContent = async (query?: string) => {
+  // Only the most recent request may update the page (e.g. a search submitted
+  // while the default recall list is still loading).
+  const latestRequest = useRef(0);
+
+  // Recalls come straight from NHTSA's public recalls API (no AI, no API key).
+  const loadRecalls = async (query?: RecallQuery): Promise<{ recalls: any[]; note: string }> => {
+    if (!query) {
+      return {
+        recalls: await latestFeaturedRecalls(),
+        note: 'Latest NHTSA recalls on best-selling vehicles. Enter your year, make and model above to check yours.',
+      };
+    }
+    const result = await searchRecalls(Number(query.year), query.make, query.model);
+    if (!result.recalls.length) {
+      return {
+        recalls: [],
+        note: `NHTSA has no recalls on record for a ${query.year} ${result.make ?? query.make} ${query.model}. If that looks wrong, try the model name as NHTSA lists it (for example CR-V, F-150 or C-Class).`,
+      };
+    }
+    const [first, ...others] = result.models;
+    const models = others.length ? `${first} (and ${others.length} related model${others.length === 1 ? '' : 's'})` : first;
+    return {
+      recalls: result.recalls,
+      note: `${result.recalls.length} NHTSA recall${result.recalls.length === 1 ? '' : 's'} for the ${query.year} ${result.make} ${models}, newest first.`,
+    };
+  };
+
+  const fetchDynamicContent = async (recallQuery?: RecallQuery) => {
+    const requestId = ++latestRequest.current;
+    const isCurrent = () => requestId === latestRequest.current;
     setLoading(true);
     setError(null);
 
     // UI Status messaging for transparency
-    const statusMessages = [
+    const statusMessages = type === 'recalls' ? [
+      "Connecting to the NHTSA recalls database...",
+      "Loading official recall records...",
+      "Sorting newest recalls first..."
+    ] : [
       "Accessing official databases...",
       "Auditing recent safety reports...",
       "Syncing US market data...",
@@ -104,40 +150,19 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
     }, 1200);
 
     try {
+      if (type === 'recalls') {
+        const { recalls, note } = await loadRecalls(recallQuery);
+        if (!isCurrent()) return;
+        setItems(recalls);
+        setFeedNote(note);
+        setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        return;
+      }
+
       let prompt = '';
       let schema: any = {};
 
-      if (type === 'recalls') {
-        prompt = `
-          Act as a Safety Compliance Auditor. Provide a list of the 6 most significant or recent automotive safety recalls in the US market for ${query || 'general top-selling makes'}.
-          Focus on high-impact safety issues (Airbags, Engines, Brakes).
-          Return strictly valid JSON with an array called "items".
-          Each item must have: make, model, year, issue, component, urgency (Critical/High/Medium), summary (max 100 chars), and nhtsaId.
-        `;
-        schema = {
-          type: Type.OBJECT,
-          properties: {
-            items: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  make: { type: Type.STRING },
-                  model: { type: Type.STRING },
-                  year: { type: Type.STRING },
-                  issue: { type: Type.STRING },
-                  component: { type: Type.STRING },
-                  urgency: { type: Type.STRING },
-                  summary: { type: Type.STRING },
-                  nhtsaId: { type: Type.STRING }
-                },
-                required: ['make', 'model', 'year', 'issue', 'component', 'urgency', 'summary']
-              }
-            }
-          },
-          required: ['items']
-        };
-      } else if (type === 'toolkits') {
+      if (type === 'toolkits') {
         prompt = `
           Act as a Master Technician. Suggest 6 essential DIY toolkits or high-quality diagnostic parts currently popular on the US market.
           Focus on tools like OBDII Scanners, Multimeters, and Socket Sets.
@@ -205,14 +230,18 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
       });
 
       const data = JSON.parse(response.text);
+      if (!isCurrent()) return;
       setItems(data.items || []);
       setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     } catch (err) {
       console.error("Automation Error:", err);
-      setError("The automated feed is currently syncing. Please try again in a few moments.");
+      if (!isCurrent()) return;
+      setError(type === 'recalls'
+        ? "We couldn't reach the NHTSA recalls database. Please try again in a moment."
+        : "The automated feed is currently syncing. Please try again in a few moments.");
     } finally {
       clearInterval(msgInterval);
-      setLoading(false);
+      if (isCurrent()) setLoading(false);
     }
   };
 
@@ -222,9 +251,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      fetchDynamicContent(searchQuery);
-    }
+    const query = { year: recallForm.year.trim(), make: recallForm.make.trim(), model: recallForm.model.trim() };
+    if (!query.year || !query.make || !query.model) return;
+    setRecallSearch(query);
+    fetchDynamicContent(query);
   };
 
   const handleClaimCoupon = (item: any) => {
@@ -237,7 +267,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
       case 'recalls': return {
         title: "Recalls & Safety Alerts",
         subtitle: "Automated NHTSA Compliance Feed",
-        desc: "Protect your passengers with real-time safety data. Our AI audits the official NHTSA database to bring you critical manufacture alerts.",
+        desc: "Protect your passengers with official safety data. Every recall here comes straight from the NHTSA recalls database. Enter your year, make and model to check your vehicle.",
         icon: <ShieldAlert className="w-10 h-10 text-red-500" />,
         color: "text-red-500",
         bg: "bg-red-50 dark:bg-red-950/20"
@@ -301,22 +331,34 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
 
         {/* Action / Search Bar (Restored for Recalls) */}
         {type === 'recalls' && (
-          <div className="w-full lg:w-auto shrink-0">
+          <div className="w-full lg:w-[26rem] shrink-0">
             <form onSubmit={handleSearch} className="group relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-600 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-1.5">
-                <div className="pl-4 text-slate-400">
-                  <Search className="w-5 h-5" />
+              <div className="relative bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-xl p-3 sm:p-4">
+                <div className="flex items-center gap-2 mb-3 px-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  <Search className="w-4 h-4" /> Check your vehicle
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search Make (e.g. Ford)"
-                  className="w-full lg:w-64 p-3 bg-transparent border-none text-slate-900 dark:text-white font-bold placeholder-slate-400 focus:ring-0 outline-none"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type="submit" className="px-6 py-3 rounded-2xl bg-red-600 text-white font-black text-sm hover:bg-red-700 transition-all">
-                  Audit Make
+                <div className="grid grid-cols-[5.5rem_1fr_1fr] gap-2 mb-3">
+                  {([
+                    { key: 'year', placeholder: 'Year', label: 'Model year', type: 'number' },
+                    { key: 'make', placeholder: 'Make (Ford)', label: 'Make', type: 'text' },
+                    { key: 'model', placeholder: 'Model (F-150)', label: 'Model', type: 'text' },
+                  ] as const).map((field) => (
+                    <input
+                      key={field.key}
+                      type={field.type}
+                      required
+                      aria-label={field.label}
+                      placeholder={field.placeholder}
+                      {...(field.type === 'number' ? { min: 1950, max: new Date().getFullYear() + 1, inputMode: 'numeric' as const } : {})}
+                      className="w-full min-w-0 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white font-bold placeholder-slate-400 focus:ring-2 focus:ring-red-500 outline-none"
+                      value={recallForm[field.key]}
+                      onChange={(e) => setRecallForm((prev) => ({ ...prev, [field.key]: e.target.value }))}
+                    />
+                  ))}
+                </div>
+                <button type="submit" className="w-full px-6 py-3 rounded-2xl bg-red-600 text-white font-black text-sm hover:bg-red-700 transition-all">
+                  Check Recalls
                 </button>
               </div>
             </form>
@@ -360,35 +402,43 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
           <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-6" />
           <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Feed Connection Interrupted</h3>
           <p className="text-slate-600 dark:text-slate-400 mb-8">{error}</p>
-          <button onClick={() => fetchDynamicContent()} className="px-8 py-3 bg-red-600 text-white font-black rounded-2xl flex items-center gap-2 mx-auto hover:bg-red-700 transition-all">
+          <button onClick={() => fetchDynamicContent(recallSearch ?? undefined)} className="px-8 py-3 bg-red-600 text-white font-black rounded-2xl flex items-center gap-2 mx-auto hover:bg-red-700 transition-all">
             <RefreshCw className="w-5 h-5" /> Retry Sync
           </button>
         </div>
       ) : (
         <>
+          {type === 'recalls' && feedNote && (
+            <p className="mb-8 text-sm font-bold text-slate-500 dark:text-slate-400">{feedNote}</p>
+          )}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
             {items.map((item: any, idx) => (
               <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col">
 
                 {type === 'recalls' && (
                   <>
-                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border ${item.urgency === 'Critical' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
+                    {/* NHTSA's own advisories: "Park It" (do not drive) and "Park Outside" (fire risk) */}
+                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border ${item.parkIt || item.parkOutside ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
                       }`}>
-                      <ShieldAlert className="w-3 h-3" /> {item.urgency} Risk Alert
+                      <ShieldAlert className="w-3 h-3" /> {item.parkIt ? 'Do Not Drive' : item.parkOutside ? 'Park Outside' : 'Safety Recall'}
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight">
-                      {item.year} {item.make} {item.model}
+                      {item.modelYear} {item.make} {item.model}
                     </h3>
                     <div className="text-xs font-black text-blue-500 uppercase tracking-widest mb-4">
-                      Component: {item.component}
+                      Component: {item.component.replace(/:/g, ' › ')}
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed flex-grow">
-                      <strong>Issue:</strong> {item.issue}<br />
-                      <span className="mt-2 block italic opacity-80">{item.summary}</span>
-                    </p>
+                    <div className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed flex-grow space-y-3">
+                      <p className="line-clamp-5">{item.summary}</p>
+                      {item.consequence && <p><strong>Risk:</strong> {item.consequence}</p>}
+                      {item.remedy && <p className="line-clamp-3"><strong>Remedy:</strong> {item.remedy}</p>}
+                    </div>
                     <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        NHTSA Campaign {item.campaignNumber}{item.reportDate && ` · Reported ${formatReportDate(item.reportDate)}`}
+                      </div>
                       <a
-                        href={`https://www.nhtsa.gov/recalls?q=${item.make}+${item.model}`}
+                        href="https://www.nhtsa.gov/recalls"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-xl"
@@ -577,7 +627,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
 
       <div className="mt-20 flex flex-col items-center gap-8 no-print">
         <button
-          onClick={() => fetchDynamicContent()}
+          onClick={() => fetchDynamicContent(recallSearch ?? undefined)}
           className="group flex items-center gap-3 px-10 py-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-black hover:border-blue-500 transition-all shadow-xl"
         >
           <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />

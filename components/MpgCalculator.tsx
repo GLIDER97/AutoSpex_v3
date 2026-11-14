@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { generateContent, Type } from '../utils/gemini';
+import { findEpaVariants, getEpaRating, type EpaVariant } from '../utils/fuelEconomy';
 import { 
   Calculator, 
   Fuel, 
@@ -39,6 +39,15 @@ interface EpaData {
   combined: number;
   tips: string[];
 }
+
+// General maintenance checks that commonly cost fuel economy. The EPA data has
+// ratings only, no car-specific advice.
+const MPG_TIPS = [
+  'Check tire pressure monthly. Under-inflated tires raise rolling resistance and burn more fuel.',
+  "Use the motor oil grade your owner's manual recommends.",
+  'Get a lit check engine light diagnosed. A failing oxygen sensor or a misfire can cut mileage sharply.',
+  "Remove roof racks and cargo you aren't using, and avoid long idling and hard acceleration.",
+];
 
 const MPG_PRODUCTS = [
   {
@@ -79,6 +88,8 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
   const [vehicleModel, setVehicleModel] = useState('');
   const [observedMpg, setObservedMpg] = useState<string>('');
   const [epaData, setEpaData] = useState<EpaData | null>(null);
+  const [epaVariants, setEpaVariants] = useState<EpaVariant[]>([]);
+  const [epaVariantId, setEpaVariantId] = useState('');
   const [loading, setLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
@@ -102,49 +113,59 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
   const tripGallons = tripDistance / (mpg || 1);
   const costPerPerson = tripTotalCost / (passengers || 1);
 
-  // --- AI Analysis Handler ---
+  // --- Efficiency Audit: official EPA ratings from fueleconomy.gov (free, no API key) ---
+  const loadEpaRating = async (variantId: string) => {
+    const rating = await getEpaRating(variantId);
+    setEpaData({ city: rating.city, hwy: rating.hwy, combined: rating.combined, tips: MPG_TIPS });
+  };
+
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!vehicleYear || !vehicleMake || !vehicleModel) return;
 
-    setLoading(true);
+    const year = Number(vehicleYear);
+    const latestYear = new Date().getFullYear() + 1;
     setAnalysisError(null);
     setEpaData(null);
+    setEpaVariants([]);
+    if (!Number.isInteger(year) || year < 1984 || year > latestYear) {
+      setAnalysisError(`EPA ratings cover model years 1984 to ${latestYear}. Please check the year.`);
+      return;
+    }
 
+    setLoading(true);
     try {
-      const prompt = `
-        Get the official EPA fuel economy ratings for a ${vehicleYear} ${vehicleMake} ${vehicleModel}.
-        Return a JSON object with:
-        - city (number, mpg)
-        - hwy (number, mpg)
-        - combined (number, mpg)
-        - tips (array of 3 strings, mechanical reasons why this specific car might get low mpg)
-      `;
-
-      const response = await generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              city: { type: Type.NUMBER },
-              hwy: { type: Type.NUMBER },
-              combined: { type: Type.NUMBER },
-              tips: { type: Type.ARRAY, items: { type: Type.STRING } }
-            }
-          }
-        }
-      });
-
-      const text = response.text;
-      if (text) {
-        setEpaData(JSON.parse(text) as EpaData);
+      const { make, variants } = await findEpaVariants(year, vehicleMake.trim(), vehicleModel.trim());
+      if (!make) {
+        setAnalysisError(`We couldn't find ${vehicleMake} in the EPA's ${year} listings. Please check the make.`);
+        return;
       }
+      if (!variants.length) {
+        setAnalysisError(`No EPA-rated ${year} ${make} matches "${vehicleModel}". Try the model name as sold, for example Civic, CR-V or F150.`);
+        return;
+      }
+      setEpaVariants(variants);
+      setEpaVariantId(variants[0].id);
+      await loadEpaRating(variants[0].id);
     } catch (err) {
       console.error(err);
-      setAnalysisError("Could not retrieve vehicle data. Please try again.");
+      setAnalysisError("Could not reach the EPA fuel economy database (fueleconomy.gov). Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Several EPA versions can match (2WD/4WD, engines, transmissions); let the user pick theirs.
+  const handleVariantChange = async (variantId: string) => {
+    setEpaVariantId(variantId);
+    setAnalysisError(null);
+    setLoading(true);
+    try {
+      await loadEpaRating(variantId);
+    } catch (err) {
+      console.error(err);
+      setEpaData(null);
+      setAnalysisError("Could not load the EPA rating for that version. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -182,7 +203,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
     },
     {
       question: "Where does the 'Efficiency Audit' data come from?",
-      answer: "We use AI to cross-reference official US EPA fuel economy ratings for your specific make, model, and year. This provides a baseline to see if your car is performing as expected."
+      answer: "We pull the official EPA ratings for your exact year, make and model from fueleconomy.gov, the fuel economy site run by the U.S. Department of Energy and EPA. This provides a baseline to see if your car is performing as expected."
     },
     {
       question: "Why is my real MPG lower than the EPA rating?",
@@ -439,6 +460,25 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                 </button>
               </form>
 
+              {epaVariants.length > 1 && (
+                <div>
+                  <label htmlFor="epa-variant" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                    Your version ({epaVariants.length} EPA ratings found)
+                  </label>
+                  <select
+                    id="epa-variant"
+                    value={epaVariantId}
+                    disabled={loading}
+                    onChange={e => handleVariantChange(e.target.value)}
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                  >
+                    {epaVariants.map(v => (
+                      <option key={v.id} value={v.id}>{v.model} · {v.description}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {analysisError && (
                  <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4" /> {analysisError}
@@ -538,6 +578,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                    <div className="text-center">
                       <p className="text-sm text-slate-500 mb-1">Factory EPA</p>
                       <p className="text-3xl font-black text-slate-900 dark:text-white">{epaData.combined}</p>
+                      <p className="text-[11px] text-slate-400 mt-1">City {epaData.city} · Hwy {epaData.hwy}</p>
                    </div>
                    <div className="h-12 w-px bg-slate-200 dark:bg-slate-700"></div>
                    <div className="text-center">
@@ -581,6 +622,9 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                         </li>
                       ))}
                    </ul>
+                   <p className="mt-6 text-[11px] text-slate-400">
+                     EPA ratings from fueleconomy.gov (U.S. Department of Energy and EPA). Fixes are general maintenance advice.
+                   </p>
                 </div>
              </div>
            )}
@@ -774,7 +818,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Review Audit</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        Instantly see your yearly spend, split trip costs, or identify mechanical issues using our AI.
+                        Instantly see your yearly spend, split trip costs, or compare your real MPG with the official EPA rating.
                     </p>
                   </div>
               </div>
