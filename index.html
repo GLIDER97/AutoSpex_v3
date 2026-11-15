@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <!-- Google Tag Manager -->
     <script>
@@ -33,7 +33,10 @@
 
     <!-- Tailwind CSS (Local Build) -->
     <!-- Styles are injected by Vite -->
-    <meta name="theme-color" content="#181b1e" />
+    <meta name="theme-color" content="#f4f5f5" />
+    <script>
+      try { if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+    </script>
     <style>
       /* Page colors before the stylesheet loads, so there is no flash. */
       html { background-color: #f4f5f5; }

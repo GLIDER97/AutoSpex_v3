@@ -16,7 +16,15 @@ declare global {
 }
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  // Light is the default. A visitor's own choice is remembered in this browser.
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('theme') === 'dark') setIsDarkMode(true);
+    } catch {
+      // Storage unavailable (private mode): stay on the default.
+    }
+  }, []);
   const location = useLocation();
 
   useEffect(() => {
@@ -43,7 +51,15 @@ function App() {
     }
   }, [location.pathname]);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleTheme = () => {
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    try {
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+    } catch {
+      // Storage unavailable: the choice lasts for this visit only.
+    }
+  };
   const pageMeta = findStaticPage(location.pathname);
 
   return (
