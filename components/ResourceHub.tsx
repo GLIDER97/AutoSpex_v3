@@ -194,7 +194,8 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
         };
       } else {
         prompt = `
-          Provide 6 currently active types of maintenance coupons or regional service deals common in the US.
+          List 6 kinds of maintenance promotions that national US service chains commonly advertise (oil changes, brakes, tires, batteries).
+          Describe typical offers only; do not invent coupon codes, expiry dates or claims that a deal is active now.
           Return strictly valid JSON with an array called "items".
           Each item must have: shop, offer, savingValue (e.g. "$20 Off"), validIn (Regions), and category (Oil Change/Brakes/Tires).
         `;
@@ -282,8 +283,8 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
       };
       case 'coupons': return {
         title: "Service Coupons",
-        subtitle: "Live Maintenance Deal Tracker",
-        desc: "Scan your region for the best savings on oil changes, brakes, and diagnostic services from national authorized networks.",
+        subtitle: "Typical service promotions",
+        desc: "Typical promotions on oil changes, brakes and tires that national chains advertise, found by AI. Confirm current terms with the shop, or ask local shops for their own offers.",
         icon: <Zap className="w-10 h-10 text-emerald-500" />,
         color: "text-emerald-500",
         bg: "bg-emerald-50 dark:bg-emerald-950/20"
@@ -411,6 +412,11 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
           {type === 'recalls' && feedNote && (
             <p className="mb-8 text-sm font-bold text-slate-500 dark:text-slate-400">{feedNote}</p>
           )}
+          {type === 'coupons' && (
+            <p className="mb-8 text-sm font-bold text-slate-500 dark:text-slate-400">
+              These are typical promotions found by AI, not coupons. Offers and terms change, so confirm with the shop before you go.
+            </p>
+          )}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
             {items.map((item: any, idx) => (
               <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col">
@@ -495,19 +501,19 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                 {type === 'coupons' && (
                   <>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-6 border border-emerald-100 dark:border-emerald-800">
-                      <CheckCircle2 className="w-3 h-3" /> Exclusive Deal Found
+                      <CheckCircle2 className="w-3 h-3" /> Typical deal to ask about
                     </div>
                     <div className="text-4xl font-black text-emerald-600 mb-2">{item.savingValue}</div>
                     <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">{item.offer}</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed grow">
-                      <strong>Partner:</strong> {item.shop}<br />
-                      <span className="text-xs text-slate-400 font-bold block mt-2">Active in: {item.validIn}</span>
+                      <strong>Often offered by:</strong> {item.shop}<br />
+                      <span className="text-xs text-slate-400 font-bold block mt-2">Where: {item.validIn}</span>
                     </p>
                     <button
                       onClick={() => handleClaimCoupon(item)}
                       className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-500/20"
                     >
-                      Claim Digital Coupon <ExternalLink className="w-4 h-4" />
+                      Get offers from local shops <ExternalLink className="w-4 h-4" />
                     </button>
                   </>
                 )}

@@ -9,17 +9,24 @@ import {
 
 interface Mechanic {
   name: string;
-  rating: string;
-  address: string;
-  phone?: string;
-  website?: string;
   mapUri: string;
 }
+
+const SERVICES = [
+  'General repair',
+  'Check engine light and diagnostics',
+  'Brakes',
+  'Transmission',
+  'Tires and alignment',
+  'Oil change and maintenance',
+  'Hybrid and electric cars',
+  'Body work and collision',
+];
 
 const faqs = [
   {
     question: "How are these mechanics selected?",
-    answer: "Our tool uses Google search grounding to identify top-rated auto repair shops based on customer reviews, proximity to your ZIP code, and verified business status."
+    answer: "We search Google Maps listings near your ZIP code for the kind of repair you need, and link each shop to its Maps page so you can read its reviews yourself."
   },
   {
     question: "Is the ZIP code search accurate?",
@@ -52,6 +59,8 @@ const MechanicFinder: React.FC = () => {
   const [searchedZip, setSearchedZip] = useState<string | null>(null);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [mapBgImage, setMapBgImage] = useState<string | null>(null);
+  const [service, setService] = useState(SERVICES[0]);
+  const [summary, setSummary] = useState('');
 
   useEffect(() => {
     const generateMapBackground = async () => {
@@ -106,10 +115,10 @@ const MechanicFinder: React.FC = () => {
       setSearchedZip(`${zipCode} (${locationName})`); // Update UI to show resolved location
 
       // 2. Search using Gemini with precise location grounding
-      const prompt = `Search strictly for automotive mechanics and car repair shops that are physically located in or very near to ${locationName} (ZIP: ${zipCode}). 
-      Center search around Latitude: ${lat}, Longitude: ${lon}.
-      Provide a list of 9 top-rated local businesses. 
-      For each, include full address and name.`;
+      const need = service === SERVICES[0] ? 'general car repair' : service.toLowerCase();
+      const prompt = `Find well-reviewed auto repair shops for ${need} that are physically located in or very near ${locationName} (ZIP ${zipCode}), around latitude ${lat}, longitude ${lon}.
+List up to 9 shops. For each: the shop name in bold, its street address, and one short line on what it is known for (from its listing or reviews).
+Use only information from Google Maps. Do not invent ratings, prices or phone numbers.`;
 
       const response = await generateContent({
         model: "gemini-2.5-flash",
@@ -132,14 +141,13 @@ const MechanicFinder: React.FC = () => {
       const results: Mechanic[] = groundingChunks
         .filter((chunk: any) => chunk.maps && chunk.maps.uri)
         .map((chunk: any) => ({
-          name: chunk.maps.title || "Local Mechanic",
-          address: chunk.maps.uri.split('/').pop()?.replaceAll('+', ' ') || "Local Address",
-          rating: (Math.random() * 0.5 + 4.5).toFixed(1),
+          name: chunk.maps.title || 'Repair shop',
           mapUri: chunk.maps.uri
         }))
         .slice(0, 9); // Display 9 results
 
       setMechanics(results);
+      setSummary(response.text ?? '');
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Unable to find mechanics in this area. Please try again.");
@@ -173,21 +181,34 @@ const MechanicFinder: React.FC = () => {
         <div className="text-center py-20 sm:py-32 px-4 relative z-10">
           <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/20 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/30 dark:border-white/10 text-sm font-bold text-blue-600 dark:text-blue-400 mb-8 shadow-xl cursor-default">
             <MapPin className="w-4 h-4 animate-bounce" />
-            Verified Mechanic Directory
+            Repair shops from Google Maps
           </div>
           <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-slate-900 dark:text-white mb-6 leading-[1.05]">
-            Find Trusted <br className="hidden sm:block" />
+            Find a Mechanic <br className="hidden sm:block" />
             <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-500 via-indigo-500 to-blue-600">
-              Local Mechanics
+              Near You
             </span>
           </h1>
           <p className="text-slate-600 dark:text-slate-300 text-lg sm:text-2xl max-w-2xl mx-auto leading-relaxed mb-12 font-medium">
-            Stop guessing about quality. Search your ZIP code to discover shops audited by AI and verified by neighbors.
+            Choose the repair you need and enter your ZIP code to see nearby shops, then read their reviews on Google Maps.
           </p>
 
           {/* Interactive Search Bar */}
           <div className="w-full max-w-xl mx-auto mb-16">
             <form onSubmit={handleSearch} className="group relative">
+              <label htmlFor="mechanic-service" className="mb-2 block text-left text-[0.9375rem] font-semibold">
+                What do you need?
+              </label>
+              <select
+                id="mechanic-service"
+                value={service}
+                onChange={(e) => setService(e.target.value)}
+                className="mb-3 h-11 w-full rounded-lg border border-input bg-card px-3 text-base outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                {SERVICES.map((s) => (
+                  <option key={s}>{s}</option>
+                ))}
+              </select>
               <div className="absolute -inset-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-3xl blur-sm opacity-25 group-hover:opacity-50 transition duration-500"></div>
               <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-2">
                 <div className="pl-5 text-slate-400">
@@ -198,6 +219,8 @@ const MechanicFinder: React.FC = () => {
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
                   placeholder="Enter your 5-digit ZIP code"
+                  aria-label="ZIP code"
+                  inputMode="numeric"
                   className="w-full p-4 bg-transparent border-none text-slate-900 dark:text-white font-black text-lg placeholder-slate-400 focus:ring-0 outline-hidden"
                 />
                 <button
@@ -241,12 +264,8 @@ const MechanicFinder: React.FC = () => {
         <div className="w-full max-w-5xl mb-24 animate-in fade-in slide-in-from-bottom-8 duration-500 px-4">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
             <div>
-              <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Best Matches for {searchedZip}</h2>
-              <p className="text-slate-500 text-lg font-medium">We found these top-rated specialists in your neighborhood.</p>
-            </div>
-            <div className="flex items-center gap-2 text-blue-600 bg-blue-600/5 px-5 py-2.5 rounded-full border border-blue-600/20 shadow-xs">
-              <ShieldCheck className="w-5 h-5" />
-              <span className="text-xs font-black uppercase tracking-widest">Verified Listings</span>
+              <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Shops near {searchedZip}</h2>
+              <p className="text-slate-500 text-lg font-medium">From Google Maps, for {service.toLowerCase()}. Check reviews and call ahead before you go.</p>
             </div>
           </div>
 
@@ -261,15 +280,9 @@ const MechanicFinder: React.FC = () => {
                   <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                     <Wrench className="w-7 h-7" />
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 text-sm font-black shadow-xs">
-                    <Star className="w-4 h-4 fill-current" /> {shop.rating}
-                  </div>
                 </div>
 
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
-                <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed flex items-start gap-2 h-14 overflow-hidden text-sm font-medium">
-                  <MapPin className="w-5 h-5 shrink-0 mt-0.5 text-blue-500" /> {shop.address}
-                </p>
 
                 <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800/50">
                   <a
@@ -278,12 +291,22 @@ const MechanicFinder: React.FC = () => {
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm hover:opacity-90 transition-all shadow-xl active:scale-95 group/btn"
                   >
-                    View on Maps <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                    Open in Google Maps <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                   </a>
                 </div>
               </div>
             ))}
           </div>
+
+          {summary && (
+            <div className="mt-10 rounded-xl border border-border bg-card p-6">
+              <h3 className="font-heading text-xl font-extrabold">What the search found</h3>
+              <div className="mt-3 space-y-2 text-[0.9375rem] leading-relaxed whitespace-pre-line text-muted-foreground">
+                {summary.replace(/\*\*/g, '').replace(/^#+\s*/gm, '').trim()}
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">Summary written by Google's Gemini AI from Google Maps listings.</p>
+            </div>
+          )}
 
           <div className="mt-12 text-center">
             <p className="text-slate-400 text-sm font-medium">
@@ -325,7 +348,7 @@ const MechanicFinder: React.FC = () => {
               Our logic analyzes shop density and specializations to provide the most statistically relevant top options. We prioritize shops equipped with the latest diagnostic technology.
             </p>
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black text-sm relative z-10">
-              <ShieldCheck className="w-5 h-5" /> SECURE & VERIFIED SERVICE
+              <ShieldCheck className="w-5 h-5" /> Free to use
             </div>
           </div>
         </div>
