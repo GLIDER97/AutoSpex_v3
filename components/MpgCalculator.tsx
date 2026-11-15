@@ -28,10 +28,11 @@ import {
   ShieldAlert
 } from './Icons';
 import MpgLeadForm from './MpgLeadForm';
+import CompareCars from './mpg/CompareCars';
 
 interface MpgCalculatorProps {}
 
-type Mode = 'budget' | 'trip' | 'analysis';
+type Mode = 'budget' | 'trip' | 'analysis' | 'compare';
 
 interface EpaData {
   city: number;
@@ -246,11 +247,12 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-12 shadow-inner">
+      <div className="flex flex-wrap justify-center p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-12 shadow-inner">
         {[
           { id: 'budget', label: 'Commute Budget', icon: <DollarSign className="w-4 h-4" /> },
           { id: 'trip', label: 'Trip Planner', icon: <MapPin className="w-4 h-4" /> },
           { id: 'analysis', label: 'Efficiency Audit', icon: <Gauge className="w-4 h-4" /> },
+          { id: 'compare', label: 'Compare Cars', icon: <Car className="w-4 h-4" /> },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -267,8 +269,14 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
         ))}
       </div>
 
+      {mode === 'compare' && (
+        <div className="w-full max-w-5xl mb-12">
+          <CompareCars />
+        </div>
+      )}
+
       {/* Main Content Card */}
-      <div className="w-full max-w-5xl grid lg:grid-cols-12 gap-8 mb-12">
+      <div className={`w-full max-w-5xl grid lg:grid-cols-12 gap-8 mb-12 ${mode === 'compare' ? 'hidden' : ''}`}>
         
         {/* LEFT COLUMN: CONTROLS */}
         <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xl">

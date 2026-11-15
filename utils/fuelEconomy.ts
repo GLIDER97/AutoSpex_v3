@@ -56,7 +56,8 @@ export async function findEpaVariants(
   const models = menuItems(
     await getJson(`/vehicle/menu/model?${new URLSearchParams({ year: String(year), make: epaMake })}`),
   ).map((m) => m.value);
-  const matched = matchNames(model, models, 6);
+  // Models often come in many versions ("Camry", "Camry Hybrid LE", "Camry AWD LE/SE" ...).
+  const matched = matchNames(model, models, 12);
 
   const perModel = await Promise.all(
     matched.map(async (epaModel) => {
