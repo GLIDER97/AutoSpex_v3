@@ -42,28 +42,30 @@ const InsuranceEstimator: React.FC = () => {
   };
 
   // --- LOGIC ENGINE ---
-  const calculateEstimate = () => {
-    let baseRate = 110; // National average base (heuristic)
-
-    // 1. Geography Risk (Mock logic based on ZIP hash)
-    const zipFactor = formData.zipCode ? (parseInt(formData.zipCode[0]) % 2 === 0 ? 1.1 : 0.9) : 1.0;
-    baseRate *= zipFactor;
+  // A transparent rule-of-thumb model. `fd` lets the page re-run it with changed
+  // inputs to show what each change would save.
+  const calculateEstimate = (fd: InsuranceFormData = formData) => {
+    // Calibrated so a typical driver (25-64, clean record, good credit, standard
+    // full coverage, $500 deductible) lands near 2026 national averages for full
+    // coverage ($186-$216 a month per Insurify, NerdWallet, The Zebra, MoneyGeek).
+    // Location is not modeled: rates vary by state and ZIP, and real quotes account for it.
+    let baseRate = 177;
 
     // 2. Age Factor
-    if (formData.ageGroup === '16-24') baseRate *= 2.4;
-    else if (formData.ageGroup === '65+') baseRate *= 1.1;
+    if (fd.ageGroup === '16-24') baseRate *= 2.4;
+    else if (fd.ageGroup === '65+') baseRate *= 1.1;
 
     // 3. Driving History
-    if (formData.drivingHistory === 'tickets') baseRate *= 1.35;
-    else if (formData.drivingHistory === 'accidents') baseRate *= 1.8;
+    if (fd.drivingHistory === 'tickets') baseRate *= 1.35;
+    else if (fd.drivingHistory === 'accidents') baseRate *= 1.8;
 
     // 4. Credit Tier
-    if (formData.creditTier === 'excellent') baseRate *= 0.85;
-    else if (formData.creditTier === 'average') baseRate *= 1.2;
-    else if (formData.creditTier === 'poor') baseRate *= 1.6;
+    if (fd.creditTier === 'excellent') baseRate *= 0.85;
+    else if (fd.creditTier === 'average') baseRate *= 1.2;
+    else if (fd.creditTier === 'poor') baseRate *= 1.6;
 
     // 5. Vehicle Type (Simple Keyword Check)
-    const model = formData.model.toLowerCase();
+    const model = fd.model.toLowerCase();
     if (model.includes('gt') || model.includes('sport') || model.includes('amg') || model.includes('m3')) {
       baseRate *= 1.4;
     } else if (model.includes('truck') || model.includes('f150') || model.includes('silverado')) {
@@ -71,12 +73,12 @@ const InsuranceEstimator: React.FC = () => {
     }
 
     // 6. Coverage Level
-    if (formData.coverageLevel === 'state_min') baseRate *= 0.6;
-    else if (formData.coverageLevel === 'premium') baseRate *= 1.45;
+    if (fd.coverageLevel === 'state_min') baseRate *= 0.6;
+    else if (fd.coverageLevel === 'premium') baseRate *= 1.45;
 
     // 7. Deductible
-    if (formData.deductible === '2000') baseRate *= 0.85;
-    else if (formData.deductible === '500') baseRate *= 1.1;
+    if (fd.deductible === '2000') baseRate *= 0.85;
+    else if (fd.deductible === '500') baseRate *= 1.1;
 
     const min = Math.round(baseRate * 0.85);
     const max = Math.round(baseRate * 1.15);
@@ -84,14 +86,14 @@ const InsuranceEstimator: React.FC = () => {
 
     // Factors for UI
     const factors: InsuranceEstimate['factors'] = [];
-    if (formData.ageGroup === '16-24') factors.push({ label: 'Age Group (Under 25)', impact: 'negative' });
-    if (formData.drivingHistory === 'clean') factors.push({ label: 'Clean Driving Record', impact: 'positive' });
-    if (formData.creditTier === 'excellent') factors.push({ label: 'Excellent Credit', impact: 'positive' });
-    if (formData.coverageLevel === 'state_min') factors.push({ label: 'Min Coverage Selected', impact: 'positive' });
+    if (fd.ageGroup === '16-24') factors.push({ label: 'Age Group (Under 25)', impact: 'negative' });
+    if (fd.drivingHistory === 'clean') factors.push({ label: 'Clean Driving Record', impact: 'positive' });
+    if (fd.creditTier === 'excellent') factors.push({ label: 'Excellent Credit', impact: 'positive' });
+    if (fd.coverageLevel === 'state_min') factors.push({ label: 'Min Coverage Selected', impact: 'positive' });
 
     return {
       monthlyPremium: { min, max, avg },
-      score: avg < 100 ? 'great' : avg > 200 ? 'expensive' : 'average',
+      score: avg < 160 ? 'great' : avg > 240 ? 'expensive' : 'average',
       factors,
       breakdown: {
         liability: Math.round(avg * 0.45),
@@ -383,10 +385,48 @@ const InsuranceEstimator: React.FC = () => {
 
             <p className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold ${estimate.score === 'great' ? 'bg-green-500/20 text-green-400' : estimate.score === 'average' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
               }`}>
-              {estimate.score === 'great' ? 'Great Price' : estimate.score === 'average' ? 'Market Average' : 'Above Market Avg'}
+              {estimate.score === 'great' ? 'Below the national average' : estimate.score === 'average' ? 'Near the national average' : 'Above the national average'}
             </p>
           </div>
         </div>
+
+        {(() => {
+          const next = formData.deductible === '500' ? '1000' : '2000';
+          const options: { label: string; fd: InsuranceFormData }[] = [];
+          if (formData.deductible !== '2000') options.push({ label: `Raise your deductible to $${Number(next).toLocaleString('en-US')}`, fd: { ...formData, deductible: next } });
+          if (formData.coverageLevel === 'premium') options.push({ label: 'Switch from premium to standard full coverage', fd: { ...formData, coverageLevel: 'standard' } });
+          if (formData.creditTier === 'poor' || formData.creditTier === 'average')
+            options.push({ label: 'Improve your credit by one tier', fd: { ...formData, creditTier: formData.creditTier === 'poor' ? 'average' : 'good' } });
+          if (formData.drivingHistory !== 'clean')
+            options.push({ label: 'Keep a clean record (tickets and accidents usually stop counting after 3 to 5 years)', fd: { ...formData, drivingHistory: 'clean' } });
+          const ways = options
+            .map((o) => ({ label: o.label, monthly: estimate.monthlyPremium.avg - calculateEstimate(o.fd).monthlyPremium.avg }))
+            .filter((w) => w.monthly > 0)
+            .sort((a, b) => b.monthly - a.monthly);
+          return (
+            <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 dark:border-slate-800 dark:bg-slate-900">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Ways to lower this estimate</h3>
+              {ways.length ? (
+                <ul className="mt-4 divide-y divide-slate-200 dark:divide-slate-800">
+                  {ways.map((w) => (
+                    <li key={w.label} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3">
+                      <span className="text-slate-700 dark:text-slate-200">{w.label}</span>
+                      <span className="font-bold whitespace-nowrap text-slate-900 dark:text-white">
+                        saves about ${w.monthly}/month (${(w.monthly * 12).toLocaleString('en-US')}/year)
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2 text-slate-600 dark:text-slate-300">Your choices already keep this estimate low.</p>
+              )}
+              <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+                Savings are calculated with the same model as the estimate. Location isn't part of the model: rates vary a lot by state and ZIP code, so
+                compare real quotes. Discounts for bundling, safe-driving apps and paying in full vary by insurer.
+              </p>
+            </div>
+          );
+        })()}
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-none flex flex-col">

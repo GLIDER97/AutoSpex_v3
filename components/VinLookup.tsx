@@ -511,7 +511,7 @@ const VinLookup: React.FC = () => {
               </PrimaryButton>
             </div>
           </Field>
-          <p id="vin-status" aria-live="polite" className={cn('mt-2 text-[0.9375rem] font-semibold', check.problem && input ? 'text-muted-foreground' : 'text-sign-green')}>
+          <p id="vin-status" aria-live="polite" className={cn('mt-2 text-[0.9375rem] font-semibold', check.problem && input ? 'text-muted-foreground' : 'text-sign-green dark:text-emerald-300')}>
             {live}
           </p>
           {!decoded && (

@@ -43,7 +43,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Check engine code lookup',
         path: '/fault-code-decoder',
-        description: 'What an OBD-II code means, how serious it is and what the fix usually costs.',
+        description: 'One or more codes: whether it’s safe to drive, likely causes and what each fix costs.',
         icon: Gauge,
       },
       {
@@ -53,9 +53,9 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
         icon: ShieldAlert,
       },
       {
-        name: 'VIN decoder',
+        name: 'VIN report',
         path: '/vin-lookup',
-        description: 'Factory specs behind any 17-character VIN.',
+        description: 'Specs, recalls, owner complaints, crash ratings and MPG from any VIN.',
         icon: ScanBarcode,
       },
     ],
@@ -67,31 +67,31 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Repair quote checker',
         path: '/maintenance-validator',
-        description: "See whether a shop's quote is in the normal range for your area.",
+        description: 'Snap a photo of your estimate and see which lines are fair or inflated.',
         icon: ReceiptText,
       },
       {
         name: 'Insurance cost estimate',
         path: '/insurance-estimator',
-        description: 'A ballpark monthly premium for your car, age and ZIP code.',
+        description: 'A ballpark monthly premium for your profile, and what each change would save.',
         icon: ShieldCheck,
       },
       {
         name: 'MPG and fuel cost',
         path: '/mpg-calculator',
-        description: 'Your cost per mile, and your real MPG next to the EPA rating.',
+        description: 'Fuel cost per mile, your real MPG against the EPA, and two cars compared.',
         icon: Fuel,
       },
       {
         name: 'Cost of ownership',
         path: '/ownership-calculator',
-        description: 'Depreciation, fuel, insurance, upkeep and loan costs, added up.',
+        description: 'Everything a car costs over the years you keep it, for one car or two.',
         icon: PiggyBank,
       },
       {
         name: 'Can I afford this car?',
         path: '/affordability-predictor',
-        description: 'A fair price range and the monthly payment, checked against your income.',
+        description: 'The real monthly payment and total cost, checked against your income.',
         icon: Wallet,
       },
       {

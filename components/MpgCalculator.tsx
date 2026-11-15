@@ -231,7 +231,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
 
       {/* Header */}
       <div className="text-center mb-10 max-w-3xl">
-        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-emerald-600 mb-8 shadow-lg shadow-emerald-500/10 cursor-default">
+        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-emerald-700 dark:text-emerald-400 mb-8 shadow-lg shadow-emerald-500/10 cursor-default">
             <Fuel className="w-4 h-4" />
             Smart Fuel Intelligence
         </div>
@@ -260,7 +260,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
             className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
               mode === tab.id
                 ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-md'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             {tab.icon}
@@ -284,12 +284,12 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
           {mode === 'budget' && (
             <div className="space-y-8 animate-in fade-in">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600">
+                <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
                   <Calculator className="w-6 h-6" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white">Daily Commute Calculator</h2>
-                  <p className="text-sm text-slate-500">How much does work actually cost you?</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">How much does work actually cost you?</p>
                 </div>
               </div>
 
@@ -298,10 +298,10 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                  <div>
                     <div className="flex justify-between mb-2">
                       <label className="font-semibold text-slate-700 dark:text-slate-300">Vehicle MPG</label>
-                      <span className="font-mono font-bold text-emerald-600">{mpg} mpg</span>
+                      <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">{mpg} mpg</span>
                     </div>
                     <input 
-                      type="range" min="5" max="100" step="1" 
+                      type="range" min="5" max="100" step="1" aria-label="Vehicle MPG" 
                       value={mpg} onChange={(e) => setMpg(Number(e.target.value))}
                       className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                     />
@@ -310,10 +310,10 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                  <div>
                     <div className="flex justify-between mb-2">
                       <label className="font-semibold text-slate-700 dark:text-slate-300">Gas Price</label>
-                      <span className="font-mono font-bold text-emerald-600">${fuelPrice.toFixed(2)}/gal</span>
+                      <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">${fuelPrice.toFixed(2)}/gal</span>
                     </div>
                     <input 
-                      type="range" min="1.00" max="7.00" step="0.05" 
+                      type="range" min="1.00" max="7.00" step="0.05" aria-label="Gas price per gallon" 
                       value={fuelPrice} onChange={(e) => setFuelPrice(Number(e.target.value))}
                       className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                     />
@@ -324,12 +324,12 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                       <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Daily Miles (Round Trip)</label>
                       <div className="relative">
                         <input 
-                          type="number" 
+                          type="number" aria-label="Daily miles, round trip" 
                           value={commuteDistance} 
                           onChange={(e) => setCommuteDistance(Number(e.target.value))}
                           className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-emerald-500 outline-hidden"
                         />
-                        <span className="absolute right-4 top-3.5 text-sm text-slate-400">mi</span>
+                        <span className="absolute right-4 top-3.5 text-sm text-slate-600 dark:text-slate-400">mi</span>
                       </div>
                    </div>
                    <div>
@@ -361,7 +361,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white">Trip Cost Planner</h2>
-                  <p className="text-sm text-slate-500">Calculate fuel needs for your next adventure.</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Calculate fuel needs for your next adventure.</p>
                 </div>
               </div>
 
@@ -375,8 +375,8 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                         onChange={(e) => setTripDistance(Number(e.target.value))}
                         className="w-full p-4 pl-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 font-mono text-lg font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
                       />
-                      <MapPin className="absolute left-4 top-4.5 w-5 h-5 text-slate-400" />
-                      <span className="absolute right-4 top-4.5 text-sm text-slate-400 font-bold">MILES</span>
+                      <MapPin className="absolute left-4 top-4.5 w-5 h-5 text-slate-600 dark:text-slate-400" />
+                      <span className="absolute right-4 top-4.5 text-sm text-slate-600 dark:text-slate-400 font-bold">MILES</span>
                     </div>
                  </div>
 
@@ -427,7 +427,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white">Efficiency Audit</h2>
-                  <p className="text-sm text-slate-500">Compare your real-world MPG vs Factory EPA ratings.</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Compare your real-world MPG vs Factory EPA ratings.</p>
                 </div>
               </div>
 
@@ -508,22 +508,22 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                 </div>
                 
                 <div className="relative z-10">
-                   <h3 className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">True Cost Per Mile</h3>
+                   <h3 className="text-slate-300 font-bold text-xs uppercase tracking-widest mb-1">True Cost Per Mile</h3>
                    <div className="text-6xl font-black tracking-tighter mb-8 text-emerald-400">
                      ${costPerMile.toFixed(2)}
                    </div>
 
                    <div className="space-y-6">
                       <div className="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <span className="text-slate-400 font-medium">Daily Cost</span>
+                        <span className="text-slate-300 font-medium">Daily Cost</span>
                         <span className="text-2xl font-bold">${dailyCost.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <span className="text-slate-400 font-medium">Monthly Fuel</span>
+                        <span className="text-slate-300 font-medium">Monthly Fuel</span>
                         <span className="text-2xl font-bold">${monthlyCost.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-400 font-medium">Yearly Spend</span>
+                        <span className="text-slate-300 font-medium">Yearly Spend</span>
                         <span className="text-3xl font-bold text-emerald-400">${yearlyCost.toFixed(0)}</span>
                       </div>
                    </div>
@@ -577,20 +577,20 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
              <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-xl animate-in slide-in-from-right delay-100">
                 <div className="flex items-center justify-between mb-6">
                    <h3 className="font-bold text-slate-900 dark:text-white">EPA Rating vs You</h3>
-                   <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold uppercase text-slate-500">
+                   <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold uppercase text-slate-600 dark:text-slate-400">
                      Combined MPG
                    </span>
                 </div>
 
                 <div className="flex justify-center items-center gap-8 mb-8">
                    <div className="text-center">
-                      <p className="text-sm text-slate-500 mb-1">Factory EPA</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Factory EPA</p>
                       <p className="text-3xl font-black text-slate-900 dark:text-white">{epaData.combined}</p>
-                      <p className="text-[11px] text-slate-400 mt-1">City {epaData.city} · Hwy {epaData.hwy}</p>
+                      <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">City {epaData.city} · Hwy {epaData.hwy}</p>
                    </div>
                    <div className="h-12 w-px bg-slate-200 dark:bg-slate-700"></div>
                    <div className="text-center">
-                      <p className="text-sm text-slate-500 mb-1">Your Car</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Your Car</p>
                       <p className={`text-3xl font-black ${getEfficiencyScore()?.color}`}>
                          {observedMpg}
                       </p>
@@ -620,7 +620,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
 
                 <div>
                    <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-3 flex items-center gap-2">
-                     <Wrench className="w-4 h-4 text-slate-400" /> Potential Fixes
+                     <Wrench className="w-4 h-4 text-slate-600 dark:text-slate-400" /> Potential Fixes
                    </h4>
                    <ul className="space-y-2">
                       {epaData.tips.map((tip, idx) => (
@@ -630,7 +630,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                         </li>
                       ))}
                    </ul>
-                   <p className="mt-6 text-[11px] text-slate-400">
+                   <p className="mt-6 text-[11px] text-slate-600 dark:text-slate-400">
                      EPA ratings from fueleconomy.gov (U.S. Department of Energy and EPA). Fixes are general maintenance advice.
                    </p>
                 </div>
@@ -686,9 +686,9 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
                <div>
                   <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">MPG-Boosting Products</h2>
-                  <p className="text-slate-500">Mechanical upgrades and maintenance tools you can use today to increase efficiency.</p>
+                  <p className="text-slate-600 dark:text-slate-400">Mechanical upgrades and maintenance tools you can use today to increase efficiency.</p>
                </div>
-               <div className="flex items-center gap-1 text-orange-400 bg-orange-400/5 px-4 py-2 rounded-full border border-orange-400/20 shrink-0">
+               <div className="flex items-center gap-1 text-orange-800 dark:text-orange-300 bg-orange-400/10 px-4 py-2 rounded-full border border-orange-400/20 shrink-0">
                   <Star className="w-4 h-4 fill-current" />
                   <span className="text-xs font-black uppercase tracking-widest">Efficiency Picks</span>
                </div>
@@ -721,7 +721,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                  </div>
                ))}
             </div>
-            <p className="text-center text-[10px] text-slate-400 mt-8 font-medium italic">
+            <p className="text-center text-[10px] text-slate-600 dark:text-slate-400 mt-8 font-medium italic">
                *As an Amazon Associate, MyAutoSpex earns from qualifying purchases.
             </p>
           </div>
@@ -730,7 +730,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
       <div className="w-full max-w-7xl px-4 flex flex-col items-center">
             
           {/* Trust Indicators */}
-          <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-500 dark:text-slate-400 text-sm font-medium">
+          <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-600 dark:text-slate-400 text-sm font-medium">
               <div className="flex items-center gap-2"><Lock className="w-4 h-4 text-green-500" /> Secure Analysis</div>
               <div className="flex items-center gap-2"><Fuel className="w-4 h-4 text-emerald-500" /> Real-Time Fuel Data</div>
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Verified EPA Specs</div>
@@ -744,7 +744,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                       The MyAutoSpex MPG Calculator & Cost Analyzer is a dual-purpose financial utility designed to help US drivers understand the literal cost of their commute. We combine real-time fuel market prices with official factory efficiency data to build a complete profile of your vehicle's energy consumption.
                   </p>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                      Our system doesn't just calculate math; it acts as a mechanical diagnostic tool. By comparing your "Observed MPG" against the <span className="font-bold text-emerald-500">factory EPA ratings</span> for your specific make and model, we can identify hidden mechanical inefficiencies that are costing you hundreds of dollars at the pump every year.
+                      Our system doesn't just calculate math; it acts as a mechanical diagnostic tool. By comparing your "Observed MPG" against the <span className="font-bold text-emerald-700 dark:text-emerald-400">factory EPA ratings</span> for your specific make and model, we can identify hidden mechanical inefficiencies that are costing you hundreds of dollars at the pump every year.
                   </p>
               </div>
               <div className="order-1 md:order-2 bg-emerald-50 dark:bg-emerald-900/10 rounded-[3rem] p-10 sm:p-14 border border-emerald-100 dark:border-emerald-900/30 relative overflow-hidden shadow-2xl">
@@ -753,7 +753,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
                       Access official EPA benchmarks for every vehicle manufactured after 1984. Our engine cross-references these with regional fuel costs to ensure your budget is based on reality, not theory.
                   </p>
-                  <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-400 font-black text-sm relative z-10">
+                  <div className="flex items-center gap-3 text-emerald-800 dark:text-emerald-300 font-black text-sm relative z-10">
                       <ShieldCheck className="w-6 h-6" /> VERIFIED EPA DATASETS
                   </div>
               </div>
@@ -862,12 +862,12 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                           </div>
                           <p className="text-slate-700 dark:text-slate-300 italic mb-8 grow">"{t.text}"</p>
                           <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-                              <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center font-black text-sm">
+                              <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-black text-sm">
                                   {t.name.charAt(0)}
                               </div>
                               <div>
                                   <h4 className="font-bold text-slate-900 dark:text-white text-sm">{t.name}</h4>
-                                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t.loc}</p>
+                                  <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">{t.loc}</p>
                               </div>
                           </div>
                       </div>
@@ -903,7 +903,7 @@ const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
                             {faq.question}
                         </span>
                         <ChevronDown 
-                            className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${
+                            className={`w-5 h-5 text-slate-600 dark:text-slate-400 transition-transform duration-300 shrink-0 ${
                               openFaqIndex === index ? 'rotate-180 text-emerald-500' : ''
                             }`} 
                         />

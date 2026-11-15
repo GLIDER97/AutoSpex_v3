@@ -32,9 +32,9 @@ const AffiliateSection: React.FC = () => {
             <ShoppingCart className="w-8 h-8 text-brand-primary" />
             Recommended Diagnostic Tools
           </h2>
-          <p className="text-slate-500 max-w-xl">Don't rely on expensive shop scans. Own your data with these top-rated OBD-II scanners from Amazon.</p>
+          <p className="text-slate-600 dark:text-slate-400 max-w-xl">Don't rely on expensive shop scans. Own your data with these top-rated OBD-II scanners from Amazon.</p>
         </div>
-        <div className="flex items-center gap-1 text-orange-400 bg-orange-400/5 px-4 py-2 rounded-full border border-orange-400/20">
+        <div className="flex items-center gap-1 text-orange-800 dark:text-orange-300 bg-orange-400/10 px-4 py-2 rounded-full border border-orange-400/20">
           <Star className="w-4 h-4 fill-current" />
           <span className="text-xs font-black uppercase tracking-widest">Amazon Best Sellers</span>
         </div>
@@ -60,7 +60,7 @@ const AffiliateSection: React.FC = () => {
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className={`w-3 h-3 ${i < Math.floor(scanner.rating) ? 'fill-current' : 'opacity-30'}`} />
                 ))}
-                <span className="text-[10px] font-bold text-slate-400 ml-1">{scanner.rating}</span>
+                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 ml-1">{scanner.rating}</span>
               </div>
               
               <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 mb-4 leading-snug h-10 group-hover:text-brand-primary transition-colors">
@@ -72,7 +72,7 @@ const AffiliateSection: React.FC = () => {
                   href={scanner.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#FF9900] text-white font-bold text-sm hover:bg-[#e68a00] transition-colors shadow-lg shadow-orange-500/10"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#FF9900] text-sign-ink font-bold text-sm hover:bg-[#e68a00] transition-colors shadow-lg shadow-orange-500/10"
                 >
                   Buy on Amazon <ArrowRight className="w-3 h-3" />
                 </a>
@@ -82,7 +82,7 @@ const AffiliateSection: React.FC = () => {
         ))}
       </div>
       
-      <p className="text-center text-[10px] text-slate-400 mt-8 font-medium italic">
+      <p className="text-center text-[10px] text-slate-600 dark:text-slate-400 mt-8 font-medium italic">
         *As an Amazon Associate, MyAutoSpex earns from qualifying purchases.
       </p>
     </div>
