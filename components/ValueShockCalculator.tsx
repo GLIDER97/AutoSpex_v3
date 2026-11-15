@@ -1,620 +1,265 @@
 import React, { useState } from 'react';
-import { generateContent, Type } from '../utils/ai';
-import { 
-  TrendingDown, TrendingUp, Car, DollarSign, Clock, 
-  Hourglass, AlertCircle, AlertOctagon, Info, ChevronRight, 
-  MessageSquare, ChevronDown, Lock, Zap, CheckCircle2, Star, ArrowRight, ShieldCheck, Globe, Award, ShieldAlert
-} from './Icons';
-import { ValueRequest, ValueResult } from '../types';
-import ResaleLeadForm from './ResaleLeadForm';
+import { cn } from '@/lib/utils';
+import { CONDITIONS, MILES_PER_YEAR, modelFacts, valueReport, type Condition, type ModelFacts } from '../utils/resale';
+import { BarList } from './tool/charts';
+import {
+  Faq,
+  FactList,
+  Field,
+  Notice,
+  NumberField,
+  Panel,
+  PanelTitle,
+  PrimaryButton,
+  Spinner,
+  ToolPage,
+  VehicleFields,
+  Verdict,
+  hasVehicle,
+  inputClass,
+  money,
+  vehicleLabel,
+  type Vehicle,
+} from './tool/kit';
+import LeadPanel from './tool/LeadPanel';
 
-const INITIAL_REQUEST: ValueRequest = {
-  year: '',
-  make: '',
-  model: '',
-  trim: '',
-  mileage: '',
-  condition: 'good'
-};
+const RETENTION_TONE = { Strong: 'go', 'Above average': 'go', Average: 'neutral', 'Below average': 'caution', Weak: 'stop' } as const;
 
-const ValueShockCalculator: React.FC = () => {
-  const [request, setRequest] = useState<ValueRequest>(INITIAL_REQUEST);
-  const [result, setResult] = useState<ValueResult | null>(null);
+const FAQS: [string, string][] = [
+  [
+    'How is the value worked out?',
+    "The AI looks up the car's original price and how well that model holds its value. The rest is math: a standard US depreciation curve, adjusted for that model, your mileage against the 12,000-mile yearly average, and the condition you pick.",
+  ],
+  [
+    'Why are trade-in and private sale so different?',
+    'A dealer has to recondition, store, advertise and warranty the car and still make a profit, so trade-in offers usually come in 10 to 20% below what a private buyer pays. In most states you also pay sales tax only on the difference when you trade in, which narrows the gap.',
+  ],
+  [
+    'When do cars lose the most value?',
+    'In the first three years: a typical new car loses about 20% in year one and close to 40% by year three. After about five years the yearly loss in dollars gets much smaller, which is why a 3- to 5-year-old car is often the best value to buy.',
+  ],
+  [
+    'Does mileage matter more than age?',
+    'Both matter. Buyers expect about 12,000 miles a year. Well over that lowers the price, and passing 100,000 miles is a psychological line where many buyers and lenders pay noticeably less.',
+  ],
+  [
+    'How do I get the most for my car?',
+    'Get two or three instant offers (for example from CarMax, Carvana and a local dealer), fix small cosmetic things, gather service records, and sell before a big service or a new set of tires is due.',
+  ],
+];
+
+export default function ValueShockCalculator() {
+  const [vehicle, setVehicle] = useState<Vehicle>({ year: '', make: '', model: '' });
+  const [trim, setTrim] = useState('');
+  const [miles, setMiles] = useState('');
+  const [perYear, setPerYear] = useState(String(MILES_PER_YEAR));
+  const [condition, setCondition] = useState<Condition>('good');
+  const [facts, setFacts] = useState<(ModelFacts & { vehicle: string; year: number }) | null>(null);
+  const [msrp, setMsrp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 
-  const updateRequest = (field: keyof ValueRequest, value: string) => {
-    setRequest(prev => ({ ...prev, [field]: value as any }));
-  };
-
-  const handleCalculate = async () => {
-    if (!request.year || !request.make || !request.model || !request.mileage) {
-      setError("Please fill in all vehicle details.");
+  const check = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!hasVehicle(vehicle) || !miles) {
+      setError('Enter the year, make, model and mileage.');
       return;
     }
-
-    setLoading(true);
     setError(null);
-    setResult(null);
-
+    setLoading(true);
     try {
-      const prompt = `
-        Act as a Used Car Market Analyst and Financial Auditor.
-        Analyze the following vehicle for depreciation:
-        Vehicle: ${request.year} ${request.make} ${request.model} ${request.trim}
-        Current Mileage: ${request.mileage} miles
-        Condition: ${request.condition}
-
-        1. Estimate current US Private Party & Trade-In value.
-        2. Project the value 12 months from now (assuming +12,000 miles).
-        3. Calculate the daily dollar loss due to depreciation.
-        4. Provide a brutally honest verdict on its financial trajectory.
-        
-        Return valid JSON matching this schema:
-        {
-          "currentValue": { "tradeIn": number, "privateParty": number },
-          "futureValue": { "tradeIn": number, "privateParty": number },
-          "depreciation": { 
-             "totalOneYear": number (positive number representing loss), 
-             "perDay": number, 
-             "percentDrop": number 
-          },
-          "verdict": {
-            "status": "Holding Strong" | "Normal Depreciation" | "Free Fall" | "Money Pit",
-            "color": "text-green-500" | "text-yellow-500" | "text-orange-500" | "text-red-600",
-            "description": "One sentence summary of why."
-          },
-          "marketFactors": ["Factor 1", "Factor 2", "Factor 3"]
-        }
-      `;
-
-      const aiResponse = await generateContent({
-        model: 'text',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              currentValue: {
-                type: Type.OBJECT,
-                properties: { tradeIn: { type: Type.NUMBER }, privateParty: { type: Type.NUMBER } },
-                required: ['tradeIn', 'privateParty']
-              },
-              futureValue: {
-                 type: Type.OBJECT,
-                 properties: { tradeIn: { type: Type.NUMBER }, privateParty: { type: Type.NUMBER } },
-                 required: ['tradeIn', 'privateParty']
-              },
-              depreciation: {
-                 type: Type.OBJECT,
-                 properties: { totalOneYear: { type: Type.NUMBER }, perDay: { type: Type.NUMBER }, percentDrop: { type: Type.NUMBER } },
-                 required: ['totalOneYear', 'perDay', 'percentDrop']
-              },
-              verdict: {
-                 type: Type.OBJECT,
-                 properties: { status: { type: Type.STRING }, color: { type: Type.STRING }, description: { type: Type.STRING } },
-                 required: ['status', 'color', 'description']
-              },
-              marketFactors: { type: Type.ARRAY, items: { type: Type.STRING } }
-            },
-            required: ['currentValue', 'futureValue', 'depreciation', 'verdict', 'marketFactors']
-          }
-        }
-      });
-
-      const data = JSON.parse(aiResponse.text || '{}');
-      
-      // Strict validation of the core calculation objects to prevent UI crashes
-      if (!data.depreciation || !data.currentValue || !data.futureValue || !data.verdict) {
-        throw new Error("The diagnostic data returned was incomplete. Please try again.");
-      }
-      
-      setResult(data);
+      const f = await modelFacts(vehicleLabel(vehicle), trim.trim());
+      setFacts({ ...f, vehicle: [vehicleLabel(vehicle), trim.trim()].filter(Boolean).join(' '), year: Number(vehicle.year) });
+      setMsrp(String(f.msrp));
     } catch (err) {
-      console.error(err);
-      setError("Failed to analyze vehicle value. Please try again.");
+      setError(err instanceof Error ? err.message : 'The value check failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const faqs = [
-    {
-      question: "How do you calculate future value?",
-      answer: "We use historical depreciation curves specific to your vehicle's make, model, and segment (e.g., Luxury Sedans drop faster than Trucks). We also factor in an average of 12,000 additional miles per year."
-    },
-    {
-      question: "Why is my daily loss so high?",
-      answer: "Depreciation is the single biggest cost of car ownership. New or luxury cars can lose $20-$40 per day in value, while older, high-mileage cars lose significantly less."
-    },
-    {
-      question: "Does this include maintenance costs?",
-      answer: "No, this calculation is purely strictly 'Asset Depreciation'—the loss of the vehicle's cash value. Repairs, fuel, and insurance are additional costs on top of this."
-    },
-    {
-      question: "Can I slow down my car's depreciation?",
-      answer: "Yes. Keeping mileage low, maintaining detailed service records, storing the car in a garage, and keeping the interior/exterior in showroom condition will help it hold value better than average."
-    },
-    {
-      question: "Why do luxury cars lose value faster?",
-      answer: "Luxury vehicles often have higher maintenance costs and outdated technology as they age, making them less desirable on the used market compared to reliable economy cars like Toyotas or Hondas."
-    }
-  ];
+  const report =
+    facts && Number(msrp) > 0
+      ? valueReport({
+          modelYear: facts.year,
+          msrp: Number(msrp),
+          retention: facts.retention,
+          miles: Number(miles) || 0,
+          milesPerYear: Number(perYear) || 0,
+          condition,
+        })
+      : null;
+
+  const steepNow = report && report.yearlyLosses[0] >= report.yearlyLosses[report.yearlyLosses.length - 1] * 1.4;
 
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
-      <ResaleLeadForm 
-        isOpen={isLeadFormOpen} 
-        onClose={() => setIsLeadFormOpen(false)} 
-        vehicleRequest={request} 
-      />
+    <ToolPage
+      category="money"
+      title="What's my car worth, and how fast is it dropping?"
+      intro="See your car's value today for a private sale, trade-in and at a dealer, what it's costing you per day in lost value, and the best time to sell."
+      sources="AI (Anthropic's Claude) for the original price and how well this model holds value; US depreciation curves and mileage math for the numbers."
+    >
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:items-start">
+        <Panel aria-labelledby="car-title">
+          <PanelTitle>
+            <span id="car-title">Your car</span>
+          </PanelTitle>
+          <form onSubmit={check} noValidate className="mt-4 space-y-4">
+            <VehicleFields value={vehicle} onChange={setVehicle} required />
+            <Field label="Trim (optional)" htmlFor="value-trim" hint="For example LE, EX-L or xDrive40i.">
+              <input id="value-trim" value={trim} onChange={(e) => setTrim(e.target.value)} maxLength={40} className={inputClass} />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <NumberField id="value-miles" label="Mileage" value={miles} onChange={setMiles} suffix="mi" />
+              <NumberField id="value-per-year" label="Miles a year" value={perYear} onChange={setPerYear} suffix="mi" />
+            </div>
+            <fieldset>
+              <legend className="mb-2 text-[0.9375rem] font-semibold">Condition</legend>
+              <div className="space-y-2">
+                {CONDITIONS.map((c) => (
+                  <label
+                    key={c.id}
+                    className={cn(
+                      'block cursor-pointer rounded-lg border p-3 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                      condition === c.id ? 'border-sign-green bg-sign-green/8 ring-1 ring-sign-green' : 'border-input hover:bg-muted',
+                    )}
+                  >
+                    <input type="radio" name="condition" value={c.id} checked={condition === c.id} onChange={() => setCondition(c.id)} className="sr-only" />
+                    <span className="font-bold">{c.label}</span>
+                    <span className="block text-sm text-muted-foreground">{c.detail}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <PrimaryButton type="submit" loading={loading} className="w-full">
+              Check my car's value
+            </PrimaryButton>
+            {error && <Notice tone="error">{error}</Notice>}
+          </form>
+        </Panel>
 
-      {/* Header */}
-      {!result && (
-        <div className="text-center mb-10 max-w-3xl">
-          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-purple-600 dark:text-purple-400 mb-8 shadow-lg shadow-purple-500/10 cursor-default">
-              <TrendingDown className="w-4 h-4" />
-              Depreciation Analyzer
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-            Is Your Car a <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-purple-600 to-pink-600">
-               Financial Time Bomb?
-            </span>
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            See exactly how much money your car is losing every single day. Our AI predicts your vehicle's value drop over the next 12 months.
-          </p>
+        <div className="space-y-6" aria-live="polite">
+          {loading && !report && <Spinner label="Looking up this model…" />}
+          {!report && !loading && (
+            <Panel>
+              <p className="text-muted-foreground">Enter your car to see its value today, how much it loses every day and over the next five years, and when selling makes the most sense.</p>
+            </Panel>
+          )}
+          {facts && report && (
+            <>
+              <Panel aria-labelledby="worth-title">
+                <p className="text-[0.9375rem] text-muted-foreground" id="worth-title">
+                  {facts.vehicle}, {Number(miles).toLocaleString('en-US')} miles, {CONDITIONS.find((c) => c.id === condition)!.label.toLowerCase()} condition
+                </p>
+                <p className="mt-1 font-heading text-4xl font-extrabold tracking-[-0.02em]">
+                  About {money(Math.round(report.privateParty / 100) * 100)}
+                </p>
+                <p className="text-[0.9375rem] text-muted-foreground">selling it yourself (private sale)</p>
+                <FactList
+                  className="mt-4"
+                  items={[
+                    ['Trade-in at a dealer', `about ${money(Math.round(report.tradeIn / 100) * 100)}`],
+                    ['Dealer asking price for one like it', `about ${money(Math.round(report.dealerRetail / 100) * 100)}`],
+                    ['Value kept since new', `${Math.round(report.keptOfMsrp * 100)}% of ${money(Number(msrp))}`],
+                  ]}
+                />
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-lg bg-muted p-4">
+                    <p className="text-sm text-muted-foreground">Losing right now</p>
+                    <p className="font-heading text-2xl font-extrabold">{money(report.perDay, report.perDay < 10 ? 2 : 0)} a day</p>
+                    <p className="text-sm text-muted-foreground">{money(report.perMonth)} a month, {money(report.nextYearLoss)} over the next 12 months</p>
+                  </div>
+                  <div className="rounded-lg bg-muted p-4">
+                    <p className="text-sm text-muted-foreground">How this model holds value</p>
+                    <Verdict tone={RETENTION_TONE[facts.retention]} className="mt-1">
+                      {facts.retention}
+                    </Verdict>
+                    {facts.segment && <p className="mt-1 text-sm text-muted-foreground">vs. other {facts.segment.toLowerCase()}s and cars its age</p>}
+                  </div>
+                </div>
+                {facts.reasons.length > 0 && (
+                  <ul className="mt-4 list-disc space-y-1 pl-5 text-[0.9375rem]">
+                    {facts.reasons.map((r) => (
+                      <li key={r}>{r}</li>
+                    ))}
+                  </ul>
+                )}
+                <div className="mt-5 max-w-xs">
+                <NumberField
+                  id="value-msrp"
+                  label="Original price (MSRP)"
+                  value={msrp}
+                  onChange={setMsrp}
+                  prefix="$"
+                  hint="Our estimate for this model. Change it if you know the exact sticker price."
+                />
+                </div>
+              </Panel>
+
+              <Panel aria-labelledby="curve-title">
+                <PanelTitle>
+                  <span id="curve-title">Value over the next five years</span>
+                </PanelTitle>
+                <p className="mt-1 mb-4 text-[0.9375rem] text-muted-foreground">Private-sale value at {Number(perYear).toLocaleString('en-US')} miles a year.</p>
+                <BarList items={report.points.map((p) => ({ label: `${p.label} · ${Math.round(p.miles / 1000)}k mi`, value: Math.round(p.privateParty / 100) * 100 }))} />
+              </Panel>
+
+              <Panel aria-labelledby="sell-title">
+                <PanelTitle>
+                  <span id="sell-title">When to sell</span>
+                </PanelTitle>
+                <ul className="mt-3 space-y-3 text-[0.9375rem] leading-relaxed">
+                  <li>
+                    <strong>{steepNow ? 'The steepest drop is happening now.' : 'The steep years are behind it.'}</strong>{' '}
+                    The next 12 months cost about {money(report.yearlyLosses[0])}; year five costs about {money(report.yearlyLosses[4])}.{' '}
+                    {steepNow ? 'If you were planning to sell in the next year or two anyway, sooner saves the most.' : 'Keeping it longer now costs much less per year than buying newer.'}
+                  </li>
+                  {report.yearsTo100k !== null && (
+                    <li>
+                      <strong>It passes 100,000 miles in about {report.yearsTo100k < 1 ? `${Math.max(1, Math.round(report.yearsTo100k * 12))} months` : `${report.yearsTo100k.toFixed(1)} years`}.</strong> Many buyers and
+                      lenders pay noticeably less past that mark, so selling before it usually gets more.
+                    </li>
+                  )}
+                  <li>
+                    <strong>Selling privately pays about {money(Math.round((report.privateParty - report.tradeIn) / 100) * 100)} more than trading in</strong>, in exchange for listing it and meeting
+                    buyers. Trading in can save sales tax on your next car in most states.
+                  </li>
+                  {facts.watchOut && (
+                    <li>
+                      <strong>Buyers will ask about:</strong> {facts.watchOut}
+                    </li>
+                  )}
+                  <li>
+                    <strong>Get two or three real offers</strong> (an online buyer such as CarMax or Carvana and a local dealer) before you accept anything. They often differ by
+                    over $1,000.
+                  </li>
+                </ul>
+              </Panel>
+
+              <LeadPanel
+                id="resale-lead"
+                title="Get a real offer for your car"
+                intro="Want to know what a buyer will actually pay? Leave your details and a car buyer will contact you with an offer."
+                cta="Get my offer"
+                sentText="A car buyer will contact you with an offer for this car."
+                sheet="Car_resale_leads.json"
+                source="Resale_Value"
+                details={() => ({
+                  vehicleYear: vehicle.year,
+                  vehicleMake: vehicle.make,
+                  vehicleModel: vehicle.model,
+                  vehicleTrim: trim,
+                  mileage: miles,
+                  condition,
+                  estimatePrivateParty: Math.round(report.privateParty),
+                })}
+              />
+            </>
+          )}
         </div>
-      )}
-
-      <div className="w-full max-w-4xl">
-        {!result ? (
-           /* INPUT FORM */
-           <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative p-6 sm:p-10">
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                 <div className="space-y-6">
-                    <h3 className="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
-                       <Car className="w-5 h-5 text-purple-500" /> Vehicle Details
-                    </h3>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Year</label>
-                            <input 
-                                type="text" placeholder="2020" value={request.year} 
-                                onChange={(e) => updateRequest('year', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Make</label>
-                            <input 
-                                type="text" placeholder="BMW" value={request.make} 
-                                onChange={(e) => updateRequest('make', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Model</label>
-                            <input 
-                                type="text" placeholder="X5" value={request.model} 
-                                onChange={(e) => updateRequest('model', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
-                            />
-                        </div>
-                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trim <span className="text-xs text-slate-400 font-normal">(Optional)</span></label>
-                            <input 
-                                type="text" placeholder="xDrive40i" value={request.trim} 
-                                onChange={(e) => updateRequest('trim', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Current Mileage</label>
-                        <div className="relative">
-                           <input 
-                                type="number" placeholder="45000" value={request.mileage} 
-                                onChange={(e) => updateRequest('mileage', e.target.value)} 
-                                className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
-                            />
-                            <span className="absolute right-4 top-3.5 text-slate-400 text-sm font-bold">miles</span>
-                        </div>
-                    </div>
-                 </div>
-
-                 <div className="space-y-6">
-                    <h3 className="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
-                       <AlertCircle className="w-5 h-5 text-purple-500" /> Condition & Status
-                    </h3>
-                    
-                    <div className="flex flex-col gap-3">
-                       {[
-                          { id: 'excellent', label: 'Showroom Ready', desc: 'Looks brand new. No scratches, perfect mechanicals.' },
-                          { id: 'good', label: 'Daily Driver', desc: 'Normal wear. Minor chips/scratches. Runs well.' },
-                          { id: 'fair', label: 'Rough Shape', desc: 'Visible dents, rust, or needs mechanical repairs.' },
-                          { id: 'poor', label: 'Damaged / Salvage', desc: 'Major issues, accident history, or not running.' },
-                       ].map(opt => (
-                          <button
-                            key={opt.id}
-                            onClick={() => updateRequest('condition', opt.id as ValueRequest['condition'])}
-                            className={`p-4 rounded-xl border text-left transition-all ${
-                               request.condition === opt.id 
-                                ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-500 text-purple-900 dark:text-purple-100' 
-                                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-purple-300'
-                            }`}
-                          >
-                             <div className="font-bold text-sm mb-0.5">{opt.label}</div>
-                             <div className="text-xs opacity-80">{opt.desc}</div>
-                          </button>
-                       ))}
-                    </div>
-                 </div>
-              </div>
-
-              <button 
-                  onClick={handleCalculate}
-                  disabled={loading}
-                  className="w-full py-4 rounded-xl bg-purple-600 text-white font-bold text-lg hover:bg-purple-700 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? 'Crunching Numbers...' : 'Calculate My Loss'} <TrendingDown className="w-5 h-5" />
-              </button>
-              
-              {error && (
-                 <div className="mt-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm text-center">
-                    {error}
-                 </div>
-              )}
-           </div>
-        ) : (
-           /* RESULT VIEW */
-           <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-              
-              {/* The Shock Card */}
-              <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden text-white mb-8">
-                 <div className="absolute top-0 right-0 p-6 opacity-5">
-                    <Hourglass className="w-64 h-64 -rotate-12 translate-x-12 -translate-y-12" />
-                 </div>
-                 
-                 <div className="relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-bold mb-6">
-                       <Clock className="w-4 h-4 animate-pulse" /> Asset Depreciation Active
-                    </div>
-                    
-                    <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">You are losing approximately</h2>
-                    <div className="text-6xl sm:text-7xl font-black tracking-tighter mb-4 text-red-500 flex items-center justify-center gap-1">
-                       -${result.depreciation?.perDay?.toFixed(2) || '0.00'}
-                       <span className="text-2xl text-slate-500 font-bold self-end mb-2">/day</span>
-                    </div>
-                    <p className="text-slate-400 text-lg max-w-xl mx-auto mb-8">
-                       That's <span className="text-white font-bold">${(result.depreciation?.totalOneYear || 0).toLocaleString()}</span> vanishing from your net worth over the next year.
-                    </p>
-
-                    <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 max-w-2xl mx-auto">
-                        <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-                            <div className="text-center sm:text-left">
-                                <p className="text-slate-500 text-xs font-bold uppercase mb-1">Value Today</p>
-                                <p className="text-2xl font-black text-white">${(result.currentValue?.privateParty || 0).toLocaleString()}</p>
-                            </div>
-                            <div className="hidden sm:block flex-1 h-px bg-slate-700 relative">
-                               <div className="absolute right-0 top-1/2 -translate-y-1/2 text-red-500">
-                                  <ChevronRight className="w-4 h-4" />
-                               </div>
-                            </div>
-                            <div className="text-center sm:text-right">
-                                <p className="text-slate-500 text-xs font-bold uppercase mb-1">Value in 1 Year</p>
-                                <p className="text-2xl font-black text-slate-300">${(result.futureValue?.privateParty || 0).toLocaleString()}</p>
-                                <p className="text-xs text-red-400 mt-1">(-{result.depreciation?.percentDrop || 0}%)</p>
-                            </div>
-                        </div>
-                    </div>
-                 </div>
-              </div>
-
-              {/* MONETIZATION STRATEGY: RESALE REFERRAL */}
-              <div className="bg-linear-to-br from-purple-600 to-indigo-700 rounded-[2.5rem] p-8 sm:p-10 mb-8 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in zoom-in-95 duration-500 delay-200">
-                 <div className="absolute top-0 right-0 p-8 opacity-5">
-                    <Zap className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
-                 </div>
-                 
-                 <div className="relative z-10 grid md:grid-cols-2 gap-10 items-center">
-                    <div>
-                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-black uppercase tracking-widest text-white/90 mb-4">
-                          <ShieldCheck className="w-3.5 h-3.5" /> Premium Appraisal
-                       </div>
-                       <h2 className="text-3xl font-black mb-4 leading-tight">Stop the Bleeding. <br /> Get Paid Today.</h2>
-                       <h3 className="text-purple-50 leading-relaxed font-medium mb-6">
-                          Don't let the market eat your equity. Speak with a certified master technician to get a line-item appraisal and an instant cash buyout offer.
-                       </h3>
-                       <div className="flex flex-col gap-3">
-                          <div className="flex items-center gap-3">
-                             <CheckCircle2 className="w-5 h-5 text-green-400" />
-                             <span className="text-sm font-bold text-purple-50">Direct mechanic-verified appraisal</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                             <CheckCircle2 className="w-5 h-5 text-green-400" />
-                             <span className="text-sm font-bold text-purple-50">Redeemable cash offer in 24 hours</span>
-                          </div>
-                       </div>
-                    </div>
-
-                    <button 
-                       onClick={() => setIsLeadFormOpen(true)}
-                       className="w-full py-5 bg-white text-purple-700 font-black rounded-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-black/20 animate-slow-glow"
-                    >
-                       Get Exact Sale Price from a Real Mechanic <ArrowRight className="w-5 h-5" />
-                    </button>
-                 </div>
-              </div>
-
-              {/* Verdict & Context Grid */}
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                 <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-lg">
-                    <h3 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                       <AlertCircle className={`w-5 h-5 ${result.verdict?.color || 'text-slate-500'}`} /> 
-                       AI Verdict: <span className={result.verdict?.color || 'text-slate-500'}>{result.verdict?.status || 'Unknown'}</span>
-                    </h3>
-                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                       {result.verdict?.description}
-                    </p>
-                    
-                    <div>
-                       <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Market Factors</h4>
-                       <div className="flex flex-wrap gap-2">
-                          {result.marketFactors?.map((factor, i) => (
-                             <span key={i} className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400">
-                                {factor}
-                             </span>
-                          ))}
-                       </div>
-                    </div>
-                 </div>
-
-                 <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-lg flex flex-col justify-center">
-                    <h3 className="font-bold text-slate-900 dark:text-white mb-6">Trade-In vs Private Party</h3>
-                    
-                    <div className="space-y-6">
-                       <div>
-                          <div className="flex justify-between items-end mb-2">
-                             <span className="text-slate-500 text-sm font-bold">Trade-In Value</span>
-                             <span className="font-bold text-slate-900 dark:text-white">${(result.currentValue?.tradeIn || 0).toLocaleString()}</span>
-                          </div>
-                          <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                             <div className="bg-blue-500 h-full rounded-full" style={{ width: '80%' }}></div>
-                          </div>
-                       </div>
-                       
-                       <div>
-                          <div className="flex justify-between items-end mb-2">
-                             <span className="text-slate-500 text-sm font-bold">Private Party Value</span>
-                             <span className="font-bold text-slate-900 dark:text-white">${(result.currentValue?.privateParty || 0).toLocaleString()}</span>
-                          </div>
-                          <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                             <div className="bg-green-500 h-full rounded-full" style={{ width: '95%' }}></div>
-                          </div>
-                       </div>
-                       
-                       <p className="text-xs text-slate-500 dark:text-slate-400 italic mt-2">
-                          *Private party sales typically yield 15-20% more cash than trading in to a dealer.
-                       </p>
-                    </div>
-                 </div>
-              </div>
-
-              <div className="flex justify-center">
-                <button 
-                    onClick={() => { setResult(null); }}
-                    className="px-8 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                >
-                    Analyze Another Vehicle
-                </button>
-              </div>
-           </div>
-        )}
       </div>
 
-      {/* Trust Elements (Shown when no result) */}
-      {!result && (
-        <div className="w-full max-w-7xl px-4 flex flex-col items-center">
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-500 dark:text-slate-400 text-sm font-medium">
-                <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-green-500" /> Secure Data Handling
-                </div>
-                <div className="flex items-center gap-2">
-                <TrendingDown className="w-4 h-4 text-purple-500" /> Real-Time Market Data
-                </div>
-                <div className="flex items-center gap-2">
-                <Info className="w-4 h-4 text-blue-500" /> 100% Free Report
-                </div>
-            </div>
-
-            {/* About This Tool Section */}
-            <div className="grid md:grid-cols-2 gap-12 items-center mb-24 w-full animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                <div className="order-2 md:order-1">
-                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Value Shock Predictor</h2>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                        The MyAutoSpex Resale Value Shock Calculator is a specialized financial engine built to protect car owners from the single largest cost of vehicle ownership: <span className="font-bold text-purple-600">Depreciation</span>. While gas and maintenance are visible, the thousands of dollars vanishing from your vehicle's value often go unnoticed until it's time to sell.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                        Our system uses advanced AI to process real-time market volatility data across the United States. By analyzing supply/demand for your specific model and factoring in mileage milestones, we provide a transparent audit of your vehicle's wealth-erosion rate.
-                    </p>
-                </div>
-                <div className="order-1 md:order-2 bg-purple-50 dark:bg-purple-900/10 rounded-[3rem] p-10 sm:p-14 border border-purple-100 dark:border-purple-900/30 relative overflow-hidden shadow-2xl">
-                    <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-purple-500/10 -rotate-12" />
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Market Intelligence</h3>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
-                       Access the same pricing algorithms used by major US auction houses. Our engine validates daily loss rates to help you decide the absolute best time to trade-in or sell.
-                    </p>
-                    <div className="flex items-center gap-3 text-purple-600 dark:text-purple-400 font-black text-sm relative z-10">
-                       <ShieldCheck className="w-6 h-6" /> VERIFIED MARKET DATA
-                    </div>
-                </div>
-            </div>
-
-            {/* Why Use This Tool Section */}
-            <div className="w-full mb-24 text-center">
-                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                    Why Drivers Trust MyAutoSpex Valuation
-                </h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {[
-                        { 
-                            icon: <DollarSign className="w-8 h-8 text-green-500" />, 
-                            title: "Wealth Protection", 
-                            desc: "Identify exactly when your vehicle's depreciation curve steepens to avoid massive equity loss." 
-                        },
-                        { 
-                            icon: <Zap className="w-8 h-8 text-blue-500" />, 
-                            title: "AI Forecasting", 
-                            desc: "Our model predicts 12-month value drops with high accuracy based on current US economic trends." 
-                        },
-                        { 
-                            icon: <Award className="w-8 h-8 text-amber-500" />, 
-                            title: "Negotiation Power", 
-                            desc: "Walk into the dealership with certified data on your car's true private-party and trade-in value." 
-                        },
-                        { 
-                            icon: <ShieldAlert className="w-8 h-8 text-red-500" />, 
-                            title: "Audit Your Asset", 
-                            desc: "Stop viewing your car as a static expense and start managing it as a depreciating asset." 
-                        },
-                    ].map((item, i) => (
-                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
-                            <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* How It Works */}
-            <div className="w-full mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                How It Works
-                </h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-4">
-                    <Car className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Enter Vehicle</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                    Input your year, make, model, and mileage to pull current market valuation data.
-                    </p>
-                </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
-                    <TrendingDown className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Track Depreciation</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                    Our AI analyzes millions of sales records to determine your specific depreciation curve.
-                    </p>
-                </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center mb-4">
-                    <DollarSign className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. See The Loss</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                    Discover exactly how much cash value you are losing every single day you own the car.
-                    </p>
-                </div>
-                </div>
-            </div>
-
-            {/* Testimonials */}
-            <div className="w-full max-w-7xl px-4 mb-20">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                Financial Reality Checks
-                </h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                {[
-                    { name: "Marcus D.", loc: "San Diego, CA", text: "I didn't realize my luxury SUV was losing $35 a day! Sold it and got a reliable sedan. Saved me thousands.", stars: 5 },
-                    { name: "Jennifer K.", loc: "Austin, TX", text: "Helped me negotiate a trade-in. I knew the future value better than the dealer did, which gave me leverage.", stars: 5 },
-                    { name: "Tom B.", loc: "Chicago, IL", text: "Brutal honesty. The 'Money Pit' verdict was spot on for my old European sports car. Time to let it go.", stars: 5 },
-                ].map((review, i) => (
-                    <div key={i} className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                    <div className="flex gap-1 mb-4 text-purple-500">
-                        {[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                    </div>
-                    <p className="text-slate-700 dark:text-slate-300 mb-6 italic text-sm leading-relaxed">"{review.text}"</p>
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-500 dark:text-slate-400">
-                        {review.name.charAt(0)}
-                        </div>
-                        <div>
-                        <p className="text-sm font-bold text-slate-900 dark:text-white">{review.name}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{review.loc}</p>
-                        </div>
-                    </div>
-                    </div>
-                ))}
-                </div>
-            </div>
-
-            {/* FAQ Section */}
-            <div className="w-full max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="text-center mb-10">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-2">
-                        <MessageSquare className="w-6 h-6 text-purple-500" />
-                        Frequently Asked Questions
-                    </h2>
-                </div>
-                
-                <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <div 
-                            key={index} 
-                            className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
-                                openFaqIndex === index 
-                                ? 'bg-white dark:bg-slate-900 border-purple-500/30 shadow-lg shadow-purple-500/5' 
-                                : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                            }`}
-                        >
-                            <button
-                                onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                                className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
-                            >
-                                <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                                {faq.question}
-                                </span>
-                                <ChevronDown 
-                                className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${
-                                    openFaqIndex === index ? 'rotate-180 text-purple-500' : ''
-                                }`} 
-                                />
-                            </button>
-                            <div 
-                                className={`transition-all duration-300 ease-in-out ${
-                                openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                                }`}
-                            >
-                                <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0">
-                                {faq.answer}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-      )}
-
-    </div>
+      <Faq id="value-faq" title="Questions about car values" items={FAQS} />
+    </ToolPage>
   );
-};
-
-export default ValueShockCalculator;
+}

@@ -43,9 +43,9 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/recalls',
-    title: 'Vehicle Recall & Technical Service Bulletin Lookup',
+    title: 'Car Recall Check by VIN or Model',
     description:
-      'Check open safety recalls and technical service bulletins (TSBs) for your car using NHTSA data, and learn what to do next.',
+      'Check safety recalls for your car by VIN or year, make and model with NHTSA data: do-not-drive warnings first, the free fix, and what to tell the dealer.',
     priority: 0.8,
   },
   {
@@ -59,14 +59,14 @@ export const STATIC_PAGES: PageMeta[] = [
     path: '/insurance-estimator',
     title: 'Car Insurance Cost Estimator (US)',
     description:
-      'Estimate a fair monthly car insurance premium for your vehicle, age, ZIP code and driving record, and see which factors raise or lower your rate.',
+      'Estimate a fair monthly car insurance premium for your state, age, record, credit and car, see exactly why, and which changes save the most.',
     priority: 0.8,
   },
   {
     path: '/mpg-calculator',
-    title: 'MPG Calculator & Fuel Cost Analyzer',
+    title: 'Fuel Cost & MPG Calculator',
     description:
-      'Calculate your real MPG, fuel cost per mile and the true daily cost of your commute, with practical tips to cut what you spend on gas.',
+      'Trip and monthly gas costs using your car’s official EPA rating, a check of whether your real MPG is normal and what the gap costs, and two cars compared.',
     priority: 0.8,
   },
   {
@@ -78,9 +78,9 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/value-shock-calculator',
-    title: 'Car Depreciation Calculator: Resale Value Check',
+    title: "What's My Car Worth? Value & Depreciation Calculator",
     description:
-      'See how fast your car is losing value per day, month and year, and estimate what it will be worth when you sell it or trade it in.',
+      'Your car’s private-sale, trade-in and dealer value today, what it loses per day, its value over the next five years and the best time to sell.',
     priority: 0.8,
   },
   {
@@ -92,9 +92,9 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/plate-generator',
-    title: 'AI Vanity License Plate Generator',
+    title: 'Vanity Plate Ideas Generator',
     description:
-      "Generate clever vanity license plate ideas for your car with AI, based on your model, your personality and your state's character limits.",
+      "Clever personalized plate ideas that fit your state's character limit, with a plate preview, a misread check, a DMV rejection flag and an availability link.",
     priority: 0.7,
   },
   {
@@ -113,16 +113,16 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/coupons',
-    title: 'Car Service Coupons & Maintenance Deals',
+    title: 'Car Service Prices & Coupons',
     description:
-      'Find current savings on oil changes, brakes, tires and diagnostics from national service networks in your area.',
+      'Fair prices for oil changes, brakes, batteries and other service in your state, the upsells to skip, and where to find real coupons.',
     priority: 0.6,
   },
   {
     path: '/diy-toolkits',
-    title: 'DIY Car Repair Guides & Essential Toolkits',
+    title: 'DIY Car Repair Planner',
     description:
-      'Do-it-yourself car fixes with the exact tools and parts you need, from OBD-II scanners to roadside safety essentials.',
+      'How hard common car jobs are, how long they take, what you save over a shop, the tools you need and when to call a pro.',
     priority: 0.7,
   },
   {

@@ -17,7 +17,8 @@ const OwnershipCalculator = React.lazy(() => import('./components/OwnershipCalcu
 const PlateGenerator = React.lazy(() => import('./components/PlateGenerator'));
 const WrapDesigner = React.lazy(() => import('./components/WrapDesigner'));
 const MechanicFinder = React.lazy(() => import('./components/MechanicFinder'));
-const ResourceHub = React.lazy(() => import('./components/ResourceHub'));
+const RecallCheck = React.lazy(() => import('./components/RecallCheck'));
+const ServiceDeals = React.lazy(() => import('./components/ServiceDeals'));
 const DiyToolkits = React.lazy(() => import('./components/DiyToolkits'));
 const Blog = React.lazy(() => import('./components/Blog'));
 // const FreeObd2CodeDecoderPost - Removed (Handled by ArticleLoader + Redirect)
@@ -53,8 +54,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/mechanic-finder" element={<MechanicFinder />} />
 
         {/* Resources */}
-        <Route path="/recalls" element={<ResourceHub type="recalls" />} />
-        <Route path="/coupons" element={<ResourceHub type="coupons" />} />
+        <Route path="/recalls" element={<RecallCheck />} />
+        <Route path="/coupons" element={<ServiceDeals />} />
         <Route path="/diy-toolkits" element={<DiyToolkits />} />
         <Route path="/blog" element={<Blog />} />
 

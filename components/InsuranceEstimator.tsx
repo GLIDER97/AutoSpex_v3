@@ -1,886 +1,317 @@
-
-import React, { useState } from 'react';
-import { generateContent } from '../utils/ai';
+import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { generateContent, Type } from '../utils/ai';
 import {
-  ShieldCheck, TrendingUp, DollarSign, Award, ArrowRight,
-  MapPin, Car, Users, CheckCircle2, AlertTriangle, Info,
-  Zap, Lock, ChevronRight, Calculator, Star, MessageSquare, ChevronDown, FileText, Phone, Mail, RefreshCw, X, Globe, Target
-} from './Icons';
-import { InsuranceFormData, InsuranceEstimate } from '../types';
-import { saveLead } from '../utils/leadStorage';
+  AGES,
+  COVERAGES,
+  CREDITS,
+  DEDUCTIBLES,
+  MILES,
+  NATIONAL_BASE,
+  NO_CREDIT_STATES,
+  RECORDS,
+  STATES,
+  VEHICLE_CLASSES,
+  estimate,
+  savings,
+  type Profile,
+  type VehicleClassId,
+} from '../utils/insurance';
+import { Faq, Field, Notice, Panel, PanelTitle, ToolPage, VehicleFields, inputClass, money, hasVehicle, vehicleLabel, type Vehicle } from './tool/kit';
+import LeadPanel from './tool/LeadPanel';
 
-const INITIAL_FORM_DATA: InsuranceFormData = {
-  zipCode: '',
-  year: '',
-  make: '',
-  model: '',
-  usage: 'commute',
-  annualMileage: '12000',
-  ageGroup: '25-64',
-  drivingHistory: 'clean',
-  creditTier: 'good',
-  coverageLevel: 'standard',
-  deductible: '500'
+const FAQS: [string, string][] = [
+  [
+    'How is this estimate worked out?',
+    'It starts from a typical 2026 US full-coverage premium ($210 a month for a 35-year-old with a clean record, good credit and an average car) and multiplies it by the factors insurers price on: your state, age, record, credit, miles, the car, coverage and deductible. Every factor and its effect is listed next to your estimate.',
+  ],
+  [
+    'Why might my real quote be different?',
+    "Each insurer weighs these factors differently, and they also use your exact ZIP code, claims history and the car's trim. Quotes for the same driver often differ by 50% or more between companies, which is why comparing at least three quotes is the single biggest saving.",
+  ],
+  [
+    'Does my credit score really change my price?',
+    'In most states, yes: drivers with poor credit often pay 70% or more than drivers with good credit. California, Hawaii and Massachusetts ban credit-based pricing, and Michigan limits it, so the estimate ignores credit there.',
+  ],
+  [
+    'When should I drop full coverage?',
+    'Collision and comprehensive pay to fix or replace your own car. A common rule: once the car is worth less than about 10 times what that coverage costs per year, or you could replace it from savings, liability-only can make sense. If the car has a loan or lease, the lender requires full coverage.',
+  ],
+  [
+    'What is 100/300/100?',
+    'Liability limits in thousands: $100,000 per injured person, $300,000 per accident for injuries and $100,000 for property damage. State minimums are much lower and can leave you paying the rest after a serious crash.',
+  ],
+];
+
+const pct = (f: number) => {
+  const p = Math.round((f - 1) * 100);
+  return p === 0 ? 'average' : `${p > 0 ? '+' : '−'}${Math.abs(p)}%`;
 };
 
-const InsuranceEstimator: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<InsuranceFormData>(INITIAL_FORM_DATA);
-  const [estimate, setEstimate] = useState<InsuranceEstimate | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-
-  // Lead State
-  const [showLeadForm, setShowLeadForm] = useState(false);
-  const [leadLoading, setLeadLoading] = useState(false);
-  const [leadSubmitted, setLeadSubmitted] = useState(false);
-  const [contactInfo, setContactInfo] = useState({ name: '', phone: '', email: '' });
-
-  const updateForm = (field: keyof InsuranceFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  // --- LOGIC ENGINE ---
-  // A transparent rule-of-thumb model. `fd` lets the page re-run it with changed
-  // inputs to show what each change would save.
-  const calculateEstimate = (fd: InsuranceFormData = formData) => {
-    // Calibrated so a typical driver (25-64, clean record, good credit, standard
-    // full coverage, $500 deductible) lands near 2026 national averages for full
-    // coverage ($186-$216 a month per Insurify, NerdWallet, The Zebra, MoneyGeek).
-    // Location is not modeled: rates vary by state and ZIP, and real quotes account for it.
-    let baseRate = 177;
-
-    // 2. Age Factor
-    if (fd.ageGroup === '16-24') baseRate *= 2.4;
-    else if (fd.ageGroup === '65+') baseRate *= 1.1;
-
-    // 3. Driving History
-    if (fd.drivingHistory === 'tickets') baseRate *= 1.35;
-    else if (fd.drivingHistory === 'accidents') baseRate *= 1.8;
-
-    // 4. Credit Tier
-    if (fd.creditTier === 'excellent') baseRate *= 0.85;
-    else if (fd.creditTier === 'average') baseRate *= 1.2;
-    else if (fd.creditTier === 'poor') baseRate *= 1.6;
-
-    // 5. Vehicle Type (Simple Keyword Check)
-    const model = fd.model.toLowerCase();
-    if (model.includes('gt') || model.includes('sport') || model.includes('amg') || model.includes('m3')) {
-      baseRate *= 1.4;
-    } else if (model.includes('truck') || model.includes('f150') || model.includes('silverado')) {
-      baseRate *= 0.9;
-    }
-
-    // 6. Coverage Level
-    if (fd.coverageLevel === 'state_min') baseRate *= 0.6;
-    else if (fd.coverageLevel === 'premium') baseRate *= 1.45;
-
-    // 7. Deductible
-    if (fd.deductible === '2000') baseRate *= 0.85;
-    else if (fd.deductible === '500') baseRate *= 1.1;
-
-    const min = Math.round(baseRate * 0.85);
-    const max = Math.round(baseRate * 1.15);
-    const avg = Math.round((min + max) / 2);
-
-    // Factors for UI
-    const factors: InsuranceEstimate['factors'] = [];
-    if (fd.ageGroup === '16-24') factors.push({ label: 'Age Group (Under 25)', impact: 'negative' });
-    if (fd.drivingHistory === 'clean') factors.push({ label: 'Clean Driving Record', impact: 'positive' });
-    if (fd.creditTier === 'excellent') factors.push({ label: 'Excellent Credit', impact: 'positive' });
-    if (fd.coverageLevel === 'state_min') factors.push({ label: 'Min Coverage Selected', impact: 'positive' });
-
-    return {
-      monthlyPremium: { min, max, avg },
-      score: avg < 160 ? 'great' : avg > 240 ? 'expensive' : 'average',
-      factors,
-      breakdown: {
-        liability: Math.round(avg * 0.45),
-        collision: Math.round(avg * 0.35),
-        comprehensive: Math.round(avg * 0.20)
-      }
-    } as InsuranceEstimate;
-  };
-
-  const handleFinish = async () => {
-    setLoading(true);
-    const result = calculateEstimate();
-    setEstimate(result);
-
-    // AI Integration
-    try {
-      const prompt = `
-        Act as an expert insurance underwriter.
-        I have estimated a monthly auto insurance premium of $${result.monthlyPremium.min} - $${result.monthlyPremium.max} for a driver with these details:
-        - Vehicle: ${formData.year} ${formData.make} ${formData.model}
-        - Location ZIP: ${formData.zipCode}
-        - Profile: Age ${formData.ageGroup}, ${formData.drivingHistory} history, ${formData.creditTier} credit.
-        - Coverage: ${formData.coverageLevel} (Deductible: $${formData.deductible})
-
-        Provide a concise, helpful 3-sentence explanation of why the price is in this range. 
-        Focus on the biggest risk factors provided.
-        Address the user directly as "you".
-      `;
-
-      const response = await generateContent({
-        model: 'text',
-        contents: prompt,
-      });
-      setAiAnalysis(response.text);
-    } catch (e) {
-      console.error("AI Analysis Failed", e);
-      setAiAnalysis("We calculated this estimate based on standard actuarial tables for your demographic and vehicle type.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLeadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLeadLoading(true);
-
-    const leadEntry = {
-      timestamp: new Date().toISOString(),
-      // Contact
-      name: contactInfo.name,
-      phone: contactInfo.phone,
-      email: contactInfo.email,
-      // User Inputs
-      zipCode: formData.zipCode,
-      vehicleYear: formData.year,
-      vehicleMake: formData.make,
-      vehicleModel: formData.model,
-      usage: formData.usage,
-      annualMileage: formData.annualMileage,
-      drivingHistory: formData.drivingHistory,
-      creditTier: formData.creditTier,
-      coverageLevel: formData.coverageLevel,
-      deductible: formData.deductible,
-      source: 'Insurance_Estimator'
-    };
-
-    await saveLead('Insurance_Estimator_leads.json', leadEntry);
-
-    setLeadLoading(false);
-    setLeadSubmitted(true);
-  };
-
-  const insuranceFaqs = [
-    {
-      question: "How do I get an exact quote?",
-      answer: "Our calculator provides a highly accurate baseline estimate. To lock in a binding rate, we connect you with our network of real agents who can issue a policy based on your specific vehicle data."
-    },
-    {
-      question: "How accurate is this estimate?",
-      answer: "Our estimator uses actuarial data similar to what insurance companies use (location, vehicle type, age, credit tier). While it provides a highly accurate baseline, your final rate will depend on the specific insurer's underwriting criteria."
-    },
-    {
-      question: "Does checking this affect my credit score?",
-      answer: "No. This tool is a calculator, not a lender. We do not perform credit checks. We simply use the 'Credit Tier' you select to apply the appropriate risk multiplier to your estimate."
-    },
-    {
-      question: "Why is my estimate so high?",
-      answer: "Insurance rates are heavily influenced by location (state laws, accident rates), age (drivers under 25 pay significantly more), and vehicle type (repair costs). Our tool highlights these specific risk factors in the results."
-    },
-    {
-      question: "Is this a real quote I can buy?",
-      answer: "This tool provides a 'Fair Price' benchmark. You can use the 'Connect with Agents' button to send your details to real carriers who can offer a binding policy based on these inputs."
-    }
-  ];
-
-  const renderStep1 = () => (
-    <div className="space-y-6 animate-in slide-in-from-right fade-in duration-300">
-      <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-        <MapPin className="w-5 h-5 text-blue-500" /> Location & Vehicle
-      </h3>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Zip Code</label>
-        <input
-          type="text"
-          value={formData.zipCode}
-          onChange={(e) => updateForm('zipCode', e.target.value.replace(/\D/g, '').slice(0, 5))}
-          placeholder="e.g. 90210"
-          className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden transition-all"
-        />
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        <div className="col-span-1">
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Year</label>
-          <input type="text" placeholder="2020" value={formData.year} onChange={(e) => updateForm('year', e.target.value)} className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden" />
-        </div>
-        <div className="col-span-2">
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Make & Model</label>
-          <input type="text" placeholder="Toyota Camry" value={formData.model} onChange={(e) => updateForm('model', e.target.value)} className="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-hidden" />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Primary Usage</label>
-        <div className="grid grid-cols-3 gap-3">
-          {['commute', 'pleasure', 'business'].map(opt => (
-            <button
-              key={opt}
-              onClick={() => updateForm('usage', opt)}
-              className={`p-3 rounded-xl border capitalize text-sm font-medium transition-all ${formData.usage === opt
-                ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
-                }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderStep2 = () => (
-    <div className="space-y-6 animate-in slide-in-from-right fade-in duration-300">
-      <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-        <Users className="w-5 h-5 text-blue-500" /> Driver Profile
-      </h3>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Age Group</label>
-        <div className="grid grid-cols-3 gap-3">
-          {['16-24', '25-64', '65+'].map(opt => (
-            <button
-              key={opt}
-              onClick={() => updateForm('ageGroup', opt)}
-              className={`p-3 rounded-xl border text-sm font-medium transition-all ${formData.ageGroup === opt
-                ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
-                }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Driving History (Last 3 Years)</label>
-        <div className="flex flex-col gap-3">
-          {[
-            { id: 'clean', label: 'Clean Record (No incidents)' },
-            { id: 'tickets', label: '1-2 Speeding Tickets' },
-            { id: 'accidents', label: 'At-Fault Accident / DUI' }
-          ].map(opt => (
-            <button
-              key={opt.id}
-              onClick={() => updateForm('drivingHistory', opt.id)}
-              className={`p-4 rounded-xl border text-left text-sm font-medium transition-all flex items-center justify-between group ${formData.drivingHistory === opt.id
-                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-700 dark:text-blue-300'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
-                }`}
-            >
-              {opt.label}
-              {formData.drivingHistory === opt.id && <CheckCircle2 className="w-5 h-5 text-blue-500" />}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Credit Tier (US Only)</label>
-        <div className="grid grid-cols-4 gap-2">
-          {['excellent', 'good', 'average', 'poor'].map(opt => (
-            <button
-              key={opt}
-              onClick={() => updateForm('creditTier', opt)}
-              className={`p-2 py-3 rounded-xl border capitalize text-xs sm:text-sm font-medium transition-all ${formData.creditTier === opt
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
-                }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderStep3 = () => (
-    <div className="space-y-6 animate-in slide-in-from-right fade-in duration-300">
-      <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-        <ShieldCheck className="w-5 h-5 text-blue-500" /> Coverage Preferences
-      </h3>
-
-      <div className="grid grid-cols-1 gap-4">
-        {[
-          { id: 'state_min', title: 'State Minimum', desc: 'Cheapest legal option. Covers others, not you.' },
-          { id: 'standard', title: 'Standard Full Coverage', desc: 'Comprehensive + Collision with $500 deductible.' },
-          { id: 'premium', title: 'Premium Protection', desc: 'High limits, low deductible, rental reimbursement.' },
-        ].map(opt => (
-          <button
-            key={opt.id}
-            onClick={() => updateForm('coverageLevel', opt.id)}
-            className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${formData.coverageLevel === opt.id
-              ? 'bg-slate-900 dark:bg-white border-slate-900 dark:border-white shadow-xl transform scale-[1.02]'
-              : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-400'
-              }`}
-          >
-            <div className="relative z-10">
-              <h4 className={`font-bold text-lg mb-1 ${formData.coverageLevel === opt.id ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-white'}`}>
-                {opt.title}
-              </h4>
-              <p className={`text-sm ${formData.coverageLevel === opt.id ? 'text-slate-300 dark:text-slate-600' : 'text-slate-500 dark:text-slate-400'}`}>
-                {opt.desc}
-              </p>
-            </div>
-            {formData.coverageLevel === opt.id && (
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <ShieldCheck className="w-24 h-24 -rotate-12 translate-x-4 -translate-y-4 text-white dark:text-black" />
-              </div>
-            )}
-          </button>
+function Select<T extends string>({ id, label, value, onChange, options, hint }: { id: string; label: string; value: T; onChange: (v: T) => void; options: { id: T; label: string }[]; hint?: React.ReactNode }) {
+  return (
+    <Field label={label} htmlFor={id} hint={hint}>
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value as T)} className={inputClass}>
+        {options.map((o) => (
+          <option key={o.id} value={o.id}>
+            {o.label}
+          </option>
         ))}
-      </div>
-
-      <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Preferred Deductible</label>
-        <div className="flex items-center gap-4">
-          {['500', '1000', '2000'].map(amt => (
-            <button
-              key={amt}
-              onClick={() => updateForm('deductible', amt)}
-              className={`flex-1 p-3 rounded-xl border text-sm font-bold transition-all ${formData.deductible === amt
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-500'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-                }`}
-            >
-              ${amt}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+      </select>
+    </Field>
   );
+}
 
-  const renderResult = () => {
-    if (!estimate) return null;
+const Check = ({ id, label, checked, onChange, hint }: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string }) => (
+  <label htmlFor={id} className="flex cursor-pointer items-start gap-3 py-1.5">
+    <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-1 size-4 accent-sign-green" />
+    <span>
+      <span className="font-semibold">{label}</span>
+      {hint && <span className="block text-sm text-muted-foreground">{hint}</span>}
+    </span>
+  </label>
+);
 
-    return (
-      <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-500">
-        <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden mb-8 text-center text-white">
-          <div className="relative z-10">
-            <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">Estimated Monthly Premium</h2>
-            <div className="flex justify-center items-end gap-2 mb-6">
-              <span className="text-6xl font-black tracking-tight">${estimate.monthlyPremium.min}</span>
-              <span className="text-2xl font-bold text-slate-400 mb-2">-</span>
-              <span className="text-6xl font-black tracking-tight">${estimate.monthlyPremium.max}</span>
-              <span className="text-lg font-medium text-slate-400 mb-3">/mo</span>
-            </div>
+export default function InsuranceEstimator() {
+  const [profile, setProfile] = useState<Profile>({
+    state: '',
+    age: '30-64',
+    record: 'clean',
+    credit: 'good',
+    miles: 'average',
+    coverage: 'full',
+    deductible: '1000',
+    year: '',
+    vehicleClass: 'average',
+    bundle: false,
+    goodStudent: false,
+    telematics: false,
+  });
+  const [vehicle, setVehicle] = useState<Vehicle>({ year: '', make: '', model: '' });
+  const [vehicleNote, setVehicleNote] = useState<{ label: string; reason: string } | null>(null);
+  const [checking, setChecking] = useState(false);
+  const cache = useRef(new Map<string, { cls: VehicleClassId; reason: string }>());
 
-            <div className="w-full max-w-md mx-auto h-3 bg-slate-800 rounded-full relative overflow-hidden mb-6">
-              <div
-                className={`absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ${estimate.score === 'great' ? 'bg-green-50 w-1/3' : estimate.score === 'average' ? 'bg-yellow-50 w-2/3' : 'bg-red-500 w-full'
-                  }`}
-              ></div>
-            </div>
+  const set = <K extends keyof Profile>(key: K, value: Profile[K]) => setProfile((p) => ({ ...p, [key]: value }));
 
-            <p className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold ${estimate.score === 'great' ? 'bg-green-500/20 text-green-400' : estimate.score === 'average' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
-              }`}>
-              {estimate.score === 'great' ? 'Below the national average' : estimate.score === 'average' ? 'Near the national average' : 'Above the national average'}
-            </p>
-          </div>
-        </div>
+  // How costly the car is to insure: a quick AI check once year, make and model are filled in.
+  useEffect(() => {
+    set('year', vehicle.year);
+    if (!hasVehicle(vehicle)) {
+      set('vehicleClass', 'average');
+      setVehicleNote(null);
+      return;
+    }
+    const label = vehicleLabel(vehicle);
+    const known = cache.current.get(label);
+    if (known) {
+      set('vehicleClass', known.cls);
+      setVehicleNote({ label, reason: known.reason });
+      return;
+    }
+    let live = true;
+    const timer = setTimeout(async () => {
+      setChecking(true);
+      try {
+        const res = await generateContent({
+          model: 'text',
+          contents: `How expensive is a ${label} to insure in the US compared with an average passenger car? Consider theft rates, typical repair and parts costs, safety ratings and performance. Answer with a cost class and one short sentence (under 25 words) giving the main reason.`,
+          config: {
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: { costClass: { type: Type.STRING, enum: VEHICLE_CLASSES.map((c) => c.id) }, reason: { type: Type.STRING } },
+              required: ['costClass', 'reason'],
+            },
+          },
+        });
+        const raw = JSON.parse(res.text ?? '{}');
+        const cls: VehicleClassId = VEHICLE_CLASSES.some((c) => c.id === raw.costClass) ? raw.costClass : 'average';
+        const reason = String(raw.reason ?? '').slice(0, 200);
+        cache.current.set(label, { cls, reason });
+        if (live) {
+          set('vehicleClass', cls);
+          setVehicleNote({ label, reason });
+        }
+      } catch {
+        if (live) setVehicleNote(null);
+      } finally {
+        if (live) setChecking(false);
+      }
+    }, 600);
+    return () => {
+      live = false;
+      clearTimeout(timer);
+    };
+  }, [vehicle.year, vehicle.make, vehicle.model]);
 
-        {(() => {
-          const next = formData.deductible === '500' ? '1000' : '2000';
-          const options: { label: string; fd: InsuranceFormData }[] = [];
-          if (formData.deductible !== '2000') options.push({ label: `Raise your deductible to $${Number(next).toLocaleString('en-US')}`, fd: { ...formData, deductible: next } });
-          if (formData.coverageLevel === 'premium') options.push({ label: 'Switch from premium to standard full coverage', fd: { ...formData, coverageLevel: 'standard' } });
-          if (formData.creditTier === 'poor' || formData.creditTier === 'average')
-            options.push({ label: 'Improve your credit by one tier', fd: { ...formData, creditTier: formData.creditTier === 'poor' ? 'average' : 'good' } });
-          if (formData.drivingHistory !== 'clean')
-            options.push({ label: 'Keep a clean record (tickets and accidents usually stop counting after 3 to 5 years)', fd: { ...formData, drivingHistory: 'clean' } });
-          const ways = options
-            .map((o) => ({ label: o.label, monthly: estimate.monthlyPremium.avg - calculateEstimate(o.fd).monthlyPremium.avg }))
-            .filter((w) => w.monthly > 0)
-            .sort((a, b) => b.monthly - a.monthly);
-          return (
-            <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 dark:border-slate-800 dark:bg-slate-900">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Ways to lower this estimate</h3>
-              {ways.length ? (
-                <ul className="mt-4 divide-y divide-slate-200 dark:divide-slate-800">
-                  {ways.map((w) => (
-                    <li key={w.label} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3">
-                      <span className="text-slate-700 dark:text-slate-200">{w.label}</span>
-                      <span className="font-bold whitespace-nowrap text-slate-900 dark:text-white">
-                        saves about ${w.monthly}/month (${(w.monthly * 12).toLocaleString('en-US')}/year)
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-2 text-slate-600 dark:text-slate-300">Your choices already keep this estimate low.</p>
-              )}
-              <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                Savings are calculated with the same model as the estimate. Location isn't part of the model: rates vary a lot by state and ZIP code, so
-                compare real quotes. Discounts for bundling, safe-driving apps and paying in full vary by insurer.
-              </p>
-            </div>
-          );
-        })()}
-
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-none flex flex-col">
-            <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-6 flex items-center gap-3">
-              <Zap className="w-5 h-5 text-brand-primary fill-current" />
-              Underwriter Analysis
-            </h3>
-            <div className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium space-y-4 grow">
-              {aiAnalysis ? (
-                <p className="animate-in fade-in">{aiAnalysis}</p>
-              ) : (
-                <div className="flex flex-col gap-4 animate-pulse">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-sm w-3/4"></div>
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-sm w-full"></div>
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-sm w-5/6"></div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-none flex flex-col justify-center">
-            <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-8 flex items-center gap-3">
-              <Calculator className="w-5 h-5 text-blue-500" />
-              Cost Breakdown
-            </h3>
-            <div className="space-y-6">
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">Liability (Bodily/Property)</span>
-                  <span className="text-lg font-bold text-slate-900 dark:text-white">${estimate.breakdown.liability}</span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-blue-500 h-full rounded-full w-[45%]"></div>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">Collision</span>
-                  <span className="text-lg font-bold text-slate-900 dark:text-white">${estimate.breakdown.collision}</span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-purple-500 h-full rounded-full w-[35%]"></div>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">Comprehensive</span>
-                  <span className="text-lg font-bold text-slate-900 dark:text-white">${estimate.breakdown.comprehensive}</span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-emerald-500 h-full rounded-full w-[20%]"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="bg-linear-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-              <ShieldCheck className="w-32 h-32 text-white" />
-            </div>
-
-            <div className="relative z-10">
-              {!leadSubmitted ? (
-                <>
-                  {!showLeadForm ? (
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                      <div className="max-w-xl">
-                        <div className="flex items-center gap-2 mb-4">
-                          <span className="px-3 py-1 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-widest border border-white/20 flex items-center gap-1.5">
-                            <Zap className="w-3 h-3" /> Special Offer
-                          </span>
-                        </div>
-                        <h3 className="text-3xl font-black text-white mb-3">Connect with Local Agents</h3>
-                        <p className="text-indigo-100 leading-relaxed font-medium">
-                          Lock in a binding quote based on your profile. We'll send your pre-filled vehicle data to top carriers in {formData.zipCode} for real-time comparison.
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={() => setShowLeadForm(true)}
-                        className="px-8 py-5 bg-white text-indigo-900 rounded-2xl font-black text-lg hover:bg-slate-100 transition-all shadow-xl shadow-white/5 flex items-center gap-3 shrink-0 animate-slow-glow"
-                      >
-                        Get Official Quotes <ArrowRight className="w-5 h-5" />
-                      </button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleLeadSubmit} className="space-y-6 max-w-xl mx-auto animate-in slide-in-from-bottom duration-300">
-                      <div className="text-center mb-8">
-                        <h3 className="text-2xl font-black text-white">Final Step: Contact Details</h3>
-                        <p className="text-indigo-100 text-sm">Submit your profile to our authorized carrier network for a bindable quote.</p>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div className="relative">
-                          <Users className="absolute left-4 top-4 w-5 h-5 text-indigo-300" />
-                          <input
-                            type="text" required placeholder="Full Name"
-                            value={contactInfo.name} onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
-                            className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-hidden transition-all"
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="relative">
-                            <Phone className="absolute left-4 top-4 w-5 h-5 text-indigo-300" />
-                            <input
-                              type="tel" required placeholder="Phone Number"
-                              value={contactInfo.phone} onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
-                              className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-hidden transition-all"
-                            />
-                          </div>
-                          <div className="relative">
-                            <Mail className="absolute left-4 top-4 w-5 h-5 text-indigo-300" />
-                            <input
-                              type="email" required placeholder="Email Address"
-                              value={contactInfo.email} onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
-                              className="w-full p-4 pl-12 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-indigo-300 focus:ring-2 focus:ring-white outline-hidden transition-all"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4">
-                        <button
-                          type="button"
-                          onClick={() => setShowLeadForm(false)}
-                          className="flex-1 py-4 font-bold text-white/70 hover:text-white transition-colors"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={leadLoading}
-                          className="flex-2 py-4 bg-white text-indigo-900 font-black rounded-2xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
-                        >
-                          {leadLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Submit for Quotes'}
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </>
-              ) : (
-                <div className="text-center py-10 animate-in zoom-in-95 duration-500">
-                  <div className="flex flex-col items-center leading-none tracking-tighter uppercase mb-6">
-                    <span className="text-xl sm:text-2xl font-black text-white/50 relative z-20">
-                      REQUEST RECEIVED
-                    </span>
-                    <span className="text-4xl sm:text-6xl font-black text-white block drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
-                      SUCCESSFULLY
-                    </span>
-                  </div>
-
-                  <div className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-2xl mb-6">
-                    <CheckCircle2 className="w-8 h-8 text-green-400 shrink-0" />
-                    <span className="text-xl sm:text-2xl font-black uppercase tracking-tight">
-                      Thanks! we will contact you soon
-                    </span>
-                  </div>
-
-                  <p className="text-indigo-100 max-w-md mx-auto font-medium">
-                    Our partner agents are now preparing your personalized binder for {formData.make} {formData.model}.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={() => { setEstimate(null); setStep(1); setAiAnalysis(null); setShowLeadForm(false); setLeadSubmitted(false); }}
-          className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-        >
-          Start New Estimate
-        </button>
-      </div>
-    );
-  };
+  const result = estimate(profile);
+  const ways = savings(profile);
+  const full = profile.coverage === 'full' || profile.coverage === 'fullPlus';
+  const young = profile.age === '16-19' || profile.age === '20-24';
+  const vehicleClassLabel = VEHICLE_CLASSES.find((c) => c.id === profile.vehicleClass)!.label;
 
   return (
-    <div className="w-full flex flex-col items-center">
-      {!estimate && (
-        <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-3xl">
-          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm sm:text-base font-semibold text-indigo-500 mb-8 shadow-lg shadow-indigo-500/10 cursor-default">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
-            </span>
-            Professional Matching • Verified Rates
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-            Fair Price <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-500 to-purple-600">
-              US Based Car Insurance Estimator
-            </span>
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            Get an unbiased car insurance price range in seconds. Submit your information to receive competitive rates from our trusted network of insurance partners.
-          </p>
+    <ToolPage
+      category="money"
+      title="Car insurance cost estimate"
+      intro="See what car insurance should cost you before you shop, why, and which changes save the most. The estimate updates as you change anything."
+      sources="Typical 2026 US premiums and state averages from published industry surveys; AI (Anthropic's Claude) rates how costly your car is to insure."
+    >
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start">
+        <div className="space-y-6">
+          <Panel aria-labelledby="you-title">
+            <PanelTitle>
+              <span id="you-title">You</span>
+            </PanelTitle>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <Select
+                id="ins-state"
+                label="State"
+                value={profile.state}
+                onChange={(v) => set('state', v)}
+                options={[{ id: '', label: 'Choose your state' }, ...STATES.map((s) => ({ id: s.code, label: s.name }))]}
+              />
+              <Select id="ins-age" label="Age" value={profile.age} onChange={(v) => set('age', v)} options={AGES} />
+              <Select id="ins-record" label="Driving record (last 3 to 5 years)" value={profile.record} onChange={(v) => set('record', v)} options={RECORDS} />
+              <Select
+                id="ins-credit"
+                label="Credit"
+                value={profile.credit}
+                onChange={(v) => set('credit', v)}
+                options={CREDITS}
+                hint={NO_CREDIT_STATES.includes(profile.state) ? 'Insurers in your state can’t price on credit.' : undefined}
+              />
+            </div>
+          </Panel>
+
+          <Panel aria-labelledby="car-title">
+            <PanelTitle>
+              <span id="car-title">Your car</span>
+            </PanelTitle>
+            <div className="mt-4">
+              <VehicleFields value={vehicle} onChange={setVehicle} />
+            </div>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <Select id="ins-miles" label="Miles driven a year" value={profile.miles} onChange={(v) => set('miles', v)} options={MILES} />
+            </div>
+            <p className="mt-3 text-[0.9375rem] text-muted-foreground" aria-live="polite">
+              {checking
+                ? 'Checking how costly this car is to insure…'
+                : vehicleNote
+                  ? `${vehicleNote.label}: ${vehicleClassLabel.toLowerCase()}. ${vehicleNote.reason}`
+                  : 'Add the year, make and model to factor in theft rates and repair costs for your car.'}
+            </p>
+          </Panel>
+
+          <Panel aria-labelledby="cover-title">
+            <PanelTitle>
+              <span id="cover-title">Coverage</span>
+            </PanelTitle>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <Select id="ins-coverage" label="Coverage" value={profile.coverage} onChange={(v) => set('coverage', v)} options={COVERAGES} />
+              {full && <Select id="ins-deductible" label="Deductible" value={profile.deductible} onChange={(v) => set('deductible', v)} options={DEDUCTIBLES} />}
+            </div>
+            <fieldset className="mt-4">
+              <legend className="text-[0.9375rem] font-semibold">Discounts</legend>
+              <Check id="ins-bundle" label="Bundle with home or renters insurance" checked={profile.bundle} onChange={(v) => set('bundle', v)} />
+              <Check id="ins-telematics" label="Safe-driving app or plug-in" checked={profile.telematics} onChange={(v) => set('telematics', v)} hint="Tracks how you drive; careful drivers pay less." />
+              {young && <Check id="ins-student" label="Good student (B average or better)" checked={profile.goodStudent} onChange={(v) => set('goodStudent', v)} />}
+            </fieldset>
+          </Panel>
         </div>
-      )}
 
-      <div className="w-full max-w-2xl">
-        {!estimate ? (
-          <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative">
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-900">
-              <div className={`h-full bg-indigo-500 transition-all duration-500 ease-out`} style={{ width: `${(step / 3) * 100}%` }}></div>
-            </div>
-
-            <div className="p-6 sm:p-10">
-              {step === 1 && renderStep1()}
-              {step === 2 && renderStep2()}
-              {step === 3 && renderStep3()}
-
-              <div className="mt-10 flex items-center justify-between">
-                {step > 1 ? (
-                  <button
-                    onClick={() => setStep(prev => prev - 1)}
-                    className="px-6 py-3 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white font-medium transition-colors"
+        <div className="space-y-6 lg:sticky lg:top-24">
+          <Panel aria-labelledby="estimate-title">
+            <PanelTitle>
+              <span id="estimate-title">Your estimate</span>
+            </PanelTitle>
+            <p className="mt-3 font-heading text-4xl font-extrabold tracking-[-0.02em]" aria-live="polite">
+              {money(result.low)} to {money(result.high)}
+              <span className="text-lg font-bold text-muted-foreground"> a month</span>
+            </p>
+            <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+              About {money(result.yearly)} a year.{' '}
+              {Math.abs(result.vsAverage - 1) < 0.05
+                ? 'Close to the US average.'
+                : `${Math.round(Math.abs(result.vsAverage - 1) * 100)}% ${result.vsAverage > 1 ? 'above' : 'below'} the US average of ${money(NATIONAL_BASE)} for full coverage.`}
+            </p>
+            {!profile.state && (
+              <Notice tone="info" className="mt-4">
+                Choose your state: it can move the price by 50% either way.
+              </Notice>
+            )}
+            <h3 className="mt-5 font-bold">Why this price</h3>
+            <dl className="mt-1 divide-y divide-border">
+              {result.factors.map((f) => (
+                <div key={f.label + f.value} className="flex items-baseline justify-between gap-4 py-2 text-[0.9375rem]">
+                  <dt>
+                    <span className="text-muted-foreground">{f.label}:</span> {f.value}
+                  </dt>
+                  <dd
+                    className={cn(
+                      'shrink-0 font-semibold tabular-nums',
+                      f.factor > 1.001 && 'text-sign-red dark:text-red-300',
+                      f.factor < 0.999 && 'text-sign-green dark:text-emerald-300',
+                    )}
                   >
-                    Back
-                  </button>
-                ) : <div></div>}
+                    {pct(f.factor)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Panel>
 
-                {step < 3 ? (
-                  <button
-                    onClick={() => {
-                      if (step === 1 && (!formData.zipCode || formData.zipCode.length < 5)) return;
-                      setStep(prev => prev + 1);
-                    }}
-                    disabled={step === 1 && formData.zipCode.length < 5}
-                    className="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20"
-                  >
-                    Next Step <ChevronRight className="w-4 h-4" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleFinish}
-                    disabled={loading}
-                    className="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-500/20"
-                  >
-                    {loading ? 'Calculating...' : 'Get Estimate'} <TrendingUp className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        ) : (
-          renderResult()
-        )}
+          {ways.length > 0 && (
+            <Panel aria-labelledby="save-title">
+              <PanelTitle>
+                <span id="save-title">Ways to pay less</span>
+              </PanelTitle>
+              <ul className="mt-3 divide-y divide-border">
+                {ways.map((w) => (
+                  <li key={w.label} className="py-3">
+                    <p className="flex items-baseline justify-between gap-4">
+                      <span className="font-semibold">{w.label}</span>
+                      <span className="shrink-0 font-bold text-sign-green dark:text-emerald-300">−{money(w.monthly)}/mo</span>
+                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">{w.detail}</p>
+                  </li>
+                ))}
+                <li className="py-3">
+                  <p className="font-semibold">Compare at least three quotes</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">The same driver can pay 50% more at one company than another. This is usually the biggest saving of all.</p>
+                </li>
+              </ul>
+            </Panel>
+          )}
+        </div>
       </div>
 
-      {!estimate && (
-        <>
-          <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-500 dark:text-slate-400 text-sm font-medium">
-            <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-green-500" /> Secure Data Handling
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-brand-primary" /> AI-Powered Accuracy
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-indigo-500" /> Free Professional Tool
-            </div>
-          </div>
+      <LeadPanel
+        id="ins-lead"
+        className="mt-6"
+        title="Get real quotes"
+        intro="An estimate tells you what's fair; a quote is what you'd actually pay. Licensed agents can quote this exact profile."
+        cta="Get my quotes"
+        sentText="A licensed agent will contact you with quotes for this profile."
+        sheet="Insurance_Estimator_leads.json"
+        source="Insurance_Estimator"
+        details={() => ({
+          state: profile.state,
+          vehicleYear: vehicle.year,
+          vehicleMake: vehicle.make,
+          vehicleModel: vehicle.model,
+          ageGroup: profile.age,
+          drivingHistory: profile.record,
+          creditTier: profile.credit,
+          annualMileage: profile.miles,
+          coverageLevel: profile.coverage,
+          deductible: profile.deductible,
+          estimateMonthly: `${result.low}-${result.high}`,
+        })}
+      />
 
-          {/* About the Tool Section */}
-          <div className="w-full max-w-7xl px-4 mb-24 grid md:grid-cols-2 gap-12 items-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-            <div className="order-2 md:order-1">
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Estimator</h2>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                MyAutoSpex uses a proprietary risk-modeling engine to provide unbiased insurance estimates. Unlike lead-capture sites that show artificial "low" prices, our tool analyzes real-world actuarial factors specific to the US market.
-              </p>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                By entering your vehicle type, age, and ZIP code, we pull data from regional risk tables used by major carriers to establish a "Fair Price" benchmark. This empowers you to identify when you're being overcharged or when a specific model might be unexpectedly expensive to insure.
-              </p>
-            </div>
-            <div className="order-1 md:order-2 bg-indigo-50 dark:bg-indigo-900/10 rounded-[3rem] p-10 sm:p-14 border border-indigo-100 dark:border-indigo-900/30 relative overflow-hidden shadow-2xl">
-              <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-indigo-500/10 -rotate-12" />
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Regional Intelligence</h3>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
-                Our engine updates weekly with state-specific law changes and accident rate fluctuations, ensuring your estimate matches current economic conditions in your specific neighborhood.
-              </p>
-              <div className="flex items-center gap-3 text-indigo-600 dark:text-indigo-400 font-black text-sm relative z-10">
-                <ShieldCheck className="w-6 h-6" /> SECURE & VERIFIED SERVICE
-              </div>
-            </div>
-          </div>
-
-          {/* Why Use This Tool Section */}
-          <div className="w-full max-w-7xl px-4 mb-24 text-center">
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-              Why Drivers Trust MyAutoSpex
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  icon: <Lock className="w-8 h-8 text-green-500" />,
-                  title: "No Credit Check",
-                  desc: "Explore your options without triggering 'hard pulls' or affecting your FICO score."
-                },
-                {
-                  icon: <Zap className="w-8 h-8 text-blue-500" />,
-                  title: "Instant Benchmarks",
-                  desc: "Know the 'Fair Market' rate before you start talking to aggressive sales agents."
-                },
-                {
-                  icon: <Award className="w-8 h-8 text-amber-500" />,
-                  title: "Unbiased Results",
-                  desc: "We don't prioritize specific carriers. Our logic is strictly data-driven."
-                },
-                {
-                  icon: <DollarSign className="w-8 h-8 text-indigo-500" />,
-                  title: "Identify Savings",
-                  desc: "Discover how simple changes like deductibles or car choices impact your wallet."
-                },
-              ].map((item, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
-                  <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="w-full max-w-7xl px-4 mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-              How It Works
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-4">
-                  <MapPin className="w-7 h-7" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Enter Location</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Provide your ZIP code and vehicle details to establish the base actuarial risk for your area.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
-                  <Users className="w-7 h-7" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Select Profile</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Choose your age bracket, driving history, and credit tier. Information is used for accurate matching.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
-                  <DollarSign className="w-7 h-7" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. See Fair Price</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Instantly get a realistic monthly premium range and connect with carriers for official binders.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Testimonials Section */}
-          <div className="w-full max-w-7xl px-4 mb-24">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-16">Real Stories from Drivers</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  name: "Marcus K.",
-                  loc: "Dallas, TX",
-                  text: "I was paying $240/mo. This tool told me the fair price for my area was $150-$180. I switched carriers and now I'm paying exactly $162. Saved almost $1k a year!",
-                  stars: 5
-                },
-                {
-                  name: "Sarah L.",
-                  loc: "Orlando, FL",
-                  text: "As a driver under 25, I expected high rates, but the AI breakdown helped me see that a 'Premium' deductible wasn't worth the extra $60/mo for my car.",
-                  stars: 5
-                },
-                {
-                  name: "David P.",
-                  loc: "Chicago, IL",
-                  text: "The 'Underwriter Analysis' was spot on. It explained exactly why my ZIP code was high risk. Gave me the leverage to negotiate with my current agent.",
-                  stars: 5
-                }
-              ].map((t, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col hover:shadow-xl transition-all">
-                  <div className="flex gap-1 mb-6 text-indigo-500">
-                    {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                  </div>
-                  <p className="text-slate-700 dark:text-slate-300 italic mb-8 grow">"{t.text}"</p>
-                  <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center font-black text-sm">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm">{t.name}</h4>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t.loc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="w-full max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-2">
-                <MessageSquare className="w-6 h-6 text-indigo-500" />
-                Frequently Asked Questions
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400">Common questions about auto insurance costs and this tool.</p>
-            </div>
-
-            <div className="space-y-4">
-              {insuranceFaqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className={`border rounded-2xl transition-all duration-300 overflow-hidden ${openFaqIndex === index
-                    ? 'bg-white dark:bg-slate-900 border-indigo-500/30 shadow-lg shadow-indigo-500/5'
-                    : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                >
-                  <button
-                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
-                  >
-                    <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                      {faq.question}
-                    </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${openFaqIndex === index ? 'rotate-180 text-indigo-500' : ''
-                        }`}
-                    />
-                  </button>
-                  <div
-                    className={`transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                      }`}
-                  >
-                    <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0">
-                      {faq.answer}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+      <Faq id="ins-faq" title="Questions about car insurance costs" items={FAQS} />
+    </ToolPage>
   );
-};
-
-export default InsuranceEstimator;
+}

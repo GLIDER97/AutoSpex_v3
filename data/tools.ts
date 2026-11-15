@@ -49,7 +49,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Recall check',
         path: '/recalls',
-        description: 'Safety recalls for your year, make and model, straight from NHTSA.',
+        description: 'Recalls by VIN or model, do-not-drive warnings first, and the free fix.',
         icon: ShieldAlert,
       },
       {
@@ -73,13 +73,13 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Insurance cost estimate',
         path: '/insurance-estimator',
-        description: 'A ballpark monthly premium for your profile, and what each change would save.',
+        description: 'A fair monthly premium for your profile, why, and what would lower it.',
         icon: ShieldCheck,
       },
       {
         name: 'MPG and fuel cost',
         path: '/mpg-calculator',
-        description: 'Fuel cost per mile, your real MPG against the EPA, and two cars compared.',
+        description: 'Trip and monthly gas costs, whether your MPG is normal, two cars compared.',
         icon: Fuel,
       },
       {
@@ -97,7 +97,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Resale value drop',
         path: '/value-shock-calculator',
-        description: 'How much value your car loses per day and over the next year.',
+        description: 'Value today, what it loses per day, and the best time to sell.',
         icon: TrendingDown,
       },
     ],
@@ -113,15 +113,15 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
         icon: MapPin,
       },
       {
-        name: 'Service coupons',
+        name: 'Service prices and deals',
         path: '/coupons',
-        description: 'Typical deals on oil changes, brakes and tires.',
+        description: 'Fair service prices in your state, upsells to skip, real coupons.',
         icon: Ticket,
       },
       {
-        name: 'DIY tools',
+        name: 'DIY repair planner',
         path: '/diy-toolkits',
-        description: 'Scanners and tools worth owning for home repairs.',
+        description: 'What you save doing a job yourself, the tools, and when to call a pro.',
         icon: Hammer,
       },
     ],
@@ -133,7 +133,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Vanity plate ideas',
         path: '/plate-generator',
-        description: 'Plate ideas from your car, your hobbies and your style.',
+        description: 'Ideas that fit your state’s limit, with a preview and a misread check.',
         icon: RectangleHorizontal,
       },
       {
