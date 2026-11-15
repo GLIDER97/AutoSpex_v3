@@ -343,7 +343,7 @@ export default function WrapDesigner() {
                   <label
                     key={f.id}
                     className={cn(
-                      'cursor-pointer rounded-full border px-3.5 py-1.5 text-[0.9375rem] font-semibold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                      'inline-flex cursor-pointer items-center rounded-full border px-3.5 py-1.5 text-[0.9375rem] font-semibold transition-colors pointer-coarse:min-h-11 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
                       finish === f.id ? 'border-foreground bg-foreground text-background' : 'border-input hover:bg-muted',
                     )}
                   >
@@ -364,7 +364,7 @@ export default function WrapDesigner() {
                     key={c.name}
                     title={c.name}
                     className={cn(
-                      'size-10 cursor-pointer rounded-full border border-black/15 transition-transform hover:scale-105 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid dark:border-white/25',
+                      'size-10 cursor-pointer rounded-full border pointer-coarse:size-11 border-black/15 transition-transform hover:scale-105 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid dark:border-white/25',
                       color.name === c.name && 'ring-2 ring-foreground ring-offset-2 ring-offset-card',
                     )}
                     style={swatchBackground(finish, c)}
@@ -377,7 +377,7 @@ export default function WrapDesigner() {
                   <label
                     title="Custom color"
                     className={cn(
-                      'relative flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-black/15 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid dark:border-white/25',
+                      'relative flex size-10 cursor-pointer pointer-coarse:size-11 items-center justify-center overflow-hidden rounded-full border border-black/15 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid dark:border-white/25',
                       color.name === 'Custom color' && 'ring-2 ring-foreground ring-offset-2 ring-offset-card',
                     )}
                     style={{ background: color.name === 'Custom color' ? customHex : 'conic-gradient(#e53935, #fdd835, #43a047, #1e88e5, #8e24aa, #e53935)' }}
@@ -451,7 +451,7 @@ export default function WrapDesigner() {
                   href={current.src}
                   download={downloadName(current)}
                   className={cn(
-                    'inline-flex h-10 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-[0.9375rem] font-semibold hover:bg-muted',
+                    'inline-flex h-10 items-center gap-1.5 rounded-lg border border-input bg-card px-3 pointer-coarse:h-11 text-[0.9375rem] font-semibold hover:bg-muted',
                     focusRing,
                   )}
                 >
@@ -536,7 +536,7 @@ export default function WrapDesigner() {
         <form noValidate onSubmit={findShops} className="mt-4 flex max-w-md items-end gap-3">
           <Field label="ZIP code" htmlFor="wrap-zip" className="flex-1">
             <input
-              id="wrap-zip"
+              id="wrap-zip" enterKeyHint="search"
               value={zip}
               onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
               inputMode="numeric"

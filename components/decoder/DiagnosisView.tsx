@@ -117,7 +117,7 @@ export default function DiagnosisView({
       {error && (
         <Notice tone="error" title="The full analysis didn't load">
           <p>{error}</p>
-          <SecondaryButton type="button" onClick={onRetry} className="mt-3 h-10">
+          <SecondaryButton type="button" onClick={onRetry} className="mt-3 h-10 pointer-coarse:h-11">
             Try again
           </SecondaryButton>
         </Notice>

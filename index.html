@@ -12,9 +12,12 @@
     </script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>MyAutoSpex - Vehicle Intelligence</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="MyAutoSpex" />
     <meta name="description" content="Professional-grade diagnostic tools, VIN decoding, and financial analysis for vehicle owners." />
     
     <!-- External Integrations: Header (scripts-header.html) -->
@@ -35,7 +38,12 @@
     <!-- Styles are injected by Vite -->
     <meta name="theme-color" content="#f4f5f5" />
     <script>
-      try { if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+      try {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.querySelector('meta[name=theme-color]').setAttribute('content', '#181b1e');
+        }
+      } catch (e) {}
     </script>
     <style>
       /* Page colors before the stylesheet loads, so there is no flash. */

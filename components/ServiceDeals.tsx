@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { STATES } from '../utils/insurance';
 import { COUPON_SOURCES, SERVICES, SHOP_TYPES, servicePrice, type ShopType } from '../utils/servicePrices';
-import { Faq, Field, Panel, PanelTitle, ToolPage, focusRing, inputClass, money, moneyRange } from './tool/kit';
+import { MobileResultBar, Faq, Field, Panel, PanelTitle, ToolPage, focusRing, inputClass, money, moneyRange } from './tool/kit';
 import LeadPanel from './tool/LeadPanel';
 
 const SEASONS: [string, string][] = [
@@ -36,6 +36,7 @@ export default function ServiceDeals() {
   const [state, setState] = useState('');
   const [shop, setShop] = useState<ShopType>('independent');
   const [picked, setPicked] = useState<string[]>(['oil-synthetic', 'rotation']);
+  const totalRef = useRef<HTMLElement>(null);
 
   const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   const chosen = SERVICES.filter((s) => picked.includes(s.id));
@@ -75,7 +76,7 @@ export default function ServiceDeals() {
                     <label
                       key={t.id}
                       className={cn(
-                        'cursor-pointer rounded-full border px-3 py-1.5 text-sm font-semibold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                        'inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-sm font-semibold pointer-coarse:min-h-11 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
                         shop === t.id ? 'border-foreground bg-foreground text-background' : 'border-input hover:bg-muted',
                       )}
                     >
@@ -98,7 +99,7 @@ export default function ServiceDeals() {
                 const on = picked.includes(s.id);
                 return (
                   <li key={s.id} className="py-3">
-                    <label className="flex cursor-pointer items-start gap-3">
+                    <label className="flex min-h-11 cursor-pointer items-center gap-3">
                       <input type="checkbox" checked={on} onChange={() => toggle(s.id)} className="mt-1 size-4 shrink-0 accent-sign-green" />
                       <span className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-4">
                         <span className="font-semibold">{s.name}</span>
@@ -128,7 +129,7 @@ export default function ServiceDeals() {
         </div>
 
         <div className="space-y-6 lg:sticky lg:top-24">
-          <Panel aria-labelledby="total-title" aria-live="polite">
+          <Panel aria-labelledby="total-title" aria-live="polite" ref={totalRef} className="scroll-mt-20">
             <PanelTitle>
               <span id="total-title">Fair price for your list</span>
             </PanelTitle>
@@ -212,6 +213,9 @@ export default function ServiceDeals() {
       />
 
       <Faq id="deals-faq" title="Questions about service prices" items={FAQS} />
+      {chosen.length > 0 && (
+        <MobileResultBar target={totalRef} label={`Fair price, ${chosen.length} ${chosen.length === 1 ? 'service' : 'services'}`} value={moneyRange(total[0], total[1])} action="Compare" />
+      )}
     </ToolPage>
   );
 }

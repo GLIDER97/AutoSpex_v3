@@ -52,7 +52,7 @@ function SlotEditor({ id, slot, onChange }: { id: string; slot: Slot; onChange: 
     <Panel className="space-y-4">
       <PanelTitle>{slot.name}</PanelTitle>
       <VehicleFields value={slot.vehicle} onChange={(vehicle) => onChange({ vehicle })} />
-      <SecondaryButton type="button" onClick={lookUp} disabled={slot.loading} className="h-10">
+      <SecondaryButton type="button" onClick={lookUp} disabled={slot.loading} className="h-10 pointer-coarse:h-11">
         {slot.loading ? 'Looking up…' : 'Get EPA fuel economy'}
       </SecondaryButton>
       {slot.variants.length > 1 && (

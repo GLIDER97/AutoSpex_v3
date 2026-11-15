@@ -250,7 +250,7 @@ export default function MpgCalculator() {
                 </Field>
                 <NumberField id="trip-tolls" label="Tolls (optional)" value={tolls} onChange={setTolls} prefix="$" step="1" />
               </div>
-              <label className="mt-4 flex cursor-pointer items-center gap-3">
+              <label className="mt-3 flex min-h-11 cursor-pointer items-center gap-3">
                 <input type="checkbox" checked={roundTrip} onChange={(e) => setRoundTrip(e.target.checked)} className="size-4 accent-sign-green" />
                 <span className="font-semibold">Round trip</span>
               </label>

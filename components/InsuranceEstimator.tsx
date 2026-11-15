@@ -17,7 +17,7 @@ import {
   type Profile,
   type VehicleClassId,
 } from '../utils/insurance';
-import { Faq, Field, Notice, Panel, PanelTitle, ToolPage, VehicleFields, inputClass, money, hasVehicle, vehicleLabel, type Vehicle } from './tool/kit';
+import { MobileResultBar, Faq, Field, Notice, Panel, PanelTitle, ToolPage, VehicleFields, inputClass, money, hasVehicle, vehicleLabel, type Vehicle } from './tool/kit';
 import LeadPanel from './tool/LeadPanel';
 
 const FAQS: [string, string][] = [
@@ -63,7 +63,7 @@ function Select<T extends string>({ id, label, value, onChange, options, hint }:
 }
 
 const Check = ({ id, label, checked, onChange, hint }: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string }) => (
-  <label htmlFor={id} className="flex cursor-pointer items-start gap-3 py-1.5">
+  <label htmlFor={id} className="flex min-h-11 cursor-pointer items-start gap-3 py-2">
     <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-1 size-4 accent-sign-green" />
     <span>
       <span className="font-semibold">{label}</span>
@@ -91,6 +91,7 @@ export default function InsuranceEstimator() {
   const [vehicleNote, setVehicleNote] = useState<{ label: string; reason: string } | null>(null);
   const [checking, setChecking] = useState(false);
   const cache = useRef(new Map<string, { cls: VehicleClassId; reason: string }>());
+  const estimateRef = useRef<HTMLElement>(null);
 
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => setProfile((p) => ({ ...p, [key]: value }));
 
@@ -222,7 +223,7 @@ export default function InsuranceEstimator() {
         </div>
 
         <div className="space-y-6 lg:sticky lg:top-24">
-          <Panel aria-labelledby="estimate-title">
+          <Panel aria-labelledby="estimate-title" ref={estimateRef} className="scroll-mt-20">
             <PanelTitle>
               <span id="estimate-title">Your estimate</span>
             </PanelTitle>
@@ -312,6 +313,7 @@ export default function InsuranceEstimator() {
       />
 
       <Faq id="ins-faq" title="Questions about car insurance costs" items={FAQS} />
+      <MobileResultBar target={estimateRef} label="Your estimate" value={`${money(result.low)} to ${money(result.high)} a month`} action="Why?" />
     </ToolPage>
   );
 }

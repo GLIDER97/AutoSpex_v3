@@ -28,7 +28,7 @@ function TableToggle({ open, onToggle, id }: { open: boolean; onToggle: () => vo
       aria-expanded={open}
       aria-controls={id}
       onClick={onToggle}
-      className={cn('cursor-pointer rounded-sm text-sm font-semibold text-muted-foreground underline underline-offset-4 hover:text-foreground', focusRing)}
+      className={cn('inline-flex cursor-pointer items-center rounded-sm text-sm font-semibold text-muted-foreground underline underline-offset-4 hover:text-foreground pointer-coarse:min-h-11', focusRing)}
     >
       {open ? 'Hide table' : 'Show as table'}
     </button>

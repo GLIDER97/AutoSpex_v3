@@ -7,7 +7,7 @@ import { latestFeaturedRecalls, searchRecalls, type Recall } from '../utils/nhts
 import { searchComplaints, type ComplaintSummary } from '../utils/nhtsaComplaints';
 import { checkVin, decodeVin } from '../utils/vehicleReport';
 import { BarList } from './tool/charts';
-import { Faq, Field, Notice, Panel, PanelTitle, PrimaryButton, SecondaryButton, Spinner, ToolPage, VehicleFields, focusRing, hasVehicle, inputClass, type Vehicle } from './tool/kit';
+import { useReveal, Faq, Field, Notice, Panel, PanelTitle, PrimaryButton, SecondaryButton, Spinner, ToolPage, VehicleFields, focusRing, hasVehicle, inputClass, type Vehicle } from './tool/kit';
 
 const FAQS: [string, string][] = [
   [
@@ -62,7 +62,7 @@ function RecallCard({ recall, vin }: { recall: Recall; vin: string }) {
         <p className="mt-2 rounded-lg bg-muted p-3 text-[0.9375rem]">{script}</p>
         <SecondaryButton
           type="button"
-          className="mt-2 h-9"
+          className="mt-2 h-9 pointer-coarse:h-11"
           onClick={() => {
             navigator.clipboard?.writeText(script).then(() => {
               setCopied(true);
@@ -96,6 +96,7 @@ export default function RecallCheck() {
   const [feed, setFeed] = useState<Recall[] | null>(null);
   const [feedFailed, setFeedFailed] = useState(false);
   const latest = useRef(0);
+  const results = useReveal<HTMLElement>();
 
   useEffect(() => {
     latestFeaturedRecalls()
@@ -117,6 +118,7 @@ export default function RecallCheck() {
       if (id !== latest.current) return;
       const label = `${v.year} ${search.make ?? v.make} ${search.models[0] ?? v.model}`;
       setResult({ label, vin, recalls: search.recalls, models: search.models, complaints });
+      results.reveal();
     } catch {
       if (id === latest.current) setError("NHTSA's recall database couldn't be reached. Please try again in a minute.");
     } finally {
@@ -185,7 +187,7 @@ export default function RecallCheck() {
                 setMode(id);
                 setError(null);
               }}
-              className={cn('cursor-pointer rounded-md px-3 py-1.5 text-sm font-semibold', mode === id ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground', focusRing)}
+              className={cn('cursor-pointer rounded-md px-3 py-1.5 text-sm font-semibold pointer-coarse:min-h-11', mode === id ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground', focusRing)}
             >
               {label}
             </button>
@@ -195,7 +197,7 @@ export default function RecallCheck() {
           {mode === 'vin' ? (
             <Field label="VIN (17 characters)" htmlFor="recall-vin" hint="On the dashboard by the windshield, the driver’s door jamb, or your registration and insurance card.">
               <input
-                id="recall-vin"
+                id="recall-vin" autoCapitalize="characters" autoCorrect="off" enterKeyHint="search"
                 value={vinInput}
                 onChange={(e) => setVinInput(e.target.value.toUpperCase().replace(/\s/g, '').slice(0, 17))}
                 autoComplete="off"
@@ -213,7 +215,7 @@ export default function RecallCheck() {
         </form>
       </Panel>
 
-      <section className="mt-8" aria-live="polite" aria-busy={loading}>
+      <section className="mt-8 scroll-mt-20" aria-live="polite" aria-busy={loading} ref={results.ref}>
         {loading && !result && <Spinner label="Checking NHTSA…" />}
         {result && (
           <div className={cn('space-y-6', loading && 'opacity-60')}>

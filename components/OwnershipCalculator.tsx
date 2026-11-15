@@ -112,17 +112,17 @@ function CarEditor({ id, car, onChange, onRemove }: { id: string; car: CarForm; 
           id={`${id}-name`}
           value={car.name}
           onChange={(e) => set({ name: e.target.value })}
-          className={cn('min-w-0 flex-1 rounded-md bg-transparent font-heading text-xl font-extrabold hover:bg-muted/60', focusRing)}
+          className={cn('min-w-0 flex-1 rounded-md bg-transparent font-heading text-xl font-extrabold hover:bg-muted/60 pointer-coarse:min-h-11', focusRing)}
         />
         {onRemove && (
-          <button type="button" onClick={onRemove} aria-label={`Remove ${car.name}`} className={cn('cursor-pointer rounded-md p-1.5 text-muted-foreground hover:bg-muted', focusRing)}>
+          <button type="button" onClick={onRemove} aria-label={`Remove ${car.name}`} className={cn('cursor-pointer rounded-md p-1.5 text-muted-foreground hover:bg-muted pointer-coarse:p-2.5', focusRing)}>
             <X className="size-5" />
           </button>
         )}
       </div>
       <div className="rounded-lg bg-muted/60 p-3">
         <VehicleFields value={car.vehicle} onChange={(vehicle) => set({ vehicle })} />
-        <SecondaryButton type="button" onClick={lookUp} disabled={looking} className="mt-3 h-10">
+        <SecondaryButton type="button" onClick={lookUp} disabled={looking} className="mt-3 h-10 pointer-coarse:h-11">
           {looking ? 'Looking up…' : 'Get EPA fuel economy'}
         </SecondaryButton>
         {variants.length > 1 && (
@@ -160,7 +160,7 @@ function CarEditor({ id, car, onChange, onRemove }: { id: string; car: CarForm; 
         <NumberField id={`${id}-ins`} label="Insurance per year" value={car.insurance} onChange={(insurance) => set({ insurance })} prefix="$" step="50" />
       </div>
       <details className="group">
-        <summary className={cn('cursor-pointer rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4', focusRing)}>
+        <summary className={cn('flex cursor-pointer items-center rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4 pointer-coarse:min-h-11', focusRing)}>
           Adjust depreciation and maintenance
         </summary>
         <div className="mt-3 grid grid-cols-3 gap-3">

@@ -77,7 +77,7 @@ function CodeLookup() {
         </label>
         <div className="flex gap-2">
           <input
-            id="obd-code"
+            id="obd-code" enterKeyHint="go" autoCorrect="off"
             name="code"
             value={value}
             onChange={(e) => setValue(e.target.value.toUpperCase())}
@@ -121,7 +121,7 @@ function CodeLookup() {
           <Link
             key={c}
             to={decoderLink(c)}
-            className="rounded-md border border-white/70 px-2.5 py-1 font-mono text-[0.9375rem] font-semibold text-white transition-colors hover:bg-white hover:text-sign-green outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sign-yellow"
+            className="inline-flex items-center rounded-md border border-white/70 px-2.5 py-1 font-mono text-[0.9375rem] pointer-coarse:min-h-11 pointer-coarse:px-3.5 font-semibold text-white transition-colors hover:bg-white hover:text-sign-green outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sign-yellow"
           >
             {c}
           </Link>
@@ -318,7 +318,7 @@ function LatestGuides() {
           <h2 id="guides-title" className="font-heading text-[2rem] leading-tight font-extrabold tracking-[-0.015em] sm:text-4xl">
             Latest guides
           </h2>
-          <Link to="/blog" className={cn('rounded-sm font-bold text-sign-green underline underline-offset-4 dark:text-white', focusRing)}>
+          <Link to="/blog" className={cn('inline-flex items-center rounded-sm font-bold text-sign-green underline pointer-coarse:min-h-11 underline-offset-4 dark:text-white', focusRing)}>
             All articles
           </Link>
         </div>

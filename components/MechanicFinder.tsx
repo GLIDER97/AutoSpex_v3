@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { REPAIR_SERVICES, searchShops, type ShopSearch } from '../utils/places';
-import { Faq, Field, Panel, PanelTitle, PrimaryButton, Spinner, ToolPage, focusRing, inputClass, rememberZip, rememberedZip } from './tool/kit';
+import { useReveal, Faq, Field, Panel, PanelTitle, PrimaryButton, Spinner, ToolPage, focusRing, inputClass, rememberZip, rememberedZip } from './tool/kit';
 import ShopResults from './tool/ShopResults';
 
 type ServiceId = (typeof REPAIR_SERVICES)[number]['id'];
@@ -43,6 +43,7 @@ export default function MechanicFinder() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ search: ShopSearch; zip: string; service: ServiceId } | null>(null);
   const latest = useRef(0);
+  const results = useReveal<HTMLElement>();
 
   const run = async (z: string, s: ServiceId) => {
     if (!/^\d{5}$/.test(z)) {
@@ -58,6 +59,7 @@ export default function MechanicFinder() {
     if (id !== latest.current) return;
     setResult({ search, zip: z, service: s });
     setLoading(false);
+    results.reveal();
   };
 
   // Links can preset the service (?service=brakes) and search straight away (?zip=78701).
@@ -107,7 +109,7 @@ export default function MechanicFinder() {
           </Field>
           <Field label="ZIP code" htmlFor="mechanic-zip">
             <input
-              id="mechanic-zip"
+              id="mechanic-zip" enterKeyHint="search"
               value={zip}
               onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
               inputMode="numeric"
@@ -129,7 +131,7 @@ export default function MechanicFinder() {
         )}
       </Panel>
 
-      <section aria-labelledby="shops-title" className="mt-8" aria-busy={loading}>
+      <section aria-labelledby="shops-title" className="mt-8 scroll-mt-20" aria-busy={loading} ref={results.ref}>
         <h2 id="shops-title" className="sr-only">
           Shops
         </h2>

@@ -7,7 +7,7 @@ import { SignMarker, Wordmark } from './brand';
 const FEEDBACK_URL = 'https://forms.gle/XtuvETokH5R83r1q7';
 
 const linkClass = cn(
-  'rounded-sm text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-white',
+  'inline-flex min-h-11 items-center rounded-sm text-slate-600 transition-colors hover:text-slate-900 lg:min-h-0 dark:text-slate-300 dark:hover:text-white',
   'outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
 );
 
@@ -26,25 +26,25 @@ const Footer: React.FC = () => {
       <div className="mx-auto max-w-7xl px-4 pt-14 pb-10 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_repeat(5,1fr)]">
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link to="/" aria-label="MyAutoSpex home" className={cn('inline-block', linkClass)}>
+            <Link to="/" aria-label="MyAutoSpex home" className={linkClass}>
               <Wordmark />
             </Link>
             <p className="mt-4 max-w-xs text-[0.9375rem] leading-relaxed">
               Free tools that explain car problems and car costs in plain English. No account needed.
             </p>
-            <a href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer" className={cn('mt-4 inline-block text-[0.9375rem] font-semibold text-foreground underline underline-offset-4', linkClass)}>
+            <a href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer" className={cn(linkClass, 'mt-2 text-[0.9375rem] font-semibold text-foreground underline underline-offset-4')}>
               Send feedback
             </a>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:col-span-5 lg:grid-cols-5 lg:gap-10">
             {TOOL_CATEGORIES.map((category) => (
               <div key={category.id}>
                 <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-foreground">
                   <SignMarker category={category.id} className="size-4" />
                   {category.name}
                 </h2>
-                <ul className="space-y-2 text-[0.9375rem]">
+                <ul className="text-[0.9375rem] lg:space-y-2">
                   {category.tools.map((tool) => (
                     <li key={tool.path}>
                       <Link to={tool.path} className={linkClass}>
@@ -57,7 +57,7 @@ const Footer: React.FC = () => {
             ))}
             <div>
               <h2 className="mb-3 text-sm font-bold text-foreground">MyAutoSpex</h2>
-              <ul className="space-y-2 text-[0.9375rem]">
+              <ul className="text-[0.9375rem] lg:space-y-2">
                 {COMPANY_LINKS.map((item) => (
                   <li key={item.to}>
                     <Link to={item.to} className={linkClass}>

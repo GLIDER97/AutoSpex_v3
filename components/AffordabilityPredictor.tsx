@@ -225,7 +225,7 @@ const AffordabilityPredictor: React.FC = () => {
             type="button"
             aria-selected={mode === id}
             onClick={() => setMode(id)}
-            className={cn('cursor-pointer rounded-md px-4 py-2 font-semibold', mode === id ? 'bg-card shadow-xs' : 'text-muted-foreground hover:text-foreground', focusRing)}
+            className={cn('cursor-pointer rounded-md px-4 py-2 font-semibold pointer-coarse:min-h-11', mode === id ? 'bg-card shadow-xs' : 'text-muted-foreground hover:text-foreground', focusRing)}
           >
             {label}
           </button>
@@ -241,7 +241,7 @@ const AffordabilityPredictor: React.FC = () => {
                 type="button"
                 onClick={() => setShowEstimator((v) => !v)}
                 aria-expanded={showEstimator}
-                className={cn('mt-2 cursor-pointer rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4', focusRing)}
+                className={cn('mt-2 inline-flex cursor-pointer items-center rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4 pointer-coarse:min-h-11', focusRing)}
               >
                 Don't know a fair price? Estimate it
               </button>
@@ -256,7 +256,7 @@ const AffordabilityPredictor: React.FC = () => {
                       <input id="est-zip" inputMode="numeric" maxLength={5} value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))} className={inputClass} />
                     </Field>
                   </div>
-                  <SecondaryButton type="button" onClick={runEstimate} disabled={estimating} className="h-10">
+                  <SecondaryButton type="button" onClick={runEstimate} disabled={estimating} className="h-10 pointer-coarse:h-11">
                     {estimating ? 'Estimating…' : 'Estimate the price'}
                   </SecondaryButton>
                   {estimateError && <p className="text-[0.9375rem] text-sign-red">{estimateError}</p>}
@@ -388,7 +388,7 @@ const AffordabilityPredictor: React.FC = () => {
                     {calc.byTerm.map((row) => (
                       <tr key={row.term} className={cn('border-b border-border', row.term === term && 'bg-sign-green/10 font-bold')}>
                         <td className="py-2">
-                          <button type="button" onClick={() => setTerm(row.term)} className={cn('cursor-pointer rounded-sm underline-offset-4 hover:underline', focusRing)}>
+                          <button type="button" onClick={() => setTerm(row.term)} className={cn('cursor-pointer rounded-sm underline-offset-4 hover:underline pointer-coarse:min-h-11 pointer-coarse:underline', focusRing)}>
                             {row.term} months
                           </button>
                         </td>
@@ -439,7 +439,7 @@ const AffordabilityPredictor: React.FC = () => {
                             <span className="mt-2 block text-sm text-muted-foreground">{rule as string}</span>
                             <SecondaryButton
                               type="button"
-                              className="mt-3 h-10"
+                              className="mt-3 h-10 pointer-coarse:h-11"
                               onClick={() => {
                                 setPrice(String(Math.floor(budget.price / 100) * 100));
                                 setMode('check');

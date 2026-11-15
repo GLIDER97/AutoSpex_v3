@@ -2,25 +2,7 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { CONDITIONS, MILES_PER_YEAR, modelFacts, valueReport, type Condition, type ModelFacts } from '../utils/resale';
 import { BarList } from './tool/charts';
-import {
-  Faq,
-  FactList,
-  Field,
-  Notice,
-  NumberField,
-  Panel,
-  PanelTitle,
-  PrimaryButton,
-  Spinner,
-  ToolPage,
-  VehicleFields,
-  Verdict,
-  hasVehicle,
-  inputClass,
-  money,
-  vehicleLabel,
-  type Vehicle,
-} from './tool/kit';
+import { useReveal, Faq, FactList, Field, Notice, NumberField, Panel, PanelTitle, PrimaryButton, Spinner, ToolPage, VehicleFields, Verdict, hasVehicle, inputClass, money, vehicleLabel, type Vehicle } from './tool/kit';
 import LeadPanel from './tool/LeadPanel';
 
 const RETENTION_TONE = { Strong: 'go', 'Above average': 'go', Average: 'neutral', 'Below average': 'caution', Weak: 'stop' } as const;
@@ -58,6 +40,7 @@ export default function ValueShockCalculator() {
   const [msrp, setMsrp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const result = useReveal<HTMLDivElement>();
 
   const check = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +54,7 @@ export default function ValueShockCalculator() {
       const f = await modelFacts(vehicleLabel(vehicle), trim.trim());
       setFacts({ ...f, vehicle: [vehicleLabel(vehicle), trim.trim()].filter(Boolean).join(' '), year: Number(vehicle.year) });
       setMsrp(String(f.msrp));
+      result.reveal();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'The value check failed. Please try again.');
     } finally {
@@ -138,7 +122,7 @@ export default function ValueShockCalculator() {
           </form>
         </Panel>
 
-        <div className="space-y-6" aria-live="polite">
+        <div className="scroll-mt-20 space-y-6" aria-live="polite" ref={result.ref}>
           {loading && !report && <Spinner label="Looking up this model…" />}
           {!report && !loading && (
             <Panel>

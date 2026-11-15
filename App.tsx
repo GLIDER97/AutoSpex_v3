@@ -28,11 +28,9 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    // Match the phone's browser bar to the page.
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDarkMode ? '#181b1e' : '#f4f5f5');
   }, [isDarkMode]);
 
   // Scroll to top on route change

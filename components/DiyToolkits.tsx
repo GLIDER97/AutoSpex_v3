@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { JOBS, TOOLS, mid, shopping, toolById, type Level } from '../utils/diyJobs';
-import { Faq, Field, Panel, PanelTitle, ToolPage, Verdict, focusRing, inputClass, money, moneyRange } from './tool/kit';
+import { useReveal, Faq, Field, Panel, PanelTitle, ToolPage, Verdict, focusRing, inputClass, money, moneyRange } from './tool/kit';
 
 const LEVEL_TONE: Record<Level, 'go' | 'caution' | 'stop'> = { Easy: 'go', Moderate: 'caution', Hard: 'stop' };
 
@@ -47,6 +47,7 @@ export default function DiyToolkits() {
   const [jobId, setJobId] = useState('oil');
   const [owned, setOwned] = useState<string[]>([]);
   const [car, setCar] = useState('');
+  const detail = useReveal<HTMLElement>();
 
   useEffect(() => setOwned(loadOwned()), []);
   const toggleOwned = (id: string) =>
@@ -85,7 +86,7 @@ export default function DiyToolkits() {
 
       <fieldset>
         <legend className="mb-3 font-heading text-xl font-extrabold">Choose a job</legend>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-5">
           {JOBS.map((j) => (
             <label
               key={j.id}
@@ -94,7 +95,10 @@ export default function DiyToolkits() {
                 jobId === j.id ? 'border-sign-green bg-sign-green/8 ring-1 ring-sign-green' : 'border-input bg-card hover:bg-muted',
               )}
             >
-              <input type="radio" name="job" value={j.id} checked={jobId === j.id} onChange={() => setJobId(j.id)} className="sr-only" />
+              <input type="radio" name="job" value={j.id} checked={jobId === j.id} onChange={() => {
+                  setJobId(j.id);
+                  detail.reveal();
+                }} className="sr-only" />
               <span className="font-bold leading-snug">{j.name}</span>
               <span className="mt-1 text-sm text-muted-foreground">
                 {j.level} · save about {money(Math.round((mid(j.shop) - mid(j.diyParts)) / 5) * 5)}
@@ -105,7 +109,7 @@ export default function DiyToolkits() {
       </fieldset>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-start">
-        <Panel aria-labelledby="job-title" aria-live="polite">
+        <Panel aria-labelledby="job-title" aria-live="polite" ref={detail.ref} className="scroll-mt-20">
           <div className="flex flex-wrap items-center gap-3">
             <PanelTitle>
               <span id="job-title">{job.name}</span>
@@ -173,12 +177,12 @@ export default function DiyToolkits() {
               <ul className="mt-3 space-y-1">
                 {job.tools.map(toolById).map((t) => (
                   <li key={t.id} className="flex items-start justify-between gap-3 py-1">
-                    <label className="flex cursor-pointer items-start gap-2.5 text-[0.9375rem]">
+                    <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-[0.9375rem]">
                       <input type="checkbox" checked={owned.includes(t.id)} onChange={() => toggleOwned(t.id)} className="mt-1 size-4 shrink-0 accent-sign-green" />
                       <span className={cn(owned.includes(t.id) && 'text-muted-foreground line-through')}>{t.name}</span>
                     </label>
                     {!owned.includes(t.id) && (
-                      <a href={shopping(t)} target="_blank" rel="noopener noreferrer nofollow" className={cn('shrink-0 rounded-sm text-sm font-semibold underline underline-offset-4', focusRing)}>
+                      <a href={shopping(t)} target="_blank" rel="noopener noreferrer nofollow" className={cn('inline-flex shrink-0 items-center rounded-sm text-sm font-semibold underline underline-offset-4 pointer-coarse:min-h-11', focusRing)}>
                         {moneyRange(t.price[0], t.price[1])}
                         <span className="sr-only"> (shop for {t.name})</span>
                       </a>

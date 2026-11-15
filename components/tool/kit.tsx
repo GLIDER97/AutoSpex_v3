@@ -1,7 +1,7 @@
 // Shared building blocks for every tool page, in the road-sign design system:
 // flat panels, Overpass type, sign colors that keep their road meaning
 // (green = go/guidance, yellow = caution, red = stop, blue = services).
-import React, { useEffect, useId, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ToolCategoryId } from '../../data/tools';
@@ -41,24 +41,27 @@ export function ToolPage({
   sources?: string;
   children: React.ReactNode;
 }) {
+  // On phones the header stays short so the tool itself starts on the first screen;
+  // the data sources move to the end of the page there.
   return (
     <div className="w-full max-w-6xl">
-      <header className="mb-8 max-w-3xl">
-        <h1 className="flex items-start gap-3 font-heading text-[2.25rem] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance sm:text-5xl">
-          <SignMarker category={category} className="mt-2 size-7 sm:mt-3 sm:size-8" />
+      <header className="mb-5 max-w-3xl sm:mb-8">
+        <h1 className="flex items-start gap-2.5 font-heading text-[1.75rem] leading-[1.1] font-extrabold tracking-[-0.02em] text-balance sm:gap-3 sm:text-5xl sm:leading-[1.08]">
+          <SignMarker category={category} className="mt-1.5 size-6 sm:mt-3 sm:size-8" />
           <span>{title}</span>
         </h1>
-        <p className="mt-4 max-w-[62ch] text-lg leading-relaxed text-muted-foreground">{intro}</p>
-        {sources && <p className="mt-3 text-sm text-muted-foreground">Data: {sources}</p>}
+        <p className="mt-2.5 max-w-[62ch] text-base leading-relaxed text-muted-foreground sm:mt-4 sm:text-lg">{intro}</p>
+        {sources && <p className="mt-3 hidden text-sm text-muted-foreground sm:block">Data: {sources}</p>}
       </header>
       {children}
+      {sources && <p className="mt-10 text-sm text-muted-foreground sm:hidden">Data: {sources}</p>}
     </div>
   );
 }
 
 export function Panel({ className, children, ...props }: React.ComponentProps<'section'>) {
   return (
-    <section className={cn('rounded-xl border border-border bg-card p-5 sm:p-6', className)} {...props}>
+    <section className={cn('rounded-xl border border-border bg-card p-4 sm:p-6', className)} {...props}>
       {children}
     </section>
   );
@@ -144,8 +147,8 @@ export function PrimaryButton({ className, children, loading, ...props }: React.
   return (
     <button
       className={cn(
-        'inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-sign-green px-5 text-base font-bold whitespace-nowrap text-white',
-        'transition-colors hover:bg-sign-green-strong disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex h-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-lg bg-sign-green px-5 text-base font-bold whitespace-nowrap text-white pointer-coarse:h-12',
+        'transition-colors hover:bg-sign-green-strong active:bg-sign-green-strong disabled:cursor-not-allowed disabled:opacity-60',
         focusRing,
         className,
       )}
@@ -162,8 +165,8 @@ export function SecondaryButton({ className, children, ...props }: React.Compone
   return (
     <button
       className={cn(
-        'inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-input bg-card px-4 text-base font-semibold whitespace-nowrap',
-        'transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex h-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-lg border border-input bg-card px-4 text-base font-semibold whitespace-nowrap',
+        'transition-colors hover:bg-muted active:bg-muted disabled:cursor-not-allowed disabled:opacity-60',
         focusRing,
         className,
       )}
@@ -365,16 +368,16 @@ export function Faq({ id, title, items, className }: { id: string; title: string
       </h2>
       <div className="mt-4 divide-y divide-border border-y border-border">
         {items.map(([q, a]) => (
-          <details key={q} className="group py-4">
-            <summary className={cn('cursor-pointer list-none font-bold marker:hidden', focusRing)}>
-              <span className="flex items-center justify-between gap-4">
+          <details key={q} className="group py-1">
+            <summary className={cn('flex min-h-11 cursor-pointer list-none items-center py-3 font-bold marker:hidden', focusRing)}>
+              <span className="flex w-full items-center justify-between gap-4">
                 {q}
                 <span aria-hidden="true" className="text-xl text-muted-foreground transition-transform group-open:rotate-45">
                   +
                 </span>
               </span>
             </summary>
-            <div className="mt-2 text-muted-foreground">{a}</div>
+            <div className="pb-3 text-muted-foreground">{a}</div>
           </details>
         ))}
       </div>
@@ -396,4 +399,70 @@ export function rememberZip(zip: string) {
   } catch {
     /* storage unavailable */
   }
+}
+
+// ---------------------------------------------------------------------------
+// Phone helpers
+// ---------------------------------------------------------------------------
+
+const isNarrow = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches;
+
+/**
+ * On phones and tablets, where results sit below the form, scrolls the result
+ * into view once it appears. Call reveal() after a search or calculation.
+ */
+export function useReveal<T extends HTMLElement = HTMLElement>() {
+  const ref = useRef<T>(null);
+  const reveal = useCallback(() => {
+    if (!isNarrow()) return;
+    // Wait for the result to render before measuring.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const el = ref.current;
+        if (!el) return;
+        const top = el.getBoundingClientRect().top;
+        if (top > window.innerHeight * 0.6 || top < 0) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }),
+    );
+  }, []);
+  return { ref, reveal };
+}
+
+/**
+ * A slim bar pinned to the bottom of the screen on phones that shows a live
+ * result (an estimate or a total) while the visitor is still filling in the
+ * form above it. Tapping it jumps to the full result; it hides once the result
+ * itself is on screen.
+ */
+export function MobileResultBar({ target, label, value, action = 'See details' }: { target: React.RefObject<HTMLElement | null>; label: string; value: React.ReactNode; action?: string }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = target.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting && entry.boundingClientRect.top > 0), { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [target]);
+  return (
+    <div
+      className={cn(
+        'fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(0,0,0,0.08)] backdrop-blur transition-transform duration-200 lg:hidden',
+        visible ? 'translate-y-0' : 'pointer-events-none translate-y-full',
+      )}
+      aria-hidden={!visible}
+    >
+      <button
+        type="button"
+        tabIndex={visible ? 0 : -1}
+        onClick={() => target.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+        className={cn('flex min-h-11 w-full cursor-pointer touch-manipulation items-center justify-between gap-3 rounded-lg text-left', focusRing)}
+      >
+        <span className="min-w-0">
+          <span className="block text-xs font-semibold text-muted-foreground">{label}</span>
+          <span className="block truncate font-heading text-xl leading-tight font-extrabold">{value}</span>
+        </span>
+        <span className="shrink-0 rounded-lg bg-sign-green px-3 py-2 text-sm font-bold text-white">{action}</span>
+      </button>
+    </div>
+  );
 }

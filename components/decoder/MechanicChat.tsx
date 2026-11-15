@@ -136,7 +136,7 @@ If a question needs a hands-on inspection, say what a shop should test. Never in
               key={s}
               type="button"
               onClick={() => send(s)}
-              className={cn('cursor-pointer rounded-full border border-input px-3.5 py-1.5 text-[0.9375rem] hover:bg-muted', focusRing)}
+              className={cn('cursor-pointer rounded-full border border-input px-3.5 py-1.5 text-[0.9375rem] hover:bg-muted pointer-coarse:min-h-11', focusRing)}
             >
               {s}
             </button>

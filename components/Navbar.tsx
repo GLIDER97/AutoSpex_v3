@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { ChevronDown, Menu, Moon, Sun, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,13 +30,42 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
   );
 
+/**
+ * On phones the header slides away while scrolling down (more room for the
+ * page) and comes back as soon as you scroll up. Desktop keeps it pinned.
+ */
+function useHideOnScroll(locked: boolean) {
+  const [hidden, setHidden] = useState(false);
+  const last = useRef(0);
+  useEffect(() => {
+    const narrow = window.matchMedia('(max-width: 1023px)');
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - last.current;
+      if (!narrow.matches || locked || y < 80) setHidden(false);
+      else if (delta > 6) setHidden(true);
+      else if (delta < -6) setHidden(false);
+      last.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [locked]);
+  return hidden;
+}
+
 const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const hidden = useHideOnScroll(menuOpen);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:px-6 lg:px-8">
-        <Link to="/" aria-label="MyAutoSpex home" className={cn('mr-4 rounded-md', focusRing)}>
+    <header
+      className={cn(
+        'sticky top-0 z-50 border-b border-border bg-background transition-transform duration-200 focus-within:translate-y-0',
+        hidden && '-translate-y-full',
+      )}
+    >
+      <div className="mx-auto flex h-14 max-w-7xl items-center gap-1 px-4 sm:h-16 sm:gap-2 sm:px-6 lg:px-8">
+        <Link to="/" aria-label="MyAutoSpex home" className={cn('mr-4 flex min-h-11 items-center rounded-md', focusRing)}>
           <Wordmark />
         </Link>
 
@@ -107,7 +136,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             size="icon-lg"
             onClick={toggleTheme}
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="text-muted-foreground hover:text-foreground"
+            className="size-11 text-muted-foreground hover:text-foreground lg:size-10"
           >
             {isDarkMode ? <Sun className="size-5" /> : <Moon className="size-5" />}
           </Button>
@@ -120,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
 
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label="Open menu">
+              <Button variant="ghost" size="icon-lg" className="size-11 lg:hidden" aria-label="Open menu">
                 <Menu className="size-6" />
               </Button>
             </SheetTrigger>
@@ -132,7 +161,14 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                   </span>
                 </SheetTitle>
               </SheetHeader>
-              <nav aria-label="Mobile" className="flex flex-col gap-6 px-3 py-5">
+              <nav aria-label="Mobile" className="flex flex-col gap-6 px-3 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+                <Link
+                  to="/fault-code-decoder"
+                  onClick={() => setMenuOpen(false)}
+                  className={cn('mx-2 flex h-12 items-center justify-center rounded-lg bg-sign-green text-base font-bold text-white active:bg-sign-green-strong', focusRing)}
+                >
+                  Decode a check engine code
+                </Link>
                 {TOOL_CATEGORIES.map((category) => (
                   <div key={category.id}>
                     <div className="mb-1 flex items-center gap-2 px-2 text-sm font-bold text-foreground">
@@ -146,7 +182,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                             to={tool.path}
                             onClick={() => setMenuOpen(false)}
                             className={cn(
-                              'block rounded-md px-2 py-2.5 text-base text-foreground hover:bg-muted',
+                              'flex min-h-11 items-center rounded-md px-2 py-2 text-base text-foreground hover:bg-muted active:bg-muted',
                               focusRing,
                             )}
                           >
@@ -167,7 +203,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                       <Link
                         to={item.to}
                         onClick={() => setMenuOpen(false)}
-                        className={cn('block rounded-md px-2 py-2.5 text-base font-semibold hover:bg-muted', focusRing)}
+                        className={cn('flex min-h-11 items-center rounded-md px-2 py-2 text-base font-semibold hover:bg-muted active:bg-muted', focusRing)}
                       >
                         {item.label}
                       </Link>
@@ -178,7 +214,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                       href={FEEDBACK_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={cn('block rounded-md px-2 py-2.5 text-base font-semibold hover:bg-muted', focusRing)}
+                      className={cn('flex min-h-11 items-center rounded-md px-2 py-2 text-base font-semibold hover:bg-muted active:bg-muted', focusRing)}
                     >
                       Send feedback
                     </a>

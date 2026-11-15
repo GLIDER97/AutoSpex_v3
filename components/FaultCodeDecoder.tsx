@@ -159,7 +159,7 @@ const FaultCodeDecoder: React.FC = () => {
             hint={`Up to ${MAX_CODES} codes, separated by spaces or commas. Codes that show up together are analyzed together.`}
           >
             <input
-              id="codes"
+              id="codes" enterKeyHint="search" autoCorrect="off"
               value={input}
               onChange={(e) => setInput(e.target.value.toUpperCase())}
               placeholder="P0171 P0174"
@@ -195,7 +195,7 @@ const FaultCodeDecoder: React.FC = () => {
                       setInput(ex);
                       submit(ex, vehicle);
                     }}
-                    className={cn('cursor-pointer rounded-md border border-input px-2.5 py-1 font-mono font-semibold hover:bg-muted', focusRing)}
+                    className={cn('inline-flex cursor-pointer items-center rounded-md border border-input px-2.5 py-1 font-mono font-semibold hover:bg-muted pointer-coarse:min-h-11 pointer-coarse:px-3.5', focusRing)}
                   >
                     {ex}
                   </button>
@@ -219,7 +219,7 @@ const FaultCodeDecoder: React.FC = () => {
                       setVehicle(r.vehicle);
                       submit(r.codes.join(' '), r.vehicle);
                     }}
-                    className={cn('cursor-pointer rounded-md bg-muted px-2.5 py-1 text-[0.9375rem] hover:bg-secondary', focusRing)}
+                    className={cn('inline-flex cursor-pointer items-center rounded-md bg-muted px-2.5 py-1 text-[0.9375rem] hover:bg-secondary pointer-coarse:min-h-11', focusRing)}
                   >
                     {describe(r)}
                   </button>

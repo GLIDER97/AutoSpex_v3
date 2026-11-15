@@ -19,8 +19,7 @@ import {
   ToolPage,
   focusRing,
   inputClass,
-  money,
-} from './tool/kit';
+  money, Faq } from './tool/kit';
 
 const EXAMPLE_VIN = '1HGCM82633A004352';
 
@@ -415,7 +414,7 @@ function InsuranceQuoteForm({ vin, vehicle }: { vin: string; vehicle: string }) 
   );
 }
 
-const FAQS = [
+const FAQS: [string, string][] = [
   ['Where can I find my VIN?', "On the driver's side of the dashboard (look through the windshield), on the sticker in the driver's door jamb, and on your registration and insurance card."],
   ['What does this report include?', 'Factory specs and safety equipment from NHTSA’s VIN decoder, safety recalls, owner complaints and 5-Star crash ratings from NHTSA, and EPA fuel economy. All of it is free public data.'],
   ['Does it show accidents or title problems?', 'No. Accident, title, odometer and ownership history comes from paid history reports. Use the history report link above for those.'],
@@ -496,7 +495,7 @@ const VinLookup: React.FC = () => {
           <Field label="VIN" htmlFor="vin" hint="Find it at the bottom of the windshield on the driver's side, or on the driver's door jamb.">
             <div className="flex flex-col gap-3 sm:flex-row">
               <input
-                id="vin"
+                id="vin" enterKeyHint="search" autoCorrect="off"
                 value={input}
                 onChange={(e) => setInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 17))}
                 placeholder="1HGCM82633A004352"
@@ -521,7 +520,7 @@ const VinLookup: React.FC = () => {
                 setInput(EXAMPLE_VIN);
                 submit(EXAMPLE_VIN);
               }}
-              className={cn('mt-2 cursor-pointer rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4', focusRing)}
+              className={cn('mt-2 inline-flex cursor-pointer items-center rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4 pointer-coarse:min-h-11', focusRing)}
             >
               Try an example VIN
             </button>
@@ -563,26 +562,7 @@ const VinLookup: React.FC = () => {
         </div>
       )}
 
-      <section className="mt-16 max-w-3xl" aria-labelledby="vin-faq">
-        <h2 id="vin-faq" className="font-heading text-2xl font-extrabold">
-          Questions about VIN reports
-        </h2>
-        <div className="mt-4 divide-y divide-border border-y border-border">
-          {FAQS.map(([q, a]) => (
-            <details key={q} className="group py-4">
-              <summary className={cn('cursor-pointer list-none font-bold marker:hidden', focusRing)}>
-                <span className="flex items-center justify-between gap-4">
-                  {q}
-                  <span aria-hidden="true" className="text-xl text-muted-foreground transition-transform group-open:rotate-45">
-                    +
-                  </span>
-                </span>
-              </summary>
-              <p className="mt-2 text-muted-foreground">{a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <Faq id="vin-faq" title="Questions about VIN reports" items={FAQS} />
     </ToolPage>
   );
 };

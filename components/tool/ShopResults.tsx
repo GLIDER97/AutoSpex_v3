@@ -8,7 +8,7 @@ import { weightedRating, type Shop, type ShopSearch } from '../../utils/places';
 import { Notice, focusRing } from './kit';
 
 const linkButton = cn(
-  'inline-flex h-10 min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-input bg-card px-3 text-[0.9375rem] font-semibold',
+  'inline-flex h-10 min-w-0 cursor-pointer pointer-coarse:h-11 items-center justify-center gap-1.5 rounded-lg border border-input bg-card px-3 text-[0.9375rem] font-semibold',
   'transition-colors hover:bg-muted',
   focusRing,
 );
@@ -112,7 +112,7 @@ export default function ShopResults({ result, what, zip }: { result: ShopSearch;
               aria-pressed={order === id}
               onClick={() => setOrder(id)}
               className={cn(
-                'cursor-pointer rounded-md px-3 py-1.5 text-sm font-semibold',
+                'cursor-pointer rounded-md px-3 py-1.5 text-sm font-semibold pointer-coarse:min-h-11',
                 order === id ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground',
                 focusRing,
               )}

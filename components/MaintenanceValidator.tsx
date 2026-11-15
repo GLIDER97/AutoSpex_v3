@@ -30,8 +30,7 @@ import {
   money,
   moneyRange,
   vehicleLabel,
-  type Vehicle,
-} from './tool/kit';
+  type Vehicle, Faq } from './tool/kit';
 
 type EditableLine = { description: string; type: QuoteLine['type']; quantity: string; amount: string };
 
@@ -66,7 +65,7 @@ function RangeBar({ quoted, low, high }: { quoted: number; low: number; high: nu
   );
 }
 
-const FAQS = [
+const FAQS: [string, string][] = [
   ['How is the quote checked?', 'Each line is compared with typical US prices for that job: standard labor-guide hours at local shop rates and typical aftermarket-to-OEM parts prices, using AI (Anthropic’s Claude). Totals, labor hours and the hourly rate are calculated exactly from your numbers.'],
   ['Is the photo stored?', 'No. The photo is shrunk in your browser and sent to our AI provider only to read the line items. MyAutoSpex doesn’t keep it. You can cover your name and address before taking the photo.'],
   ['Why is a dealer quote higher?', 'Dealers usually charge higher hourly rates and use factory (OEM) parts. That can be worth it for warranty or complex work, so the check accounts for the shop type you choose.'],
@@ -171,7 +170,7 @@ const MaintenanceValidator: React.FC = () => {
               aria-selected={mode === id}
               onClick={() => setMode(id)}
               className={cn(
-                'cursor-pointer rounded-md px-4 py-2 text-[0.9375rem] font-semibold',
+                'cursor-pointer rounded-md px-4 py-2 text-[0.9375rem] font-semibold pointer-coarse:min-h-11',
                 mode === id ? 'bg-card shadow-xs' : 'text-muted-foreground hover:text-foreground',
                 focusRing,
               )}
@@ -271,7 +270,7 @@ const MaintenanceValidator: React.FC = () => {
                 ))}
               </div>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                <SecondaryButton type="button" onClick={() => setRows((rs) => [...rs, { ...BLANK_LINE }])} className="h-10">
+                <SecondaryButton type="button" onClick={() => setRows((rs) => [...rs, { ...BLANK_LINE }])} className="h-10 pointer-coarse:h-11">
                   <Plus className="size-4" aria-hidden="true" /> Add a line
                 </SecondaryButton>
                 <p className="text-[0.9375rem]">
@@ -291,7 +290,7 @@ const MaintenanceValidator: React.FC = () => {
                 <VehicleFields value={vehicle} onChange={setVehicle} minYear={1990} />
               </div>
               <Field label="Shop ZIP code" htmlFor="quote-zip" className="lg:pt-7">
-                <input id="quote-zip" inputMode="numeric" maxLength={5} value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))} placeholder="90210" className={inputClass} />
+                <input id="quote-zip" autoComplete="postal-code" inputMode="numeric" maxLength={5} value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))} placeholder="90210" className={inputClass} />
               </Field>
               <Field label="Shop type" htmlFor="shop-type" className="lg:pt-7">
                 <select id="shop-type" value={shopType} onChange={(e) => setShopType(e.target.value as QuoteInput['shopType'])} className={inputClass}>
@@ -428,7 +427,7 @@ const MaintenanceValidator: React.FC = () => {
                   <blockquote className="mt-3 border-l-4 border-sign-green pl-3 leading-relaxed">{result.script}</blockquote>
                   <SecondaryButton
                     type="button"
-                    className="mt-4 h-10"
+                    className="mt-4 h-10 pointer-coarse:h-11"
                     onClick={async () => {
                       try {
                         await navigator.clipboard.writeText(result.script);
@@ -481,26 +480,7 @@ const MaintenanceValidator: React.FC = () => {
         }}
       />
 
-      <section className="mt-16 max-w-3xl" aria-labelledby="quote-faq">
-        <h2 id="quote-faq" className="font-heading text-2xl font-extrabold">
-          Questions about quote checks
-        </h2>
-        <div className="mt-4 divide-y divide-border border-y border-border">
-          {FAQS.map(([q, a]) => (
-            <details key={q} className="group py-4">
-              <summary className={cn('cursor-pointer list-none font-bold marker:hidden', focusRing)}>
-                <span className="flex items-center justify-between gap-4">
-                  {q}
-                  <span aria-hidden="true" className="text-xl text-muted-foreground transition-transform group-open:rotate-45">
-                    +
-                  </span>
-                </span>
-              </summary>
-              <p className="mt-2 text-muted-foreground">{a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <Faq id="quote-faq" title="Questions about quote checks" items={FAQS} />
     </ToolPage>
   );
 };

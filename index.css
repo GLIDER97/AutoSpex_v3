@@ -135,6 +135,28 @@
   }
   html {
     background-color: var(--background);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Keep anchored and scrolled-to content clear of the sticky header. */
+    scroll-padding-top: 5rem;
+  }
+  /* Touch: a soft green tap flash instead of the default grey box, and no double-tap zoom delay. */
+  a,
+  button,
+  summary,
+  label,
+  select,
+  [role='tab'] {
+    -webkit-tap-highlight-color: rgb(0 107 79 / 0.14);
+    touch-action: manipulation;
+  }
+  /* iOS zooms into any text field under 16px when it gets focus. */
+  @media (pointer: coarse) {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+    select,
+    textarea {
+      font-size: max(16px, 1em);
+    }
   }
   .dark {
     color-scheme: dark;

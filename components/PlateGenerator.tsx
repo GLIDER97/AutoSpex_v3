@@ -3,7 +3,7 @@ import { Copy, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { STATES } from '../utils/insurance';
 import { VIBES, cleanPlate, plateIdeas, readability, type PlateIdea, type Vibe } from '../utils/plates';
-import { Faq, Field, Notice, Panel, PanelTitle, PrimaryButton, SecondaryButton, Spinner, ToolPage, focusRing, inputClass } from './tool/kit';
+import { useReveal, Faq, Field, Notice, Panel, PanelTitle, PrimaryButton, SecondaryButton, Spinner, ToolPage, focusRing, inputClass } from './tool/kit';
 
 /** A generic plate (no real state artwork) with the state name on top. */
 function Plate({ text, state, mirror = false, className }: { text: string; state: string; mirror?: boolean; className?: string }) {
@@ -73,6 +73,7 @@ export default function PlateGenerator() {
   const [mirror, setMirror] = useState(false);
   const [saved, setSaved] = useState<string[]>([]);
   const [copied, setCopied] = useState('');
+  const results = useReveal<HTMLDivElement>();
 
   useEffect(() => setSaved(loadSaved()), []);
   const toggleSave = (plate: string) =>
@@ -102,6 +103,7 @@ export default function PlateGenerator() {
       const list = await plateIdeas({ car: car.trim(), about: about.trim(), vibe, state: stateName, maxChars });
       if (!list.length) throw new Error('No ideas came back. Please try again.');
       setIdeas(list);
+      results.reveal();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'The ideas could not be made. Please try again.');
     } finally {
@@ -163,7 +165,7 @@ export default function PlateGenerator() {
                     <label
                       key={v}
                       className={cn(
-                        'cursor-pointer rounded-full border px-3 py-1.5 text-sm font-semibold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                        'inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-sm font-semibold pointer-coarse:min-h-11 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
                         vibe === v ? 'border-foreground bg-foreground text-background' : 'border-input hover:bg-muted',
                       )}
                     >
@@ -185,7 +187,7 @@ export default function PlateGenerator() {
               <span id="own-title">Test your own idea</span>
             </PanelTitle>
             <Field label="Plate text" htmlFor="plate-own" className="mt-3">
-              <input id="plate-own" value={own} onChange={(e) => setOwn(e.target.value)} maxLength={12} className={cn(inputClass, 'font-heading font-bold tracking-wider uppercase')} />
+              <input id="plate-own" autoCapitalize="characters" autoCorrect="off" spellCheck={false} value={own} onChange={(e) => setOwn(e.target.value)} maxLength={12} className={cn(inputClass, 'font-heading font-bold tracking-wider uppercase')} />
             </Field>
             {ownPlate && (
               <div className="mt-4">
@@ -198,7 +200,7 @@ export default function PlateGenerator() {
           </Panel>
         </div>
 
-        <div className="space-y-6" aria-live="polite">
+        <div className="scroll-mt-20 space-y-6" aria-live="polite" ref={results.ref}>
           {loading && !ideas && <Spinner label="Thinking up plates…" />}
           {!ideas && !loading && (
             <Panel>
@@ -210,7 +212,7 @@ export default function PlateGenerator() {
             <>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="font-heading text-2xl font-extrabold">{ideas.length} ideas</h2>
-                <label className="flex cursor-pointer items-center gap-2 text-[0.9375rem] font-semibold">
+                <label className="flex min-h-11 cursor-pointer items-center gap-2 text-[0.9375rem] font-semibold">
                   <input type="checkbox" checked={mirror} onChange={(e) => setMirror(e.target.checked)} className="size-4 accent-sign-green" />
                   Show as seen in a rear-view mirror
                 </label>
@@ -227,12 +229,12 @@ export default function PlateGenerator() {
                       <p className={cn('mt-2 text-sm', r.easy ? 'text-muted-foreground' : 'font-semibold')}>{r.note}</p>
                       {idea.caution && <p className="mt-1 text-sm font-semibold text-sign-red dark:text-red-300">Might be rejected: {idea.caution}</p>}
                       <div className="mt-auto flex flex-wrap gap-2 pt-3">
-                        <SecondaryButton type="button" className="h-9 px-3 text-sm" aria-pressed={isSaved} onClick={() => toggleSave(idea.plate)}>
+                        <SecondaryButton type="button" className="h-9 px-3 text-sm pointer-coarse:h-11" aria-pressed={isSaved} onClick={() => toggleSave(idea.plate)}>
                           <Star className={cn('size-4', isSaved && 'fill-sign-yellow text-[#b07800]')} aria-hidden="true" />
                           {isSaved ? 'Saved' : 'Save'}
                           <span className="sr-only"> {idea.plate}</span>
                         </SecondaryButton>
-                        <SecondaryButton type="button" className="h-9 px-3 text-sm" onClick={() => copy(idea.plate)}>
+                        <SecondaryButton type="button" className="h-9 px-3 text-sm pointer-coarse:h-11" onClick={() => copy(idea.plate)}>
                           <Copy className="size-4" aria-hidden="true" />
                           {copied === idea.plate ? 'Copied' : 'Copy'}
                           <span className="sr-only"> {idea.plate}</span>
@@ -241,7 +243,7 @@ export default function PlateGenerator() {
                           href={dmvSearch(idea.plate)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={cn('inline-flex h-9 items-center rounded-lg px-2 text-sm font-semibold underline underline-offset-4', focusRing)}
+                          className={cn('inline-flex h-9 items-center rounded-lg px-2 text-sm font-semibold underline underline-offset-4 pointer-coarse:h-11', focusRing)}
                         >
                           Check availability<span className="sr-only"> of {idea.plate} (opens a search)</span>
                         </a>
@@ -262,7 +264,7 @@ export default function PlateGenerator() {
                 {saved.map((p) => (
                   <li key={p} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 font-heading font-bold tracking-wider">
                     {p}
-                    <button type="button" onClick={() => toggleSave(p)} aria-label={`Remove ${p}`} className={cn('cursor-pointer rounded-sm text-muted-foreground hover:text-foreground', focusRing)}>
+                    <button type="button" onClick={() => toggleSave(p)} aria-label={`Remove ${p}`} className={cn('-my-1 -mr-2 flex size-8 cursor-pointer items-center justify-center rounded-sm text-lg text-muted-foreground hover:text-foreground pointer-coarse:size-11', focusRing)}>
                       ×
                     </button>
                   </li>
@@ -279,7 +281,7 @@ export default function PlateGenerator() {
             <ul className="mt-3 space-y-2 text-[0.9375rem]">
               {FRAMES.map((f) => (
                 <li key={f.url}>
-                  <a href={f.url} target="_blank" rel="noopener noreferrer sponsored" className={cn('rounded-sm font-semibold underline underline-offset-4', focusRing)}>
+                  <a href={f.url} target="_blank" rel="noopener noreferrer sponsored" className={cn('inline-flex items-center rounded-sm font-semibold underline underline-offset-4 pointer-coarse:min-h-11', focusRing)}>
                     {f.name}
                   </a>
                 </li>
