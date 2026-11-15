@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { componentName, componentsForCode, matchesComponents } from '../../utils/nhtsa';
+import { componentName, componentsForCode, formatComponent, matchesComponents } from '../../utils/nhtsa';
 import { searchComplaints, type ComplaintSummary } from '../../utils/nhtsaComplaints';
 import { searchRecalls, type Recall } from '../../utils/nhtsaRecalls';
 import { Panel, PanelTitle, Spinner, focusRing, type Vehicle } from '../tool/kit';
@@ -115,7 +115,7 @@ export default function OwnerReports({ vehicle, codes }: { vehicle: Vehicle; cod
                   {relatedRecalls.slice(0, 4).map((r) => (
                     <li key={r.campaignNumber} className="rounded-lg border border-border p-3 text-[0.9375rem]">
                       <p className="font-semibold">
-                        {r.component.replace(/:/g, ' › ')}
+                        {formatComponent(r.component)}
                         {(r.parkIt || r.parkOutside) && <span className="ml-2 text-sign-red">{r.parkIt ? 'Do not drive' : 'Park outside'}</span>}
                       </p>
                       <p className="mt-1 line-clamp-2 text-muted-foreground">{r.summary}</p>

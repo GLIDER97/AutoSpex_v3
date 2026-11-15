@@ -109,6 +109,17 @@ export function componentsForCode(code: string): string[] {
   return [...engine, ...fuel];
 }
 
+/** "AIR BAGS:SENSOR:FRONT PASSENGER" -> "Air bags › Sensor › Front passenger". */
+export function formatComponent(component: string): string {
+  return component
+    .split(':')
+    .map((part) => {
+      const lower = part.trim().toLowerCase();
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    })
+    .join(' › ');
+}
+
 /** True if a recall/complaint component belongs to one of the given categories. */
 export function matchesComponents(component: string, categories: string[]): boolean {
   const upper = component.toUpperCase();

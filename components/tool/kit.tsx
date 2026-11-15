@@ -144,7 +144,7 @@ export function PrimaryButton({ className, children, loading, ...props }: React.
   return (
     <button
       className={cn(
-        'inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-sign-green px-5 text-base font-bold text-white',
+        'inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-sign-green px-5 text-base font-bold whitespace-nowrap text-white',
         'transition-colors hover:bg-sign-green-strong disabled:cursor-not-allowed disabled:opacity-60',
         focusRing,
         className,
@@ -162,7 +162,7 @@ export function SecondaryButton({ className, children, ...props }: React.Compone
   return (
     <button
       className={cn(
-        'inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-input bg-card px-4 text-base font-semibold',
+        'inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-input bg-card px-4 text-base font-semibold whitespace-nowrap',
         'transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60',
         focusRing,
         className,
