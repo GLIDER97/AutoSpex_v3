@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateContent, type ChatTurn } from '../../utils/gemini';
+import { generateContent, type ChatTurn } from '../../utils/ai';
 import type { Diagnosis } from '../../utils/diagnosis';
 import { Panel, PanelTitle, focusRing, inputClass } from '../tool/kit';
 
@@ -84,7 +84,7 @@ If a question needs a hands-on inspection, say what a shop should test. Never in
       const history: ChatTurn[] = next.slice(-MAX_TURNS).map((m) => ({ role: m.role, parts: [{ text: m.text }] }));
       // A history must start with the owner's message.
       while (history.length && history[0].role !== 'user') history.shift();
-      const response = await generateContent({ model: 'gemini-3-flash-preview', contents: history, config: { systemInstruction } });
+      const response = await generateContent({ model: 'text', contents: history, config: { systemInstruction } });
       if (!response.text) throw new Error('No answer');
       setMessages([...next, { role: 'model', text: response.text }]);
     } catch (err) {

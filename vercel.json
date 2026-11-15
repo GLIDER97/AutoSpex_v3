@@ -2,7 +2,8 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "functions": {
-        "api/gemini.ts": { "maxDuration": 60 }
+        "api/ai.ts": { "maxDuration": 60 },
+        "api/places.ts": { "maxDuration": 15 }
     },
     "redirects": [
         {

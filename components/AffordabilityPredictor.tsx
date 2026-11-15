@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { saveLead } from '../utils/leadStorage';
-import { generateContent, Type } from '../utils/gemini';
+import { generateContent, Type } from '../utils/ai';
 import {
   CREDIT_TIERS,
   amortizationByYear,
@@ -62,7 +62,7 @@ function RuleBar({ label, value, ok, max, note }: { label: string; value: number
 
 async function estimatePrice(vehicle: string, trim: string, zip: string) {
   const response = await generateContent({
-    model: 'gemini-3-flash-preview',
+    model: 'text',
     contents: `Estimate today's typical US dealer retail price for a used ${vehicle} ${trim} in average condition with typical mileage${zip ? `, near ZIP ${zip}` : ''}. If it is a current model year, estimate the typical transaction price. Return USD numbers and one sentence on what moves the price most.`,
     config: {
       responseMimeType: 'application/json',
@@ -210,7 +210,7 @@ const AffordabilityPredictor: React.FC = () => {
       category="money"
       title="Can I afford this car?"
       intro="See the real monthly payment, interest and total cost of any car, checked against your income. Or find the most you can comfortably spend."
-      sources="Standard loan amortization math. Typical rates by credit band (enter your own rate for exact numbers). Optional price estimates by Google Gemini AI."
+      sources="Standard loan amortization math. Typical rates by credit band (enter your own rate for exact numbers). Optional price estimates by AI (Anthropic's Claude)."
     >
       <div role="tablist" aria-label="What do you want to do?" className="mb-6 inline-flex rounded-lg bg-muted p-1">
         {(

@@ -15,26 +15,35 @@ View your app in AI Studio: https://ai.studio/apps/drive/1kmgFR693dAriBT08Z3eM9_
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Copy `.env.example` to `.env.local` and fill in `OPENROUTER_API_KEY`
+   (and `GOOGLE_MAPS_API_KEY` for the shop search)
 3. Run the app:
    `npm run dev`
 
-## Gemini API key (server-only)
+## Server-only API keys
 
-The AI tools never call Gemini from the browser. They POST to `/api/gemini`
-(`api/gemini.ts`, a Vercel function), which reads `GEMINI_API_KEY` from the server
-environment and forwards the request. The function only accepts the models and
-options the site uses, only answers requests from the site's own origin, and
-rate-limits each IP. `npm run dev` serves the same endpoint locally.
+The browser never holds an API key. Pages call the site's own Vercel functions,
+which read the keys from the server environment:
 
-- On Vercel, set `GEMINI_API_KEY` under Project Settings → Environment Variables.
-- Never expose the key to client code (no `define` in `vite.config.ts`, no `VITE_` prefix).
-  After `npm run build`, `grep -r AIza dist/` must print nothing.
-- To use a new model or config option in a component, add it to the allowlist in `api/gemini.ts`.
+| Function | Key | Used by |
+| --- | --- | --- |
+| `api/ai.ts` (`POST /api/ai`) | `OPENROUTER_API_KEY` | Every AI tool. Text and photo reading on Claude Haiku 5.5, images and wrap previews on Flux 3 Klein, through [OpenRouter](https://openrouter.ai). |
+| `api/places.ts` (`GET /api/places`) | `GOOGLE_MAPS_API_KEY` | Mechanic finder and wrap shop search (Google Places API (New)). Without it the pages link to Google Maps instead. |
+
+Both functions only answer requests from the site's own origin, check every
+input against what the pages send, and rate-limit each IP. `npm run dev`
+serves the same endpoints locally.
+
+- On Vercel, set the keys under Project Settings → Environment Variables, then redeploy.
+- Never expose a key to client code (no `define` in `vite.config.ts`, no `VITE_` prefix).
+  After `npm run build`, `grep -rE "sk-or-|AIza" dist/` must print nothing.
+- `AI_TEXT_MODEL` / `AI_IMAGE_MODEL` switch to other OpenRouter models without a code change.
+- In OpenRouter, set a monthly credit limit on the key. In Google Cloud, restrict the
+  Maps key to the Places API (New) and set a daily quota.
 
 ## Free government data (no key)
 
-Some tools use free public US government APIs instead of Gemini. The browser calls
+Some tools use free public US government APIs instead of AI. The browser calls
 them directly (both allow cross-origin requests):
 
 - Recalls page: NHTSA recalls API (`api.nhtsa.gov`), see `utils/nhtsaRecalls.ts`.

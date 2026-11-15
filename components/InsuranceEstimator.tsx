@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { generateContent } from '../utils/gemini';
+import { generateContent } from '../utils/ai';
 import {
   ShieldCheck, TrendingUp, DollarSign, Award, ArrowRight,
   MapPin, Car, Users, CheckCircle2, AlertTriangle, Info,
@@ -124,7 +124,7 @@ const InsuranceEstimator: React.FC = () => {
       `;
 
       const response = await generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'text',
         contents: prompt,
       });
       setAiAnalysis(response.text);

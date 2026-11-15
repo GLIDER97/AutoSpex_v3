@@ -67,7 +67,7 @@ export const AboutUs: React.FC = () => (
                <Zap className="w-6 h-6" />
             </div>
             <h4 className="font-bold text-slate-900 dark:text-white">AI Analysis</h4>
-            <p className="text-sm">Leveraging Google Gemini to analyze market trends and diagnostic patterns in real-time.</p>
+            <p className="text-sm">Using AI (Anthropic's Claude) to explain diagnostic codes and typical repair prices.</p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-2">

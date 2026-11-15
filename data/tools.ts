@@ -139,7 +139,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       {
         name: 'Wrap designer',
         path: '/wrap-designer',
-        description: 'Preview a custom vinyl wrap from a short description.',
+        description: 'See a vinyl wrap on a photo of your own car, with prices.',
         icon: SprayCan,
       },
     ],

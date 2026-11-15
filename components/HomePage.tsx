@@ -254,7 +254,7 @@ const SOURCES = [
   { label: 'Fuel economy', detail: 'Official EPA ratings from fueleconomy.gov.' },
   {
     label: 'Code explanations and price estimates',
-    detail: "Written by Google's Gemini AI. Use them to prepare for the shop, not as a quote.",
+    detail: "Written by AI (Anthropic's Claude). Use them to prepare for the shop, not as a quote.",
   },
   {
     label: 'Your contact details',

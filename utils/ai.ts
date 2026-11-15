@@ -1,9 +1,7 @@
-// Browser client for the Gemini proxy at /api/gemini (api/gemini.ts).
-// The API key lives only on the server; components call generateContent() here
-// instead of using @google/genai in the browser.
+// Browser client for the AI proxy at /api/ai (api/ai.ts, OpenRouter).
+// The API key lives only on the server; pages call generateContent() here.
 
-// Schema type names, same values as the `Type` enum in @google/genai
-// (kept here so the SDK is not bundled into the client).
+// Schema type names. The server turns these schemas into strict JSON Schema.
 export const Type = {
   STRING: 'STRING',
   NUMBER: 'NUMBER',
@@ -17,15 +15,14 @@ export type ContentPart = { text: string } | { inlineData: { mimeType: string; d
 export type ChatTurn = { role: 'user' | 'model'; parts: ContentPart[] };
 
 export interface GenerateContentRequest {
-  model: 'gemini-3-flash-preview' | 'gemini-2.5-flash' | 'gemini-2.5-flash-image';
+  /** "text" for answers (and reading photos), "image" to generate a picture. */
+  model: 'text' | 'image';
   /** A prompt, a list of parts (text and at most one photo), or a chat history. */
   contents: string | ContentPart[] | ChatTurn[];
   config?: {
     systemInstruction?: string;
     responseMimeType?: 'application/json' | 'text/plain';
     responseSchema?: Record<string, unknown>;
-    thinkingConfig?: { thinkingBudget: number };
-    tools?: { googleMaps: Record<string, never> }[];
     imageConfig?: { aspectRatio: string };
   };
 }
@@ -35,13 +32,12 @@ export interface GenerateContentResponse {
   text?: string;
   candidates?: {
     content?: { parts?: { text?: string; thought?: boolean; inlineData?: { data?: string; mimeType?: string } }[] };
-    groundingMetadata?: { groundingChunks?: { maps?: { uri?: string; title?: string } }[] };
     finishReason?: string;
   }[];
 }
 
 export async function generateContent(request: GenerateContentRequest): Promise<GenerateContentResponse> {
-  const res = await fetch('/api/gemini', {
+  const res = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
@@ -58,4 +54,12 @@ export async function generateContent(request: GenerateContentRequest): Promise<
     throw new Error(payload?.error || `The AI service is unavailable (HTTP ${res.status}). Please try again.`);
   }
   return payload;
+}
+
+/** The first image in a response as a data: URL, or null. */
+export function imageDataUrl(response: GenerateContentResponse): string | null {
+  for (const part of response.candidates?.[0]?.content?.parts ?? []) {
+    if (part.inlineData?.data) return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+  }
+  return null;
 }

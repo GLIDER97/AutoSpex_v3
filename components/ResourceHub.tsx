@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generateContent, Type } from '../utils/gemini';
+import { generateContent, Type } from '../utils/ai';
 import { searchRecalls, latestFeaturedRecalls } from '../utils/nhtsaRecalls';
 import {
   ShieldAlert, ShoppingCart, Zap, ArrowRight,
@@ -222,7 +222,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
       }
 
       const response = await generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'text',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',

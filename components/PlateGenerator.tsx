@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateContent, Type } from '../utils/gemini';
+import { generateContent, Type } from '../utils/ai';
 import { 
   Tag, Zap, Sparkles, MessageSquare, ChevronDown, 
   ArrowRight, RefreshCw, Star, Info, Lock, 
@@ -112,7 +112,7 @@ const PlateGenerator: React.FC = () => {
       const prompt = `Generate 6 clever, creative vanity plate ideas for a ${request.carModel} in ${request.state} with hobbies ${request.hobbies} and vibe ${request.vibe}. Ensure they are 7 characters or less.`;
 
       const response = await generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'text',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',
@@ -372,7 +372,7 @@ const PlateGenerator: React.FC = () => {
             <div className="order-2 md:order-1">
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">Personalize Your Ride</h2>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                    A license plate is more than just a legal requirement—it's a statement. The <span className="text-orange-500 font-bold">MyAutoSpex Plate Generator</span> uses Google Gemini AI to analyze your vehicle's specs and your personal interests to craft the perfect 7-character combinations.
+                    A license plate is more than just a legal requirement—it's a statement. The <span className="text-orange-500 font-bold">MyAutoSpex Plate Generator</span> uses AI to analyze your vehicle's specs and your personal interests to craft the perfect 7-character combinations.
                 </p>
                 <div className="space-y-4">
                    {[

@@ -1,406 +1,181 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { REPAIR_SERVICES, searchShops, type ShopSearch } from '../utils/places';
+import { Faq, Field, Panel, PanelTitle, PrimaryButton, Spinner, ToolPage, focusRing, inputClass, rememberZip, rememberedZip } from './tool/kit';
+import ShopResults from './tool/ShopResults';
 
-import React, { useState, useEffect } from 'react';
-import { generateContent } from '../utils/gemini';
-import {
-  Search, MapPin, Star, Phone, Globe, Wrench, RefreshCw,
-  ArrowRight, ShieldCheck, Zap, Info, MessageSquare,
-  ChevronDown, CheckCircle2, X, Gauge, AlertCircle, Fuel, Settings, Clock
-} from './Icons';
+type ServiceId = (typeof REPAIR_SERVICES)[number]['id'];
+const isService = (v: string | null): v is ServiceId => REPAIR_SERVICES.some((s) => s.id === v);
 
-interface Mechanic {
-  name: string;
-  mapUri: string;
-}
-
-const SERVICES = [
-  'General repair',
-  'Check engine light and diagnostics',
-  'Brakes',
-  'Transmission',
-  'Tires and alignment',
-  'Oil change and maintenance',
-  'Hybrid and electric cars',
-  'Body work and collision',
+const BEFORE_YOU_BOOK: [string, string][] = [
+  ['Ask for a written estimate', 'Parts, labor hours and the hourly rate on paper before any work starts. In most states the shop needs your OK to go over it.'],
+  ['Ask what the diagnosis costs', 'Typical check engine diagnosis runs $100 to $200. Many shops take it off the repair bill if you let them fix it.'],
+  ['Ask about the warranty', 'Good shops cover parts and labor for at least 12 months or 12,000 miles, many for 24 or 36 months.'],
+  ['Look for ASE-certified techs', 'ASE certification means the technicians passed national exams for the work they do.'],
+  ['Ask which parts they use', 'OEM, or quality aftermarket? Both can be fine. Ask for your old parts back if you want proof they were replaced.'],
 ];
 
-const faqs = [
-  {
-    question: "How are these mechanics selected?",
-    answer: "We search Google Maps listings near your ZIP code for the kind of repair you need, and link each shop to its Maps page so you can read its reviews yourself."
-  },
-  {
-    question: "Is the ZIP code search accurate?",
-    answer: "Yes, our AI analyzes local business listings within your specific geographic area to provide the most relevant results."
-  },
-  {
-    question: "Can I book a repair through this site?",
-    answer: "MyAutoSpex provides the data and direct contact links for local shops. You will need to contact the individual mechanic directly to schedule an appointment."
-  },
-  {
-    question: "Is this service free?",
-    answer: "Absolutely. Finding a local mechanic is part of our mission to make vehicle maintenance transparent and accessible for everyone."
-  }
+const FAQS: [string, string][] = [
+  [
+    'Where do the shops and ratings come from?',
+    'From Google: each shop shows its Google rating, how many people reviewed it, whether it is open right now and its phone number. We do not take payment from shops and nothing is sponsored.',
+  ],
+  [
+    'What does "Top rated" do?',
+    'It ranks by rating weighted by how many reviews a shop has, so a 4.9 from 8 reviews does not beat a 4.7 from 600. A handful of reviews can come from friends and family; hundreds are much harder to fake.',
+  ],
+  [
+    'Dealer or independent shop?',
+    'Independent shops usually charge 20 to 35% less per hour than dealers. A dealer is worth it for warranty and recall work (free to you), software updates and some brand-specific electrical problems.',
+  ],
+  [
+    'How do I know if a quote is fair?',
+    'Use the repair quote checker: it compares each line with book labor time and typical parts prices for your car and area, and gives you what to say to the shop.',
+  ],
 ];
 
-const SERVICE_CATEGORIES = [
-  { label: 'Engine Repair', icon: <Gauge className="w-5 h-5" />, color: 'text-orange-500' },
-  { label: 'Brake Service', icon: <AlertCircle className="w-5 h-5" />, color: 'text-red-500' },
-  { label: 'Oil & Fluids', icon: <Fuel className="w-5 h-5" />, color: 'text-emerald-500' },
-  { label: 'Transmission', icon: <Settings className="w-5 h-5" />, color: 'text-blue-500' },
-  { label: 'Diagnostics', icon: <Zap className="w-5 h-5" />, color: 'text-amber-500' },
-  { label: 'Tires & Align', icon: <RefreshCw className="w-5 h-5" />, color: 'text-indigo-500' },
-];
-
-const MechanicFinder: React.FC = () => {
-  const [zipCode, setZipCode] = useState('');
+export default function MechanicFinder() {
+  const [params, setParams] = useSearchParams();
+  const [service, setService] = useState<ServiceId>('general');
+  const [zip, setZip] = useState('');
+  const [zipError, setZipError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [mechanics, setMechanics] = useState<Mechanic[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [searchedZip, setSearchedZip] = useState<string | null>(null);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [mapBgImage, setMapBgImage] = useState<string | null>(null);
-  const [service, setService] = useState(SERVICES[0]);
-  const [summary, setSummary] = useState('');
+  const [result, setResult] = useState<{ search: ShopSearch; zip: string; service: ServiceId } | null>(null);
+  const latest = useRef(0);
 
-  useEffect(() => {
-    const generateMapBackground = async () => {
-      try {
-        const response = await generateContent({
-          model: 'gemini-2.5-flash-image',
-          contents: [{ text: 'A highly stylized, minimalist silhouette map of the United States of America. Blueprint aesthetic with glowing neon blue and indigo circuit lines on a deep navy background. Professional automotive technology style, semi-transparent, clean minimalist design, centered composition, high resolution.' }],
-          config: {
-            imageConfig: {
-              aspectRatio: "16:9"
-            }
-          }
-        });
-
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            setMapBgImage(`data:image/png;base64,${part.inlineData.data}`);
-            break;
-          }
-        }
-      } catch (err) {
-        console.error("Failed to generate AI map background:", err);
-      }
-    };
-
-    generateMapBackground();
-  }, []);
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!zipCode || zipCode.length < 5) {
-      setError("Please enter a valid 5-digit US ZIP code.");
+  const run = async (z: string, s: ServiceId) => {
+    if (!/^\d{5}$/.test(z)) {
+      setZipError('Enter a 5-digit US ZIP code.');
       return;
     }
-
+    setZipError(null);
+    rememberZip(z);
+    setParams({ service: s, zip: z }, { replace: true });
+    const id = ++latest.current;
     setLoading(true);
-    setError(null);
-    setSearchedZip(null);
-
-    try {
-      // 1. Geocode the ZIP code
-      const geoResponse = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
-      if (!geoResponse.ok) {
-        throw new Error("Invalid ZIP code or location not found.");
-      }
-      const geoData = await geoResponse.json();
-      const place = geoData.places[0];
-      const locationName = `${place['place name']}, ${place['state abbreviation']}`;
-      const lat = place.latitude;
-      const lon = place.longitude;
-
-      setSearchedZip(`${zipCode} (${locationName})`); // Update UI to show resolved location
-
-      // 2. Search using Gemini with precise location grounding
-      const need = service === SERVICES[0] ? 'general car repair' : service.toLowerCase();
-      const prompt = `Find well-reviewed auto repair shops for ${need} that are physically located in or very near ${locationName} (ZIP ${zipCode}), around latitude ${lat}, longitude ${lon}.
-List up to 9 shops. For each: the shop name in bold, its street address, and one short line on what it is known for (from its listing or reviews).
-Use only information from Google Maps. Do not invent ratings, prices or phone numbers.`;
-
-      const response = await generateContent({
-        model: "gemini-2.5-flash",
-        contents: [
-          {
-            text: prompt
-          }
-        ],
-        config: {
-          tools: [{ googleMaps: {} }],
-        },
-      });
-
-      const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
-
-      if (!groundingChunks || groundingChunks.length === 0) {
-        throw new Error("No results found for this area.");
-      }
-
-      const results: Mechanic[] = groundingChunks
-        .filter((chunk: any) => chunk.maps && chunk.maps.uri)
-        .map((chunk: any) => ({
-          name: chunk.maps.title || 'Repair shop',
-          mapUri: chunk.maps.uri
-        }))
-        .slice(0, 9); // Display 9 results
-
-      setMechanics(results);
-      setSummary(response.text ?? '');
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Unable to find mechanics in this area. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    const search = await searchShops(z, s);
+    if (id !== latest.current) return;
+    setResult({ search, zip: z, service: s });
+    setLoading(false);
   };
 
+  // Links can preset the service (?service=brakes) and search straight away (?zip=78701).
+  // Otherwise the ZIP used on other tools is filled in. Read after hydration so the
+  // prerendered page and the first client render match.
+  useEffect(() => {
+    const s = params.get('service');
+    const linkedService = isService(s) ? s : 'general';
+    setService(linkedService);
+    const linkedZip = params.get('zip')?.replace(/\D/g, '').slice(0, 5) ?? '';
+    if (/^\d{5}$/.test(linkedZip)) {
+      setZip(linkedZip);
+      run(linkedZip, linkedService);
+    } else {
+      setZip(rememberedZip());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const serviceLabel = (id: ServiceId) => REPAIR_SERVICES.find((s) => s.id === id)!.label;
+  const what = (id: ServiceId) => (id === 'general' ? 'repair shops' : `shops for ${serviceLabel(id).toLowerCase()}`);
+
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-
-      {/* Hero & Search Hub */}
-      <div className="w-full max-w-5xl mb-12 relative overflow-hidden rounded-[3rem] border border-slate-200/50 dark:border-slate-800/50 shadow-2xl bg-white dark:bg-slate-950">
-
-        {/* Dynamic AI Map Background */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
-          {mapBgImage ? (
-            <div className="relative w-full h-full">
-              <img
-                src={mapBgImage}
-                alt="Stylized USA Map"
-                className="w-full h-full object-cover opacity-[0.2] dark:opacity-[0.4] transition-opacity duration-1000"
-              />
-              <div className="absolute inset-0 bg-linear-to-b from-white via-transparent to-white dark:from-slate-950 dark:via-transparent dark:to-slate-950" />
-            </div>
-          ) : (
-            <div className="w-full h-full bg-slate-100 dark:bg-slate-900 opacity-20 animate-pulse" />
-          )}
-        </div>
-
-        <div className="text-center py-20 sm:py-32 px-4 relative z-10">
-          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/20 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/30 dark:border-white/10 text-sm font-bold text-blue-600 dark:text-blue-400 mb-8 shadow-xl cursor-default">
-            <MapPin className="w-4 h-4 animate-bounce" />
-            Repair shops from Google Maps
-          </div>
-          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-slate-900 dark:text-white mb-6 leading-[1.05]">
-            Find a Mechanic <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-500 via-indigo-500 to-blue-600">
-              Near You
-            </span>
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 text-lg sm:text-2xl max-w-2xl mx-auto leading-relaxed mb-12 font-medium">
-            Choose the repair you need and enter your ZIP code to see nearby shops, then read their reviews on Google Maps.
+    <ToolPage
+      category="services"
+      title="Find a mechanic near you"
+      intro="Pick the repair you need and enter your ZIP code. You'll see nearby shops with their Google rating, how many reviews it's based on, whether they're open now and their phone number."
+      sources="Google Places (listings, ratings and hours)."
+    >
+      <Panel className="max-w-3xl">
+        <form
+          noValidate
+          className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_9rem_auto] sm:items-end"
+          onSubmit={(e) => {
+            e.preventDefault();
+            run(zip, service);
+          }}
+        >
+          <Field label="What do you need?" htmlFor="mechanic-service">
+            <select id="mechanic-service" value={service} onChange={(e) => setService(e.target.value as ServiceId)} className={inputClass}>
+              {REPAIR_SERVICES.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="ZIP code" htmlFor="mechanic-zip">
+            <input
+              id="mechanic-zip"
+              value={zip}
+              onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
+              inputMode="numeric"
+              autoComplete="postal-code"
+              placeholder="e.g. 78701"
+              aria-invalid={zipError ? true : undefined}
+              aria-describedby={zipError ? 'mechanic-zip-error' : undefined}
+              className={inputClass}
+            />
+          </Field>
+          <PrimaryButton type="submit" loading={loading}>
+            Find shops
+          </PrimaryButton>
+        </form>
+        {zipError && (
+          <p id="mechanic-zip-error" role="alert" className="mt-3 text-[0.9375rem] font-semibold text-sign-red dark:text-red-300">
+            {zipError}
           </p>
+        )}
+      </Panel>
 
-          {/* Interactive Search Bar */}
-          <div className="w-full max-w-xl mx-auto mb-16">
-            <form onSubmit={handleSearch} className="group relative">
-              <label htmlFor="mechanic-service" className="mb-2 block text-left text-[0.9375rem] font-semibold">
-                What do you need?
-              </label>
-              <select
-                id="mechanic-service"
-                value={service}
-                onChange={(e) => setService(e.target.value)}
-                className="mb-3 h-11 w-full rounded-lg border border-input bg-card px-3 text-base outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-ring"
-              >
-                {SERVICES.map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-              <div className="absolute -inset-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-3xl blur-sm opacity-25 group-hover:opacity-50 transition duration-500"></div>
-              <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-[1.8rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-2">
-                <div className="pl-5 text-slate-400">
-                  <Search className="w-6 h-6" />
-                </div>
-                <input
-                  type="text"
-                  value={zipCode}
-                  onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
-                  placeholder="Enter your 5-digit ZIP code"
-                  aria-label="ZIP code"
-                  inputMode="numeric"
-                  className="w-full p-4 bg-transparent border-none text-slate-900 dark:text-white font-black text-lg placeholder-slate-400 focus:ring-0 outline-hidden"
-                />
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-8 py-4 rounded-2xl bg-blue-600 text-white font-black text-sm hover:bg-blue-700 transition-all disabled:opacity-50 shadow-lg shadow-blue-500/20 whitespace-nowrap active:scale-95"
-                >
-                  {loading ? "Scanning Area..." : "Find Experts"}
-                </button>
-              </div>
-            </form>
-
-            {/* ENHANCED NOTIFICATION FOR "COMING SOON" */}
-            {error && (
-              <div className={`mt-6 p-5 rounded-2xl border flex items-center justify-center gap-3 animate-in slide-in-from-top-4 duration-300 ${error.includes("working hard")
-                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300'
-                  : 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900 text-red-600'
-                }`}>
-                {error.includes("working hard") ? <Clock className="w-5 h-5 animate-pulse" /> : <AlertCircle className="w-5 h-5" />}
-                <span className="text-sm font-black tracking-tight">{error}</span>
-              </div>
-            )}
+      <section aria-labelledby="shops-title" className="mt-8" aria-busy={loading}>
+        <h2 id="shops-title" className="sr-only">
+          Shops
+        </h2>
+        {loading && !result && <Spinner label="Finding shops…" />}
+        {result && (
+          <div className={cn(loading && 'opacity-60')}>
+            <ShopResults result={result.search} what={what(result.service)} zip={result.zip} />
           </div>
+        )}
+      </section>
 
-          {/* New Service Category Grid */}
-          {!searchedZip && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-              {SERVICE_CATEGORIES.map((cat, i) => (
-                <div key={i} className="group cursor-pointer bg-white/40 dark:bg-white/5 backdrop-blur-md border border-slate-200/50 dark:border-white/5 p-4 rounded-2xl hover:bg-white dark:hover:bg-white/10 transition-all hover:scale-105 hover:shadow-xl">
-                  <div className={`${cat.color} mb-2 flex justify-center group-hover:scale-110 transition-transform`}>{cat.icon}</div>
-                  <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{cat.label}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <Panel aria-labelledby="book-title">
+          <PanelTitle>
+            <span id="book-title">Before you book</span>
+          </PanelTitle>
+          <ul className="mt-4 space-y-3">
+            {BEFORE_YOU_BOOK.map(([title, text]) => (
+              <li key={title} className="text-[0.9375rem] leading-relaxed">
+                <strong>{title}.</strong> <span className="text-muted-foreground">{text}</span>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+        <Panel aria-labelledby="price-title">
+          <PanelTitle>
+            <span id="price-title">Know the price first</span>
+          </PanelTitle>
+          <ul className="mt-4 space-y-3 text-[0.9375rem]">
+            <li>
+              <Link to="/fault-code-decoder" className={cn('rounded-sm font-semibold underline underline-offset-4', focusRing)}>
+                Look up a check engine code
+              </Link>
+              <span className="block text-muted-foreground">Likely causes and typical repair costs before you walk in.</span>
+            </li>
+            <li>
+              <Link to="/maintenance-validator" className={cn('rounded-sm font-semibold underline underline-offset-4', focusRing)}>
+                Check a repair quote
+              </Link>
+              <span className="block text-muted-foreground">Line-by-line fair prices for your car and ZIP code.</span>
+            </li>
+          </ul>
+        </Panel>
       </div>
 
-      {/* Results Section */}
-      {mechanics.length > 0 && (
-        <div className="w-full max-w-5xl mb-24 animate-in fade-in slide-in-from-bottom-8 duration-500 px-4">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-            <div>
-              <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Shops near {searchedZip}</h2>
-              <p className="text-slate-500 text-lg font-medium">From Google Maps, for {service.toLowerCase()}. Check reviews and call ahead before you go.</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mechanics.map((shop, i) => (
-              <div key={i} className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-8 flex flex-col hover:shadow-3xl transition-all group border-b-8 hover:border-b-blue-600 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Wrench className="w-24 h-24 -rotate-12 translate-x-4 -translate-y-4" />
-                </div>
-
-                <div className="flex justify-between items-start mb-8 relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <Wrench className="w-7 h-7" />
-                  </div>
-                </div>
-
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
-
-                <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800/50">
-                  <a
-                    href={shop.mapUri}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm hover:opacity-90 transition-all shadow-xl active:scale-95 group/btn"
-                  >
-                    Open in Google Maps <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {summary && (
-            <div className="mt-10 rounded-xl border border-border bg-card p-6">
-              <h3 className="font-heading text-xl font-extrabold">What the search found</h3>
-              <div className="mt-3 space-y-2 text-[0.9375rem] leading-relaxed whitespace-pre-line text-muted-foreground">
-                {summary.replace(/\*\*/g, '').replace(/^#+\s*/gm, '').trim()}
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground">Summary written by Google's Gemini AI from Google Maps listings.</p>
-            </div>
-          )}
-
-          <div className="mt-12 text-center">
-            <p className="text-slate-400 text-sm font-medium">
-              Not what you're looking for? <button onClick={() => { setMechanics([]); setSearchedZip(null); setZipCode(''); }} className="text-blue-500 font-bold hover:underline">Clear results and try again.</button>
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Trust & Educational Sections */}
-      <div className="w-full max-w-5xl mx-auto space-y-24 px-4 mb-20">
-
-        {/* Why Use This Section */}
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="order-2 md:order-1">
-            <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-8 leading-tight">Built for <br /> Diagnostic Reliability</h2>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-8 text-lg font-medium">
-              Finding a mechanic you can trust shouldn't be a gamble. The <span className="text-blue-600 font-bold">MyAutoSpex Finder</span> combines real-time data auditing with local quality benchmarks to highlight shops that prioritize diagnostic accuracy and fair pricing.
-            </p>
-            <div className="space-y-5">
-              {[
-                "Zero sponsored listings – results are purely performance-based.",
-                "AI-driven sentiment analysis of local customer feedback.",
-                "Direct verification of service specializations per shop."
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4 font-bold text-slate-700 dark:text-slate-200">
-                  <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  </div>
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="order-1 md:order-2 bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-[3rem] p-10 sm:p-14 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden shadow-2xl">
-            <Zap className="absolute -bottom-8 -right-8 w-64 h-64 text-blue-500/10 -rotate-12" />
-            <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-6 relative z-10">Smart Matching</h3>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg font-medium mb-8">
-              Our logic analyzes shop density and specializations to provide the most statistically relevant top options. We prioritize shops equipped with the latest diagnostic technology.
-            </p>
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black text-sm relative z-10">
-              <ShieldCheck className="w-5 h-5" /> Free to use
-            </div>
-          </div>
-        </div>
-
-        {/* FAQs */}
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-4">
-              <MessageSquare className="w-8 h-8 text-blue-500" />
-              Common Questions
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg font-medium">Everything you need to know about our mechanic auditing tool.</p>
-          </div>
-
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className={`border rounded-4xl transition-all duration-300 overflow-hidden ${openFaqIndex === index
-                    ? 'bg-white dark:bg-slate-900 border-blue-500/30 shadow-2xl shadow-blue-500/10'
-                    : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                  }`}
-              >
-                <button
-                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-7 text-left focus:outline-hidden"
-                >
-                  <span className={`font-bold pr-4 text-lg ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                    {faq.question}
-                  </span>
-                  <ChevronDown
-                    className={`w-6 h-6 text-slate-500 transition-transform duration-300 shrink-0 ${openFaqIndex === index ? 'rotate-180 text-blue-500' : ''
-                      }`}
-                  />
-                </button>
-                <div
-                  className={`transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
-                    }`}
-                >
-                  <p className="px-7 pb-7 text-slate-600 dark:text-slate-400 text-base leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-5 mt-0 font-medium">
-                    {faq.answer}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-    </div>
+      <Faq id="mechanic-faq" title="Questions about finding a mechanic" items={FAQS} />
+    </ToolPage>
   );
-};
-
-export default MechanicFinder;
+}

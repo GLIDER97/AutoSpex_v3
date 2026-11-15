@@ -355,3 +355,45 @@ export function FactList({ items, className }: { items: [string, React.ReactNode
     </dl>
   );
 }
+
+/** Questions and answers as native disclosure rows (keyboard and screen-reader friendly). */
+export function Faq({ id, title, items, className }: { id: string; title: string; items: [string, React.ReactNode][]; className?: string }) {
+  return (
+    <section className={cn('mt-16 max-w-3xl', className)} aria-labelledby={id}>
+      <h2 id={id} className="font-heading text-2xl font-extrabold">
+        {title}
+      </h2>
+      <div className="mt-4 divide-y divide-border border-y border-border">
+        {items.map(([q, a]) => (
+          <details key={q} className="group py-4">
+            <summary className={cn('cursor-pointer list-none font-bold marker:hidden', focusRing)}>
+              <span className="flex items-center justify-between gap-4">
+                {q}
+                <span aria-hidden="true" className="text-xl text-muted-foreground transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </span>
+            </summary>
+            <div className="mt-2 text-muted-foreground">{a}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/** The visitor's ZIP code, remembered across tools on this device. */
+export function rememberedZip(): string {
+  try {
+    return /^\d{5}$/.test(localStorage.getItem('zip') ?? '') ? (localStorage.getItem('zip') as string) : '';
+  } catch {
+    return '';
+  }
+}
+export function rememberZip(zip: string) {
+  try {
+    if (/^\d{5}$/.test(zip)) localStorage.setItem('zip', zip);
+  } catch {
+    /* storage unavailable */
+  }
+}

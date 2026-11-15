@@ -99,16 +99,16 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/wrap-designer',
-    title: 'AI Car Wrap Designer & Visualizer',
+    title: 'Car Wrap Visualizer: See a Wrap on Your Own Car',
     description:
-      'Design a custom car wrap with AI. Describe your style or brand and preview a wrap concept for your vehicle in seconds.',
+      'Upload a photo of your car and preview any wrap color and finish on it, with a before and after view, typical 2026 prices and wrap shops near you.',
     priority: 0.7,
   },
   {
     path: '/mechanic-finder',
     title: 'Find Trusted Local Mechanics Near You',
     description:
-      'Find top-rated auto repair shops and specialist mechanics near your ZIP code, with the questions to ask before you book.',
+      'Repair shops near your ZIP code with Google ratings, review counts, open-now status and phone numbers, plus the questions to ask before you book.',
     priority: 0.7,
   },
   {

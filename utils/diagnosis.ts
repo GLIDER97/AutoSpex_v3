@@ -1,6 +1,6 @@
-// Check engine code diagnosis: parses codes, asks Gemini (through /api/gemini)
+// Check engine code diagnosis: parses codes, asks the AI (through /api/ai)
 // for a structured answer and checks every number before it reaches the page.
-import { generateContent, Type } from './gemini';
+import { generateContent, Type } from './ai';
 import type { OBDCodeData } from '../types';
 
 /** P, B, C or U followed by four hex characters (SAE J2012 format). */
@@ -187,7 +187,7 @@ watchOut: the most common misdiagnosis or upsell for these codes.
 Do not invent technical service bulletin or recall numbers.`;
 
   const response = await generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'text',
     contents: prompt,
     config: { responseMimeType: 'application/json', responseSchema: schema },
   });

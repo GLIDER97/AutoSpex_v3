@@ -143,7 +143,7 @@ const FaultCodeDecoder: React.FC = () => {
       category="warnings"
       title="Check engine code lookup"
       intro="Enter the codes from your scanner to see what they mean, whether it's safe to drive, the likely causes and what each fix costs. Add your car for answers specific to it."
-      sources="SAE J2012 code definitions, Google Gemini AI for causes and costs, NHTSA owner complaints and recalls"
+      sources="SAE J2012 code definitions, AI (Anthropic's Claude) for causes and costs, NHTSA owner complaints and recalls"
     >
       <Panel>
         <form
@@ -265,7 +265,7 @@ const FaultCodeDecoder: React.FC = () => {
                   </PrimaryButton>
                   {[
                     { to: '/maintenance-validator', icon: ReceiptText, label: 'Check a quote you already have' },
-                    { to: '/mechanic-finder', icon: MapPin, label: 'Find a mechanic near you' },
+                    { to: '/mechanic-finder?service=diagnostics', icon: MapPin, label: 'Find a mechanic near you' },
                   ].map(({ to, icon: Icon, label }) => (
                     <Link
                       key={to}

@@ -67,8 +67,8 @@ function RangeBar({ quoted, low, high }: { quoted: number; low: number; high: nu
 }
 
 const FAQS = [
-  ['How is the quote checked?', 'Each line is compared with typical US prices for that job: standard labor-guide hours at local shop rates and typical aftermarket-to-OEM parts prices, using Google’s Gemini AI. Totals, labor hours and the hourly rate are calculated exactly from your numbers.'],
-  ['Is the photo stored?', 'No. The photo is shrunk in your browser and sent to Google’s Gemini AI only to read the line items. MyAutoSpex doesn’t keep it. You can cover your name and address before taking the photo.'],
+  ['How is the quote checked?', 'Each line is compared with typical US prices for that job: standard labor-guide hours at local shop rates and typical aftermarket-to-OEM parts prices, using AI (Anthropic’s Claude). Totals, labor hours and the hourly rate are calculated exactly from your numbers.'],
+  ['Is the photo stored?', 'No. The photo is shrunk in your browser and sent to our AI provider only to read the line items. MyAutoSpex doesn’t keep it. You can cover your name and address before taking the photo.'],
   ['Why is a dealer quote higher?', 'Dealers usually charge higher hourly rates and use factory (OEM) parts. That can be worth it for warranty or complex work, so the check accounts for the shop type you choose.'],
   ['The quote is above the fair range. What now?', 'Ask the questions listed, use the suggested script, and get a second quote. A higher price can be justified by rusted parts, extra damage or premium parts, so ask the shop to show you why.'],
 ];
@@ -154,7 +154,7 @@ const MaintenanceValidator: React.FC = () => {
       category="money"
       title="Repair quote checker"
       intro="Take a photo of your estimate or type in the lines. Every line is checked against typical prices for your area, with upsells to question and what to say to the shop."
-      sources="Google Gemini AI with typical US parts prices and labor-guide hours. Totals and labor rate are calculated exactly."
+      sources="AI (Anthropic's Claude) with typical US parts prices and labor-guide hours. Totals and labor rate are calculated exactly."
     >
       <Panel>
         <div role="tablist" aria-label="How to enter your quote" className="inline-flex rounded-lg bg-muted p-1">
@@ -459,7 +459,7 @@ const MaintenanceValidator: React.FC = () => {
                 <PrimaryButton type="button" className="mt-4 w-full" onClick={() => setSecondOpinionOpen(true)}>
                   Request quotes from shops
                 </PrimaryButton>
-                <Link to="/mechanic-finder" className={cn('mt-3 block rounded-sm text-center font-semibold underline underline-offset-4', focusRing)}>
+                <Link to={/^\d{5}$/.test(zip) ? `/mechanic-finder?zip=${zip}` : "/mechanic-finder"} className={cn('mt-3 block rounded-sm text-center font-semibold underline underline-offset-4', focusRing)}>
                   Find a mechanic near you
                 </Link>
               </Panel>

@@ -1,7 +1,7 @@
 // Repair quote checking: reads a photo of an estimate into line items, then
-// checks each line against typical US prices with Gemini (via /api/gemini).
+// checks each line against typical US prices with the AI (via /api/ai).
 // Arithmetic (totals, labor rate, shop-fee share) is done here, not by the AI.
-import { generateContent, Type } from './gemini';
+import { generateContent, Type } from './ai';
 
 export type LineType = 'Labor' | 'Part' | 'Fee' | 'Job';
 export const LINE_TYPES: LineType[] = ['Job', 'Labor', 'Part', 'Fee'];
@@ -74,7 +74,7 @@ export interface ExtractedQuote {
 
 export async function readEstimatePhoto(base64Jpeg: string): Promise<ExtractedQuote> {
   const response = await generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'text',
     contents: [
       { inlineData: { mimeType: 'image/jpeg', data: base64Jpeg } },
       {
@@ -184,7 +184,7 @@ Give the overall verdict and fair total range. "canWait" lists items that are of
 Be fair to shops: if the quote is reasonable, say so.`;
 
   const response = await generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'text',
     contents: prompt,
     config: {
       responseMimeType: 'application/json',

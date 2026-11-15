@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateContent, Type } from '../utils/gemini';
+import { generateContent, Type } from '../utils/ai';
 import { 
   TrendingDown, TrendingUp, Car, DollarSign, Clock, 
   Hourglass, AlertCircle, AlertOctagon, Info, ChevronRight, 
@@ -71,7 +71,7 @@ const ValueShockCalculator: React.FC = () => {
       `;
 
       const aiResponse = await generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'text',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',

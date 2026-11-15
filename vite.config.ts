@@ -2,24 +2,34 @@ import path from 'path';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// GEMINI_API_KEY is a server-only secret. It is read by api/gemini.ts (a Vercel
-// function) and must never be inlined into client code with `define` or exposed
-// with a VITE_ prefix.
+// OPENROUTER_API_KEY and GOOGLE_MAPS_API_KEY are server-only secrets. They are
+// read by the Vercel functions in api/ and must never be inlined into client
+// code with `define` or exposed with a VITE_ prefix.
+const SERVER_ENV = ['OPENROUTER_API_KEY', 'GOOGLE_MAPS_API_KEY', 'AI_TEXT_MODEL', 'AI_IMAGE_MODEL', 'ALLOWED_ORIGINS'];
+
+/** The functions in api/ with the HTTP method each one answers. */
+const ROUTES: Record<string, { file: string; method: 'GET' | 'POST' }> = {
+  '/api/ai': { file: '/api/ai.ts', method: 'POST' },
+  '/api/places': { file: '/api/places.ts', method: 'GET' },
+};
 
 /**
- * Serves api/gemini.ts at /api/gemini during `npm run dev`, so the AI tools work
- * locally the same way they do on Vercel. Not used in production builds.
+ * Serves the api/ functions during `npm run dev`, so the AI tools and shop
+ * search work locally the same way they do on Vercel. Not used in builds.
  */
-function geminiDevApi(apiKey: string | undefined): Plugin {
+function devApi(env: Record<string, string>): Plugin {
   return {
-    name: 'gemini-dev-api',
+    name: 'dev-api',
     apply: 'serve',
     configureServer(server) {
-      if (apiKey && !process.env.GEMINI_API_KEY) process.env.GEMINI_API_KEY = apiKey;
+      for (const name of SERVER_ENV) if (env[name] && !process.env[name]) process.env[name] = env[name];
 
-      server.middlewares.use('/api/gemini', async (req, res, next) => {
+      server.middlewares.use(async (req, res, next) => {
+        const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
+        const route = ROUTES[url.pathname];
+        if (!route) return next();
         try {
-          if (req.method !== 'POST') {
+          if (req.method !== route.method) {
             res.statusCode = 405;
             res.end('Method Not Allowed');
             return;
@@ -30,14 +40,14 @@ function geminiDevApi(apiKey: string | undefined): Plugin {
           for (const [key, value] of Object.entries(req.headers)) {
             if (value !== undefined) headers.set(key, Array.isArray(value) ? value.join(', ') : value);
           }
-          const request = new Request(`http://${req.headers.host ?? 'localhost'}/api/gemini`, {
-            method: 'POST',
+          const request = new Request(url, {
+            method: route.method,
             headers,
-            body: Buffer.concat(chunks),
+            body: route.method === 'POST' ? Buffer.concat(chunks) : undefined,
           });
 
-          const { POST } = await server.ssrLoadModule('/api/gemini.ts');
-          const response: Response = await POST(request);
+          const handler = (await server.ssrLoadModule(route.file))[route.method];
+          const response: Response = await handler(request);
           res.statusCode = response.status;
           response.headers.forEach((value, key) => res.setHeader(key, value));
           res.end(Buffer.from(await response.arrayBuffer()));
@@ -56,7 +66,7 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react(), geminiDevApi(env.GEMINI_API_KEY)],
+      plugins: [react(), devApi(env)],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
