@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ShieldCheck, FileText, Lock, MessageSquare, Send, Mail, MapPin, Target, Zap, Users, Award } from './Icons';
 
 const LegalLayout: React.FC<{ title: string; icon: React.ReactNode; children: React.ReactNode }> = ({ title, icon, children }) => (
@@ -88,6 +89,45 @@ export const AboutUs: React.FC = () => (
           Based in the tech-forward automotive hub of Austin, Texas, our team of engineers and former service advisors is dedicated to making vehicle ownership simpler, cheaper, and safer for everyone.
         </p>
       </div>
+    </section>
+  </LegalLayout>
+);
+
+export const EditorialPolicy: React.FC = () => (
+  <LegalLayout title="Editorial Policy" icon={<FileText className="w-6 h-6" />}>
+    <p>
+      This page explains who writes the guides on MyAutoSpex, how they are made and how to tell us when something is wrong.
+    </p>
+    <section>
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Who writes our guides</h2>
+      <p>
+        Our guides are published by the MyAutoSpex Editorial Team. We use AI tools, including Anthropic&apos;s Claude, to help
+        research and draft articles, and our team reviews and edits each article before it is published.
+      </p>
+    </section>
+    <section>
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Prices, figures and sources</h2>
+      <p>
+        Repair costs, insurance premiums and depreciation vary by region, vehicle and shop, so the figures in our guides are
+        estimates, not quotes. When we cite a specific figure we link to where it comes from, such as NHTSA, the EPA or
+        published pricing data, and we are adding source links to our older articles.
+      </p>
+    </section>
+    <section>
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">General information, not a diagnosis</h2>
+      <p>
+        Our guides and tools explain what a code, a warning light or a quote usually means. They can&apos;t inspect your car.
+        For anything that affects safety, such as brakes, steering or a flashing check engine light, have a qualified
+        mechanic look at it.
+      </p>
+    </section>
+    <section>
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Updates and corrections</h2>
+      <p>
+        Each article shows the date it was last updated. If you spot a mistake, please tell us through our{' '}
+        <Link to="/contact" className="font-bold text-slate-900 underline dark:text-white">contact page</Link> and we will
+        correct it.
+      </p>
     </section>
   </LegalLayout>
 );

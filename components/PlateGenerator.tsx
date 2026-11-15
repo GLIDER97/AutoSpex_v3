@@ -309,6 +309,8 @@ const PlateGenerator: React.FC = () => {
                          <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl z-0 opacity-40 group-hover:opacity-60 transition-opacity" />
                          <img 
                            src={product.img} 
+                           loading="lazy"
+                           decoding="async"
                            alt={product.name} 
                            className="max-h-full max-w-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-700" 
                          />

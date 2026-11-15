@@ -105,6 +105,9 @@ const DiyToolkits: React.FC = () => {
             <div className="aspect-square w-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 mb-8 flex items-center justify-center p-6 overflow-hidden border border-slate-100 dark:border-slate-700">
               <img 
                 src={product.img} 
+                // The first row is on screen at load; the rest load as the reader scrolls.
+                loading={i < 3 ? 'eager' : 'lazy'}
+                decoding="async"
                 alt={product.name} 
                 className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" 
               />

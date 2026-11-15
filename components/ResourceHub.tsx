@@ -462,6 +462,8 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                       {item.imageUrl ? (
                         <img
                           src={item.imageUrl}
+                          loading="lazy"
+                          decoding="async"
                           alt={item.name}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           onError={(e) => {
@@ -541,6 +543,8 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
                     <div className="aspect-video w-full rounded-2xl bg-slate-50 dark:bg-slate-800 mb-6 flex items-center justify-center overflow-hidden">
                       <img
                         src={item.img}
+                        loading="lazy"
+                        decoding="async"
                         alt={item.name}
                         className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
                       />

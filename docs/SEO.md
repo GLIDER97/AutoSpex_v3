@@ -13,14 +13,24 @@
    - `dist/sitemap.xml` listing every page and article
    - `dist/robots.txt` pointing to the sitemap
    - `dist/404.html`, which Vercel serves with a real 404 status for unknown URLs
+   - `dist/llms.txt`, a plain-language list of the tools and guides for AI assistants
+   - a small article list in every page (`<script id="article-index">`), read by
+     `Article/articleIndex.ts` for "Latest guides", the blog list, "Related guides" under each
+     article and "Guides for this tool" under each tool, so none of those load article code
+
+Pages without their own image share `public/og-image.png` (1200×630) on social media.
 
 `vercel.json` turns on `cleanUrls`, so `dist/blog.html` is served at `/blog`.
 
 ## Adding or changing pages
 
 - **New article:** add `Article/posts/<slug>.tsx` with an `export const meta = {...}` block,
-  like the existing posts. The file name is the URL (`/article/<slug>`). It is added to the
-  blog, the sitemap and the prerender automatically.
+  like the existing posts (see `Article/AI_blog_prompt.txt`). The file name is the URL
+  (`/article/<slug>`). It is added to the blog, the sitemap and the prerender automatically.
+  - Give it a `seoTitle` of 47 characters or less and a description of 160 or less.
+  - Link to at least one tool with `<a href="/tool-path">`: the build reads those links and
+    lists the article under "Guides for this tool" on that tool's page.
+  - Use WebP images no wider than 1200 px, with `width`, `height` and `loading="lazy"`.
 - **New tool or info page:** add the route in `routes.tsx` **and** an entry (path, title,
   description) in `seo/site.ts`. Pages missing from `seo/site.ts` are not prerendered and
   return a 404 on Vercel.

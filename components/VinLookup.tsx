@@ -416,6 +416,8 @@ function InsuranceQuoteForm({ vin, vehicle }: { vin: string; vehicle: string }) 
 }
 
 const FAQS = [
+  ['What is a VIN?', 'A Vehicle Identification Number is the 17-character code that identifies one specific vehicle. It encodes the manufacturer, model details, model year and the plant where the vehicle was built, followed by a serial number.'],
+  ['Can I look up a car’s specs by VIN?', 'Yes. Enter the 17-character VIN and the report shows the factory specs NHTSA has on file for that vehicle, such as the model year, make, model, trim, engine, drive type and the safety equipment it was built with.'],
   ['Where can I find my VIN?', "On the driver's side of the dashboard (look through the windshield), on the sticker in the driver's door jamb, and on your registration and insurance card."],
   ['What does this report include?', 'Factory specs and safety equipment from NHTSA’s VIN decoder, safety recalls, owner complaints and 5-Star crash ratings from NHTSA, and EPA fuel economy. All of it is free public data.'],
   ['Does it show accidents or title problems?', 'No. Accident, title, odometer and ownership history comes from paid history reports. Use the history report link above for those.'],

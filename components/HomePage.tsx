@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils';
 import type { OBDCodeData } from '../types';
 import { CATEGORY_BY_ID, TOOL_CATEGORIES, type Tool } from '../data/tools';
 import { SignMarker } from './brand';
+import GuideList from './GuideList';
+import { sortNewestFirst, useArticleIndex } from '../Article/articleIndex';
 
 // Same format the fault code decoder accepts: P, B, C or U plus four or more hex digits.
 const CODE_PATTERN = /^[PCBU][0-9A-F]{4,}$/;
@@ -288,59 +290,17 @@ function Sources() {
 }
 
 // ---------------------------------------------------------------------------
-// Latest guides (only each article's `meta` export is loaded here).
+// Latest guides (from the small article index, so no article code is loaded here).
 // ---------------------------------------------------------------------------
 
-interface ArticleMeta {
-  title: string;
-  description?: string;
-  date?: string;
-}
-
-const articleMeta = import.meta.glob<ArticleMeta>('../Article/posts/*.tsx', { eager: true, import: 'meta' });
-
-const LATEST_ARTICLES = Object.entries(articleMeta)
-  .filter(([, meta]) => meta?.title)
-  .map(([path, meta]) => ({
-    slug: path.split('/').pop()!.replace(/\.tsx$/, ''),
-    title: meta.title,
-    description: meta.description ?? '',
-    date: meta.date ? new Date(meta.date) : null,
-  }))
-  .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0))
-  .slice(0, 3);
-
 function LatestGuides() {
+  const articles = sortNewestFirst(useArticleIndex()).slice(0, 6);
   return (
-    <section aria-labelledby="guides-title" className="border-t border-border">
+    <div className="border-t border-border">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 id="guides-title" className="font-heading text-[2rem] leading-tight font-extrabold tracking-[-0.015em] sm:text-4xl">
-            Latest guides
-          </h2>
-          <Link to="/blog" className={cn('rounded-sm font-bold text-sign-green underline underline-offset-4 dark:text-white', focusRing)}>
-            All articles
-          </Link>
-        </div>
-        <ul className="mt-8 grid gap-8 md:grid-cols-3">
-          {LATEST_ARTICLES.map((a) => (
-            <li key={a.slug} className="border-t border-border pt-4">
-              {a.date && (
-                <time dateTime={a.date.toISOString()} className="text-sm text-muted-foreground">
-                  {a.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}
-                </time>
-              )}
-              <h3 className="mt-1 text-[1.1875rem] leading-snug font-extrabold">
-                <Link to={`/article/${a.slug}`} className={cn('rounded-sm hover:underline hover:underline-offset-4', focusRing)}>
-                  {a.title}
-                </Link>
-              </h3>
-              <p className="mt-2 line-clamp-3 text-[0.9375rem] leading-relaxed text-muted-foreground">{a.description}</p>
-            </li>
-          ))}
-        </ul>
+        <GuideList id="guides-title" heading="Latest guides" articles={articles} showAllLink />
       </div>
-    </section>
+    </div>
   );
 }
 

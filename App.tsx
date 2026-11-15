@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AppRoutes from './routes';
 import SEO from './components/SEO';
+import { ToolGuides } from './components/GuideList';
 import { findStaticPage } from './seo/site';
 
 // Type declaration for Google Tag Manager dataLayer
@@ -85,6 +86,8 @@ function App() {
           ) : (
             <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex flex-col items-center">
               <AppRoutes />
+              {/* Tool pages link to the guides that cover them. */}
+              <ToolGuides path={location.pathname} />
             </div>
           )}
         </main>

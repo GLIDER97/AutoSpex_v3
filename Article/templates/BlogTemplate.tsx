@@ -1,8 +1,14 @@
 import React from 'react';
+import { Link, useParams } from 'react-router-dom';
+import SEO from '../../components/SEO';
+import GuideList from '../../components/GuideList';
+import { formatDay, relatedArticles, toDay, useArticleIndex } from '../articleIndex';
 
 // Interfaces for strict type checking
 interface BlogMeta {
     title: string;
+    /** Shorter title for search results (about 47 characters or less); falls back to `title`. */
+    seoTitle?: string;
     description: string;
     date: string;
     authorName: string;
@@ -15,21 +21,17 @@ interface BlogTemplateProps {
     children: React.ReactNode;
 }
 
-// "2026-02-15T20:10:00" -> "Feb 15, 2026". Falls back to the raw string if it can't be parsed.
-function formatDate(value: string): { label: string; iso?: string } {
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return { label: value };
-    return {
-        label: new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(d),
-        // Local date parts (like the label) so the server and browser agree in every time zone.
-        iso: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
-    };
-}
-
 const BlogTemplate: React.FC<BlogTemplateProps> = ({ meta, children }) => {
-    const date = formatDate(meta.date);
+    const { slug = '' } = useParams<{ slug: string }>();
+    // The calendar date as written in `meta.date`, formatted the same in every time zone.
+    const day = toDay(meta.date);
+    const related = relatedArticles(slug, useArticleIndex());
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-6 sm:px-8 lg:px-12">
+            {/* Title, description and canonical for every article (prerendered into the HTML as well). */}
+            <SEO title={meta.seoTitle || meta.title} description={meta.description} />
+
             <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
 
                 {/* Standardized Header */}
@@ -38,19 +40,25 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ meta, children }) => {
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 tracking-wide uppercase">
                             {meta.category || 'Article'}
                         </span>
-                        <time dateTime={date.iso} className="text-sm text-slate-500 dark:text-slate-400 font-medium">Updated {date.label}</time>
+                        <time dateTime={day} className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                            Updated {day ? formatDay(day) : meta.date}
+                        </time>
                     </div>
                     <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
                         {meta.title}
                     </h1>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                                {meta.authorName.split(' ').map(n => n[0]).join('').substring(0, 2)}
-                            </div>
+                            <img src="/favicon.svg" alt="" width={48} height={48} className="w-12 h-12 rounded-full bg-white p-1.5 shadow-md" />
                             <div>
                                 <div className="font-bold text-slate-900 dark:text-white">{meta.authorName}</div>
-                                <div className="text-sm text-slate-500 dark:text-slate-400">{meta.authorRole}</div>
+                                <div className="text-sm text-slate-500 dark:text-slate-400">
+                                    {meta.authorRole}
+                                    <span aria-hidden="true" className="mx-1.5">·</span>
+                                    <Link to="/editorial-policy" className="underline underline-offset-2 hover:text-slate-900 dark:hover:text-white">
+                                        How we write our guides
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,6 +71,9 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ meta, children }) => {
                 </article>
 
             </div>
+
+            {/* Links to other articles, so each guide is reachable from the others. */}
+            <GuideList id="related-guides" heading="Related guides" articles={related} className="max-w-3xl mx-auto mt-14" />
         </div>
     );
 };

@@ -14,6 +14,7 @@ const linkClass = cn(
 const COMPANY_LINKS = [
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
+  { to: '/editorial-policy', label: 'Editorial policy' },
   { to: '/blog', label: 'Articles' },
   { to: '/privacy-policy', label: 'Privacy policy' },
   { to: '/terms-of-service', label: 'Terms of service' },

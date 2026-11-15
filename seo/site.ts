@@ -140,6 +140,13 @@ export const STATIC_PAGES: PageMeta[] = [
     priority: 0.4,
   },
   {
+    path: '/editorial-policy',
+    title: 'Editorial Policy: How We Write Our Guides',
+    description:
+      'Who writes the MyAutoSpex guides, how AI is used, where our figures come from and how to report a mistake so we can correct it.',
+    priority: 0.3,
+  },
+  {
     path: '/contact',
     title: 'Contact MyAutoSpex',
     description: 'Get in touch with the MyAutoSpex team with questions, feedback or partnership requests.',

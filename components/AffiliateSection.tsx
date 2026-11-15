@@ -50,6 +50,8 @@ const AffiliateSection: React.FC = () => {
               <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl z-0 opacity-50" />
               <img 
                 src={scanner.img} 
+                loading="lazy"
+                decoding="async"
                 alt={scanner.name} 
                 className="max-h-full max-w-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-500" 
               />

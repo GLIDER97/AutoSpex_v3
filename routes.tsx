@@ -30,7 +30,7 @@ const LegalPages = React.lazy(() => import('./components/LegalPages').then(modul
 // Let's keep LegalPages synchronous to avoid complexity for now, or just lazy load the heavy tools.
 
 // For named exports, we'll keep using the direct import for now to avoid the `then` chain complexity for multiple exports from same file
-import { PrivacyPolicy, TermsOfService, CookiePolicy, ContactUs, AboutUs } from './components/LegalPages';
+import { PrivacyPolicy, TermsOfService, CookiePolicy, ContactUs, AboutUs, EditorialPolicy } from './components/LegalPages';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -70,6 +70,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/editorial-policy" element={<EditorialPolicy />} />
 
         {/* Unknown URLs get a real "not found" page (served with a 404 status by Vercel) */}
         <Route path="*" element={<NotFound />} />

@@ -7,6 +7,10 @@ const faqs = [
     answer: "An On-Board Diagnostics (OBD-II) code is a standardized alphanumeric string (like P0300) that your vehicle's computer generates when it detects a fault. It acts as a digital fingerprint for specific issues within your engine, transmission, or emissions systems."
   },
   {
+    question: "What do the letters and numbers in a code mean?",
+    answer: "The first letter shows the system: P for powertrain (engine and transmission), B for body, C for chassis and U for the communication network. A 0 as the second character means a generic code shared by all makes, and a 1 usually means a manufacturer-specific code. The last three characters point to the specific fault, so P0420 is a generic powertrain code for catalytic converter efficiency."
+  },
+  {
     question: "How do I find my car's fault code?",
     answer: "You need an OBD-II scanner tool. Plug it into the diagnostic port typically found under your driver's side dashboard. The scanner will display the specific error codes (P-codes), which you can then enter into our tool for a plain-English explanation."
   },

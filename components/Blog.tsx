@@ -2,65 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Calendar, ArrowRight } from './Icons';
-
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  featuredImage: string;
-  slug: string;
-  author: string;
-  href?: string;
-  date?: string;
-  timestamp?: number;
-  displayDate?: string;
-}
-
-// 1. Load only each post's `meta` export, so the article bodies stay in their own lazily loaded chunks
-const postModules = import.meta.glob('../Article/posts/*.tsx', { eager: true, import: 'meta' });
-
-// 2. Transform modules into BlogPost array
-const BLOG_POSTS: BlogPost[] = Object.keys(postModules).map((path) => {
-  const meta = postModules[path] as any;
-
-  if (!meta) {
-    console.warn(`Blog post at ${path} is missing 'export const meta'.`);
-    return null;
-  }
-
-
-  // Derive slug from filename if not provided
-  const filename = path.split('/').pop()?.replace('.tsx', '') || '';
-  const autoSlug = filename; // or some kebab-case transform if needed
-
-  const dateStr = meta.date ? String(meta.date) : '';
-  const dateObj = dateStr ? new Date(dateStr) : null;
-  const timestamp = dateObj && !isNaN(dateObj.getTime()) ? dateObj.getTime() : 0;
-
-  // Format display date (e.g., Feb 15, 2026)
-  const displayDate = dateObj && !isNaN(dateObj.getTime())
-    ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)
-    : dateStr;
-
-  return {
-    id: path, // Unique ID from path
-    title: meta.title,
-    excerpt: meta.description || meta.excerpt || '',
-    featuredImage: meta.featuredImage, // Resolved import or string
-    slug: meta.slug || autoSlug,
-    author: meta.authorName || meta.author,
-    href: meta.href, // Optional override for legacy links
-    date: meta.date,
-    timestamp: timestamp, // Add timestamp for easier sorting
-    displayDate: displayDate
-  };
-}).filter(Boolean) as BlogPost[];
-
-// Sort posts by date (newest first)
-BLOG_POSTS.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
+import { formatDay, sortNewestFirst, useArticleIndex } from '../Article/articleIndex';
 
 const Blog: React.FC = () => {
+  // From the small article index embedded in the page, so no article code is downloaded here.
+  const posts = sortNewestFirst(useArticleIndex());
 
   return (
     <div className="w-full max-w-7xl mx-auto py-12 px-4 sm:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -84,17 +30,21 @@ const Blog: React.FC = () => {
 
       {/* Blog Grid - 3×3 Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {BLOG_POSTS.map((post) => (
+        {posts.map((post, i) => (
           <Link
-            key={post.id}
-            to={post.href || `/article/${post.slug}`} // Use href override if present (legacy), else /article/slug
+            key={post.slug}
+            to={`/article/${post.slug}`}
             className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300"
           >
             {/* Featured Image */}
             <div className="aspect-video w-full bg-slate-100 dark:bg-slate-800 overflow-hidden relative">
               <img
-                src={post.featuredImage}
+                src={post.image}
                 alt={post.title}
+                // The first row is on screen at load; the rest load as the reader scrolls.
+                loading={i < 3 ? 'eager' : 'lazy'}
+                fetchPriority={i === 0 ? 'high' : undefined}
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => {
                   // Fallback placeholder
@@ -102,10 +52,10 @@ const Blog: React.FC = () => {
                 }}
               />
               {/* Date Badge */}
-              {post.displayDate && (
+              {post.day && (
                 <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 shadow-xs flex items-center gap-1.5">
                   <Calendar className="w-3 h-3 text-blue-600" />
-                  {post.displayDate}
+                  {formatDay(post.day)}
                 </div>
               )}
             </div>
@@ -119,7 +69,7 @@ const Blog: React.FC = () => {
 
               {/* Excerpt */}
               <p className="text-slate-600 dark:text-slate-400 mb-4 line-clamp-3 flex-1">
-                {post.excerpt}
+                {post.description}
               </p>
 
               {/* Footer */}
@@ -138,7 +88,7 @@ const Blog: React.FC = () => {
       </div>
 
       {/* Empty State */}
-      {BLOG_POSTS.length === 0 && (
+      {posts.length === 0 && (
         <div className="text-center py-16">
           <BookOpen className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">No articles yet</h3>
