@@ -1,14 +1,14 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
-import img1 from '../assets/Featured images/Gas Saver.png';
+import img1 from '../assets/Featured images/gas-saver.webp';
 
 export const meta = {
     title: "The Hidden Truth About Gas Mileage: How to Actually Save Money at the Pump - 2026",
-    description: "Tired of wasting money on gas? Keesha Lauren reveals the real reasons your MPG is low and simple fixes to boost your fuel economy instantly.",
+    seoTitle: "Gas Mileage Tips That Actually Save Money",
+    description: "Tired of wasting money on gas? The real reasons your MPG is low and simple fixes that improve your fuel economy right away.",
     date: "2026-02-15T20:15:00",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Fuel Economy",
     featuredImage: img1,
     slug: 'gas-mileage-saving-tips',
@@ -17,7 +17,6 @@ export const meta = {
 const GasMileageTips: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO title={meta.title} description={meta.description} />
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
                 You stare at the pump as the numbers tick up. $50. $60. $70.
@@ -28,7 +27,7 @@ const GasMileageTips: React.FC = () => {
             </p>
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                As a mechanic, I see customers blame "bad gas" or "old spark plugs" all the time. But the real reason your MPG is tanking is usually much simpler—and much easier to fix.
+                Drivers often blame "bad gas" or "old spark plugs". But the real reason your MPG is tanking is usually much simpler—and much easier to fix.
             </p>
 
             <h2 className="text-3xl font-black mt-12 mb-6 text-slate-900 dark:text-white">Why Is My MPG Suddenly Low?</h2>

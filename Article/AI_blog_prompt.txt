@@ -29,11 +29,12 @@ import img1 from '../assets/YOUR_IMAGE_1.jpg';
 // CRITICAL: Export this 'meta' object exactly as shown. 
 // This is used by the Blog Index page to automatically list your article.
 export const meta = {
-    title: "YOUR TITLE",
-    description: "YOUR DESCRIPTION (Used for SEO and Excerpt)",
+    title: "YOUR TITLE", // The headline shown on the page
+    seoTitle: "SHORT TITLE", // 47 characters or less, shown in Google results
+    description: "YOUR DESCRIPTION (Used for SEO and Excerpt)", // 160 characters or less
     date: "YYYY-MM-DDTHH:mm:ss", // CRITICAL: Use current ISO timestamp (e.g. 2026-02-15T20:30:00)
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert",
+    authorName: "MyAutoSpex Editorial Team", // Always this byline (see /editorial-policy)
+    authorRole: "Car ownership guides",
     category: "Articles & Guides",
     featuredImage: img1, // The main image for the card
     slug: 'your-url-slug', // Must match filename (e.g. my-new-post.tsx -> my-new-post)
@@ -42,10 +43,7 @@ export const meta = {
 const MyNewPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO // Assuming SEO is available globally or passed via template
-                title={meta.title}
-                description={meta.description}
-            />
+            {/* Do NOT add an <SEO> component: BlogTemplate sets the title and description from `meta`. */}
             {/* Your Content Goes Here */}
             {/* Use standard HTML tags: p, h2, h3, ul, li */}
             {/* Apply these classes for consistency: */}
@@ -56,7 +54,7 @@ const MyNewPost: React.FC = () => {
             
             {/* Example Image Usage */}
             <figure className="my-14">
-                <img src={img1} alt="Description" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={img1} width={1200} height={800} alt="Description" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
         </BlogTemplate>
@@ -69,6 +67,11 @@ export default MyNewPost;
 ### 4. Constraints
 - **Strict Isolation**: Do NOT modify `routes.tsx`, `App.tsx`, or any other file outside of this new component.
 - **Images**: All images must be placed in `/Article/assets/` before referencing them. Assume they are already there if the user provides them.
+  - Use WebP files no wider than 1200 px (convert PNG/JPG first; most images end up under 100 KB).
+  - Give every `<img>` its real `width` and `height`, and add `loading="lazy"` to every image except the first one.
+- **Link to the tools**: Link at least one relevant tool with a plain `<a href="/fault-code-decoder">` style link (tool paths are in `data/tools.ts`). The tool page then lists the article under "Guides for this tool".
+- **No invented experience**: Do not write first-person claims of experience ("In my 15 years running a shop..."). Articles are credited to the MyAutoSpex Editorial Team.
+- **Sources**: When stating a price, statistic or rule, link to where it comes from (NHTSA, EPA, a state DMV, published pricing data). Leave out figures that have no source.
 - **Mobile First**: The `BlogTemplate` handles the outer padding. Ensure any tables or custom grids you create have `overflow-x-auto` to prevent breaking the mobile layout.
 
 ### 5. Output

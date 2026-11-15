@@ -1,15 +1,15 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-import imgHero from '../assets/Featured images/surprise.png';
+import imgHero from '../assets/Featured images/surprise.webp';
 
 export const meta = {
     title: "Surprise Premiums: Why Insuring an EV Might Cost More Than Your Car Payment in 2026",
+    seoTitle: "Why EV Insurance Costs More in 2026",
     description: "Discover why EV insurance costs 49% more in 2026. Learn about gigacasting total loss risks, battery protection costs, and which EVs are cheapest to insure.",
     date: "2026-02-15T15:39:44",
-    authorName: "John Smith",
-    authorRole: "Financial & Automotive Reviewer • 8+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Financial Guides",
     featuredImage: imgHero,
     slug: 'ev-insurance-cost-2026-premiums',
@@ -18,15 +18,11 @@ export const meta = {
 const EVInsuranceCostPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="EV Insurance Cost 2026" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1024} height={1024} decoding="async" alt="EV Insurance Cost 2026" className="w-full m-0 object-cover" />
             </div>
 
             {/* AI Overview Optimization - First 60 words */}
@@ -42,7 +38,7 @@ const EVInsuranceCostPost: React.FC = () => {
                 Battery anxiety is real, but "Premium Anxiety" is what's actually killing the EV dream for American drivers in 2026.
             </p>
             <p>
-                Listen, I've spent the last eight years reading insurance policies that could cure insomnia. I've watched the EV market explode, and I've watched insurance premiums explode right alongside it. The silent motor might be peaceful, but the bill at renewal time? That's loud.
+                The EV market has exploded, and insurance premiums have climbed right alongside it. The silent motor might be peaceful, but the bill at renewal time? That's loud.
             </p>
             <p>
                 Here's what nobody tells you at the dealership: That $55,000 electric SUV you're eyeing? Your insurance company sees it as a $90,000 liability waiting to happen. One minor fender-bender involving the battery housing, and they're cutting you a check for total loss instead of fixing the bumper.

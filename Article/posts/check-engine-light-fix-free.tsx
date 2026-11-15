@@ -1,14 +1,14 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
-import img1 from '../assets/obd2_guide_featured.png';
+import img1 from '../assets/obd2-guide-featured.webp';
 
 export const meta = {
-    title: "Why Your 'Check Engine' Light is On (And How to Fix It for Free) - 2026 Guide",
-    description: "Don't pay $150 just for a mechanic to plug in a scanner. Keesha Lauren shows you how to decode your Check Engine Light, fix simple issues yourself, and save hundreds.",
+    title: "How to Fix Your Check Engine Light for Free (2026 Guide)",
+    seoTitle: "How to Fix Your Check Engine Light for Free",
+    description: "Don't pay $150 just to have a scanner plugged in. Learn how to read your check engine code, fix simple causes yourself and know when a shop is worth it.",
     date: "2026-02-15T20:10:00",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "DIY Repairs",
     featuredImage: img1,
     slug: 'check-engine-light-fix-free',
@@ -17,7 +17,6 @@ export const meta = {
 const CheckEngineLightFix: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO title={meta.title} description={meta.description} />
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
                 It's the most dreaded orange symbol on your dashboard. The Check Engine Light (CEL).
@@ -91,7 +90,7 @@ const CheckEngineLightFix: React.FC = () => {
             </p>
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                For verified recall information that might be triggering lights for free repairs, always check the <a href="https://www.nhtsa.gov/recalls" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">NHTSA Recalls</a> page.
+                A recall can mean a free repair for the problem behind the light. Run your year, make and model through our <a href="/recalls" className="text-blue-600 font-bold hover:underline">recall check</a>, which uses NHTSA data, or check the <a href="https://www.nhtsa.gov/recalls" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">NHTSA Recalls</a> page directly.
             </p>
 
         </BlogTemplate>

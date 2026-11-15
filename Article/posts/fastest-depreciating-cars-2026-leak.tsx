@@ -1,15 +1,15 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-import imgHero from '../assets/Featured images/Minimalist cartoon.png';
+import imgHero from '../assets/Featured images/minimalist-cartoon.webp';
 
 export const meta = {
     title: "The $20-a-Day Leak: Which Cars Lose Value the Fastest in 2026?",
-    description: "Discover which cars are losing value fastest in 2026. Expert analysis on luxury EV depreciation, Section 179 tax loopholes, and how to stop the daily financial bleed.",
+    seoTitle: "Cars That Lose Value Fastest in 2026",
+    description: "Which cars are losing value fastest in 2026, why luxury EVs drop so quickly, how Section 179 write-offs factor in and how to limit the daily loss.",
     date: "2026-02-15T15:24:27",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Financial Guides",
     featuredImage: imgHero,
     slug: 'fastest-depreciating-cars-2026-leak',
@@ -18,15 +18,11 @@ export const meta = {
 const Depreciation2026Post: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="Car Depreciation Calculator 2026" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={896} decoding="async" alt="Car Depreciation Calculator 2026" className="w-full m-0 object-cover" />
             </div>
 
             {/* AI Overview Optimization / Quick Answer */}
@@ -42,7 +38,7 @@ const Depreciation2026Post: React.FC = () => {
                 Stop checking your gas mileage. Your car's real cost isn't at the pump; it's the $20 to $40 vanishing from your resale value every single morning.
             </p>
             <p>
-                While you're worrying about saving 15 cents a gallon, your driveway is silently eating your net worth. I've watched grown men cry in my service bay—not because of a repair bill, but because they tried to trade in a car they bought three years ago, only to find out they owe $12,000 more than it's worth.
+                While you're worrying about saving 15 cents a gallon, your driveway is silently eating your net worth. The painful moment usually comes at trade-in, not at the repair shop: owners of a car bought three years ago find out they still owe thousands more than it's worth.
             </p>
             <p>
                 In 2026, the game has changed completely. The "used car gold rush" of the early 20s is over. We are now in the era of <strong>Tech Obsolescence</strong>. A 2024 electric vehicle isn't just "used" anymore; it's practically vintage tech compared to the 2026 solid-state battery models hitting showroom floors.

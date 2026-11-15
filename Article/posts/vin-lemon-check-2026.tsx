@@ -1,16 +1,16 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-// Using image6.jpg - not used as featured image in other posts
-import imgHero from '../assets/image6.jpg';
+// Using image6.webp - not used as featured image in other posts
+import imgHero from '../assets/image6.webp';
 
 export const meta = {
     title: "Don't Buy a Lemon: 5 Things a VIN Reveals That a Seller Won't in 2026",
-    description: "Uncover hidden VIN secrets that expose engine swaps, title washing, odometer fraud, and salvage scams. Your complete 2026 guide to avoiding lemons on Facebook Marketplace and Craigslist.",
+    seoTitle: "5 Things a VIN Check Reveals Before You Buy",
+    description: "What a VIN reveals that a seller won't: engine swaps, title washing, odometer fraud and salvage history. Check before you buy on Marketplace or Craigslist.",
     date: "2026-02-15T03:17:32",
-    authorName: "John Smith",
-    authorRole: "Private Investigator • 8+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Buyer Protection",
     featuredImage: imgHero,
     slug: 'vin-lemon-check-2026',
@@ -19,15 +19,11 @@ export const meta = {
 const VinLemonCheckPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="VIN Check Fraud Detection 2026" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1168} height={784} decoding="async" alt="VIN Check Fraud Detection 2026" className="w-full m-0 object-cover" />
             </div>
 
             {/* 30-Second Fraud Check */}
@@ -52,7 +48,7 @@ const VinLemonCheckPost: React.FC = () => {
                 A fresh coat of wax and a "Detailed Today" sign are the oldest tricks in the book. But while a seller can scrub a floor mat, they can't scrub a car's DNA.
             </p>
             <p>
-                Listen, I've been tracking down stolen cars, odometer fraud, and salvage flips for eight years. The 2026 used car market is a minefield. Facebook Marketplace and Craigslist are crawling with "curbstoners"—unlicensed dealers who flip salvaged wrecks as "personal vehicles" to dodge dealer licensing laws.
+                The 2026 used car market is a minefield. Facebook Marketplace and Craigslist are crawling with "curbstoners"—unlicensed dealers who flip salvaged wrecks as "personal vehicles" to dodge dealer licensing laws.
             </p>
             <p>
                 Here's the deal: Your average seller is banking on you being lazy. They're hoping you'll fall for the sob story about their "grandma's car" or the "recent upgrade" excuse. But a 17-digit VIN tells the truth they won't.

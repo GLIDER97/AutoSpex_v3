@@ -1,21 +1,21 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
 // Import images from ../assets/
-import imgFeatured from '../assets/obd2_guide_featured.png';
-import imgWhatIs from '../assets/obd2_guide_what_is.png';
-import imgHowItWorks from '../assets/obd2_guide_how_it_works.png';
-import imgCommonCodes from '../assets/obd2_guide_common_codes.png';
-import imgDecoding from '../assets/obd2_guide_decoding.png';
-import imgTools from '../assets/obd2_guide_tools.png';
+import imgFeatured from '../assets/obd2-guide-featured.webp';
+import imgWhatIs from '../assets/obd2-guide-what-is.webp';
+import imgHowItWorks from '../assets/obd2-guide-how-it-works.webp';
+import imgCommonCodes from '../assets/obd2-guide-common-codes.webp';
+import imgDecoding from '../assets/obd2-guide-decoding.webp';
+import imgTools from '../assets/obd2-guide-tools.webp';
 
 export const meta = {
-    title: "Ultimate Guide to OBD-II Fault Code Decoders: Diagnose and Fix Your Car Like a Pro in California",
-    description: "Expert guide to OBD-II fault code decoders for California drivers. Learn to diagnose check engine lights, pass smog checks, and save money with this comprehensive mechanic-written guide.",
+    title: "OBD-II Codes Explained: How They Work and How to Pass a California Smog Check",
+    seoTitle: "OBD-II Codes and California Smog Checks",
+    description: "How OBD-II fault codes work, which codes stop you passing a California smog check, the scan tools worth owning and when to see a mechanic.",
     date: "2026-02-09T01:34:07",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Articles & Guides",
     featuredImage: imgFeatured,
     slug: 'obd2-fault-code-decoder-guide',
@@ -24,13 +24,9 @@ export const meta = {
 const Obd2FaultCodeDecoderGuide: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                As an expert mechanic with over 15+ years of experience turning wrenches in bustling California garages, I've seen it all—from mysterious check engine lights (CEL) that turn routine drives into headaches to emissions failures that could cost you big during smog checks.
+                For California drivers, OBD-II problems range from mysterious check engine lights (CEL) that turn routine drives into headaches to emissions failures that could cost you big during smog checks.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 If you're a driver in the Golden State, where strict emissions standards rule the road, understanding OBD-II fault codes isn't just helpful; it's essential.
@@ -50,7 +46,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={imgWhatIs} alt="What is OBD-II System" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgWhatIs} width={1024} height={1024} decoding="async" alt="What is OBD-II System" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -86,7 +82,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={imgHowItWorks} alt="How OBD-II Codes Work Breakdown" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgHowItWorks} width={1024} height={1024} loading="lazy" decoding="async" alt="How OBD-II Codes Work Breakdown" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -123,7 +119,7 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={imgCommonCodes} alt="Common OBD-II Fault Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgCommonCodes} width={1024} height={1024} loading="lazy" decoding="async" alt="Common OBD-II Fault Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -150,11 +146,11 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={imgDecoding} alt="Decoding Fault Codes Steps" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgDecoding} width={1024} height={1024} loading="lazy" decoding="async" alt="Decoding Fault Codes Steps" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Ready to DIY? Here's how I guide my clients:
+                Ready to DIY? Here's the step-by-step:
             </p>
             <ol className="list-decimal pl-6 mb-6 leading-loose text-slate-600 dark:text-slate-300 space-y-2">
                 <li><strong>Locate the DLC</strong>: Under the dash, near the steering column.</li>
@@ -176,11 +172,11 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={imgTools} alt="Essential OBD-II Tools" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgTools} width={1024} height={1024} loading="lazy" decoding="async" alt="Essential OBD-II Tools" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                As a mechanic, I swear by quality tools. Start with a basic OBD-II scanner ($20-50) for codes, or go pro with Bluetooth models ($100+) for live data. Apps like Torque Pro pair with ELM327 adapters for smartphone diagnostics.
+                Quality tools make the job easier. Start with a basic OBD-II scanner ($20-50) for codes, or go pro with Bluetooth models ($100+) for live data. Apps like Torque Pro pair with ELM327 adapters for smartphone diagnostics.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 For comprehensive help, our site's <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> offers free lookups and guides. Pair it with maintenance tools to avoid overcharges—use the <a href="/maintenance-validator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Repair Overcharge Validator</a> to compare quotes.

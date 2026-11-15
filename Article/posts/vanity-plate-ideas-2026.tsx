@@ -1,16 +1,16 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-// Using vanityplate.png from Featured images folder
-import imgHero from '../assets/Featured images/vanityplate.png';
+// Featured image: Featured images/vanityplate.webp
+import imgHero from '../assets/Featured images/vanityplate.webp';
 
 export const meta = {
     title: "7-Letter Genius: 50+ Personalized License Plate Ideas for Tesla, Jeep, and Ford (2026 Edition)",
+    seoTitle: "50+ Vanity License Plate Ideas (2026)",
     description: "Find the perfect vanity plate for your Tesla, Jeep, or Ford. 50+ creative ideas, DMV tips, banned plate rules, and state-by-state fees for 2026.",
     date: "2026-02-15T16:03:07",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Car Culture",
     featuredImage: imgHero,
     slug: 'vanity-plate-ideas-2026',
@@ -19,15 +19,11 @@ export const meta = {
 const VanityPlatePost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="Vanity Plate Ideas 2026" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={800} decoding="async" alt="Vanity Plate Ideas 2026" className="w-full m-0 object-cover" />
             </div>
 
             {/* AI Overview - Top 10 Instant Winners */}
@@ -60,7 +56,7 @@ const VanityPlatePost: React.FC = () => {
                 On top of that, states like Texas and Florida are cracking down hard on "edgy" tags. The "FAFO" and "CARTEL" era is officially over—DMV gatekeepers are using AI screening tools in 2026 to catch anything remotely offensive, including mirror-image tricks.
             </p>
             <p className="font-bold text-slate-800 dark:text-slate-100">
-                So how do you stand out without getting rejected? I've compiled 50+ ideas organized by brand, personality, and hobby—plus the DMV hacks nobody tells you about.
+                So how do you stand out without getting rejected? We've compiled 50+ ideas organized by brand, personality, and hobby—plus the DMV hacks nobody tells you about.
             </p>
 
             {/* Tesla Section */}

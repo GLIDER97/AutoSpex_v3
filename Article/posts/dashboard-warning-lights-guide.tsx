@@ -1,14 +1,14 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
-import img1 from '../assets/check_engine_featured.jpg';
+import img1 from '../assets/check-engine-featured.webp';
 
 export const meta = {
     title: "5 Dashboard Warning Lights You Should Never Ignore (2026 Guide)",
-    description: "Ignore these 5 dashboard lights and you could owe $3,000+ in repairs. Expert mechanic Keesha Lauren explains what they mean and what to do immediately.",
+    seoTitle: "5 Dashboard Warning Lights to Never Ignore",
+    description: "Ignore these 5 dashboard lights and you could face $3,000+ in repairs. What each light means and what to do the moment it comes on.",
     date: "2026-02-15T20:05:00",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Safety & Maintenance",
     featuredImage: img1,
     slug: 'dashboard-warning-lights-guide',
@@ -17,10 +17,9 @@ export const meta = {
 const DashboardWarningLights: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO title={meta.title} description={meta.description} />
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                In my 15 years running a shop, I've seen it a thousand times. A customer tows in a car with a seized engine, tears in their eyes, saying, "The little oil can light came on, but I thought I could make it home."
+                Repair shops hear the same story again and again: a driver tows in a car with a seized engine and says, "The little oil can light came on, but I thought I could make it home."
             </p>
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
@@ -36,7 +35,7 @@ const DashboardWarningLights: React.FC = () => {
                 A solid check engine light usually means an emissions issue (like a loose gas cap). You can drive on that for a bit. But a <strong>flashing</strong> light? That means an active engine misfire is dumping raw fuel into your exhaust.
             </p>
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                This effectively turns your catalytic converter into a blast furnace. I've seen converters glow cherry red and melt the carpet inside the car.
+                This effectively turns your catalytic converter into a blast furnace. An overheating converter can glow cherry red and scorch the carpet above it.
             </p>
 
             <div className="bg-blue-50 dark:bg-slate-800 p-6 rounded-xl border-l-4 border-blue-600 my-8">
