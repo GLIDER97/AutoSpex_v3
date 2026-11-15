@@ -24,7 +24,7 @@ export const AboutUs: React.FC = () => (
     </section>
 
     <div className="grid md:grid-cols-2 gap-8 mb-16">
-      <div className="bg-white dark:bg-slate-900/50 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
+      <div className="bg-white dark:bg-slate-900/50 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 opacity-5">
            <Target className="w-24 h-24 text-brand-primary" />
         </div>
@@ -37,7 +37,7 @@ export const AboutUs: React.FC = () => (
         </p>
       </div>
 
-      <div className="bg-white dark:bg-slate-900/50 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
+      <div className="bg-white dark:bg-slate-900/50 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 opacity-5">
            <Zap className="w-24 h-24 text-blue-500" />
         </div>
@@ -67,7 +67,7 @@ export const AboutUs: React.FC = () => (
                <Zap className="w-6 h-6" />
             </div>
             <h4 className="font-bold text-slate-900 dark:text-white">AI Analysis</h4>
-            <p className="text-sm">Leveraging Google Gemini to analyze market trends and diagnostic patterns in real-time.</p>
+            <p className="text-sm">Using AI (Anthropic's Claude) to explain diagnostic codes and typical repair prices.</p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-2">
@@ -181,15 +181,15 @@ export const ContactUs: React.FC = () => (
         <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label className="block text-sm font-bold mb-1">Name</label>
-            <input type="text" className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none transition-all" placeholder="John Doe" />
+            <input type="text" className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all" placeholder="John Doe" />
           </div>
           <div>
             <label className="block text-sm font-bold mb-1">Email</label>
-            <input type="email" className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none transition-all" placeholder="john@example.com" />
+            <input type="email" className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all" placeholder="john@example.com" />
           </div>
           <div>
             <label className="block text-sm font-bold mb-1">Message</label>
-            <textarea rows={4} className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none transition-all" placeholder="How can we help?"></textarea>
+            <textarea rows={4} className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all" placeholder="How can we help?"></textarea>
           </div>
           <button className="w-full py-3 bg-brand-primary text-slate-900 font-bold rounded-xl hover:bg-orange-400 transition-colors flex items-center justify-center gap-2">
             Send Message <Send className="w-4 h-4" />

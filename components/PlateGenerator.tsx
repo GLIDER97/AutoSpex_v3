@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/ai';
 import { 
   Tag, Zap, Sparkles, MessageSquare, ChevronDown, 
   ArrowRight, RefreshCw, Star, Info, Lock, 
@@ -109,11 +109,10 @@ const PlateGenerator: React.FC = () => {
     setError(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `Generate 6 clever, creative vanity plate ideas for a ${request.carModel} in ${request.state} with hobbies ${request.hobbies} and vibe ${request.vibe}. Ensure they are 7 characters or less.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+      const response = await generateContent({
+        model: 'text',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',
@@ -162,7 +161,7 @@ const PlateGenerator: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             AI Vanity Plate <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-orange-400 to-amber-600">
                Generator
             </span>
           </h1>
@@ -186,7 +185,7 @@ const PlateGenerator: React.FC = () => {
                     placeholder="e.g. Tesla Model Y, Jeep Wrangler" 
                     value={request.carModel}
                     onChange={(e) => updateRequest('carModel', e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-hidden transition-all"
                   />
                 </div>
 
@@ -199,7 +198,7 @@ const PlateGenerator: React.FC = () => {
                     placeholder="e.g. Coding, Hiking, Coffee" 
                     value={request.hobbies}
                     onChange={(e) => updateRequest('hobbies', e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-hidden transition-all"
                   />
                 </div>
               </div>
@@ -212,7 +211,7 @@ const PlateGenerator: React.FC = () => {
                   <select 
                     value={request.vibe}
                     onChange={(e) => updateRequest('vibe', e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-orange-500 outline-hidden transition-all"
                   >
                     <option value="Funny">Funny</option>
                     <option value="Minimalist">Minimalist</option>
@@ -229,7 +228,7 @@ const PlateGenerator: React.FC = () => {
                   <select 
                     value={request.state}
                     onChange={(e) => updateRequest('state', e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-hidden transition-all"
                   >
                     {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
@@ -266,7 +265,7 @@ const PlateGenerator: React.FC = () => {
 
               <div className="grid gap-4">
                 {results.map((item, i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-orange-500/50 transition-all group">
+                  <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-orange-500/50 transition-all group">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                       <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -305,16 +304,16 @@ const PlateGenerator: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                  {PLATE_FRAMES.map((product, idx) => (
-                   <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-2xl transition-all group relative overflow-hidden">
+                   <div key={idx} className="bg-white dark:bg-slate-900 rounded-4xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-2xl transition-all group relative overflow-hidden">
                       <div className="h-32 flex items-center justify-center mb-6 relative">
-                         <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl -z-0 opacity-40 group-hover:opacity-60 transition-opacity" />
+                         <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl z-0 opacity-40 group-hover:opacity-60 transition-opacity" />
                          <img 
                            src={product.img} 
                            alt={product.name} 
                            className="max-h-full max-w-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-700" 
                          />
                       </div>
-                      <div className="flex-grow flex flex-col">
+                      <div className="grow flex flex-col">
                          <h3 className="font-bold text-slate-900 dark:text-white text-xs line-clamp-2 mb-6 leading-snug group-hover:text-orange-500 transition-colors">
                            {product.name}
                          </h3>
@@ -373,7 +372,7 @@ const PlateGenerator: React.FC = () => {
             <div className="order-2 md:order-1">
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">Personalize Your Ride</h2>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                    A license plate is more than just a legal requirement—it's a statement. The <span className="text-orange-500 font-bold">MyAutoSpex Plate Generator</span> uses Google Gemini AI to analyze your vehicle's specs and your personal interests to craft the perfect 7-character combinations.
+                    A license plate is more than just a legal requirement—it's a statement. The <span className="text-orange-500 font-bold">MyAutoSpex Plate Generator</span> uses AI to analyze your vehicle's specs and your personal interests to craft the perfect 7-character combinations.
                 </p>
                 <div className="space-y-4">
                    {[
@@ -426,7 +425,7 @@ const PlateGenerator: React.FC = () => {
             <h2 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-16">Enthusiast Stories</h2>
             <div className="grid md:grid-cols-3 gap-8">
                 {testimonials.map((t, i) => (
-                    <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm relative group hover:shadow-xl transition-all">
+                    <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs relative group hover:shadow-xl transition-all">
                         <div className="flex gap-1 mb-6 text-orange-400">
                             {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
                         </div>
@@ -467,7 +466,7 @@ const PlateGenerator: React.FC = () => {
                     >
                         <button
                             onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                            className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                            className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                         >
                             <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                             {faq.question}

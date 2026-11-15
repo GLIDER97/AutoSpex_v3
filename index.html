@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <!-- Google Tag Manager -->
     <script>
@@ -33,36 +33,14 @@
 
     <!-- Tailwind CSS (Local Build) -->
     <!-- Styles are injected by Vite -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#f4f5f5" />
+    <script>
+      try { if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+    </script>
     <style>
-      html { font-size: 16px; scroll-behavior: smooth; }
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc; 
-        color: #0f172a;
-        transition: background-color 0.3s scope, color 0.3s ease;
-      }
-      html.dark body {
-        background-color: #020617;
-        color: #f8fafc;
-      }
-      .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-      .custom-scrollbar::-webkit-scrollbar-track { background: #e2e8f0; }
-      html.dark .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-      .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
-      
-      /* Smooth transitions for grid items */
-      .grid-item-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-      /* Attention-grabbing CTA Glow */
-      @keyframes slow-glow {
-        0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.1); transform: scale(1); }
-        50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); transform: scale(1.02); }
-      }
-      .animate-slow-glow {
-        animation: slow-glow 3s ease-in-out infinite;
-      }
+      /* Page colors before the stylesheet loads, so there is no flash. */
+      html { background-color: #f4f5f5; }
+      html.dark { background-color: #181b1e; color-scheme: dark; }
     </style>
 
   </head>

@@ -16,7 +16,15 @@ declare global {
 }
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  // Light is the default. A visitor's own choice is remembered in this browser.
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('theme') === 'dark') setIsDarkMode(true);
+    } catch {
+      // Storage unavailable (private mode): stay on the default.
+    }
+  }, []);
   const location = useLocation();
 
   useEffect(() => {
@@ -43,11 +51,19 @@ function App() {
     }
   }, [location.pathname]);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleTheme = () => {
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    try {
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+    } catch {
+      // Storage unavailable: the choice lasts for this visit only.
+    }
+  };
   const pageMeta = findStaticPage(location.pathname);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-brand-primary selection:text-slate-900 flex flex-col font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground selection:bg-sign-yellow selection:text-sign-ink flex flex-col font-sans">
 
       {/* Title, description and canonical for tool and info pages. Articles and the 404 page set their own. */}
       {pageMeta && (
@@ -60,11 +76,9 @@ function App() {
           toggleTheme={toggleTheme}
         />
 
-        <main className="flex-grow flex flex-col relative overflow-hidden pt-20">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-100" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-100" />
-
-          {location.pathname === '/free-obd2-code-decoder-repair-costs' ? (
+        <main className="grow flex flex-col relative overflow-hidden">
+          {/* The homepage lays out its own full-width sections. */}
+          {location.pathname === '/' || location.pathname === '/free-obd2-code-decoder-repair-costs' ? (
             <div className="relative z-10 w-full">
               <AppRoutes />
             </div>

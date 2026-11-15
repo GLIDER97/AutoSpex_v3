@@ -131,7 +131,7 @@ const CarWrapDesignPost: React.FC = () => {
                 <li><strong>Snap a Profile Pic:</strong> Get a clear side-profile photo of your car in good lighting.</li>
                 <li><strong>Use the Tool:</strong> Upload it to our <a href="/wrap-designer" className="font-bold underline text-blue-600 dark:text-blue-400">Car wrap designer</a>.</li>
                 <li><strong>Prompt Like a Pro:</strong> Use specifics. Instead of "Blue," try "Deep Metallic Blue with Satin Black trim and bronze wheels."</li>
-                <li><strong>Export 4K:</strong> Take that high-res image to the wrap shop. No more miscommunication.</li>
+                <li><strong>Download it:</strong> Take the preview and the exact color name to the wrap shop. No more miscommunication.</li>
             </ol>
 
             {/* Section 5: Budget - Price Comparison Table */}

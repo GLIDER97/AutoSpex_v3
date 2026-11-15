@@ -232,8 +232,3 @@ export interface VanityPlateItem {
   category: string;
 }
 
-export interface WrapDesignRequest {
-  vehicleType: string;
-  prompt: string;
-  artStyle: 'Realistic Photo' | 'Illustration' | 'Racing Livery' | 'Matte Stealth' | 'Carbon Fiber' | 'Iridescent Pearl' | 'Geometric Camo' | 'Cyberpunk Neon' | 'Retro Vintage';
-}

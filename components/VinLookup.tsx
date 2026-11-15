@@ -1,764 +1,589 @@
-
-import React, { useState } from 'react';
-import {
-  Search, Car, AlertTriangle, Factory, MapPin, Zap, X,
-  CheckCircle2, Star, ShieldCheck, FileText, Users, ChevronDown,
-  Info, Lock, MessageSquare, ShieldAlert, ArrowRight, Phone, Mail, RefreshCw,
-  Award, Globe, BookOpen, Heart
-} from './Icons';
-import { VinVehicleData } from '../types';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { CheckCircle2, ExternalLink, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { saveLead } from '../utils/leadStorage';
+import { checkVin, decodeVin, getCrashRatings, type CrashRating, type DecodedVin } from '../utils/vehicleReport';
+import { searchRecalls, type Recall } from '../utils/nhtsaRecalls';
+import { formatComponent } from '../utils/nhtsa';
+import { searchComplaints, type ComplaintSummary } from '../utils/nhtsaComplaints';
+import { findEpaVariants, getEpaRating, type EpaRating } from '../utils/fuelEconomy';
+import {
+  FactList,
+  Field,
+  Notice,
+  Panel,
+  PanelTitle,
+  PrimaryButton,
+  Spinner,
+  ToolPage,
+  focusRing,
+  inputClass,
+  money,
+} from './tool/kit';
 
-const VinLookup: React.FC = () => {
-  const [vin, setVin] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<VinVehicleData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+const EXAMPLE_VIN = '1HGCM82633A004352';
 
-  // Insurance Lead Form State
-  const [leadStep, setLeadStep] = useState(1);
-  const [leadLoading, setLeadLoading] = useState(false);
-  const [leadSubmitted, setLeadSubmitted] = useState(false);
-  const [leadData, setLeadData] = useState({
-    zip: '',
-    name: '',
-    email: '',
-    phone: ''
-  });
+const titleCase = (s: string) => s.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\(Usa\)/, '(USA)');
+const formatDate = (iso: string) =>
+  iso ? new Date(`${iso}T00:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+const SAFETY_FEATURES: [string, string][] = [
+  ['CIB', 'Automatic emergency braking'],
+  ['PedestrianAutomaticEmergencyBraking', 'Pedestrian emergency braking'],
+  ['ForwardCollisionWarning', 'Forward collision warning'],
+  ['BlindSpotMon', 'Blind spot warning'],
+  ['BlindSpotIntervention', 'Blind spot intervention'],
+  ['LaneDepartureWarning', 'Lane departure warning'],
+  ['LaneKeepSystem', 'Lane keeping assist'],
+  ['LaneCenteringAssistance', 'Lane centering'],
+  ['AdaptiveCruiseControl', 'Adaptive cruise control'],
+  ['RearVisibilitySystem', 'Backup camera'],
+  ['RearCrossTrafficAlert', 'Rear cross traffic alert'],
+  ['RearAutomaticEmergencyBraking', 'Rear automatic braking'],
+  ['ParkAssist', 'Park assist'],
+  ['ESC', 'Electronic stability control'],
+  ['TractionControl', 'Traction control'],
+  ['ABS', 'Anti-lock brakes'],
+  ['TPMS', 'Tire pressure monitoring'],
+  ['DynamicBrakeSupport', 'Dynamic brake support'],
+  ['AdaptiveDrivingBeam', 'Adaptive driving beam'],
+  ['SemiautomaticHeadlampBeamSwitching', 'Automatic high beams'],
+  ['DaytimeRunningLight', 'Daytime running lights'],
+  ['KeylessIgnition', 'Keyless ignition'],
+];
 
-    const cleanVin = vin.toUpperCase().replace(/[^A-Z0-9]/g, '');
+const AIRBAGS: [string, string][] = [
+  ['AirBagLocFront', 'Front'],
+  ['AirBagLocSide', 'Side'],
+  ['AirBagLocCurtain', 'Curtain'],
+  ['AirBagLocKnee', 'Knee'],
+  ['AirBagLocSeatCushion', 'Seat cushion'],
+];
 
-    if (cleanVin.length !== 17) {
-      setError('Invalid VIN length. A standard VIN must be exactly 17 characters.');
-      return;
-    }
+function Stars({ rating, label }: { rating: string; label: string }) {
+  const n = Number(rating);
+  if (!(n >= 1 && n <= 5)) return <span className="text-[0.9375rem] text-muted-foreground">Not rated</span>;
+  return (
+    <span role="img" aria-label={`${label}: ${n} out of 5 stars`} className="inline-flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star key={i} className={cn('size-5', i <= n ? 'fill-sign-yellow text-sign-yellow' : 'text-slate-300 dark:text-slate-600')} aria-hidden="true" />
+      ))}
+    </span>
+  );
+}
 
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    setLeadSubmitted(false);
-    setLeadStep(1);
-
-    try {
-      const response = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${cleanVin}?format=json`);
-      if (!response.ok) throw new Error('API Request Failed');
-
-      const data = await response.json();
-
-      if (data.Results && data.Results.length > 0) {
-        const item = data.Results[0];
-        const getVal = (val: string | null | undefined) => (val && val.trim() !== "") ? val : "N/A";
-
-        const vehicleData: VinVehicleData = {
-          vin: cleanVin,
-          year: getVal(item.ModelYear),
-          make: getVal(item.Make),
-          model: getVal(item.Model),
-          manufacturer: getVal(item.Manufacturer),
-          vehicleType: getVal(item.VehicleType),
-          bodyClass: getVal(item.BodyClass),
-          engineCylinders: getVal(item.EngineCylinders),
-          engineHP: getVal(item.EngineHP),
-          engineLiters: getVal(item.DisplacementL),
-          fuelType: getVal(item.FuelTypePrimary),
-          transmissionStyle: getVal(item.TransmissionStyle),
-          driveType: getVal(item.DriveType),
-          plantCountry: getVal(item.PlantCountry),
-          plantCity: getVal(item.PlantCity),
-          plantState: getVal(item.PlantState),
-          doors: getVal(item.Doors),
-          grossWeight: getVal(item.GVWR),
-        };
-
-        if (vehicleData.make === 'N/A' && vehicleData.model === 'N/A') {
-          setError("Could not decode this VIN. Please check your characters for typos (e.g., 'O' vs '0').");
-        } else {
-          setResult(vehicleData);
-        }
-      } else {
-        setError("No data found for this VIN. It may be too new or pre-1981.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Unable to connect to vehicle database. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLeadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!result) return;
-
-    setLeadLoading(true);
-
-    const submission = {
-      timestamp: new Date().toISOString(),
-      name: leadData.name,
-      phone: leadData.phone,
-      email: leadData.email,
-      zip: leadData.zip,
-      car_model: `${result.year} ${result.make} ${result.model}`,
-      vin: result.vin
+/** Loads one section of the report and keeps its own loading/error state. */
+function useSection<T>(load: (() => Promise<T>) | null, key: string) {
+  const [state, setState] = useState<{ data: T | null; failed: boolean; loaded: boolean }>({ data: null, failed: false, loaded: false });
+  useEffect(() => {
+    if (!load) return;
+    let live = true;
+    setState({ data: null, failed: false, loaded: false });
+    load()
+      .then((data) => live && setState({ data, failed: false, loaded: true }))
+      .catch(() => live && setState({ data: null, failed: true, loaded: true }));
+    return () => {
+      live = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return state;
+}
 
-    try {
-      await saveLead('VIN_lookup_leads.json', submission);
-      setLeadSubmitted(true);
-    } catch (err) {
-      console.error("Lead submission failed", err);
-    } finally {
-      setLeadLoading(false);
-    }
-  };
+function Report({ vin, decoded }: { vin: string; decoded: DecodedVin }) {
+  const f = decoded.fields;
+  const year = Number(f.ModelYear);
+  const make = f.Make ?? '';
+  const model = f.Model ?? '';
+  const canLookUp = Boolean(year && make && model);
+  const key = `${year}|${make}|${model}`;
+  const name = [f.ModelYear, titleCase(make), model, f.Trim].filter(Boolean).join(' ');
 
-  const handleClear = () => {
-    setVin('');
-    setResult(null);
-    setError(null);
-  };
+  const recalls = useSection<Recall[]>(canLookUp ? () => searchRecalls(year, make, model).then((r) => r.recalls) : null, key);
+  const complaints = useSection<ComplaintSummary>(canLookUp ? () => searchComplaints(year, make, model) : null, key);
+  const ratings = useSection<CrashRating[]>(canLookUp ? () => getCrashRatings(year, make, model) : null, key);
+  const fuel = useSection<{ rating: EpaRating; description: string } | null>(
+    canLookUp
+      ? async () => {
+          const { variants } = await findEpaVariants(year, make, model);
+          if (!variants.length) return null;
+          // Prefer the EPA version with this VIN's engine ("4 cyl, 1.5 L").
+          const engine = f.EngineCylinders && f.DisplacementL ? `${f.EngineCylinders} cyl, ${Number(f.DisplacementL).toFixed(1)} L` : '';
+          const match = variants.find((v) => engine && v.description.includes(engine)) ?? variants[0];
+          return { rating: await getEpaRating(match.id), description: `${match.model}, ${match.description}` };
+        }
+      : null,
+    key,
+  );
 
-  const vinFaqs = [
-    {
-      question: "Where can I find my VIN?",
-      answer: "Your VIN is typically located on the driver's side dashboard (visible through the windshield) or on the driver's side door jamb sticker. It's also found on your vehicle registration and insurance documents."
-    },
-    {
-      question: "What information does this decoder provide?",
-      answer: "Our tool reveals detailed factory specifications and connects you with authorized service providers for comprehensive vehicle reports."
-    },
-    {
-      question: "Is this VIN lookup really free?",
-      answer: "Yes, 100%. We access public government databases to provide you with accurate vehicle data at no cost. We are supported by our network of professional automotive partners."
-    },
-    {
-      question: "Can I check motorcycle or truck VINs?",
-      answer: "Yes! Our tool supports cars, trucks, motorcycles, buses, and commercial vehicles manufactured after 1981 (standard 17-digit VINs)."
-    },
-  ];
+  const engine = [
+    f.EngineCylinders && `${f.EngineCylinders} cylinders`,
+    f.DisplacementL && `${Number(f.DisplacementL).toFixed(1)} L`,
+    f.EngineHP && `${Math.round(Number(f.EngineHP))} hp`,
+    f.ElectrificationLevel,
+  ]
+    .filter(Boolean)
+    .join(', ');
+  const specs: [string, React.ReactNode][] = (
+    [
+      ['Engine', engine],
+      ['Fuel', f.FuelTypePrimary && [f.FuelTypePrimary, f.FuelTypeSecondary].filter(Boolean).join(' / ')],
+      ['Transmission', [f.TransmissionSpeeds && `${f.TransmissionSpeeds}-speed`, f.TransmissionStyle].filter(Boolean).join(' ')],
+      ['Drive', f.DriveType],
+      ['Body', [f.BodyClass, f.Doors && `${f.Doors} doors`].filter(Boolean).join(', ')],
+      ['Seats', [f.Seats, f.SeatRows && `in ${f.SeatRows} rows`].filter(Boolean).join(' ')],
+      ['Curb weight', f.CurbWeightLB && `${Number(f.CurbWeightLB).toLocaleString('en-US')} lb`],
+      ['Weight class (GVWR)', f.GVWR?.replace(/^Class /, 'Class ')],
+      ['Base price when new', f.BasePrice && money(Number(f.BasePrice))],
+      ['Built in', [f.PlantCity, f.PlantState, f.PlantCountry].filter(Boolean).map(titleCase).join(', ')],
+      ['Manufacturer', f.Manufacturer && titleCase(f.Manufacturer)],
+    ] as [string, React.ReactNode][]
+  ).filter(([, v]) => v);
+  const safety = SAFETY_FEATURES.filter(([k]) => f[k]).map(([k, label]) => [label, f[k]] as const);
+  const airbags = AIRBAGS.filter(([k]) => f[k]).map(([k, label]) => [label, f[k]] as const);
+
+  const openRecalls = recalls.data?.length ?? null;
+  const overall = ratings.data?.[0]?.overall;
 
   return (
-    <div className="w-full flex flex-col items-center">
-      {/* Hero Section */}
-      {!result && (
-        <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-3xl">
-          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400 mb-8 shadow-lg shadow-blue-500/10 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-default text-center">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-            </span>
-            Real-Time Factory Data Search
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-            Free VIN Number <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-              Decoder & Specs Lookup
-            </span>
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            Instantly audit any vehicle's identity. Reveal factory engine specs, manufacturing origins, and chassis details using official NHTSA datasets.
-          </p>
-        </div>
+    <div className="mt-8 space-y-6">
+      <Panel>
+        <p className="font-mono text-[0.9375rem] tracking-wider text-muted-foreground">{vin}</p>
+        <h2 className="mt-1 font-heading text-3xl leading-tight font-extrabold tracking-[-0.015em] sm:text-4xl">{name}</h2>
+        <p className="mt-1 text-lg text-muted-foreground">{[f.BodyClass, engine, f.DriveType].filter(Boolean).join(', ')}</p>
+        <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-border pt-5 sm:grid-cols-4">
+          {[
+            ['Recalls on this model', openRecalls == null ? '…' : String(openRecalls), '#vin-recalls'],
+            ['Owner complaints', complaints.data ? complaints.data.total.toLocaleString('en-US') : '…', '#vin-complaints'],
+            ['Overall crash rating', overall && Number(overall) ? `${overall} of 5 stars` : ratings.data ? 'Not rated' : '…', '#vin-ratings'],
+            ['Combined fuel economy', fuel.data ? `${fuel.data.rating.combined} MPG` : canLookUp && !fuel.loaded ? '…' : 'Not listed', '#vin-fuel'],
+          ].map(([label, value, href]) => (
+            <div key={label}>
+              <dt className="text-sm text-muted-foreground">{label}</dt>
+              <dd>
+                <a href={href} className={cn('font-heading text-2xl font-extrabold hover:underline', focusRing)}>
+                  {value}
+                </a>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </Panel>
+
+      {decoded.warnings.length > 0 && (
+        <Notice tone="warning" title="NHTSA's decoder flagged this VIN">
+          <ul className="list-disc pl-5">
+            {decoded.warnings.map((w) => (
+              <li key={w}>{w.replace(/^\d+\s*-\s*/, '')}</li>
+            ))}
+          </ul>
+        </Notice>
       )}
 
-      {/* Input Section */}
-      <div className="w-full max-w-xl mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700 mb-8">
-        <form onSubmit={handleSearch} className="relative group">
-          <div className={`absolute -inset-0.5 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500 bg-gradient-to-r from-blue-600 to-indigo-600`}></div>
-
-          <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden transition-colors">
-            <div className="pl-4 text-slate-400">
-              <Search className="w-6 h-6" />
-            </div>
-
-            <input
-              type="text"
-              className="w-full bg-transparent border-none text-slate-900 dark:text-white text-xl placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-none py-4 px-4 font-mono uppercase tracking-wider transition-colors"
-              placeholder="ENTER 17-DIGIT VIN"
-              value={vin}
-              onChange={(e) => setVin(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-              maxLength={17}
-            />
-
-            {vin && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-white mr-1"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading || vin.length < 17}
-              className={`mr-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${loading || vin.length < 17
-                ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20'
-                }`}
-            >
-              {loading ? 'Decoding...' : 'Lookup'}
-            </button>
-          </div>
-        </form>
-        {error && (
-          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-600 dark:text-red-400 animate-in slide-in-from-top-2 shadow-sm">
-            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium">{error}</span>
-          </div>
-        )}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Panel>
+          <PanelTitle>Factory specs</PanelTitle>
+          <FactList className="mt-3" items={specs} />
+        </Panel>
+        <Panel>
+          <PanelTitle>Safety equipment</PanelTitle>
+          {safety.length === 0 && airbags.length === 0 ? (
+            <p className="mt-3 text-[0.9375rem] text-muted-foreground">The manufacturer didn't report safety equipment for this VIN.</p>
+          ) : (
+            <>
+              <ul className="mt-3 grid gap-x-4 gap-y-2 sm:grid-cols-2">
+                {safety.map(([label, value]) => (
+                  <li key={label} className="flex gap-2 text-[0.9375rem]">
+                    <CheckCircle2 className={cn('mt-0.5 size-4 shrink-0', value === 'Standard' ? 'text-sign-green' : 'text-muted-foreground')} aria-hidden="true" />
+                    <span>
+                      {label}
+                      {value !== 'Standard' && <span className="text-muted-foreground"> ({value.toLowerCase()})</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {airbags.length > 0 && (
+                <>
+                  <h3 className="mt-5 font-bold">Airbags</h3>
+                  <FactList className="mt-1" items={airbags.map(([k, v]) => [k, v])} />
+                </>
+              )}
+            </>
+          )}
+        </Panel>
       </div>
 
-      {/* Trust Indicators Strip */}
-      {!result && (
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
-            <ShieldCheck className="w-4 h-4 text-green-500" />
-            Official NHTSA Data
-          </div>
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
-            <Lock className="w-4 h-4 text-slate-400" />
-            Secure & Professional
-          </div>
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4 text-blue-500" />
-            100% Free Audit
-          </div>
-        </div>
-      )}
-
-      {/* Results Section */}
-      {result && (
-        <div className="w-full max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-500 pb-20">
-
-          <div className="flex justify-start mb-6">
-            <button
-              onClick={handleClear}
-              className="text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center gap-1 transition-colors"
-            >
-              ← Search Another VIN
-            </button>
-          </div>
-
-          {/* ATTENTION GRABBING SUCCESS HEADER */}
-          <div className="text-center mb-10 sm:mb-16 animate-in zoom-in-95 duration-700 flex flex-col items-center relative px-4">
-            <div className="flex flex-col items-center leading-none tracking-tighter uppercase mb-6 sm:mb-10">
-              <span className="text-2xl sm:text-6xl font-black text-slate-900 dark:text-white relative z-20">
-                VIN DECODED
-              </span>
-              <span className="text-5xl sm:text-[10rem] font-black text-blue-600 dark:text-blue-500 -mt-1 sm:-mt-8 block drop-shadow-[0_0_35px_rgba(37,99,235,0.3)]">
-                SUCCESSFULLY
-              </span>
-            </div>
-
-            <div className="inline-flex items-center gap-3 sm:gap-4 px-6 py-4 sm:px-10 sm:py-5 rounded-2xl sm:rounded-[2rem] bg-blue-500/10 backdrop-blur-xl border-2 border-blue-500/30 text-blue-600 dark:text-blue-400 shadow-2xl shadow-blue-500/10 w-full sm:w-auto">
-              <ShieldCheck className="w-6 h-6 sm:w-10 sm:h-10 animate-bounce shrink-0" />
-              <span className="text-base sm:text-4xl font-black uppercase tracking-tight text-center sm:text-left">
-                IDENTITY VERIFIED: <span className="text-slate-900 dark:text-white">{result.year} {result.make} {result.model}</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Main Vehicle Card */}
-          <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden mb-8">
-            <div className="absolute top-0 right-0 p-3 opacity-10">
-              <Car className="w-64 h-64 text-white -rotate-12 transform translate-x-12 -translate-y-12" />
-            </div>
-
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div>
-                <div className="flex flex-wrap gap-3 mb-4">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold border border-slate-700 text-slate-300 bg-slate-800 uppercase tracking-wider">
-                    {result.vehicleType}
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold border border-blue-500/30 text-blue-400 bg-blue-500/10 uppercase tracking-wider">
-                    {result.year} Model
-                  </span>
-                </div>
-                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">
-                  {result.make} {result.model}
-                </h2>
-                <p className="text-slate-400 font-mono text-lg flex items-center gap-2">
-                  {result.vin}
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                </p>
-              </div>
-
-              {/* Visual Representation of Manufacturing */}
-              <div className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-700 flex flex-col items-center min-w-[140px]">
-                <Factory className="w-8 h-8 text-blue-500 mb-2" />
-                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Assembled In</span>
-                <span className="text-white font-bold text-center leading-tight mt-1">
-                  {result.plantCity !== 'N/A' ? result.plantCity : result.plantCountry}
-                </span>
-                {result.plantState !== 'N/A' && <span className="text-slate-400 text-xs">{result.plantState}</span>}
-              </div>
-            </div>
-          </div>
-
-          {/* Specs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-
-            {/* Engine Specs */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-sm dark:shadow-none">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                  <Zap className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-slate-900 dark:text-white">Engine & Power</h3>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Cylinders</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{result.engineCylinders}</span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Displacement</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
-                    {result.engineLiters !== 'N/A' ? `${result.engineLiters}L` : 'N/A'}
-                  </span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Horsepower</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
-                    {result.engineHP !== 'N/A' ? `${result.engineHP} HP` : 'N/A'}
-                  </span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Fuel Type</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{result.fuelType}</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Chassis Specs */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-sm dark:shadow-none">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                  <Car className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-slate-900 dark:text-white">Body & Chassis</h3>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Body Class</span>
-                  <span className="font-semibold text-slate-900 dark:text-white text-right max-w-[150px] truncate" title={result.bodyClass}>{result.bodyClass}</span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Doors</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{result.doors}</span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Drive Type</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{result.driveType}</span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Gross Weight</span>
-                  <span className="font-semibold text-slate-900 dark:text-white text-right max-w-[140px] truncate" title={result.grossWeight}>
-                    {result.grossWeight}
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Manufacturing Specs */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-colors group shadow-sm dark:shadow-none">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:bg-slate-700 group-hover:text-white transition-colors">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-slate-900 dark:text-white">Origin</h3>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Manufacturer</span>
-                  <span className="font-semibold text-slate-900 dark:text-white text-right max-w-[140px] truncate" title={result.manufacturer}>{result.manufacturer}</span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Country</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{result.plantCountry}</span>
-                </li>
-                <li className="flex justify-between items-center text-sm">
-                  <span className="text-slate-500">Plant City</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{result.plantCity}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* MONETIZATION: GOODCAR AFFILIATE */}
-          <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                <ShieldAlert className="w-32 h-32 text-white" />
-              </div>
-
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className="max-w-xl">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-[10px] font-black uppercase tracking-widest border border-green-500/20 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3 h-3" /> Verified Data
-                    </span>
+      <Panel id="vin-recalls" className="scroll-mt-24">
+        <PanelTitle>Safety recalls for the {year} {titleCase(make)} {model}</PanelTitle>
+        <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+          Recall repairs are free at any dealer. To see whether this exact car still has an open recall, enter the VIN at{' '}
+          <a href="https://www.nhtsa.gov/recalls" target="_blank" rel="noopener noreferrer" className={cn('underline underline-offset-4', focusRing)}>
+            nhtsa.gov/recalls
+          </a>
+          .
+        </p>
+        <div className="mt-4">
+          {!recalls.data && !recalls.failed && <Spinner label="Checking NHTSA recalls…" />}
+          {recalls.failed && <p>NHTSA's recall records could not be loaded right now.</p>}
+          {recalls.data?.length === 0 && <p className="font-semibold">NHTSA has no recalls on record for this model year.</p>}
+          {recalls.data && recalls.data.length > 0 && (
+            <ul className="space-y-3">
+              {recalls.data.map((r) => (
+                <li key={r.campaignNumber} className="rounded-lg border border-border p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {(r.parkIt || r.parkOutside) && (
+                      <span className="rounded-md bg-sign-red px-2 py-0.5 text-sm font-bold text-white">{r.parkIt ? 'Do not drive' : 'Park outside'}</span>
+                    )}
+                    <span className="font-bold">{formatComponent(r.component)}</span>
                   </div>
-                  <h3 className="text-3xl font-black text-white mb-3">Check for Hidden Accidents</h3>
-                  <p className="text-slate-400 leading-relaxed font-medium">
-                    Decoding specs is just the start. Get a full history report from GoodCar to reveal structural damage, odometer fraud, and previous owner history for this specific {result.make}.
-                  </p>
-                </div>
-
-                <a
-                  href="https://goodcar.com/vehicle-history"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-8 py-5 bg-white text-slate-900 rounded-2xl font-black text-lg hover:bg-slate-100 transition-all shadow-xl shadow-white/5 flex items-center gap-3 shrink-0 animate-slow-glow"
-                >
-                  Get Full Report <ArrowRight className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* MONETIZATION: INSURANCE LEAD FORM */}
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
-              <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800">
-                <div
-                  className="h-full bg-blue-500 transition-all duration-500"
-                  style={{ width: `${(leadStep / 3) * 100}%` }}
-                />
-              </div>
-
-              <div className="p-8 sm:p-12">
-                {!leadSubmitted ? (
-                  <div className="max-w-3xl mx-auto">
-                    <div className="text-center mb-10">
-                      <h3 className="text-2xl font-bold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-[0.2em]">Is this your next car?</h3>
-                      <div className="inline-block p-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-2xl shadow-blue-500/20">
-                        <div className="bg-white dark:bg-slate-900 px-6 py-6 sm:px-10 sm:py-8 rounded-[0.9rem]">
-                          <p className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight">
-                            Check Insurance Rates for this <br className="sm:hidden" />
-                            <span className="text-blue-600 dark:text-blue-500 underline decoration-blue-500/30 underline-offset-8 decoration-4">
-                              {result.make} {result.model}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <form onSubmit={handleLeadSubmit} className="max-w-2xl mx-auto">
-                      {leadStep === 1 && (
-                        <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
-                            <div className="flex flex-col sm:flex-row justify-between gap-4">
-                              <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Decoded Vehicle</p>
-                                <p className="text-xl font-bold text-slate-900 dark:text-white">{result.year} {result.make} {result.model}</p>
-                              </div>
-                              <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Engine Specs</p>
-                                <p className="text-sm font-mono text-blue-500 font-bold">{result.engineLiters}L {result.engineCylinders}cyl {result.fuelType}</p>
-                              </div>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setLeadStep(2)}
-                            className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-slate-900/10"
-                          >
-                            Verify & Continue <ArrowRight className="w-5 h-5" />
-                          </button>
-                        </div>
-                      )}
-
-                      {leadStep === 2 && (
-                        <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                          <div>
-                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Where will you drive it?</label>
-                            <div className="relative">
-                              <MapPin className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                              <input
-                                type="text"
-                                required
-                                value={leadData.zip}
-                                onChange={(e) => setLeadData({ ...leadData, zip: e.target.value.replace(/\D/g, '').slice(0, 5) })}
-                                placeholder="Enter Your ZIP Code"
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex gap-4">
-                            <button type="button" onClick={() => setLeadStep(1)} className="flex-1 py-4 font-bold text-slate-400">Back</button>
-                            <button
-                              type="button"
-                              onClick={() => { if (leadData.zip.length === 5) setLeadStep(3); }}
-                              disabled={leadData.zip.length < 5}
-                              className="flex-[2] py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all disabled:opacity-50"
-                            >
-                              Next Step
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {leadStep === 3 && (
-                        <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                          <div className="grid grid-cols-1 gap-4">
-                            <div className="relative">
-                              <Users className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                              <input
-                                type="text" required placeholder="Full Name"
-                                value={leadData.name} onChange={(e) => setLeadData({ ...leadData, name: e.target.value })}
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                              />
-                            </div>
-                            <div className="relative">
-                              <Mail className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                              <input
-                                type="email" required placeholder="Email Address"
-                                value={leadData.email} onChange={(e) => setLeadData({ ...leadData, email: e.target.value })}
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                              />
-                            </div>
-                            <div className="relative">
-                              <Phone className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                              <input
-                                type="tel" required placeholder="Phone Number"
-                                value={leadData.phone} onChange={(e) => setLeadData({ ...leadData, phone: e.target.value })}
-                                className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex gap-4">
-                            <button type="button" onClick={() => setLeadStep(2)} className="flex-1 py-4 font-bold text-slate-400">Back</button>
-                            <button
-                              type="submit"
-                              disabled={leadLoading}
-                              className="flex-[2] py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
-                            >
-                              {leadLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Get My Quote'}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </form>
-                  </div>
-                ) : (
-                  <div className="text-center py-10 animate-in zoom-in-90 duration-500">
-                    <div className="w-24 h-24 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
-                      <CheckCircle2 className="w-12 h-12" />
-                    </div>
-                    <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-4">Request Successful</h2>
-                    <p className="text-slate-600 dark:text-slate-300 text-lg mb-0 max-w-md mx-auto">
-                      Your Insurance Rate for this model will be shared with our network to find you the best price.
+                  <p className="mt-2 text-[0.9375rem]">{r.summary}</p>
+                  {r.consequence && (
+                    <p className="mt-1.5 text-[0.9375rem] text-muted-foreground">
+                      <strong className="text-foreground">Risk:</strong> {r.consequence}
                     </p>
-                  </div>
+                  )}
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    Campaign {r.campaignNumber}, reported {formatDate(r.reportDate)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </Panel>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Panel id="vin-ratings" className="scroll-mt-24">
+          <PanelTitle>Crash-test ratings</PanelTitle>
+          <p className="mt-1 text-[0.9375rem] text-muted-foreground">NHTSA 5-Star Safety Ratings for this model year.</p>
+          <div className="mt-4">
+            {!ratings.data && !ratings.failed && <Spinner label="Loading crash ratings…" />}
+            {(ratings.failed || ratings.data?.length === 0) && <p>NHTSA hasn't published crash ratings for this model year.</p>}
+            {ratings.data?.map((r) => (
+              <div key={r.description} className="border-t border-border py-3 first:border-t-0 first:pt-0">
+                <h3 className="font-bold">{r.description}</h3>
+                <dl className="mt-2 grid gap-1.5">
+                  {[
+                    ['Overall', r.overall],
+                    ['Frontal crash', r.frontal],
+                    ['Side crash', r.side],
+                    ['Rollover', r.rollover],
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex items-center justify-between gap-4 text-[0.9375rem]">
+                      <dt>{label}</dt>
+                      <dd>
+                        <Stars rating={value} label={label} />
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                {r.rolloverRisk != null && (
+                  <p className="mt-2 text-sm text-muted-foreground">Rollover risk in a single-vehicle crash: {(r.rolloverRisk * 100).toFixed(1)}%</p>
                 )}
               </div>
-            </div>
+            ))}
           </div>
+        </Panel>
 
-        </div>
-      )}
-
-      {/* Landing Page Content (When No Result) */}
-      {!result && (
-        <div className="w-full max-w-7xl px-4 flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 pb-20">
-
-          {/* About This Tool Section */}
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-24 w-full">
-            <div className="order-2 md:order-1">
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the VIN Auditor</h2>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                Every vehicle manufactured for the US market has a unique 17-character fingerprint called a Vehicle Identification Number (VIN).
-                Our decoder acts as a direct bridge to the <span className="font-bold text-blue-600">National Highway Traffic Safety Administration (NHTSA)</span> database.
-              </p>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                We don't just show you the basic make and model. We pull detailed factory build data, including engine displacement, transmission type,
-                and manufacturing plant locations, providing the technical clarity you need for buying, selling, or maintaining your car.
-              </p>
-            </div>
-            <div className="order-1 md:order-2 bg-blue-50 dark:bg-blue-900/10 rounded-[3rem] p-10 sm:p-14 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden shadow-2xl">
-              <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-blue-500/10 -rotate-12" />
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Global Standard</h3>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
-                Access real-time specifications for vehicles manufactured after 1981. Our engine validates every character to ensure the data matches the specific factory output.
-              </p>
-              <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400 font-black text-sm relative z-10">
-                <ShieldCheck className="w-6 h-6" /> VERIFIED GOVERNMENT DATA
-              </div>
-            </div>
-          </div>
-
-          {/* Why Use This Tool Section */}
-          <div className="w-full mb-24 text-center">
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-              Why Use MyAutoSpex VIN Decoder?
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  icon: <ShieldCheck className="w-8 h-8 text-green-500" />,
-                  title: "100% Free",
-                  desc: "No hidden charges or 'paywalls' to see your basic build data. Supported by partners."
-                },
-                {
-                  icon: <Zap className="w-8 h-8 text-blue-500" />,
-                  title: "Official Data",
-                  desc: "Direct connection to the US NHTSA vPIC system for maximum accuracy."
-                },
-                {
-                  icon: <Award className="w-8 h-8 text-amber-500" />,
-                  title: "Precision Audit",
-                  desc: "Identify exactly which engine, trim, and safety features were installed at the factory."
-                },
-                {
-                  icon: <Search className="w-8 h-8 text-purple-500" />,
-                  title: "Fraud Prevention",
-                  desc: "Verify that a seller's claims match the official records for that specific VIN."
-                },
-              ].map((item, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
-                  <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* How to Check Your VIN Section */}
-          <div className="w-full mb-24">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-12">
-              Simple 3-Step Audit
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-blue-500/50 transition-colors">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-6 shadow-inner">
-                  <Search className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">1. Locate Your VIN</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Find the 17-digit code on your dashboard (driver's side), door jamb, or vehicle title.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-indigo-500/50 transition-colors">
-                <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-6 shadow-inner">
-                  <Zap className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">2. Enter the Code</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Type the alphanumeric VIN into our search bar. We validate the checksum instantly.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-green-500/50 transition-colors">
-                <div className="w-16 h-16 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-6 shadow-inner">
-                  <FileText className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">3. Get Full Report</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Instantly reveal detailed specs and connect with partners for full accident history checks.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Testimonials Section */}
-          <div className="w-full mb-24">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-16">Stories from the Road</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  name: "Caleb R.",
-                  loc: "Nashville, TN",
-                  text: "Used this to check a used Mustang I was buying. Discovered it was a base model dressed up like a GT. Saved me thousands!",
-                  stars: 5
-                },
-                {
-                  name: "Elena M.",
-                  loc: "San Diego, CA",
-                  text: "Fast and reliable. I needed to know the exact displacement of my engine to order parts, and this tool gave me the info in 2 seconds.",
-                  stars: 5
-                },
-                {
-                  name: "Marcus G.",
-                  loc: "Chicago, IL",
-                  text: "I love that it's actually free. Most sites bait and switch you with a fee at the end, but MyAutoSpex is transparent and helpful.",
-                  stars: 5
-                }
-              ].map((t, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:shadow-xl transition-all">
-                  <div className="flex gap-1 mb-6 text-blue-500">
-                    {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                  </div>
-                  <p className="text-slate-700 dark:text-slate-300 italic mb-8 flex-grow">"{t.text}"</p>
-                  <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center font-black text-sm">
-                      {t.name.charAt(0)}
+        <Panel id="vin-fuel" className="scroll-mt-24">
+          <PanelTitle>Fuel economy</PanelTitle>
+          <p className="mt-1 text-[0.9375rem] text-muted-foreground">Official EPA ratings for this engine.</p>
+          <div className="mt-4">
+            {canLookUp && !fuel.loaded && <Spinner label="Loading EPA ratings…" />}
+            {(!canLookUp || (fuel.loaded && !fuel.data)) && <p>The EPA has no rating listed for this vehicle.</p>}
+            {fuel.data && (
+              <>
+                <dl className="grid grid-cols-3 gap-4">
+                  {[
+                    ['City', fuel.data.rating.city],
+                    ['Highway', fuel.data.rating.hwy],
+                    ['Combined', fuel.data.rating.combined],
+                  ].map(([label, value]) => (
+                    <div key={label}>
+                      <dt className="text-sm text-muted-foreground">{label}</dt>
+                      <dd className="font-heading text-3xl font-extrabold">
+                        {value} <span className="text-base font-semibold text-muted-foreground">MPG</span>
+                      </dd>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm">{t.name}</h4>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t.loc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  ))}
+                </dl>
+                <p className="mt-3 text-sm text-muted-foreground">EPA version: {fuel.data.description}</p>
+              </>
+            )}
           </div>
+        </Panel>
+      </div>
 
-          {/* FAQ Section */}
-          <div className="w-full max-w-4xl mx-auto mt-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-3">
-                <MessageSquare className="w-7 h-7 text-blue-600" />
-                Frequently Asked Questions
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400 font-medium">Everything you need to know about your car's ID.</p>
-            </div>
-
-            <div className="space-y-4">
-              {vinFaqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className={`border rounded-[2rem] transition-all duration-300 overflow-hidden ${openFaqIndex === index
-                    ? 'bg-white dark:bg-slate-900 border-blue-500/30 shadow-lg shadow-blue-500/5'
-                    : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                >
-                  <button
-                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
-                  >
-                    <span className={`font-bold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                      {faq.question}
+      <Panel id="vin-complaints" className="scroll-mt-24">
+        <PanelTitle>What owners report to NHTSA</PanelTitle>
+        <div className="mt-4">
+          {!complaints.data && !complaints.failed && <Spinner label="Loading owner complaints…" />}
+          {complaints.failed && <p>NHTSA's complaint records could not be loaded right now.</p>}
+          {complaints.data && complaints.data.total === 0 && <p>NHTSA has no owner complaints on record for this model year.</p>}
+          {complaints.data && complaints.data.total > 0 && (
+            <>
+              <p className="text-[0.9375rem]">
+                <strong>{complaints.data.total.toLocaleString('en-US')}</strong> complaints
+                {complaints.data.crashes > 0 && `, ${complaints.data.crashes} involving a crash`}
+                {complaints.data.fires > 0 && `, ${complaints.data.fires} involving a fire`}.
+              </p>
+              <ul className="mt-4 space-y-1.5">
+                {complaints.data.byComponent.slice(0, 6).map((c) => (
+                  <li key={c.component} className="grid grid-cols-[minmax(0,12rem)_1fr_3rem] items-center gap-3 text-[0.9375rem]">
+                    <span className="truncate">{c.label}</span>
+                    <span className="h-2.5 rounded-full bg-muted">
+                      <span className="block h-full rounded-full bg-sign-blue" style={{ width: `${Math.max((c.count / complaints.data!.byComponent[0].count) * 100, 3)}%` }} />
                     </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${openFaqIndex === index ? 'rotate-180 text-blue-600' : ''
-                        }`}
-                    />
-                  </button>
-                  <div
-                    className={`transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                      }`}
-                  >
-                    <p className="px-6 pb-6 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-4 mt-0 font-medium">
-                      {faq.answer}
+                    <span className="text-right tabular-nums">{c.count}</span>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="mt-5 font-bold">Latest owner reports</h3>
+              <ul className="mt-2 space-y-3">
+                {complaints.data.complaints.slice(0, 3).map((c) => (
+                  <li key={c.id} className="border-l-2 border-border pl-3 text-[0.9375rem]">
+                    <p className="text-sm text-muted-foreground">
+                      {formatDate(c.date)}, {c.components.map((x) => x.toLowerCase()).join(', ')}
                     </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                    <p className="mt-0.5 line-clamp-3">{c.summary}</p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </Panel>
+    </div>
+  );
+}
 
+function InsuranceQuoteForm({ vin, vehicle }: { vin: string; vehicle: string }) {
+  const [data, setData] = useState({ zip: '', name: '', email: '', phone: '' });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    try {
+      await saveLead('VIN_lookup_leads.json', {
+        timestamp: new Date().toISOString(),
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        zip: data.zip,
+        car_model: vehicle,
+        vin,
+      });
+      setSent(true);
+    } catch (err) {
+      console.error('Lead submission failed', err);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (sent) {
+    return (
+      <Notice tone="success" title="Request sent">
+        An insurance partner will contact you with quotes for the {vehicle}.
+      </Notice>
+    );
+  }
+  return (
+    <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
+      <Field label="ZIP code" htmlFor="ins-zip">
+        <input id="ins-zip" required inputMode="numeric" pattern="\d{5}" maxLength={5} value={data.zip} onChange={(e) => setData({ ...data, zip: e.target.value.replace(/\D/g, '') })} className={inputClass} />
+      </Field>
+      <Field label="Full name" htmlFor="ins-name">
+        <input id="ins-name" required autoComplete="name" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} className={inputClass} />
+      </Field>
+      <Field label="Email" htmlFor="ins-email">
+        <input id="ins-email" required type="email" autoComplete="email" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })} className={inputClass} />
+      </Field>
+      <Field label="Phone" htmlFor="ins-phone">
+        <input id="ins-phone" required type="tel" autoComplete="tel" value={data.phone} onChange={(e) => setData({ ...data, phone: e.target.value })} className={inputClass} />
+      </Field>
+      <div className="sm:col-span-2">
+        <PrimaryButton type="submit" loading={sending}>
+          Get insurance quotes
+        </PrimaryButton>
+        <p className="mt-2 text-sm text-muted-foreground">We share these details only with the insurance partner who sends your quotes.</p>
+      </div>
+    </form>
+  );
+}
+
+const FAQS = [
+  ['Where can I find my VIN?', "On the driver's side of the dashboard (look through the windshield), on the sticker in the driver's door jamb, and on your registration and insurance card."],
+  ['What does this report include?', 'Factory specs and safety equipment from NHTSA’s VIN decoder, safety recalls, owner complaints and 5-Star crash ratings from NHTSA, and EPA fuel economy. All of it is free public data.'],
+  ['Does it show accidents or title problems?', 'No. Accident, title, odometer and ownership history comes from paid history reports. Use the history report link above for those.'],
+  ['Does a listed recall mean this car still needs the repair?', 'Not necessarily. The report lists recalls for the model. To see whether this exact car’s recall was already fixed, enter its VIN at nhtsa.gov/recalls or ask a dealer.'],
+  ['Which vehicles work?', 'Any 17-character VIN, which covers vehicles built since 1981: cars, SUVs, trucks, motorcycles and more. Recalls, ratings and fuel economy depend on what NHTSA and the EPA have published for that model.'],
+];
+
+const VinLookup: React.FC = () => {
+  const [params, setParams] = useSearchParams();
+  const [input, setInput] = useState('');
+  const [decoded, setDecoded] = useState<{ vin: string; data: DecodedVin } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  const check = checkVin(input);
+  const live =
+    input.length === 0
+      ? null
+      : check.problem === 'characters'
+        ? 'VINs never use the letters I, O or Q.'
+        : check.problem === 'length'
+          ? `${check.vin.length} of 17 characters`
+          : check.problem === 'check-digit'
+            ? "17 characters, but the check digit doesn't match. Double-check for typos."
+            : 'Valid VIN format';
+
+  const vinParam = params.get('vin') ?? '';
+  useEffect(() => {
+    const { vin, problem } = checkVin(vinParam);
+    if (!vin || problem === 'length' || problem === 'characters') return;
+    setInput(vin);
+    let current = true;
+    setLoading(true);
+    setError(null);
+    decodeVin(vin)
+      .then((data) => {
+        if (!current) return;
+        if (!data.fields.Make) setError("NHTSA couldn't decode this VIN. Check it against the VIN on the car.");
+        else {
+          setDecoded({ vin, data });
+          requestAnimationFrame(() => reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        }
+      })
+      .catch(() => current && setError("NHTSA's VIN decoder didn't respond. Please try again."))
+      .finally(() => current && setLoading(false));
+    return () => {
+      current = false;
+    };
+  }, [vinParam]);
+
+  const submit = (vin: string) => {
+    const result = checkVin(vin);
+    if (result.problem === 'length' || result.problem === 'characters') {
+      setError(result.problem === 'length' ? 'A VIN has exactly 17 characters.' : 'VINs never use the letters I, O or Q.');
+      return;
+    }
+    setError(null);
+    setParams({ vin: result.vin });
+  };
+
+  const vehicleName = decoded ? [decoded.data.fields.ModelYear, titleCase(decoded.data.fields.Make ?? ''), decoded.data.fields.Model].filter(Boolean).join(' ') : '';
+
+  return (
+    <ToolPage
+      category="warnings"
+      title="VIN decoder and vehicle report"
+      intro="Enter a 17-character VIN to get the car's factory specs, safety recalls, owner complaints, crash-test ratings and fuel economy in one free report."
+      sources="NHTSA VIN decoder (vPIC), NHTSA recalls, complaints and 5-Star Safety Ratings, EPA fueleconomy.gov"
+    >
+      <Panel>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit(input);
+          }}
+        >
+          <Field label="VIN" htmlFor="vin" hint="Find it at the bottom of the windshield on the driver's side, or on the driver's door jamb.">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <input
+                id="vin"
+                value={input}
+                onChange={(e) => setInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 17))}
+                placeholder="1HGCM82633A004352"
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                aria-describedby="vin-status"
+                className={cn(inputClass, 'h-14 font-mono text-xl font-semibold tracking-[0.08em]')}
+              />
+              <PrimaryButton type="submit" loading={loading} className="h-14 px-6 text-lg">
+                Get report
+              </PrimaryButton>
+            </div>
+          </Field>
+          <p id="vin-status" aria-live="polite" className={cn('mt-2 text-[0.9375rem] font-semibold', check.problem && input ? 'text-muted-foreground' : 'text-sign-green dark:text-emerald-300')}>
+            {live}
+          </p>
+          {!decoded && (
+            <button
+              type="button"
+              onClick={() => {
+                setInput(EXAMPLE_VIN);
+                submit(EXAMPLE_VIN);
+              }}
+              className={cn('mt-2 cursor-pointer rounded-sm text-[0.9375rem] font-semibold underline underline-offset-4', focusRing)}
+            >
+              Try an example VIN
+            </button>
+          )}
+        </form>
+        {error && (
+          <Notice tone="error" className="mt-4">
+            {error}
+          </Notice>
+        )}
+      </Panel>
+
+      <div ref={reportRef} className="scroll-mt-24">
+        {decoded && <Report vin={decoded.vin} decoded={decoded.data} />}
+      </div>
+
+      {decoded && (
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <Panel>
+            <PanelTitle>Accidents, title and odometer history</PanelTitle>
+            <p className="mt-2 text-[0.9375rem] text-muted-foreground">
+              This report covers factory data and NHTSA records. Accidents, title brands, odometer readings and previous owners come
+              from a paid vehicle history report.
+            </p>
+            <a
+              href="https://goodcar.com/vehicle-history"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn('mt-4 inline-flex h-11 items-center gap-2 rounded-lg bg-sign-blue px-5 font-bold text-white hover:opacity-90', focusRing)}
+            >
+              Get a history report from GoodCar <ExternalLink className="size-4" aria-hidden="true" />
+            </a>
+          </Panel>
+          <Panel>
+            <PanelTitle>Insurance quotes for this {decoded.data.fields.Model}</PanelTitle>
+            <p className="mt-2 mb-4 text-[0.9375rem] text-muted-foreground">Compare rates for the {vehicleName} before you buy.</p>
+            <InsuranceQuoteForm vin={decoded.vin} vehicle={vehicleName} />
+          </Panel>
         </div>
       )}
-    </div>
+
+      <section className="mt-16 max-w-3xl" aria-labelledby="vin-faq">
+        <h2 id="vin-faq" className="font-heading text-2xl font-extrabold">
+          Questions about VIN reports
+        </h2>
+        <div className="mt-4 divide-y divide-border border-y border-border">
+          {FAQS.map(([q, a]) => (
+            <details key={q} className="group py-4">
+              <summary className={cn('cursor-pointer list-none font-bold marker:hidden', focusRing)}>
+                <span className="flex items-center justify-between gap-4">
+                  {q}
+                  <span aria-hidden="true" className="text-xl text-muted-foreground transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </span>
+              </summary>
+              <p className="mt-2 text-muted-foreground">{a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    </ToolPage>
   );
 };
 

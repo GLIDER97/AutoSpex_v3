@@ -57,7 +57,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-200 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={onClose} />
 
       <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
@@ -130,7 +130,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
                       <input
                         type="text" required placeholder="Full Name"
                         value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-hidden"
                       />
                     </div>
                     <div className="relative">
@@ -138,7 +138,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
                       <input
                         type="tel" required placeholder="Phone Number"
                         value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-hidden"
                       />
                     </div>
                     <div className="relative">
@@ -146,7 +146,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
                       <input
                         type="email" required placeholder="Email Address"
                         value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-hidden"
                       />
                     </div>
                     <div className="relative">
@@ -154,7 +154,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
                       <input
                         type="text" required placeholder="ZIP Code"
                         value={formData.zip} onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-red-500 outline-hidden"
                       />
                     </div>
                   </div>
@@ -164,7 +164,7 @@ const SecondOpinionForm: React.FC<SecondOpinionFormProps> = ({ isOpen, onClose, 
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-[2] py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all flex items-center justify-center gap-2"
+                      className="flex-2 py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                     >
                       {loading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Get My Quote'}
                     </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { generateContent, Type } from '../utils/ai';
 import { 
   TrendingDown, TrendingUp, Car, DollarSign, Clock, 
   Hourglass, AlertCircle, AlertOctagon, Info, ChevronRight, 
@@ -40,7 +40,6 @@ const ValueShockCalculator: React.FC = () => {
     setResult(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         Act as a Used Car Market Analyst and Financial Auditor.
         Analyze the following vehicle for depreciation:
@@ -71,8 +70,8 @@ const ValueShockCalculator: React.FC = () => {
         }
       `;
 
-      const aiResponse = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+      const aiResponse = await generateContent({
+        model: 'text',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',
@@ -163,7 +162,7 @@ const ValueShockCalculator: React.FC = () => {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
             Is Your Car a <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-purple-600 to-pink-600">
                Financial Time Bomb?
             </span>
           </h1>
@@ -189,7 +188,7 @@ const ValueShockCalculator: React.FC = () => {
                             <input 
                                 type="text" placeholder="2020" value={request.year} 
                                 onChange={(e) => updateRequest('year', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
                             />
                         </div>
                         <div>
@@ -197,7 +196,7 @@ const ValueShockCalculator: React.FC = () => {
                             <input 
                                 type="text" placeholder="BMW" value={request.make} 
                                 onChange={(e) => updateRequest('make', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
                             />
                         </div>
                     </div>
@@ -208,7 +207,7 @@ const ValueShockCalculator: React.FC = () => {
                             <input 
                                 type="text" placeholder="X5" value={request.model} 
                                 onChange={(e) => updateRequest('model', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
                             />
                         </div>
                          <div>
@@ -216,7 +215,7 @@ const ValueShockCalculator: React.FC = () => {
                             <input 
                                 type="text" placeholder="xDrive40i" value={request.trim} 
                                 onChange={(e) => updateRequest('trim', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
                             />
                         </div>
                     </div>
@@ -227,7 +226,7 @@ const ValueShockCalculator: React.FC = () => {
                            <input 
                                 type="number" placeholder="45000" value={request.mileage} 
                                 onChange={(e) => updateRequest('mileage', e.target.value)} 
-                                className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                                className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 outline-hidden transition-all"
                             />
                             <span className="absolute right-4 top-3.5 text-slate-400 text-sm font-bold">miles</span>
                         </div>
@@ -323,7 +322,7 @@ const ValueShockCalculator: React.FC = () => {
               </div>
 
               {/* MONETIZATION STRATEGY: RESALE REFERRAL */}
-              <div className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-[2.5rem] p-8 sm:p-10 mb-8 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in zoom-in-95 duration-500 delay-200">
+              <div className="bg-linear-to-br from-purple-600 to-indigo-700 rounded-[2.5rem] p-8 sm:p-10 mb-8 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in zoom-in-95 duration-500 delay-200">
                  <div className="absolute top-0 right-0 p-8 opacity-5">
                     <Zap className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
                  </div>
@@ -491,7 +490,7 @@ const ValueShockCalculator: React.FC = () => {
                             desc: "Stop viewing your car as a static expense and start managing it as a depreciating asset." 
                         },
                     ].map((item, i) => (
-                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all group">
+                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
                             <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
                             <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
                             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
@@ -506,7 +505,7 @@ const ValueShockCalculator: React.FC = () => {
                 How It Works
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-4">
                     <Car className="w-7 h-7" />
                     </div>
@@ -515,7 +514,7 @@ const ValueShockCalculator: React.FC = () => {
                     Input your year, make, model, and mileage to pull current market valuation data.
                     </p>
                 </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
                     <TrendingDown className="w-7 h-7" />
                     </div>
@@ -524,7 +523,7 @@ const ValueShockCalculator: React.FC = () => {
                     Our AI analyzes millions of sales records to determine your specific depreciation curve.
                     </p>
                 </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center mb-4">
                     <DollarSign className="w-7 h-7" />
                     </div>
@@ -587,7 +586,7 @@ const ValueShockCalculator: React.FC = () => {
                         >
                             <button
                                 onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                                className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
+                                className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
                             >
                                 <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                                 {faq.question}

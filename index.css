@@ -1,78 +1,174 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/overpass';
+@import '@fontsource-variable/overpass-mono';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  MyAutoSpex design system: US highway signage.
+
+  Color carries the same meaning it has on the road (MUTCD):
+    yellow = warnings and checks, green = guidance (money decisions),
+    blue = motorist services, brown = recreation (just for fun).
+  Sign colors never change between light and dark mode, just like real signs.
+  Type is Overpass, an open-source descendant of Highway Gothic, the lettering
+  on US road signs. Overpass Mono is only for real codes and VINs.
+*/
+@theme {
+  --color-sign-green: #006b4f;
+  --color-sign-green-strong: #00573f;
+  --color-sign-yellow: #ffcd00;
+  --color-sign-blue: #1f4f96;
+  --color-sign-brown: #6e4428;
+  --color-sign-red: #b3122e;
+  --color-sign-ink: #16181a;
+
+  /* Asphalt and concrete neutrals. They replace Tailwind's blue-tinted slate
+     scale everywhere, so older pages share the same greys. */
+  --color-slate-50: #f4f5f5;
+  --color-slate-100: #ebeded;
+  --color-slate-200: #dcdfe0;
+  --color-slate-300: #c3c8ca;
+  --color-slate-400: #959ca0;
+  --color-slate-500: #6c7378;
+  --color-slate-600: #50575c;
+  --color-slate-700: #3b4146;
+  --color-slate-800: #2c3135;
+  --color-slate-900: #212528;
+  --color-slate-950: #181b1e;
+
+  /* Legacy brand tokens still used by the tool pages. */
+  --color-brand-dark: #181b1e;
+  --color-brand-primary: #f59e0b;
+  --color-brand-accent: #1f4f96;
+
+  --font-sans: 'Overpass Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Overpass Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Overpass Mono Variable', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* shadcn/ui tokens mapped onto the palette above. */
+:root {
+  --background: #f4f5f5;
+  --foreground: #16181a;
+  --card: #ffffff;
+  --card-foreground: #16181a;
+  --popover: #ffffff;
+  --popover-foreground: #16181a;
+  --primary: #006b4f;
+  --primary-foreground: #ffffff;
+  --secondary: #ebeded;
+  --secondary-foreground: #16181a;
+  --muted: #ebeded;
+  --muted-foreground: #50575c;
+  --accent: #ebeded;
+  --accent-foreground: #16181a;
+  --destructive: #b3122e;
+  --border: #dcdfe0;
+  --input: #c3c8ca;
+  --ring: #1f4f96;
+  --radius: 0.625rem;
+  /* Chart series, validated for color-vision deficiency and contrast (light surface). */
+  --chart-1: #1f4f96;
+  --chart-2: #b07800;
+}
+
+.dark {
+  --background: #181b1e;
+  --foreground: #f4f5f5;
+  --card: #212528;
+  --card-foreground: #f4f5f5;
+  --popover: #212528;
+  --popover-foreground: #f4f5f5;
+  --primary: #006b4f;
+  --primary-foreground: #ffffff;
+  --secondary: #2c3135;
+  --secondary-foreground: #f4f5f5;
+  --muted: #2c3135;
+  --muted-foreground: #a4abaf;
+  --accent: #2c3135;
+  --accent-foreground: #f4f5f5;
+  --destructive: #ff6b7f;
+  --border: #2c3135;
+  --input: #3b4146;
+  --ring: #ffcd00;
+  /* Chart series, validated against the dark card surface. */
+  --chart-1: #4f7fd0;
+  --chart-2: #c08600;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
 
 @layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
   html {
-    scroll-behavior: smooth;
+    background-color: var(--background);
   }
-  
+  .dark {
+    color-scheme: dark;
+  }
   body {
-    @apply bg-slate-50 text-slate-900 transition-colors duration-300;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'kern', 'liga';
   }
-
-  .dark body {
-    @apply bg-slate-950 text-slate-50;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 }
 
-@layer utilities {
-  .animate-in {
-    animation-duration: 0.5s;
-    animation-fill-mode: both;
-  }
-  
-  .fade-in {
-    animation-name: fadeIn;
-  }
-  
-  .slide-in-from-bottom-4 {
-    animation-name: slideInFromBottom4;
-  }
-  
-  .slide-in-from-bottom-8 {
-    animation-name: slideInFromBottom8;
-  }
-  
-  .zoom-in-95 {
-    animation-name: zoomIn95;
-  }
+/* A road sign's white border, inset from the edge of the panel. */
+@utility sign-inset {
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
 
-  /* Custom Scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
     width: 8px;
   }
-  .custom-scrollbar::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     @apply bg-slate-200 dark:bg-slate-900;
   }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     @apply bg-slate-400 rounded-full hover:bg-slate-500;
   }
-
-  /* Slow Glow Animation */
-  .animate-slow-glow {
-    animation: slow-glow 3s ease-in-out infinite;
-  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideInFromBottom4 {
-  from { transform: translateY(1rem); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes slideInFromBottom8 {
-  from { transform: translateY(2rem); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes zoomIn95 {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@utility animate-slow-glow {
+  animation: slow-glow 3s ease-in-out infinite;
 }
 
 @keyframes slow-glow {

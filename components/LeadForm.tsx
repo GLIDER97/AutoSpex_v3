@@ -47,7 +47,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-150 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={onClose} />
 
       <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
@@ -93,7 +93,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
                           value={formData.carName}
                           onChange={(e) => setFormData({ ...formData, carName: e.target.value })}
                           placeholder="e.g. 2018 Toyota Camry"
-                          className="w-full p-4 pl-12 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+                          className="w-full p-4 pl-12 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden transition-all"
                         />
                       </div>
                     </div>
@@ -122,7 +122,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
                       <input
                         type="text" required placeholder="Full Name"
                         value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                       />
                     </div>
                     <div className="relative">
@@ -130,7 +130,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
                       <input
                         type="tel" required placeholder="Phone Number"
                         value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                       />
                     </div>
                     <div className="relative">
@@ -138,7 +138,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
                       <input
                         type="email" required placeholder="Email Address"
                         value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                       />
                     </div>
                     <div className="relative">
@@ -146,7 +146,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
                       <input
                         type="text" required placeholder="ZIP Code"
                         value={formData.zip} onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-none"
+                        className="w-full p-4 pl-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand-primary outline-hidden"
                       />
                     </div>
                   </div>
@@ -156,7 +156,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, errorCode, vehicle
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-[2] py-4 bg-brand-primary text-slate-900 font-bold rounded-2xl hover:bg-orange-400 transition-all flex items-center justify-center gap-2"
+                      className="flex-2 py-4 bg-brand-primary text-slate-900 font-bold rounded-2xl hover:bg-orange-400 transition-all flex items-center justify-center gap-2"
                     >
                       {loading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Request Quote'}
                     </button>

@@ -1,451 +1,582 @@
-import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { GoogleGenAI } from "@google/genai";
-import { 
-  Palette, Zap, Sparkles, MessageSquare, ChevronDown, 
-  ArrowRight, RefreshCw, Star, Info, Lock, 
-  CheckCircle2, Car, Download, Share2, Image as ImageIcon,
-  Gauge, LayoutGrid, X
-} from './Icons';
-import { WrapDesignRequest } from '../types';
+import React, { useEffect, useRef, useState } from 'react';
+import { Download, ImagePlus, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { generateContent, imageDataUrl } from '../utils/ai';
+import { searchShops, type ShopSearch } from '../utils/places';
+import {
+  CARE,
+  COVERAGE,
+  FINISHES,
+  SIZES,
+  choiceLabel,
+  nearestAspect,
+  photoPrompt,
+  preparePhoto,
+  vehiclePrompt,
+  wrapCost,
+  type CoverageId,
+  type FinishId,
+  type PreparedPhoto,
+  type SizeId,
+  type WrapColor,
+} from '../utils/wrap';
+import {
+  Faq,
+  FactList,
+  Field,
+  Notice,
+  Panel,
+  PanelTitle,
+  PrimaryButton,
+  SecondaryButton,
+  Spinner,
+  ToolPage,
+  VehicleFields,
+  focusRing,
+  inputClass,
+  moneyRange,
+  rememberZip,
+  rememberedZip,
+  vehicleLabel,
+  type Vehicle,
+} from './tool/kit';
+import ShopResults from './tool/ShopResults';
 
-const INITIAL_REQUEST: WrapDesignRequest = {
-  vehicleType: 'Supercar',
-  prompt: '',
-  artStyle: 'Realistic Photo'
+interface Render {
+  id: number;
+  src: string;
+  /** The photo it was made from (null when the car was drawn from its name). */
+  before: PreparedPhoto | null;
+  label: string;
+}
+
+const MAX_RENDERS = 6;
+
+const swatchBackground = (finish: FinishId, color: WrapColor): React.CSSProperties => {
+  const [a, b] = color.hex;
+  if (b) return { background: `linear-gradient(135deg, ${a} 15%, ${b} 85%)` };
+  if (finish === 'chrome') return { background: `linear-gradient(135deg, ${a} 0%, #ffffff 45%, ${a} 55%, #00000055 100%)`, backgroundColor: a };
+  if (finish === 'carbon')
+    return { background: `repeating-linear-gradient(45deg, ${a} 0 3px, #ffffff22 3px 4px), repeating-linear-gradient(-45deg, ${a} 0 3px, #00000033 3px 4px)`, backgroundColor: a };
+  if (finish === 'metallic') return { background: `radial-gradient(circle at 30% 30%, #ffffff66, transparent 55%), ${a}` };
+  if (finish === 'gloss') return { background: `radial-gradient(circle at 30% 25%, #ffffffaa 0 8%, transparent 30%), ${a}` };
+  return { background: a };
 };
 
-const ART_STYLES: WrapDesignRequest['artStyle'][] = [
-  'Realistic Photo',
-  'Illustration',
-  'Racing Livery',
-  'Matte Stealth',
-  'Carbon Fiber',
-  'Iridescent Pearl',
-  'Geometric Camo',
-  'Cyberpunk Neon',
-  'Retro Vintage'
-];
-
-const WrapDesigner: React.FC = () => {
-  const [request, setRequest] = useState<WrapDesignRequest>(INITIAL_REQUEST);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  const updateRequest = (field: keyof WrapDesignRequest, value: string) => {
-    setRequest(prev => ({ ...prev, [field]: value as any }));
-  };
-
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!request.prompt) {
-      setError("Please describe your design vision first!");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
-      // Prompt Expansion Logic
-      const expandedPrompt = `A high-resolution, professional automotive photograph of a ${request.vehicleType} with a full custom vinyl wrap featuring ${request.prompt}. The style is ${request.artStyle}. The car is shown in a studio setting with cinematic lighting. 8k resolution, photorealistic, vinyl texture detail.`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image',
-        contents: [{ text: expandedPrompt }],
-        config: {
-          imageConfig: {
-            aspectRatio: "16:9"
-          }
-        }
-      });
-
-      // Find image part in the response
-      let imageUrl = null;
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData) {
-          imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-          break;
-        }
-      }
-
-      if (!imageUrl) throw new Error("AI failed to visualize the design.");
-      setGeneratedImage(imageUrl);
-    } catch (err) {
-      console.error(err);
-      setError("Visualizer engine stalled! Try simplified keywords for your design.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDownload = () => {
-    if (!generatedImage) return;
-    const link = document.createElement('a');
-    link.href = generatedImage;
-    link.download = `MyAutoSpex-Wrap-${request.vehicleType.replace(' ', '-')}.png`;
-    link.click();
-  };
-
-  const faqs = [
-    {
-      question: "How does the AI create car wraps?",
-      answer: "Our visualizer uses a specialized automotive model trained on thousands of vehicle textures and lighting scenarios. It maps your text prompt onto a 3D-aware representation of the vehicle type you select."
-    },
-    {
-      question: "Can I use these designs for real wraps?",
-      answer: "These are visual concepts intended for inspiration. While they look photorealistic, you would need to work with a professional wrap shop to translate these into printable vector assets for a real vehicle."
-    },
-    {
-      question: "Which vehicle types are supported?",
-      answer: "We currently support five major categories: Supercars, Muscle Cars, SUVs, Pickup Trucks, and Sedans. We use generic, high-end models for each category to ensure the wrap patterns remain the focus."
-    },
-    {
-      question: "Is there a limit to what I can prompt?",
-      answer: "The AI works best with descriptive visual terms like 'matte neon circuit patterns', 'galactic nebula purple', or 'vintage racing livery'. Avoid using brand names or complex text labels as the AI excels at textures and patterns."
-    },
-    {
-      question: "Is this tool free?",
-      answer: "Yes, the AI Wrap Designer is part of the MyAutoSpex free utility suite. We provide it to help car enthusiasts explore their creativity before committing to expensive physical modifications."
-    }
-  ];
-
-  const FullscreenModal = generatedImage && isFullscreen ? createPortal(
-    <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center p-4 animate-in fade-in duration-300">
-      <button 
-        onClick={() => setIsFullscreen(false)}
-        className="absolute top-6 right-6 z-[210] p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors backdrop-blur-md"
-      >
-        <X className="w-6 h-6" />
-      </button>
-      
-      <div className="relative w-full max-w-6xl h-full flex items-center justify-center overflow-auto custom-scrollbar touch-pan-x touch-pan-y">
-        <div className="relative bg-slate-950 rounded-[1.8rem] overflow-hidden border border-white/10 shadow-2xl scale-in-center">
-          <img 
-            src={generatedImage} 
-            alt="Custom Wrap Design Fullscreen" 
-            className="w-full h-auto max-h-[85vh] object-contain select-none"
-          />
-          
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 text-center pt-12 hidden sm:block">
-            <div className="flex items-center justify-center gap-2 mb-1">
-               <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center">
-                  <Gauge className="w-4 h-4 text-black" strokeWidth={3} />
-               </div>
-               <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">MyAutoSpex AI Visualizer</span>
-            </div>
-            <p className="text-[8px] text-white/40 uppercase tracking-widest">Created with AI Wrap Designer | Automotive Concept Studio</p>
-          </div>
-
-          <div className="absolute top-4 left-4 hidden sm:block">
-             <span className="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-               {request.vehicleType} Concept
-             </span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="absolute bottom-10 flex gap-4 no-print">
-        <button 
-          onClick={handleDownload}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-slate-100 transition-all"
-        >
-          <Download className="w-5 h-5" /> Download
-        </button>
-      </div>
-    </div>,
-    document.body
-  ) : null;
-
+/** Before/after comparison: drag (or use the arrow keys) to reveal the wrap. */
+function CompareSlider({ before, after, label }: { before: PreparedPhoto; after: string; label: string }) {
+  const [pos, setPos] = useState(50);
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {FullscreenModal}
-      
-      {/* Hero Section */}
-      <div className="text-center mb-10 max-w-3xl">
-        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-blue-600 dark:text-blue-400 mb-8 shadow-lg shadow-blue-500/10 cursor-default">
-            <Palette className="w-4 h-4" />
-            AI Design Visualizer
-        </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-          AI Custom Car <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">
-             Wrap Designer
-          </span>
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-          Visualize your dream design in seconds. Enter a vision, pick a car, and let AI generate a high-fidelity concept for your next modification.
-        </p>
+    <div
+      className="relative overflow-hidden rounded-lg bg-muted select-none has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-ring has-[input:focus-visible]:outline-solid"
+      style={{ aspectRatio: `${before.width} / ${before.height}` }}
+    >
+      <img src={after} alt={`AI preview: ${label}`} className="absolute inset-0 size-full object-cover" />
+      <img
+        src={before.dataUrl}
+        alt="Your photo before the wrap"
+        className="absolute inset-0 size-full object-cover"
+        style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
+      />
+      <div className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.25)]" style={{ left: `${pos}%` }}>
+        <span className="absolute top-1/2 left-1/2 flex size-9 -translate-1/2 items-center justify-center rounded-full bg-white text-sm font-bold text-sign-ink shadow-md">
+          ‹›
+        </span>
       </div>
-
-      <div className="w-full max-w-5xl grid lg:grid-cols-12 gap-8 mb-20 px-4">
-        
-        {/* Left: Input Controls */}
-        <div className="lg:col-span-5 order-2 lg:order-1">
-          <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 sticky top-24">
-            <form onSubmit={handleGenerate} className="space-y-6">
-              <div>
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
-                  <Car className="w-4 h-4 text-blue-500" /> Vehicle Type
-                </label>
-                <select 
-                  value={request.vehicleType}
-                  onChange={(e) => updateRequest('vehicleType', e.target.value)}
-                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
-                >
-                  <option value="Supercar">Supercar</option>
-                  <option value="Muscle Car">Muscle Car</option>
-                  <option value="SUV">SUV</option>
-                  <option value="Pickup Truck">Pickup Truck</option>
-                  <option value="Sedan">Sedan</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-blue-500" /> Design Vision
-                </label>
-                <textarea 
-                  placeholder="e.g. Cyberpunk neon circuit patterns on matte black, or Galactic nebula colors with silver highlights..." 
-                  value={request.prompt}
-                  onChange={(e) => updateRequest('prompt', e.target.value)}
-                  rows={4}
-                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none text-sm leading-relaxed"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-blue-500" /> Art Style
-                </label>
-                <div className="relative">
-                  <select 
-                    value={request.artStyle}
-                    onChange={(e) => updateRequest('artStyle', e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer appearance-none"
-                  >
-                    {ART_STYLES.map((style) => (
-                      <option key={style} value={style}>{style}</option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <ChevronDown className="w-5 h-5" />
-                  </div>
-                </div>
-              </div>
-
-              <button 
-                type="submit"
-                disabled={loading}
-                className="w-full py-4 rounded-xl bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
-                {loading ? "Visualizing Design..." : "Generate Wrap Concept"}
-              </button>
-
-              {error && (
-                <p className="text-center text-xs font-bold text-red-500 bg-red-50 dark:bg-red-950/20 p-3 rounded-xl border border-red-200 dark:border-red-900">
-                  {error}
-                </p>
-              )}
-            </form>
-          </div>
-        </div>
-
-        {/* Right: Output Display */}
-        <div className="lg:col-span-7 order-1 lg:order-2">
-          {generatedImage ? (
-            <div className="space-y-6 animate-in zoom-in-95 duration-500">
-              <div className="relative group cursor-zoom-in" onClick={() => setIsFullscreen(true)}>
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[2rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-                
-                {/* The Branded Frame Container */}
-                <div className="relative bg-slate-950 rounded-[1.8rem] overflow-hidden border border-white/5 shadow-2xl">
-                  <img 
-                    src={generatedImage} 
-                    alt="Custom Wrap Design" 
-                    className="w-full h-auto aspect-video object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                  />
-                  
-                  {/* Subtle Branded Footer Overlay - Hidden on mobile to avoid obscuring the car */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 text-center pt-12 hidden sm:block">
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                       <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center">
-                          <Gauge className="w-4 h-4 text-black" strokeWidth={3} />
-                       </div>
-                       <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">MyAutoSpex AI Visualizer</span>
-                    </div>
-                    <p className="text-[8px] text-white/40 uppercase tracking-widest">Created with AI Wrap Designer | Automotive Concept Studio</p>
-                  </div>
-
-                  {/* Badge - Hidden on mobile */}
-                  <div className="absolute top-4 left-4 hidden sm:block">
-                     <span className="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                       {request.vehicleType} Concept
-                     </span>
-                  </div>
-                  
-                  {/* Hover indicator for full screen */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                     <div className="px-4 py-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs font-bold flex items-center gap-2">
-                        <ImageIcon className="w-4 h-4" /> Click to Expand
-                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                 <button 
-                  onClick={handleDownload}
-                  className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-sm"
-                 >
-                    <Download className="w-5 h-5 text-blue-500" /> Save Design
-                 </button>
-                 <button 
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({ title: 'My Custom Car Wrap', text: 'Check out this design I created with MyAutoSpex AI!', url: window.location.href });
-                    }
-                  }}
-                  className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors shadow-sm"
-                 >
-                    <Share2 className="w-5 h-5 text-indigo-500" /> Share Concept
-                 </button>
-              </div>
-              
-              <p className="text-center text-xs text-slate-500 italic">
-                *Conceptual rendering. Professional application requires manual templating.
-              </p>
-            </div>
-          ) : (
-            <div className="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[2rem] bg-slate-50 dark:bg-slate-900/20 p-12 text-center group">
-               <div className="w-20 h-20 rounded-[2rem] bg-white dark:bg-slate-800 shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <ImageIcon className="w-10 h-10 text-slate-300 dark:text-slate-600" />
-               </div>
-               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Ready to Visualize?</h3>
-               <p className="text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-                 Fill in your design details on the left and hit generate to see your concept come to life in 8K resolution.
-               </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Trust & Secondary Sections */}
-      <div className="w-full max-w-5xl mx-auto space-y-24 mt-20 mb-20 px-4">
-        
-        {/* About the Designer */}
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">About the Visualizer</h2>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                    Car modifications start with a spark of imagination. The <span className="text-blue-600 font-bold">MyAutoSpex AI Wrap Designer</span> takes that spark and renders it into professional-grade advertising creative.
-                </p>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                    By combining your creative prompts with our automotive photography engine, we bridge the gap between "I have an idea" and "I can see the result." Whether you're planning a fleet of SUVs or a one-off Supercar masterpiece, our AI handles the lighting, perspective, and material physics for you.
-                </p>
-            </div>
-            <div className="bg-blue-50 dark:bg-blue-900/10 rounded-3xl p-8 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden">
-                <LayoutGrid className="absolute -bottom-4 -right-4 w-32 h-32 text-blue-500/10" />
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Designer Features</h3>
-                <ul className="space-y-4">
-                    <li className="flex gap-3">
-                        <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center shrink-0 font-bold text-xs">1</div>
-                        <p className="text-sm text-slate-600 dark:text-slate-400"><span className="font-bold text-slate-900 dark:text-white">Studio Lighting:</span> Every render uses cinematic, studio-grade virtual lighting for the most realistic preview.</p>
-                    </li>
-                    <li className="flex gap-3">
-                        <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center shrink-0 font-bold text-xs">2</div>
-                        <p className="text-sm text-slate-600 dark:text-slate-400"><span className="font-bold text-slate-900 dark:text-white">Texture Engine:</span> Our AI simulates the sheen of vinyl—from ultra-matte to high-gloss and iridescent finishes.</p>
-                    </li>
-                    <li className="flex gap-3">
-                        <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center shrink-0 font-bold text-xs">3</div>
-                        <p className="text-sm text-slate-600 dark:text-slate-400"><span className="font-bold text-slate-900 dark:text-white">Social Ready:</span> Every concept includes our custom branded frame, perfect for sharing your vision with followers.</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        {/* Testimonials */}
-        <div className="px-4">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-16">Global Designs</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-                {[
-                    { name: "Caleb V.", text: "Created a 'Cyber-Samurai' livery concept for my SUV. Showed it to my local shop and they used it as the direct reference for the final install. Mind-blown.", stars: 5 },
-                    { name: "Sonia M.", text: "Perfect for social media. I use this to visualize different holiday-themed wraps for my business van. The realism is better than expensive rendering software.", stars: 5 },
-                    { name: "Derek W.", text: "The art style toggle is great. The 'Racing Livery' mode actually understands aerodynamics and sponsor placement logic. Really smart tool.", stars: 5 },
-                ].map((review, i) => (
-                    <div key={i} className="bg-slate-50 dark:bg-slate-800/40 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 group">
-                        <div className="flex gap-1 mb-4 text-orange-400">
-                            {[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                        </div>
-                        <p className="text-slate-600 dark:text-slate-300 italic mb-8 leading-relaxed">"{review.text}"</p>
-                        <div className="flex items-center gap-4 border-t border-slate-200 dark:border-slate-700/50 pt-6">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center font-black text-sm">
-                                {review.name.charAt(0)}
-                            </div>
-                            <h4 className="font-bold text-slate-900 dark:text-white text-sm">{review.name}</h4>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-
-        {/* FAQs */}
-        <div className="max-w-4xl mx-auto px-4 pb-20">
-            <div className="text-center mb-10">
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-3">
-                    <MessageSquare className="w-7 h-7 text-blue-500" />
-                    Common Questions
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400">Everything you need to know about AI Design concepts.</p>
-            </div>
-            
-            <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                    <div 
-                        key={index} 
-                        className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
-                            openFaqIndex === index 
-                            ? 'bg-white dark:bg-slate-900 border-blue-500/30 shadow-lg shadow-blue-500/5' 
-                            : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                        }`}
-                    >
-                        <button
-                            onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                            className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
-                        >
-                            <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                            {faq.question}
-                            </span>
-                            <ChevronDown 
-                            className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${
-                                openFaqIndex === index ? 'rotate-180 text-blue-500' : ''
-                            }`} 
-                            />
-                        </button>
-                        <div 
-                            className={`transition-all duration-300 ease-in-out ${
-                            openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                            }`}
-                        >
-                            <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0">
-                            {faq.answer}
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-
-      </div>
-
+      <span className="pointer-events-none absolute top-2 left-2 rounded bg-black/65 px-2 py-0.5 text-xs font-bold text-white">Before</span>
+      <span className="pointer-events-none absolute top-2 right-2 rounded bg-black/65 px-2 py-0.5 text-xs font-bold text-white">After</span>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        value={pos}
+        onChange={(e) => setPos(Number(e.target.value))}
+        aria-label="Compare before and after"
+        aria-valuetext={`${pos}% before, ${100 - pos}% after`}
+        className="absolute inset-0 size-full cursor-ew-resize opacity-0"
+      />
     </div>
   );
-};
+}
 
-export default WrapDesigner;
+const BEFORE_YOU_WRAP: [string, string][] = [
+  ['Check the paint first', 'Film sticks best to healthy factory paint. Over chips, peeling clear coat or a cheap respray it can lift, and removal can pull paint off.'],
+  ['Ask for cast film by name', 'Premium cast film conforms to curves and lasts 5 to 7 years. Cheaper calendered film shrinks and cracks sooner.'],
+  ['See a real sample in daylight', 'No screen or AI preview shows exactly how a film looks in the sun. Ask the shop for a swatch and hold it against your car.'],
+  ['Ask about seams, jambs and warranty', 'Where will the seams be? Are door jambs included? How long is the install guaranteed against lifting and bubbles? 1 to 3 years is common.'],
+  ['Check your state rules', 'Some states expect you to update the color on your registration after a full wrap, and some limit mirror-like chrome film. Check with your DMV.'],
+  ['Leased car?', 'Wraps are usually fine on a lease and protect the paint, but have the film removed by a shop before you hand the car back.'],
+];
+
+const FAQS: [string, string][] = [
+  [
+    'Can I see the wrap on my own car?',
+    'Yes. Upload a photo of your car and pick a film color, finish and coverage. The AI changes only the wrapped panels and keeps your car, wheels and background as they are.',
+  ],
+  [
+    'How accurate is the preview?',
+    "It's a realistic AI render, close enough to choose between colors and finishes. Small details such as reflections, badges or wheels can come out slightly different, so look at a physical film sample before you decide.",
+  ],
+  [
+    'What happens to my photo?',
+    "It's sent to our AI provider only to make your preview, and MyAutoSpex doesn't store it. Your previews stay in your browser until you leave the page.",
+  ],
+  [
+    'How much does a car wrap cost?',
+    'In 2026 a full color-change wrap from a professional shop typically costs $2,500 to $3,800 for a compact car, $3,000 to $4,500 for a midsize sedan and $3,800 to $6,000 for a large SUV or pickup. Color-shift film costs about a third more and chrome nearly twice as much. A roof or hood starts around $250.',
+  ],
+  [
+    'Wrap or paint?',
+    'A wrap costs less than a quality color-change paint job, comes off again and protects the original paint, which helps resale. Paint lasts longer: standard wrap films last 5 to 7 years, chrome 1 to 3.',
+  ],
+  ['How long does a wrap take?', 'A full wrap usually takes 2 to 5 days at a shop, including cleaning, removing handles and lights, and letting the film set. A roof or hood takes a few hours.'],
+];
+
+export default function WrapDesigner() {
+  const [photo, setPhoto] = useState<PreparedPhoto | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [preparing, setPreparing] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [vehicle, setVehicle] = useState<Vehicle>({ year: '', make: '', model: '' });
+
+  const [coverage, setCoverage] = useState<CoverageId>('full');
+  const [finish, setFinish] = useState<FinishId>('satin');
+  const [color, setColor] = useState<WrapColor>(FINISHES[0].colors[3]);
+  const [customHex, setCustomHex] = useState('#2f6f8f');
+  const [extra, setExtra] = useState('');
+
+  const [renders, setRenders] = useState<Render[]>([]);
+  const [currentId, setCurrentId] = useState<number | null>(null);
+  const [rendering, setRendering] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
+
+  const [size, setSize] = useState<SizeId>('sedan');
+  const [zip, setZip] = useState('');
+  const [shops, setShops] = useState<{ search: ShopSearch; zip: string } | null>(null);
+  const [shopsLoading, setShopsLoading] = useState(false);
+  const [zipError, setZipError] = useState<string | null>(null);
+
+  const fileInput = useRef<HTMLInputElement>(null);
+  const preview = useRef<HTMLElement>(null);
+
+  useEffect(() => setZip(rememberedZip()), []);
+
+  const finishInfo = FINISHES.find((f) => f.id === finish)!;
+  const standardFinish = finishInfo.colors === FINISHES[0].colors;
+  const current = renders.find((r) => r.id === currentId) ?? null;
+  const cost = wrapCost(coverage, finish, size);
+
+  const chooseFinish = (id: FinishId) => {
+    setFinish(id);
+    const next = FINISHES.find((f) => f.id === id)!;
+    if (!next.colors.some((c) => c.name === color.name) && !(color.name === 'Custom color' && next.colors === FINISHES[0].colors)) {
+      setColor(next.colors[0]);
+    }
+  };
+
+  const onFile = async (file: File | undefined) => {
+    if (!file) return;
+    setPhotoError(null);
+    if (!file.type.startsWith('image/') && !/\.(heic|heif)$/i.test(file.name)) {
+      setPhotoError('That file is not a photo. Use a JPEG or PNG.');
+      return;
+    }
+    setPreparing(true);
+    try {
+      setPhoto(await preparePhoto(file));
+    } catch (err) {
+      setPhotoError(err instanceof Error ? err.message : "That photo couldn't be opened.");
+    } finally {
+      setPreparing(false);
+    }
+  };
+
+  const render = async () => {
+    const choice = { coverage, finish, color, extra };
+    setRendering(true);
+    setRenderError(null);
+    try {
+      const response = await generateContent(
+        photo
+          ? {
+              model: 'image',
+              contents: [{ inlineData: { mimeType: 'image/jpeg', data: photo.base64 } }, { text: photoPrompt(choice) }],
+              config: { imageConfig: { aspectRatio: nearestAspect(photo.width, photo.height) } },
+            }
+          : { model: 'image', contents: vehiclePrompt(choice, vehicleLabel(vehicle), size), config: { imageConfig: { aspectRatio: '3:2' } } },
+      );
+      const src = imageDataUrl(response);
+      if (!src) throw new Error('No picture came back. Please try again.');
+      const next: Render = { id: Date.now(), src, before: photo, label: choiceLabel(choice) };
+      setRenders((prev) => [next, ...prev].slice(0, MAX_RENDERS));
+      setCurrentId(next.id);
+      if (window.matchMedia('(max-width: 1023px)').matches) preview.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      setRenderError(err instanceof Error ? err.message : 'The preview could not be made. Please try again.');
+    } finally {
+      setRendering(false);
+    }
+  };
+
+  const findShops = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/^\d{5}$/.test(zip)) {
+      setZipError('Enter a 5-digit US ZIP code.');
+      return;
+    }
+    setZipError(null);
+    rememberZip(zip);
+    setShopsLoading(true);
+    const search = await searchShops(zip, 'wrap');
+    setShops({ search, zip });
+    setShopsLoading(false);
+  };
+
+  const downloadName = (r: Render) =>
+    `wrap-preview-${r.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.${r.src.startsWith('data:image/png') ? 'png' : r.src.startsWith('data:image/webp') ? 'webp' : 'jpg'}`;
+
+  return (
+    <ToolPage
+      category="fun"
+      title="See a wrap on your own car"
+      intro="Upload a photo of your car, pick a film color, finish and coverage, and get a realistic preview with a before and after view. You'll also see what it costs for your size of car and find wrap shops near you."
+      sources="AI image editing (Flux) for previews; typical 2026 US wrap shop prices for costs; Google Places for shops."
+    >
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:items-start">
+        <div className="space-y-6">
+          <Panel aria-labelledby="car-title">
+            <PanelTitle>
+              <span id="car-title">1. Your car</span>
+            </PanelTitle>
+            {photo ? (
+              <div className="mt-4">
+                <img src={photo.dataUrl} alt="Your car photo" className="w-full rounded-lg border border-border" />
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <SecondaryButton type="button" onClick={() => fileInput.current?.click()}>
+                    <ImagePlus className="size-4" aria-hidden="true" />
+                    Change photo
+                  </SecondaryButton>
+                  <SecondaryButton type="button" onClick={() => setPhoto(null)}>
+                    <X className="size-4" aria-hidden="true" />
+                    Remove
+                  </SecondaryButton>
+                </div>
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  'mt-4 rounded-lg border-2 border-dashed border-input p-5 text-center transition-colors',
+                  dragging && 'border-sign-green bg-sign-green/8',
+                )}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                  onFile(e.dataTransfer.files?.[0]);
+                }}
+              >
+                <PrimaryButton type="button" loading={preparing} onClick={() => fileInput.current?.click()}>
+                  {!preparing && <ImagePlus className="size-5" aria-hidden="true" />}
+                  Upload a photo of your car
+                </PrimaryButton>
+                <p className="mt-3 text-sm text-muted-foreground">or drop it here. Best: the whole car from the side or front corner, in daylight.</p>
+              </div>
+            )}
+            <input
+              ref={fileInput}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+              className="sr-only"
+              tabIndex={-1}
+              aria-label="Car photo"
+              onChange={(e) => {
+                onFile(e.target.files?.[0]);
+                e.target.value = '';
+              }}
+            />
+            {photoError && (
+              <Notice tone="error" className="mt-3">
+                {photoError}
+              </Notice>
+            )}
+            {!photo && (
+              <div className="mt-5 border-t border-border pt-4">
+                <p className="mb-3 text-[0.9375rem] font-semibold">No photo handy? We'll draw your model instead.</p>
+                <VehicleFields value={vehicle} onChange={setVehicle} optionalLabel />
+              </div>
+            )}
+            <p className="mt-4 text-sm text-muted-foreground">Your photo is used only to make the preview and isn't stored by MyAutoSpex.</p>
+          </Panel>
+
+          <Panel aria-labelledby="wrap-title">
+            <PanelTitle>
+              <span id="wrap-title">2. Your wrap</span>
+            </PanelTitle>
+
+            <fieldset className="mt-4">
+              <legend className="mb-2 text-[0.9375rem] font-semibold">Coverage</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {COVERAGE.map((c) => (
+                  <label
+                    key={c.id}
+                    className={cn(
+                      'cursor-pointer rounded-lg border p-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                      coverage === c.id ? 'border-sign-green bg-sign-green/8 ring-1 ring-sign-green' : 'border-input hover:bg-muted',
+                    )}
+                  >
+                    <input type="radio" name="coverage" value={c.id} checked={coverage === c.id} onChange={() => setCoverage(c.id)} className="sr-only" />
+                    <span className="block font-bold">{c.label}</span>
+                    <span className="block text-sm text-muted-foreground">{c.detail}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="mt-5">
+              <legend className="mb-2 text-[0.9375rem] font-semibold">Finish</legend>
+              <div className="flex flex-wrap gap-2">
+                {FINISHES.map((f) => (
+                  <label
+                    key={f.id}
+                    className={cn(
+                      'cursor-pointer rounded-full border px-3.5 py-1.5 text-[0.9375rem] font-semibold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                      finish === f.id ? 'border-foreground bg-foreground text-background' : 'border-input hover:bg-muted',
+                    )}
+                  >
+                    <input type="radio" name="finish" value={f.id} checked={finish === f.id} onChange={() => chooseFinish(f.id)} className="sr-only" />
+                    {f.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="mt-5">
+              <legend className="mb-2 text-[0.9375rem] font-semibold">
+                Color: <span className="font-normal">{color.name === 'Custom color' ? `custom ${color.hex[0]}` : color.name}</span>
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {finishInfo.colors.map((c) => (
+                  <label
+                    key={c.name}
+                    title={c.name}
+                    className={cn(
+                      'size-10 cursor-pointer rounded-full border border-black/15 transition-transform hover:scale-105 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid dark:border-white/25',
+                      color.name === c.name && 'ring-2 ring-foreground ring-offset-2 ring-offset-card',
+                    )}
+                    style={swatchBackground(finish, c)}
+                  >
+                    <input type="radio" name="color" checked={color.name === c.name} onChange={() => setColor(c)} className="sr-only" />
+                    <span className="sr-only">{c.name}</span>
+                  </label>
+                ))}
+                {standardFinish && (
+                  <label
+                    title="Custom color"
+                    className={cn(
+                      'relative flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-black/15 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid dark:border-white/25',
+                      color.name === 'Custom color' && 'ring-2 ring-foreground ring-offset-2 ring-offset-card',
+                    )}
+                    style={{ background: color.name === 'Custom color' ? customHex : 'conic-gradient(#e53935, #fdd835, #43a047, #1e88e5, #8e24aa, #e53935)' }}
+                  >
+                    <input
+                      type="color"
+                      value={customHex}
+                      onChange={(e) => {
+                        setCustomHex(e.target.value);
+                        setColor({ name: 'Custom color', hex: [e.target.value] });
+                      }}
+                      className="absolute inset-0 size-full cursor-pointer opacity-0"
+                    />
+                    <span className="sr-only">Custom color</span>
+                  </label>
+                )}
+              </div>
+            </fieldset>
+
+            <Field label="Anything else? (optional)" htmlFor="wrap-extra" className="mt-5" hint="For example: gloss black roof, bronze wheels, red brake calipers.">
+              <textarea
+                id="wrap-extra"
+                value={extra}
+                onChange={(e) => setExtra(e.target.value)}
+                maxLength={200}
+                rows={2}
+                className={cn(inputClass, 'h-auto py-2')}
+              />
+            </Field>
+
+            <PrimaryButton type="button" className="mt-5 w-full" loading={rendering} onClick={render}>
+              {photo ? 'Show it on my car' : 'Draw my wrap'}
+            </PrimaryButton>
+            {renderError && (
+              <Notice tone="error" className="mt-3">
+                {renderError}
+              </Notice>
+            )}
+          </Panel>
+        </div>
+
+        <div className="space-y-6">
+          <Panel aria-labelledby="preview-title" ref={preview as React.Ref<HTMLElement>} className="scroll-mt-24">
+            <PanelTitle>
+              <span id="preview-title">Preview</span>
+            </PanelTitle>
+            <div className="mt-4" aria-busy={rendering}>
+              {current ? (
+                current.before ? (
+                  <CompareSlider key={current.id} before={current.before} after={current.src} label={current.label} />
+                ) : (
+                  <img src={current.src} alt={`AI preview: ${current.label}`} className="w-full rounded-lg" />
+                )
+              ) : photo ? (
+                <img src={photo.dataUrl} alt="Your car before the wrap" className="w-full rounded-lg" />
+              ) : (
+                <div className="flex aspect-[3/2] items-center justify-center rounded-lg border-2 border-dashed border-input p-6 text-center text-muted-foreground">
+                  Upload a photo of your car, choose a wrap and your preview appears here.
+                </div>
+              )}
+              {rendering && (
+                <div className="mt-3">
+                  <Spinner label={photo ? 'Wrapping your car… this usually takes 10 to 20 seconds.' : 'Drawing your car… this usually takes 10 to 20 seconds.'} />
+                </div>
+              )}
+            </div>
+            {current && (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                <p className="font-semibold">{current.label}</p>
+                <a
+                  href={current.src}
+                  download={downloadName(current)}
+                  className={cn(
+                    'inline-flex h-10 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-[0.9375rem] font-semibold hover:bg-muted',
+                    focusRing,
+                  )}
+                >
+                  <Download className="size-4" aria-hidden="true" />
+                  Download
+                </a>
+              </div>
+            )}
+            {renders.length > 1 && (
+              <div className="mt-4">
+                <p className="text-sm font-semibold text-muted-foreground">Your previews</p>
+                <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                  {renders.map((r) => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      aria-pressed={r.id === currentId}
+                      aria-label={`Show ${r.label}`}
+                      onClick={() => setCurrentId(r.id)}
+                      className={cn(
+                        'shrink-0 cursor-pointer overflow-hidden rounded-md border-2',
+                        r.id === currentId ? 'border-foreground' : 'border-transparent opacity-80 hover:opacity-100',
+                        focusRing,
+                      )}
+                    >
+                      <img src={r.src} alt="" className="h-14 w-20 object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {current && (
+              <p className="mt-4 text-sm text-muted-foreground">
+                AI preview: small details can differ from your car, and no screen matches real film in sunlight. Ask a shop for a sample before you decide.
+              </p>
+            )}
+          </Panel>
+
+          <Panel aria-labelledby="cost-title">
+            <PanelTitle>
+              <span id="cost-title">What it costs</span>
+            </PanelTitle>
+            <Field label="Vehicle size" htmlFor="wrap-size" className="mt-4 max-w-xs">
+              <select id="wrap-size" value={size} onChange={(e) => setSize(e.target.value as SizeId)} className={inputClass}>
+                {SIZES.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <p className="mt-5 text-[0.9375rem] text-muted-foreground">
+              {COVERAGE.find((c) => c.id === coverage)!.label} in {finishInfo.label.toLowerCase()} film, installed by a shop
+            </p>
+            <p className="font-heading text-3xl font-extrabold tracking-[-0.01em]" aria-live="polite">
+              {moneyRange(cost.pro[0], cost.pro[1])}
+            </p>
+            <FactList
+              className="mt-4"
+              items={[
+                ['Film needed', `${cost.yards[0] === cost.yards[1] ? cost.yards[0] : `${cost.yards[0]} to ${cost.yards[1]}`} yards of 60-inch film`],
+                ['Film only, to do it yourself', moneyRange(cost.film[0], cost.film[1])],
+                ['Lasts', `${cost.years[0]} to ${cost.years[1]} years outdoors`],
+                ...(coverage === 'full'
+                  ? ([
+                      ['Door jambs', 'Add $500 to $1,500 to wrap them too'],
+                      ['Paint instead', 'A quality color-change paint job: $5,000 to $10,000 or more'],
+                    ] as [string, string][])
+                  : []),
+                ['Care', CARE[finish]],
+              ]}
+            />
+            <p className="mt-4 text-sm text-muted-foreground">Typical 2026 US prices for premium cast film. Prices vary by area and shop, so get two or three quotes.</p>
+          </Panel>
+        </div>
+      </div>
+
+      <Panel aria-labelledby="shops-title" className="mt-6">
+        <PanelTitle>
+          <span id="shops-title">Find wrap shops near you</span>
+        </PanelTitle>
+        <form noValidate onSubmit={findShops} className="mt-4 flex max-w-md items-end gap-3">
+          <Field label="ZIP code" htmlFor="wrap-zip" className="flex-1">
+            <input
+              id="wrap-zip"
+              value={zip}
+              onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
+              inputMode="numeric"
+              autoComplete="postal-code"
+              placeholder="e.g. 78701"
+              aria-invalid={zipError ? true : undefined}
+              aria-describedby={zipError ? 'wrap-zip-error' : undefined}
+              className={inputClass}
+            />
+          </Field>
+          <PrimaryButton type="submit" loading={shopsLoading}>
+            Find shops
+          </PrimaryButton>
+        </form>
+        {zipError && (
+          <p id="wrap-zip-error" role="alert" className="mt-3 text-[0.9375rem] font-semibold text-sign-red dark:text-red-300">
+            {zipError}
+          </p>
+        )}
+        {shops && (
+          <div className={cn('mt-5', shopsLoading && 'opacity-60')}>
+            <ShopResults result={shops.search} what="wrap shops" zip={shops.zip} />
+          </div>
+        )}
+      </Panel>
+
+      <Panel aria-labelledby="before-title" className="mt-6">
+        <PanelTitle>
+          <span id="before-title">Before you wrap</span>
+        </PanelTitle>
+        <ul className="mt-4 grid gap-x-8 gap-y-3 md:grid-cols-2">
+          {BEFORE_YOU_WRAP.map(([title, text]) => (
+            <li key={title} className="text-[0.9375rem] leading-relaxed">
+              <strong>{title}.</strong> <span className="text-muted-foreground">{text}</span>
+            </li>
+          ))}
+        </ul>
+      </Panel>
+
+      <Faq id="wrap-faq" title="Questions about car wraps" items={FAQS} />
+    </ToolPage>
+  );
+}

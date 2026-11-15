@@ -83,13 +83,13 @@ const DiyToolkits: React.FC = () => {
       
       {/* Header */}
       <div className="text-center mb-16 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm font-bold text-blue-600 dark:text-blue-400 mb-8 shadow-sm">
+        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm font-bold text-blue-600 dark:text-blue-400 mb-8 shadow-xs">
             <Wrench className="w-4 h-4" />
             Essential Driver Gear
         </div>
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
           DIY Fixes <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-600">
              & Essential Toolkits
           </span>
         </h1>
@@ -101,7 +101,7 @@ const DiyToolkits: React.FC = () => {
       {/* 3x3 Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
         {DIY_PRODUCTS.map((product, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all group flex flex-col relative overflow-hidden">
+          <div key={i} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-2xl transition-all group flex flex-col relative overflow-hidden">
             <div className="aspect-square w-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 mb-8 flex items-center justify-center p-6 overflow-hidden border border-slate-100 dark:border-slate-700">
               <img 
                 src={product.img} 
@@ -110,7 +110,7 @@ const DiyToolkits: React.FC = () => {
               />
             </div>
             
-            <div className="flex-grow flex flex-col">
+            <div className="grow flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1 text-orange-400">
                   {[...Array(5)].map((_, si) => (
@@ -121,7 +121,7 @@ const DiyToolkits: React.FC = () => {
                 <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-800">Essential</span>
               </div>
               
-              <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 leading-tight min-h-[3rem] group-hover:text-blue-600 transition-colors">
+              <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 leading-tight min-h-12 group-hover:text-blue-600 transition-colors">
                 {product.name}
               </h3>
               
@@ -153,7 +153,7 @@ const DiyToolkits: React.FC = () => {
           href="https://Autospex.short.gy/Z9WMx3" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 px-12 py-6 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-500/20 group"
+          className="inline-flex items-center gap-3 px-12 py-6 rounded-4xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-500/20 group"
         >
           View All Products on Amazon.com
           <ExternalLink className="w-6 h-6 group-hover:translate-x-1 transition-transform" />

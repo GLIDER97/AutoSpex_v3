@@ -1,6 +1,10 @@
 {
     "cleanUrls": true,
     "trailingSlash": false,
+    "functions": {
+        "api/ai.ts": { "maxDuration": 60 },
+        "api/places.ts": { "maxDuration": 15 }
+    },
     "redirects": [
         {
             "source": "/free-obd2-code-decoder-repair-costs",
