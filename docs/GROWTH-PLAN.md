@@ -46,18 +46,18 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
    - Google Cloud console → create a project → enable the "Google Search Console API" → create a **service account** → Keys → Add key → JSON.
    - In Search Console → Settings → Users and permissions → Add user → the service account's email, with **Full** permission. Its API access is still read-only; claude-seo's setup guide uses Full for this.
    - In the Claude cloud environment "AutoSpex_v3" (environment menu → Edit), add an environment variable `GSC_SERVICE_ACCOUNT_JSON` containing the JSON file's text. Never paste it into a chat.
+   - In the same settings, **delete the network secret "Search Console read-only token"**. It expired on 14 Nov, and while it's saved the proxy replaces the service account's sign-in with it.
 6. **Microsoft Clarity** (free; see section 6):
    - Create a project for www.myautospex.com.
    - Install it through your existing Google Tag Manager container (Tags → New → "Microsoft Clarity" template, or a Custom HTML tag with Clarity's snippet), then Publish.
-   - In Clarity → Settings → Data Export → Generate API token. The agent asks for it through a secure form; it's stored as a network secret for `www.clarity.ms`.
-7. **Google Sheet for the daily metrics log:** the Google Sheets connector is already connected. The agent creates the sheet on its first run.
-8. **Optional, only if you choose paid traffic:** create a Google Ads or Microsoft Advertising account, add billing, set a daily cap, and connect an ads connector so the agent can manage campaigns.
+   - In Clarity → Settings → Data Export → Generate API token. In the "AutoSpex_v3" environment settings → Network secrets, add it for host `www.clarity.ms`, header `Authorization`, prefix `Bearer`.
+7. **Optional, only if you choose paid traffic:** create a Google Ads or Microsoft Advertising account, add billing, set a daily cap, and connect an ads connector so the agent can manage campaigns.
 
 ---
 
 ## 3. What the daily agent does
 
-**Schedule:** every day at 07:43 IST. It runs as a fresh cloud session on the `AutoSpex_v3` environment with this repository.
+**Schedule:** every day at 06:36 IST. It runs as a fresh cloud session on the `AutoSpex_v3` environment with this repository.
 
 **Every run, in this order:**
 1. **Read:** this plan, `docs/growth-log.md`, and the latest Vercel deploy state of `main`.
@@ -65,7 +65,7 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
    - clicks, impressions, CTR and position, by page, query and country
    - index status of every sitemap URL (URL Inspection API, at most 200 per day)
 
-   Then read the Clarity insights for the last day: rage clicks, dead clicks, scroll depth and quick-backs by page. Append one row per day to the metrics sheet: date, clicks, impressions, tier-1 clicks, pages indexed and pages published.
+   Then read the Clarity insights for the last day: rage clicks, dead clicks, scroll depth and quick-backs by page. Append one row per day to `docs/growth-metrics.csv`: date, clicks, impressions, tier-1 clicks, pages indexed and pages published.
 3. **Index.** Submit every new or changed URL from yesterday's deploy to IndexNow (Bing, Yandex and others). Note any page that has been "Discovered – currently not indexed" for more than 7 days.
 4. **Do today's work item** from the roadmap below: build pages, improve pages or fix problems. **At most 2 new pages a day**, each meeting the quality bar in section 5.
 5. **Ship:**
@@ -91,7 +91,7 @@ The tier-1 focus means **US first**: the content already uses US prices, NHTSA a
 ### Week 1 (16–22 Nov): get indexed, build the page systems
 - **Day 1:**
   - IndexNow: add a key file to `public/` and a script that submits changed URLs after each deploy.
-  - Start the growth log and the metrics sheet.
+  - Start the growth log and the metrics file.
 - **Days 1–3: OBD-II code pages, the biggest long-tail opportunity.** Build a `/codes/:code` template rendered from a reviewed data file (`data/codes.json`). Each page gets:
   - the standard SAE definition
   - common causes and symptoms
@@ -152,11 +152,9 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 
 ---
 
-## 7. Decisions for the owner
+## 7. Owner decisions (15 Nov 2026)
 
-1. **Paid traffic:**
-   - none (organic only), or
-   - a test budget (about $300–$500, to measure real costs per click), or
-   - a full budget (about $5,000–$20,000 over 30 days, which is what reaching 10,000 in 30 days would take).
-2. **Merging:** may the agent merge its own PRs once Vercel's preview passes, or should PRs wait for you?
-3. **Community distribution:** will a person spend about 15 minutes a day answering questions on Reddit and forums with the tools? The agent can draft and suggest; it won't post.
+1. **Paid traffic: none.** This plan is organic only, so the 30-day expectation is the organic forecast in section 1, not 10,000. Revisit at day 30.
+2. **Merging: allowed.** The agent may merge its own PRs, and PR #1, once Vercel's preview passes and its own build and browser checks pass.
+3. **Start: 16 Nov 2026.** Until the owner's setup is done, the agent builds and ships pages and skips the measurement steps it has no access to, noting that in the log.
+4. **Community distribution:** not chosen. The agent doesn't post anywhere.
