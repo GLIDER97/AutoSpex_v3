@@ -70,6 +70,9 @@
   --input: #c3c8ca;
   --ring: #1f4f96;
   --radius: 0.625rem;
+  /* Chart series, validated for color-vision deficiency and contrast (light surface). */
+  --chart-1: #1f4f96;
+  --chart-2: #b07800;
 }
 
 .dark {
@@ -91,6 +94,9 @@
   --border: #2c3135;
   --input: #3b4146;
   --ring: #ffcd00;
+  /* Chart series, validated against the dark card surface. */
+  --chart-1: #4f7fd0;
+  --chart-2: #c08600;
 }
 
 @theme inline {
@@ -112,6 +118,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
