@@ -1,509 +1,507 @@
-
-import React, { useState } from 'react';
-import { generateContent, Type } from '../utils/gemini';
-import { 
-  Gavel, ClipboardCheck, AlertTriangle, CheckCircle2, 
-  AlertOctagon, Wrench, MapPin, DollarSign, ChevronRight, 
-  ArrowRight, Lock, Zap, Info, MessageSquare, ChevronDown, Car, Users, Star, Award, Bot, Globe,
-  ShieldCheck, ShieldAlert
-} from './Icons';
-import { MaintenanceRequest, MaintenanceResult } from '../types';
+import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Camera, Copy, Plus, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import SecondOpinionForm from './SecondOpinionForm';
+import {
+  LINE_TYPES,
+  auditQuote,
+  photoToJpegBase64,
+  quoteMath,
+  readEstimatePhoto,
+  type QuoteAudit,
+  type QuoteInput,
+  type QuoteLine,
+} from '../utils/quoteAudit';
+import {
+  Field,
+  Notice,
+  Panel,
+  PanelTitle,
+  PrimaryButton,
+  SecondaryButton,
+  Spinner,
+  ToolPage,
+  Verdict,
+  VehicleFields,
+  focusRing,
+  hasVehicle,
+  inputClass,
+  money,
+  moneyRange,
+  vehicleLabel,
+  type Vehicle,
+} from './tool/kit';
 
-const INITIAL_REQUEST: MaintenanceRequest = {
-  year: '',
-  make: '',
-  model: '',
-  service: '',
-  zip: '',
-  quoteAmount: ''
-};
+type EditableLine = { description: string; type: QuoteLine['type']; quantity: string; amount: string };
+
+const BLANK_LINE: EditableLine = { description: '', type: 'Job', quantity: '1', amount: '' };
+const SHOP_TYPES: QuoteInput['shopType'][] = ['Independent shop', 'Dealer', 'Chain shop', 'Not sure'];
+
+const VERDICT_TONE = { Fair: 'go', 'A bit high': 'caution', 'Too high': 'stop', Low: 'neutral' } as const;
+const LINE_TONE = { Fair: 'go', High: 'caution', 'Too high': 'stop', Low: 'neutral', 'Question it': 'caution' } as const;
+
+const toLines = (rows: EditableLine[]): QuoteLine[] =>
+  rows
+    .map((r) => ({ description: r.description.trim(), type: r.type, quantity: Number(r.quantity) || 1, amount: Number(r.amount) || 0 }))
+    .filter((l) => l.description && l.amount > 0);
+
+/** Where the quote sits against the fair range. */
+function RangeBar({ quoted, low, high }: { quoted: number; low: number; high: number }) {
+  const min = Math.min(low, quoted) * 0.85;
+  const max = Math.max(high, quoted) * 1.1;
+  const pos = (v: number) => `${((v - min) / (max - min || 1)) * 100}%`;
+  return (
+    <div className="mt-5" aria-hidden="true">
+      <div className="relative h-3 rounded-full bg-muted">
+        <div className="absolute inset-y-0 rounded-full bg-sign-green/70" style={{ left: pos(low), width: `calc(${pos(high)} - ${pos(low)})` }} />
+        <div className="absolute -top-1.5 h-6 w-1 -translate-x-1/2 rounded-full bg-foreground" style={{ left: pos(quoted) }} />
+      </div>
+      <div className="relative mt-2 h-6 text-sm">
+        <span className="absolute -translate-x-1/2 whitespace-nowrap font-semibold" style={{ left: pos(quoted) }}>
+          Your quote
+        </span>
+      </div>
+    </div>
+  );
+}
+
+const FAQS = [
+  ['How is the quote checked?', 'Each line is compared with typical US prices for that job: standard labor-guide hours at local shop rates and typical aftermarket-to-OEM parts prices, using Google’s Gemini AI. Totals, labor hours and the hourly rate are calculated exactly from your numbers.'],
+  ['Is the photo stored?', 'No. The photo is shrunk in your browser and sent to Google’s Gemini AI only to read the line items. MyAutoSpex doesn’t keep it. You can cover your name and address before taking the photo.'],
+  ['Why is a dealer quote higher?', 'Dealers usually charge higher hourly rates and use factory (OEM) parts. That can be worth it for warranty or complex work, so the check accounts for the shop type you choose.'],
+  ['The quote is above the fair range. What now?', 'Ask the questions listed, use the suggested script, and get a second quote. A higher price can be justified by rusted parts, extra damage or premium parts, so ask the shop to show you why.'],
+];
 
 const MaintenanceValidator: React.FC = () => {
-  const [request, setRequest] = useState<MaintenanceRequest>(INITIAL_REQUEST);
-  const [result, setResult] = useState<MaintenanceResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(0);
+  const [mode, setMode] = useState<'photo' | 'type'>('photo');
+  const [rows, setRows] = useState<EditableLine[]>([{ ...BLANK_LINE }]);
+  const [vehicle, setVehicle] = useState<Vehicle>({ year: '', make: '', model: '' });
+  const [zip, setZip] = useState('');
+  const [shopType, setShopType] = useState<QuoteInput['shopType']>('Independent shop');
+  const [reading, setReading] = useState(false);
+  const [readNote, setReadNote] = useState<{ tone: 'success' | 'error'; text: string } | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [audit, setAudit] = useState<{ input: QuoteInput; result: QuoteAudit } | null>(null);
+  const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [isSecondOpinionOpen, setIsSecondOpinionOpen] = useState(false);
+  const [secondOpinionOpen, setSecondOpinionOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
-  const updateRequest = (field: keyof MaintenanceRequest, value: string) => {
-    setRequest(prev => ({ ...prev, [field]: value }));
+  const lines = toLines(rows);
+  const math = quoteMath(lines);
+
+  const update = (i: number, patch: Partial<EditableLine>) => setRows((rs) => rs.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+
+  const check = async (input: QuoteInput) => {
+    setChecking(true);
+    setError(null);
+    try {
+      const result = await auditQuote(input);
+      setAudit({ input, result });
+      requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'The check failed. Please try again.');
+    } finally {
+      setChecking(false);
+    }
   };
 
-  const handleValidation = async () => {
-    if (!request.year || !request.make || !request.service || !request.zip) {
-      setError("Please fill in all required fields (Year, Make, Service, Zip).");
+  const onPhoto = async (file: File | undefined) => {
+    if (!file) return;
+    setReading(true);
+    setReadNote(null);
+    setAudit(null);
+    try {
+      const base64 = await photoToJpegBase64(file);
+      setPreview(`data:image/jpeg;base64,${base64}`);
+      const extracted = await readEstimatePhoto(base64);
+      if (!extracted.lines.length) {
+        setReadNote({ tone: 'error', text: "No priced lines could be read. Try a sharper, flatter photo, or type the lines in." });
+        setMode('type');
+        return;
+      }
+      const v = { ...vehicle, ...Object.fromEntries(Object.entries(extracted.vehicle).filter(([, x]) => x)) } as Vehicle;
+      setRows(extracted.lines.map((l) => ({ description: l.description, type: l.type, quantity: String(l.quantity), amount: String(l.amount) })));
+      setVehicle(v);
+      if (extracted.zip) setZip(extracted.zip);
+      setReadNote({ tone: 'success', text: `Read ${extracted.lines.length} lines${extracted.shopName ? ` from ${extracted.shopName}` : ''}. Check them below; you can fix anything that was misread.` });
+      setMode('type');
+      await check({ vehicle: hasVehicle(v) ? vehicleLabel(v) : '', zip: extracted.zip || zip, shopType, lines: extracted.lines });
+    } catch (err) {
+      setReadNote({ tone: 'error', text: err instanceof Error ? err.message : 'The photo could not be read.' });
+    } finally {
+      setReading(false);
+    }
+  };
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lines.length) {
+      setError('Add at least one line with a description and an amount.');
       return;
     }
-
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
-    const interval = setInterval(() => {
-      setLoadingStep(prev => (prev + 1) % 3);
-    }, 800);
-
-    try {
-      // Optimized prompt for speed and strict output control to prevent JSON overflow/truncation
-      const prompt = `
-        Audit US auto repair: ${request.year} ${request.make} ${request.model}, ${request.service} (ZIP ${request.zip}). 
-        User quote: ${request.quoteAmount ? `$${request.quoteAmount}` : "None"}.
-        
-        Strict Requirements:
-        - Return strictly valid JSON.
-        - aiAnalysis: max 150 characters.
-        - negotiationTip: max 100 characters.
-        - Use localized US parts/labor data.
-      `;
-
-      const aiResponse = await generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          // Speed optimization: disable thinking for instant response
-          thinkingConfig: { thinkingBudget: 0 },
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              fairPrice: {
-                type: Type.OBJECT,
-                properties: {
-                   low: { type: Type.NUMBER },
-                   high: { type: Type.NUMBER },
-                   average: { type: Type.NUMBER }
-                }
-              },
-              breakdown: {
-                type: Type.OBJECT,
-                properties: {
-                  partsEst: { type: Type.OBJECT, properties: { low: { type: Type.NUMBER }, high: { type: Type.NUMBER } } },
-                  laborEst: { type: Type.OBJECT, properties: { low: { type: Type.NUMBER }, high: { type: Type.NUMBER } } },
-                  laborHours: { type: Type.OBJECT, properties: { low: { type: Type.NUMBER }, high: { type: Type.NUMBER } } },
-                  laborRate: { type: Type.NUMBER }
-                }
-              },
-              scorecard: {
-                 type: Type.OBJECT,
-                 properties: {
-                    verdict: { type: Type.STRING },
-                    score: { type: Type.NUMBER },
-                    diffPercent: { type: Type.NUMBER }
-                 }
-              },
-              aiAnalysis: { type: Type.STRING },
-              negotiationTip: { type: Type.STRING }
-            },
-            required: ['fairPrice', 'breakdown', 'scorecard', 'aiAnalysis', 'negotiationTip']
-          }
-        }
-      });
-
-      const text = aiResponse.text;
-      if (!text) throw new Error("API returned empty response.");
-      
-      const responseData = JSON.parse(text);
-      
-      // Safety check for quote scenarios
-      if (!request.quoteAmount) {
-         responseData.scorecard = { verdict: 'Fair Deal', score: 100, diffPercent: 0 };
-      }
-      
-      setResult(responseData);
-    } catch (err) {
-      console.error("Diagnostic Error:", err);
-      setError("The auditor encountered a data sync error. This usually happens when the model generates too much detail. Please try again with a simpler service name.");
-    } finally {
-      clearInterval(interval);
-      setLoading(false);
-    }
+    check({ vehicle: hasVehicle(vehicle) ? vehicleLabel(vehicle) : '', zip, shopType, lines });
   };
 
-  const faqs = [
-    {
-      question: "Where does this data come from?",
-      answer: "We aggregate data from industry standard labor guides, national parts distributors, and regional cost-of-living adjustments based on your ZIP code."
-    },
-    {
-      question: "Why is the dealer price higher?",
-      answer: "Dealerships use Factory parts (OEM) which are more expensive, and their labor rates are typically 20-40% higher than independent shops to cover overhead and training."
-    },
-    {
-      question: "My mechanic quoted me higher than your 'High' price. Why?",
-      answer: "They might be using premium parts, or there may be complications with your specific vehicle. However, if it's significantly higher, you should ask for a breakdown of hours vs parts."
-    }
-  ];
+  const result = audit?.result;
+  const quoted = audit ? quoteMath(audit.input.lines) : null;
+  const savings = result && quoted ? Math.max(0, quoted.total - result.fairHigh) : 0;
 
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
-      <SecondOpinionForm 
-        isOpen={isSecondOpinionOpen} 
-        onClose={() => setIsSecondOpinionOpen(false)} 
-        maintenanceRequest={request}
-      />
-
-      {/* Header */}
-      {!result && (
-        <div className="text-center mb-10 max-w-3xl">
-          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-red-600 dark:text-red-400 mb-8 shadow-lg shadow-red-500/10 cursor-default">
-              <AlertOctagon className="w-4 h-4" />
-              Consumer Protection Tool
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-            Car Repair <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-red-500 to-orange-600">
-               Overcharge Validator
-            </span>
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            Are you getting scammed? Enter your repair quote and we'll check it against fair market labor and parts data for your area instantly.
-          </p>
+    <ToolPage
+      category="money"
+      title="Repair quote checker"
+      intro="Take a photo of your estimate or type in the lines. Every line is checked against typical prices for your area, with upsells to question and what to say to the shop."
+      sources="Google Gemini AI with typical US parts prices and labor-guide hours. Totals and labor rate are calculated exactly."
+    >
+      <Panel>
+        <div role="tablist" aria-label="How to enter your quote" className="inline-flex rounded-lg bg-muted p-1">
+          {(
+            [
+              ['photo', 'Photo of the estimate'],
+              ['type', 'Type it in'],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              role="tab"
+              type="button"
+              aria-selected={mode === id}
+              onClick={() => setMode(id)}
+              className={cn(
+                'cursor-pointer rounded-md px-4 py-2 text-[0.9375rem] font-semibold',
+                mode === id ? 'bg-card shadow-xs' : 'text-muted-foreground hover:text-foreground',
+                focusRing,
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* Main Card */}
-      <div className="w-full max-w-4xl">
-        {!result ? (
-           <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative p-6 sm:p-10">
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                 <div className="space-y-6">
-                    <div>
-                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Service / Repair Name</label>
-                        <div className="relative">
-                            <Wrench className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
-                            <input 
-                                type="text" 
-                                placeholder="e.g. Brake Pads, Alternator, Timing Belt" 
-                                value={request.service} 
-                                onChange={(e) => updateRequest('service', e.target.value)} 
-                                className="w-full p-3 pl-12 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all font-medium"
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Year</label>
-                            <input 
-                                type="text" placeholder="2018" value={request.year} 
-                                onChange={(e) => updateRequest('year', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Make</label>
-                            <input 
-                                type="text" placeholder="Toyota" value={request.make} 
-                                onChange={(e) => updateRequest('make', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
-                            />
-                        </div>
-                    </div>
+        {mode === 'photo' && (
+          <div className="mt-5">
+            <label
+              htmlFor="estimate-photo"
+              className={cn(
+                'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input px-6 py-10 text-center hover:bg-muted/60',
+                'focus-within:outline-solid focus-within:outline-2 focus-within:outline-ring',
+              )}
+            >
+              <Camera className="size-8 text-sign-green" aria-hidden="true" />
+              <span className="text-lg font-bold">Take or upload a photo of the estimate</span>
+              <span className="text-[0.9375rem] text-muted-foreground">Paper estimates and screenshots both work. Keep it flat and in focus.</span>
+              <input id="estimate-photo" type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => onPhoto(e.target.files?.[0])} />
+            </label>
+            <p className="mt-3 text-sm text-muted-foreground">The photo is only used to read the prices and isn't stored.</p>
+          </div>
+        )}
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Model</label>
-                            <input 
-                                type="text" placeholder="Camry" value={request.model} 
-                                onChange={(e) => updateRequest('model', e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Zip Code</label>
-                            <div className="relative">
-                                <MapPin className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
-                                <input 
-                                    type="text" placeholder="90210" value={request.zip} 
-                                    onChange={(e) => updateRequest('zip', e.target.value)} 
-                                    className="w-full p-3 pl-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                 </div>
+        {reading && (
+          <div className="mt-5 flex items-center gap-4">
+            {preview && <img src={preview} alt="Your estimate" className="h-20 w-16 rounded-md border border-border object-cover" />}
+            <Spinner label="Reading your estimate…" />
+          </div>
+        )}
+        {readNote && (
+          <Notice tone={readNote.tone} className="mt-5">
+            {readNote.text}
+          </Notice>
+        )}
 
-                 <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col justify-center">
-                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                        Quoted Amount <span className="text-slate-400 font-normal">(Optional)</span>
-                    </label>
-                    <div className="relative mb-4">
-                        <span className="absolute left-4 top-4 text-slate-400 font-bold text-xl">$</span>
-                        <input 
-                            type="number" placeholder="0.00" value={request.quoteAmount} 
-                            onChange={(e) => updateRequest('quoteAmount', e.target.value)} 
-                            className="w-full p-4 pl-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-hidden transition-all text-2xl font-bold text-slate-900 dark:text-white"
-                        />
+        {mode === 'type' && (
+          <form onSubmit={submit} className="mt-5 space-y-6">
+            <div>
+              <h2 className="text-[0.9375rem] font-semibold">Quote lines</h2>
+              <p className="text-sm text-muted-foreground">
+                One line per charge. Use "Job" when a single price covers parts and labor, like "Front brake pads and rotors".
+              </p>
+              <div className="mt-3 space-y-3">
+                {rows.map((r, i) => (
+                  <div key={i} className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border border-border p-3 sm:grid-cols-[minmax(0,1fr)_7rem_6rem_8rem_auto] sm:border-0 sm:p-0">
+                    <input
+                      aria-label={`Line ${i + 1} description`}
+                      value={r.description}
+                      onChange={(e) => update(i, { description: e.target.value })}
+                      placeholder="Front brake pads and rotors"
+                      className={cn(inputClass, 'col-span-2 sm:col-span-1')}
+                    />
+                    <select aria-label={`Line ${i + 1} type`} value={r.type} onChange={(e) => update(i, { type: e.target.value as QuoteLine['type'] })} className={inputClass}>
+                      {LINE_TYPES.map((t) => (
+                        <option key={t}>{t}</option>
+                      ))}
+                    </select>
+                    <input
+                      aria-label={`Line ${i + 1} ${r.type === 'Labor' ? 'hours' : 'quantity'}`}
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={r.quantity}
+                      disabled={r.type === 'Job' || r.type === 'Fee'}
+                      title={r.type === 'Labor' ? 'Hours' : 'Quantity'}
+                      onChange={(e) => update(i, { quantity: e.target.value })}
+                      className={cn(inputClass, 'col-span-1')}
+                    />
+                    <div className="relative col-span-1">
+                      <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">$</span>
+                      <input
+                        aria-label={`Line ${i + 1} amount`}
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        inputMode="decimal"
+                        value={r.amount}
+                        onChange={(e) => update(i, { amount: e.target.value })}
+                        placeholder="0"
+                        className={cn(inputClass, 'pl-7')}
+                      />
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Enter the total amount to get a "Rip-Off Score". Leave blank to see the fair price range.
-                    </p>
-                 </div>
+                    <button
+                      type="button"
+                      aria-label={`Remove line ${i + 1}`}
+                      disabled={rows.length === 1}
+                      onClick={() => setRows((rs) => rs.filter((_, j) => j !== i))}
+                      className={cn('inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-40', focusRing)}
+                    >
+                      <Trash2 className="size-5" />
+                    </button>
+                  </div>
+                ))}
               </div>
-
-              <button 
-                  onClick={handleValidation}
-                  disabled={loading}
-                  className="w-full py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                      <span className="flex items-center gap-2">
-                          <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-                          Auditing Costs...
-                      </span>
-                  ) : (
-                      <>Validate Price <Gavel className="w-5 h-5" /></>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                <SecondaryButton type="button" onClick={() => setRows((rs) => [...rs, { ...BLANK_LINE }])} className="h-10">
+                  <Plus className="size-4" aria-hidden="true" /> Add a line
+                </SecondaryButton>
+                <p className="text-[0.9375rem]">
+                  Total before tax <strong className="font-heading text-xl tabular-nums">{money(math.total, 2)}</strong>
+                  {math.laborRate && (
+                    <span className="block text-sm text-muted-foreground sm:text-right">
+                      Labor: {math.laborHours} h at {money(math.laborRate)} per hour
+                    </span>
                   )}
-              </button>
-           </div>
-        ) : (
-           <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-              <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden text-white mb-8">
-                 <div className="absolute top-0 right-0 p-6 opacity-5">
-                    <Gavel className="w-64 h-64 -rotate-12 translate-x-12 -translate-y-12" />
-                 </div>
-                 <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-sm font-medium mb-4 text-slate-300">
-                           <ClipboardCheck className="w-4 h-4" /> Audit Complete
-                        </div>
-                        <h2 className="text-4xl font-black mb-2 tracking-tight">
-                            {request.quoteAmount ? "Verdict:" : "Fair Price Range:"}
-                        </h2>
-                        {request.quoteAmount ? (
-                            <div className={`text-5xl sm:text-6xl font-black tracking-tighter mb-4 ${
-                                result.scorecard.verdict === 'Rip-Off' ? 'text-red-500' :
-                                result.scorecard.verdict === 'Overpriced' ? 'text-orange-500' :
-                                result.scorecard.verdict === 'High End' ? 'text-yellow-400' :
-                                'text-green-400'
-                            }`}>
-                                {result.scorecard.verdict.toUpperCase()}
-                            </div>
-                        ) : (
-                             <div className="text-5xl font-black text-white mb-4">
-                                ${result.fairPrice.low} - ${result.fairPrice.high}
-                             </div>
-                        )}
-                        <p className="text-slate-400 text-lg leading-relaxed font-medium">{result.aiAnalysis}</p>
-                    </div>
-                    <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
-                        <h3 className="font-bold text-slate-300 mb-4 flex items-center gap-2">
-                            <DollarSign className="w-5 h-5" /> Cost Breakdown
-                        </h3>
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center border-b border-slate-700 pb-3">
-                                <span className="text-slate-400">Estimated Parts</span>
-                                <span className="font-mono font-bold">${result.breakdown.partsEst.low} - ${result.breakdown.partsEst.high}</span>
-                            </div>
-                            <div className="flex justify-between items-center border-b border-slate-700 pb-3">
-                                <span className="text-slate-400">Estimated Labor</span>
-                                <span className="font-mono font-bold">${result.breakdown.laborEst.low} - ${result.breakdown.laborEst.high}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-slate-400 text-sm">Labor Details</span>
-                                <div className="text-right">
-                                    <p className="font-mono font-bold text-sm text-slate-300">{result.breakdown.laborHours.low}-{result.breakdown.laborHours.high} hrs</p>
-                                    <p className="text-xs text-slate-500">@ ~${result.breakdown.laborRate}/hr</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                 </div>
+                </p>
               </div>
+            </div>
 
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                 <div className="md:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg">
-                    <h3 className="font-bold text-slate-900 dark:text-white mb-6">Price Spectrum</h3>
-                    <div className="relative pt-8 pb-4 px-2">
-                        <div className="h-6 w-full rounded-full bg-linear-to-r from-green-400 via-yellow-400 to-red-500 relative"></div>
-                        <div className="absolute top-0 w-full flex justify-between text-xs font-bold text-slate-400 mt-1">
-                            <span className="transform -translate-x-1/2" style={{ left: '0%' }}>$0</span>
-                            <span className="transform -translate-x-1/2" style={{ left: '33%' }}>Fair</span>
-                            <span className="transform -translate-x-1/2" style={{ left: '66%' }}>High</span>
-                            <span className="transform -translate-x-1/2" style={{ left: '100%' }}>Rip-Off</span>
-                        </div>
-                        {request.quoteAmount && (
-                            <div 
-                                className="absolute -top-4 transform -translate-x-1/2 flex flex-col items-center z-10 transition-all duration-1000"
-                                style={{ 
-                                    left: `${Math.min(100, Math.max(0, (parseFloat(request.quoteAmount) / (result.fairPrice.high * 1.5)) * 100))}%` 
-                                }}
-                            >
-                                <div className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3 py-1 rounded-lg text-xs font-bold shadow-lg mb-1 whitespace-nowrap">
-                                    You: ${request.quoteAmount}
-                                </div>
-                                <div className="w-0.5 h-8 bg-slate-900 dark:bg-white"></div>
-                            </div>
-                        )}
-                    </div>
-                 </div>
-                 <div className="bg-blue-50 dark:bg-blue-900/20 rounded-3xl p-6 border border-blue-200 dark:border-blue-800/50 flex flex-col justify-center">
-                    <div className="flex items-center gap-2 mb-3 text-blue-600 dark:text-blue-400 font-bold">
-                        <MessageSquare className="w-5 h-5" /> Negotiation Tip
-                    </div>
-                    <p className="text-slate-700 dark:text-slate-300 italic text-sm leading-relaxed">"{result.negotiationTip}"</p>
-                 </div>
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_10rem_12rem]">
+              <div>
+                <p className="mb-1.5 text-[0.9375rem] font-semibold">Your car</p>
+                <VehicleFields value={vehicle} onChange={setVehicle} minYear={1990} />
               </div>
+              <Field label="Shop ZIP code" htmlFor="quote-zip" className="lg:pt-7">
+                <input id="quote-zip" inputMode="numeric" maxLength={5} value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))} placeholder="90210" className={inputClass} />
+              </Field>
+              <Field label="Shop type" htmlFor="shop-type" className="lg:pt-7">
+                <select id="shop-type" value={shopType} onChange={(e) => setShopType(e.target.value as QuoteInput['shopType'])} className={inputClass}>
+                  {SHOP_TYPES.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
+              </Field>
+            </div>
 
-              <div className="bg-linear-to-br from-red-600 to-orange-700 rounded-[2.5rem] p-8 sm:p-10 mb-8 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in zoom-in-95 duration-500">
-                 <div className="absolute top-0 right-0 p-8 opacity-5"><Wrench className="w-48 h-48 -rotate-12" /></div>
-                 <div className="relative z-10 grid md:grid-cols-2 gap-10 items-center">
+            <PrimaryButton type="submit" loading={checking} className="h-12 px-6 text-lg">
+              Check this quote
+            </PrimaryButton>
+          </form>
+        )}
+        {error && (
+          <Notice tone="error" className="mt-5">
+            {error}
+          </Notice>
+        )}
+      </Panel>
+
+      <div ref={resultsRef} className="scroll-mt-24">
+        {checking && !result && (
+          <Panel className="mt-6">
+            <Spinner label="Checking each line against typical prices…" />
+          </Panel>
+        )}
+        {result && audit && quoted && (
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+            <div className="min-w-0 space-y-6 lg:col-span-2">
+              <Panel>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Verdict tone={VERDICT_TONE[result.verdict]} className="text-base">
+                    {result.verdict}
+                  </Verdict>
+                  <p className="text-[0.9375rem] text-muted-foreground">{audit.input.vehicle || 'Your car'}</p>
+                </div>
+                <h2 className="mt-3 font-heading text-2xl leading-snug font-extrabold">{result.headline}</h2>
+                <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Your quote</dt>
+                    <dd className="font-heading text-2xl font-extrabold tabular-nums">{money(quoted.total)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Fair range</dt>
+                    <dd className="font-heading text-2xl font-extrabold tabular-nums">{moneyRange(result.fairLow, result.fairHigh)}</dd>
+                  </div>
+                  {savings > 0 && (
                     <div>
-                       <h2 className="text-3xl font-black mb-4">Suspicious Quote?</h2>
-                       <p className="text-red-50 leading-relaxed font-medium mb-6">Connect with a master technician to audit this repair plan and find a better rate.</p>
-                       <button onClick={() => setIsSecondOpinionOpen(true)} className="w-full py-5 bg-white text-red-700 font-black rounded-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-3 animate-slow-glow">
-                          Book a Second Opinion <ArrowRight className="w-5 h-5" />
-                       </button>
+                      <dt className="text-sm text-muted-foreground">Possible savings</dt>
+                      <dd className="font-heading text-2xl font-extrabold text-sign-green tabular-nums dark:text-emerald-300">{money(savings)}</dd>
                     </div>
-                 </div>
-              </div>
-              <button onClick={() => setResult(null)} className="w-full py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200">New Audit</button>
-           </div>
+                  )}
+                </dl>
+                {result.fairHigh > 0 && <RangeBar quoted={quoted.total} low={result.fairLow} high={result.fairHigh} />}
+                {(quoted.laborRate || quoted.feeShare > 0.12) && (
+                  <ul className="mt-2 space-y-1 text-[0.9375rem]">
+                    {quoted.laborRate && (
+                      <li>
+                        The shop charges <strong>{money(quoted.laborRate)} per hour</strong> for {quoted.laborHours} hours of labor.
+                      </li>
+                    )}
+                    {quoted.feeShare > 0.12 && (
+                      <li>
+                        Fees are <strong>{Math.round(quoted.feeShare * 100)}%</strong> of the quote. Ask what each fee covers.
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </Panel>
+
+              <Panel aria-labelledby="lines-title">
+                <PanelTitle>
+                  <span id="lines-title">Line by line</span>
+                </PanelTitle>
+                <ul className="mt-3 divide-y divide-border">
+                  {audit.input.lines.map((l, i) => {
+                    const c = result.lines[i];
+                    return (
+                      <li key={i} className="py-4">
+                        <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-1">
+                          <div className="min-w-0 flex-1 basis-56">
+                            <p className="font-bold">{l.description}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {l.type}
+                              {l.type === 'Labor' ? `, ${l.quantity} h` : ''}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-heading text-lg font-extrabold tabular-nums">{money(l.amount, 2)}</p>
+                            {c && c.fairHigh > 0 && <p className="text-sm text-muted-foreground">fair {moneyRange(c.fairLow, c.fairHigh)}</p>}
+                          </div>
+                        </div>
+                        {c && (
+                          <div className="mt-2 flex flex-wrap items-start gap-2">
+                            <Verdict tone={LINE_TONE[c.verdict]}>{c.verdict}</Verdict>
+                            {c.note && <p className="min-w-0 flex-1 basis-60 text-[0.9375rem] text-muted-foreground">{c.note}</p>}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-2 text-sm text-muted-foreground">AI estimates. Prices vary with rust, damage and part brands, so ask the shop to explain big gaps.</p>
+              </Panel>
+
+              {result.canWait.length > 0 && (
+                <Notice tone="warning" title="Often upsold or can wait">
+                  <ul className="mt-1 space-y-1.5">
+                    {result.canWait.map((c) => (
+                      <li key={c.item}>
+                        <strong>{c.item}:</strong> {c.why}
+                      </li>
+                    ))}
+                  </ul>
+                </Notice>
+              )}
+              {result.missing.length > 0 && (
+                <Notice tone="info" title="Usually included but not on this quote">
+                  <ul className="mt-1 list-disc space-y-1 pl-5">
+                    {result.missing.map((m) => (
+                      <li key={m}>{m}</li>
+                    ))}
+                  </ul>
+                </Notice>
+              )}
+            </div>
+
+            <aside className="min-w-0 space-y-6 lg:sticky lg:top-24 lg:self-start">
+              {result.script && (
+                <Panel>
+                  <PanelTitle>What to say to the shop</PanelTitle>
+                  <blockquote className="mt-3 border-l-4 border-sign-green pl-3 leading-relaxed">{result.script}</blockquote>
+                  <SecondaryButton
+                    type="button"
+                    className="mt-4 h-10"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(result.script);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2500);
+                      } catch {
+                        // Clipboard blocked; the text is on screen to copy by hand.
+                      }
+                    }}
+                  >
+                    <Copy className="size-4" aria-hidden="true" /> {copied ? 'Copied' : 'Copy'}
+                  </SecondaryButton>
+                </Panel>
+              )}
+              {result.questions.length > 0 && (
+                <Panel>
+                  <PanelTitle>Questions to ask</PanelTitle>
+                  <ul className="mt-3 list-disc space-y-2 pl-5 text-[0.9375rem]">
+                    {result.questions.map((q) => (
+                      <li key={q}>{q}</li>
+                    ))}
+                  </ul>
+                </Panel>
+              )}
+              <Panel>
+                <PanelTitle>Get a second opinion</PanelTitle>
+                <p className="mt-1 text-[0.9375rem] text-muted-foreground">Local shops can quote the same job so you can compare.</p>
+                <PrimaryButton type="button" className="mt-4 w-full" onClick={() => setSecondOpinionOpen(true)}>
+                  Request quotes from shops
+                </PrimaryButton>
+                <Link to="/mechanic-finder" className={cn('mt-3 block rounded-sm text-center font-semibold underline underline-offset-4', focusRing)}>
+                  Find a mechanic near you
+                </Link>
+              </Panel>
+            </aside>
+          </div>
         )}
       </div>
 
-      {!result && (
-        <div className="w-full max-w-7xl px-4 flex flex-col items-center">
-            
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-500 dark:text-slate-400 text-sm font-medium">
-                <div className="flex items-center gap-2"><Lock className="w-4 h-4 text-green-500" /> Secure & Verified</div>
-                <div className="flex items-center gap-2"><Zap className="w-4 h-4 text-brand-primary" /> Live Labor Rates</div>
-                <div className="flex items-center gap-2"><Info className="w-4 h-4 text-blue-500" /> 100% Free Audit</div>
-            </div>
+      <SecondOpinionForm
+        isOpen={secondOpinionOpen}
+        onClose={() => setSecondOpinionOpen(false)}
+        maintenanceRequest={{
+          year: vehicle.year,
+          make: vehicle.make,
+          model: vehicle.model,
+          service: (audit?.input.lines ?? lines).slice(0, 3).map((l) => l.description).join(', '),
+          zip,
+          quoteAmount: String(Math.round((audit ? quoteMath(audit.input.lines) : math).total)),
+        }}
+      />
 
-            {/* About This Tool Section */}
-            <div className="grid md:grid-cols-2 gap-12 items-center mb-24 w-full animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                <div className="order-2 md:order-1">
-                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the Cost Validator</h2>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                        The MyAutoSpex Overcharge Validator is a specialized diagnostic engine built to protect US car owners from predatory repair pricing. We aggregate proprietary labor guides and national parts datasets to provide a transparent financial audit of any mechanic's quote.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                        Our system doesn't just give national averages; it analyzes the <span className="font-bold text-red-500">cost-of-living index</span> for your specific ZIP code, ensuring that the labor rate we use for comparison matches the economic reality of your neighborhood shops.
-                    </p>
-                </div>
-                <div className="order-1 md:order-2 bg-red-50 dark:bg-red-900/10 rounded-[3rem] p-10 sm:p-14 border border-red-100 dark:border-red-900/30 relative overflow-hidden shadow-2xl">
-                    <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-red-500/10 -rotate-12" />
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Localized Intelligence</h3>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
-                        Access real-time specifications for standard flat-rate labor times. Our engine validates parts costs from major US suppliers to ensure your quote matches the market rate.
-                    </p>
-                    <div className="flex items-center gap-3 text-red-600 dark:text-red-400 font-black text-sm relative z-10">
-                        <ShieldCheck className="w-6 h-6" /> VERIFIED MARKET DATA
-                    </div>
-                </div>
-            </div>
-
-            {/* Why Use This Tool Section */}
-            <div className="w-full mb-24 text-center">
-                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                    Why Drivers Trust MyAutoSpex
-                </h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {[
-                        { 
-                            icon: <DollarSign className="w-8 h-8 text-green-500" />, 
-                            title: "Identify Gouging", 
-                            desc: "Stop overpaying for labor hours. We show you the industry standard time for every job." 
-                        },
-                        { 
-                            icon: <Zap className="w-8 h-8 text-blue-500" />, 
-                            title: "AI Analysis", 
-                            desc: "Our AI processes complex repairs that involve multiple overlapping service steps." 
-                        },
-                        { 
-                            icon: <Award className="w-8 h-8 text-amber-500" />, 
-                            title: "Negotiation Power", 
-                            desc: "We provide the exact scripts to use when talking to a mechanic about a high quote." 
-                        },
-                        { 
-                            icon: <ShieldAlert className="w-8 h-8 text-red-500" />, 
-                            title: "Safety Priority", 
-                            desc: "Instantly know if your car is safe for a road trip or if you need a tow truck immediately." 
-                        },
-                    ].map((item, i) => (
-                        <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
-                            <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* How It Works */}
-            <div className="w-full mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">How to Audit Your Quote</h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-brand-primary flex items-center justify-center mb-4"><Wrench className="w-7 h-7" /></div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Enter Details</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Tell us what needs fixing and your vehicle details so we can find the right parts and labor hours.</p>
-                </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4"><MapPin className="w-7 h-7" /></div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Localized Analysis</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">We use your ZIP code to determine the prevailing hourly labor rate for mechanics in your area.</p>
-                </div>
-                <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center mb-4"><Gavel className="w-7 h-7" /></div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Get The Verdict</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Instantly see if you're being overcharged with our visual "Rip-Off Scorecard" and negotiation tips.</p>
-                </div>
-                </div>
-            </div>
-
-            {/* Testimonials */}
-            <div className="w-full max-w-7xl px-4 mb-20">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">Drivers We've Saved</h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                {[
-                    { name: "Tony S.", loc: "Chicago, IL", text: "Mechanic quoted $1200 for a water pump. This tool said fair price was $600-$800. I went to another shop and got it done for $750.", stars: 5 },
-                    { name: "Lisa M.", loc: "Orlando, FL", text: "I had no idea labor rates varied so much. This helped me realize the dealership was charging double the local average.", stars: 5 },
-                    { name: "Kevin B.", loc: "Dallas, TX", text: "The negotiation tip actually worked. I asked about the labor hours and they knocked 2 hours off the quote immediately.", stars: 5 },
-                ].map((review, i) => (
-                    <div key={i} className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                        <div className="flex gap-1 mb-4 text-brand-primary">{[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}</div>
-                        <p className="text-slate-700 dark:text-slate-300 mb-6 italic text-sm leading-relaxed">"{review.text}"</p>
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-500 dark:text-slate-400">{review.name.charAt(0)}</div>
-                            <div><p className="text-sm font-bold text-slate-900 dark:text-white">{review.name}</p><p className="text-xs text-slate-500 dark:text-slate-400">{review.loc}</p></div>
-                        </div>
-                    </div>
-                ))}
-                </div>
-            </div>
-
-            {/* FAQ Section */}
-            <div className="w-full max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="text-center mb-10">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-2">
-                        <MessageSquare className="w-6 h-6 text-brand-primary" />
-                        Frequently Asked Questions
-                    </h2>
-                </div>
-                <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <div key={index} className={`border rounded-2xl transition-all duration-300 overflow-hidden ${openFaqIndex === index ? 'bg-white dark:bg-slate-900 border-brand-primary/30 shadow-lg shadow-brand-primary/5' : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}>
-                            <button onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)} className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden">
-                                <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>{faq.question}</span>
-                                <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0 ${openFaqIndex === index ? 'rotate-180 text-brand-primary' : ''}`} />
-                            </button>
-                            <div className={`transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0">{faq.answer}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+      <section className="mt-16 max-w-3xl" aria-labelledby="quote-faq">
+        <h2 id="quote-faq" className="font-heading text-2xl font-extrabold">
+          Questions about quote checks
+        </h2>
+        <div className="mt-4 divide-y divide-border border-y border-border">
+          {FAQS.map(([q, a]) => (
+            <details key={q} className="group py-4">
+              <summary className={cn('cursor-pointer list-none font-bold marker:hidden', focusRing)}>
+                <span className="flex items-center justify-between gap-4">
+                  {q}
+                  <span aria-hidden="true" className="text-xl text-muted-foreground transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </span>
+              </summary>
+              <p className="mt-2 text-muted-foreground">{a}</p>
+            </details>
+          ))}
         </div>
-      )}
-    </div>
+      </section>
+    </ToolPage>
   );
 };
 
