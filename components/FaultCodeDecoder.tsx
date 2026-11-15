@@ -1,374 +1,305 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { generateContent, Type } from '../utils/gemini';
-import CodeInput from './CodeInput';
-import ResultCard from './ResultCard';
-import RecentScans from './RecentScans';
-import FAQSection from './FAQSection';
-import { 
-  Users, CheckCircle2, DollarSign, Zap, ShieldCheck, Lock, 
-  Search, Wrench, Star, FileText, Info, AlertTriangle, ShieldAlert, Award, Bot
-} from './Icons';
-import { OBDCodeData, SeverityLevel, SearchHistoryItem, SafetyStatus, DIYDifficulty } from '../types';
-
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Link2, MapPin, ReceiptText } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { INITIAL_OBD_DATABASE } from '../data/obdCodes';
+import { MAX_CODES, diagnose, explanationFromBuiltIn, parseCodes, type Diagnosis } from '../utils/diagnosis';
+import DiagnosisView from './decoder/DiagnosisView';
+import MechanicChat from './decoder/MechanicChat';
+import OwnerReports from './decoder/OwnerReports';
+import LeadForm from './LeadForm';
+import AffiliateSection from './AffiliateSection';
+import FAQSection from './FAQSection';
+import {
+  Field,
+  Panel,
+  PanelTitle,
+  PrimaryButton,
+  ToolPage,
+  VehicleFields,
+  focusRing,
+  hasVehicle,
+  inputClass,
+  vehicleLabel,
+  type Vehicle,
+} from './tool/kit';
 
-const getUnknownCodeResult = (code: string): OBDCodeData => ({
-  code: code,
-  title: 'Unknown or Non-Standard Code',
-  description: 'The code you entered does not match standard OBD-II formats or is not in our database.',
-  plainEnglish: 'This appears to be an invalid or manufacturer-specific code that we cannot decode currently. Please double-check the code characters.',
-  symptoms: ['Unknown'],
-  causes: ['Typo in code', 'Manufacturer specific protocol', 'Non-OBDII system'],
-  severity: SeverityLevel.LOW,
-  safetyStatus: SafetyStatus.CAUTION,
-  repairCostEstimate: 'N/A',
-  diyDifficulty: DIYDifficulty.HARD,
-  category: 'Unknown / Invalid',
-  similarCodes: []
-});
+interface Lookup {
+  codes: string[];
+  vehicle: Vehicle;
+}
+
+const EMPTY_VEHICLE: Vehicle = { year: '', make: '', model: '' };
+const EXAMPLES = ['P0420', 'P0171 P0174', 'P0300 P0301', 'P0455'];
+const RECENT_KEY = 'recentCodeLookups';
+
+function loadRecent(): Lookup[] {
+  try {
+    const list = JSON.parse(localStorage.getItem(RECENT_KEY) ?? '[]');
+    return Array.isArray(list) ? list.slice(0, 6) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecent(lookup: Lookup) {
+  try {
+    const key = (l: Lookup) => `${l.codes.join()}|${vehicleLabel(l.vehicle)}`;
+    const list = [lookup, ...loadRecent().filter((l) => key(l) !== key(lookup))].slice(0, 6);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+    return list;
+  } catch {
+    return [lookup];
+  }
+}
+
+const describe = (l: Lookup) => `${l.codes.join(', ')}${hasVehicle(l.vehicle) ? ` on a ${vehicleLabel(l.vehicle)}` : ''}`;
 
 const FaultCodeDecoder: React.FC = () => {
-  const [currentResult, setCurrentResult] = useState<OBDCodeData | null>(null);
-  const [activeVehicle, setActiveVehicle] = useState<string | undefined>(undefined);
+  const [params, setParams] = useSearchParams();
+  const [input, setInput] = useState('');
+  const [vehicle, setVehicle] = useState<Vehicle>(EMPTY_VEHICLE);
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [lookup, setLookup] = useState<Lookup | null>(null);
+  const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
   const [loading, setLoading] = useState(false);
-  const [database, setDatabase] = useState<Record<string, OBDCodeData>>(INITIAL_OBD_DATABASE);
-  const [history, setHistory] = useState<SearchHistoryItem[]>([
-    { code: 'P0420', timestamp: Date.now() - 86400000, label: 'Catalyst System Efficiency Below Threshold' },
-    { code: 'P0300', timestamp: Date.now() - 172800000, label: 'Random/Multiple Cylinder Misfire Detected' },
-    { code: 'P0171', timestamp: Date.now() - 259200000, label: 'System Too Lean (Bank 1)' },
-    { code: 'P0455', timestamp: Date.now() - 345600000, label: 'EVAP System Leak Detected (Gross Leak)' },
-    { code: 'P0128', timestamp: Date.now() - 432000000, label: 'Coolant Thermostat (Coolant Temp Below Regulating Temp)' },
-  ]);
+  const [error, setError] = useState<string | null>(null);
+  const [laborRate, setLaborRate] = useState('140');
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [recent, setRecent] = useState<Lookup[]>([]);
+  const [copied, setCopied] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const requestId = useRef(0);
 
-  const currentDate = new Date();
-  const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
-  const currentYear = currentDate.getFullYear();
+  useEffect(() => setRecent(loadRecent()), []);
 
-  const fetchAIResult = async (code: string, vehicleInfo?: string): Promise<OBDCodeData> => {
+  const run = async (next: Lookup) => {
+    const id = ++requestId.current;
+    setLookup(next);
+    setDiagnosis(null);
+    setError(null);
+    setLoading(true);
+    setRecent(saveRecent(next));
+    requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     try {
-      const prompt = `
-        You are an expert automotive mechanic. Provide detailed diagnostic information for OBD-II fault code ${code} ${vehicleInfo ? `for a ${vehicleInfo}` : 'for a standard US-market vehicle'}.
-        
-        Return strictly valid JSON matching this structure:
-        {
-          "code": "${code}",
-          "title": "Technical Name of Code",
-          "description": "Technical description",
-          "plainEnglish": "Simple explanation for a non-mechanic",
-          "symptoms": ["symptom1", "symptom2", ...],
-          "causes": ["cause1", "cause2", ...],
-          "severity": "Low" | "Medium" | "High" | "Critical",
-          "category": "System Category (e.g. Ignition, Emissions)",
-          "safetyStatus": "Safe to Drive" | "Drive with Caution" | "Stop Immediately",
-          "repairCostEstimate": "e.g. $100 - $300",
-          "diyDifficulty": "Easy (DIY)" | "Moderate" | "Professional Required",
-          "similarCodes": ["Related Code 1", "Related Code 2"]
-        }
-
-        Ensure content is accurate for the US market. 
-        Do not use markdown formatting. Return raw JSON only.
-      `;
-
-      const response = await generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              code: { type: Type.STRING },
-              title: { type: Type.STRING },
-              description: { type: Type.STRING },
-              plainEnglish: { type: Type.STRING },
-              symptoms: { type: Type.ARRAY, items: { type: Type.STRING } },
-              causes: { type: Type.ARRAY, items: { type: Type.STRING } },
-              severity: { type: Type.STRING, enum: [SeverityLevel.LOW, SeverityLevel.MEDIUM, SeverityLevel.HIGH, SeverityLevel.CRITICAL] },
-              category: { type: Type.STRING },
-              safetyStatus: { type: Type.STRING, enum: [SafetyStatus.SAFE, SafetyStatus.CAUTION, SafetyStatus.STOP] },
-              repairCostEstimate: { type: Type.STRING },
-              diyDifficulty: { type: Type.STRING, enum: [DIYDifficulty.EASY, DIYDifficulty.MODERATE, DIYDifficulty.HARD] },
-              similarCodes: { type: Type.ARRAY, items: { type: Type.STRING } },
-            },
-            required: ['code', 'title', 'description', 'plainEnglish', 'symptoms', 'causes', 'severity', 'category', 'safetyStatus', 'repairCostEstimate', 'diyDifficulty']
-          }
-        }
-      });
-
-      const text = response.text;
-      if (!text) throw new Error("No response from AI");
-      return JSON.parse(text) as OBDCodeData;
-    } catch (error) {
-      console.error("AI Generation Failed:", error);
-      return getUnknownCodeResult(code);
+      const result = await diagnose(next.codes, hasVehicle(next.vehicle) ? vehicleLabel(next.vehicle) : '', INITIAL_OBD_DATABASE);
+      if (id === requestId.current) setDiagnosis(result);
+    } catch (err) {
+      if (id === requestId.current) setError(err instanceof Error ? err.message : 'Please try again.');
+    } finally {
+      if (id === requestId.current) setLoading(false);
     }
   };
 
-  const handleSearch = async (rawCode: string, vehicleInfo?: string) => {
-    const code = rawCode.replace(/\s+/g, '').toUpperCase();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setLoading(true);
-    setActiveVehicle(vehicleInfo);
+  // Every lookup lives in the URL (?codes=P0171,P0174&year=2016&make=Honda&model=Civic),
+  // so results can be bookmarked and shared, and homepage links (?code=P0420) work.
+  const paramKey = params.toString();
+  useEffect(() => {
+    const { codes } = parseCodes(params.get('codes') ?? params.get('code') ?? '');
+    if (!codes.length) return;
+    const v = { year: params.get('year') ?? '', make: params.get('make') ?? '', model: params.get('model') ?? '' };
+    setInput(codes.join(' '));
+    setVehicle(v);
+    run({ codes, vehicle: v });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramKey]);
 
-    const isValidFormat = /^[PCBU][0-9A-F]{4,}/.test(code);
-    
-    if (!isValidFormat) {
-       const errorResult = getUnknownCodeResult(code);
-       setCurrentResult(errorResult);
-       setLoading(false);
-       return;
-    }
-    
-    if (database[code]) {
-      setTimeout(() => {
-        setCurrentResult(database[code]);
-        addToHistory(database[code]);
-        setLoading(false);
-      }, 600);
+  const submit = (codesText: string, v: Vehicle) => {
+    const { codes, invalid } = parseCodes(codesText);
+    if (!codes.length) {
+      setInputError(
+        invalid.length
+          ? `"${invalid[0]}" isn't a code. Codes are a letter (P, B, C or U) and four characters, like P0420.`
+          : 'Enter at least one code, like P0420.',
+      );
       return;
     }
+    setInputError(invalid.length ? `Skipped "${invalid.join('", "')}": not a valid code.` : null);
+    const next = new URLSearchParams({ codes: codes.join(',') });
+    if (hasVehicle(v)) {
+      next.set('year', v.year);
+      next.set('make', v.make.trim());
+      next.set('model', v.model.trim());
+    }
+    if (next.toString() === paramKey) run({ codes, vehicle: v });
+    else setParams(next);
+  };
 
+  const shareLink = async () => {
     try {
-      const result = await fetchAIResult(code, vehicleInfo);
-      
-      if (result.category !== 'Unknown / Invalid') {
-        setDatabase(prev => ({ ...prev, [code]: result }));
-        addToHistory(result);
-      }
-      
-      setCurrentResult(result);
-      
-    } catch (e) {
-      console.error(e);
-      const errorResult = getUnknownCodeResult(code);
-      setCurrentResult(errorResult);
-    } finally {
-      setLoading(false);
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Clipboard blocked: the URL in the address bar is the share link.
     }
   };
 
-  // Links like /fault-code-decoder?code=P0420 (from the homepage) open straight to that code.
-  const [searchParams] = useSearchParams();
-  const linkedCode = searchParams.get('code');
-  useEffect(() => {
-    if (linkedCode) handleSearch(linkedCode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [linkedCode]);
-
-  const addToHistory = (data: OBDCodeData) => {
-    setHistory(prev => {
-      const filtered = prev.filter(item => item.code !== data.code);
-      return [{ code: data.code, timestamp: Date.now(), label: data.title }, ...filtered].slice(0, 5);
-    });
-  };
+  const fallback = (lookup?.codes ?? []).filter((c) => INITIAL_OBD_DATABASE[c]).map((c) => explanationFromBuiltIn(INITIAL_OBD_DATABASE[c]));
+  const lookupVehicle = lookup && hasVehicle(lookup.vehicle) ? vehicleLabel(lookup.vehicle) : '';
 
   return (
-    <>
-        {!currentResult && (
-        <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-3xl">
-            <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm sm:text-base font-semibold text-brand-primary mb-8 shadow-lg shadow-brand-primary/10 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-default">
-            <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-primary"></span>
-            </span>
-            US Database Updated {currentMonth}, {currentYear}
-            </div>
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-            OBD-II Fault Code <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-brand-primary to-orange-600">
-                Decoder & Repair Guide
-            </span>
-            </h1>
-            <h2 className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            Instantly translate check engine light codes into plain English. Get localized repair cost estimates, severity alerts, and DIY fixes for your vehicle.
-            </h2>
-        </div>
-        )}
-
-        <div className="w-full flex flex-col items-center">
-            {!currentResult ? (
-                <>
-                <CodeInput onSearch={handleSearch} isLoading={loading} />
-                
-                {/* Trust Indicators */}
-                <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mt-8 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
-                        <ShieldCheck className="w-4 h-4 text-green-500" />
-                        Verified US Database
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
-                        <Zap className="w-4 h-4 text-brand-primary" />
-                        AI-Powered Analysis
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
-                        <Lock className="w-4 h-4 text-slate-400" />
-                        100% Free Search
-                    </div>
-                </div>
-
-                <RecentScans history={history} onSelect={(c) => handleSearch(c)} />
-                
-                {/* ABOUT THIS TOOL SECTION */}
-                <div className="w-full max-w-7xl px-4 mt-24 mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div className="order-2 md:order-1">
-                            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">About the MyAutoSpex Decoder</h2>
-                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                                The MyAutoSpex OBD-II Decoder is a specialized diagnostic engine built to help US car owners understand their vehicle's health without needing a mechanical engineering degree.
-                            </p>
-                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                                We combine a massive database of standard SAE J2012 fault codes with <span className="font-bold text-brand-primary">Intelligent AI</span> to provide context-aware results. Whether it's a generic P0420 or a specific manufacturer-derived error, our system analyzes the technical data to give you localized repair cost estimates and safety assessments based on current US market averages.
-                            </p>
-                        </div>
-                        <div className="order-1 md:order-2 bg-slate-900 rounded-[3rem] p-10 border border-slate-800 shadow-2xl relative overflow-hidden text-white">
-                            <Bot className="absolute -bottom-8 -right-8 w-64 h-64 text-brand-primary/10 -rotate-12" />
-                            <div className="relative z-10">
-                                <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                                    <Zap className="w-6 h-6 text-brand-primary" />
-                                    Technical Architecture
-                                </h3>
-                                <ul className="space-y-4">
-                                    <li className="flex items-start gap-3">
-                                        <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-1" />
-                                        <p className="text-sm text-slate-300">Direct integration with US NHTSA & SAE technical datasets.</p>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-1" />
-                                        <p className="text-sm text-slate-300">Live cost-auditing engine for local US mechanic labor rates.</p>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-1" />
-                                        <p className="text-sm text-slate-300">Privacy-first design (no personal data stored for simple searches).</p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* WHY USE THIS TOOL SECTION */}
-                <div className="w-full max-w-7xl px-4 mb-20 text-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                        Why Drivers Choose MyAutoSpex
-                    </h2>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            { 
-                                icon: <DollarSign className="w-8 h-8 text-green-500" />, 
-                                title: "Save Hundreds", 
-                                desc: "Stop mechanics from upselling you on unnecessary repairs by knowing the exact issue first." 
-                            },
-                            { 
-                                icon: <ShieldAlert className="w-8 h-8 text-red-500" />, 
-                                title: "Safety Priority", 
-                                desc: "Instantly know if your car is safe for a road trip or if you need a tow truck immediately." 
-                            },
-                            { 
-                                icon: <Award className="w-8 h-8 text-amber-500" />, 
-                                title: "DIY Clarity", 
-                                desc: "We rank repairs by difficulty so you know if you can fix it at home or need a pro." 
-                            },
-                            { 
-                                icon: <Bot className="w-8 h-8 text-blue-500" />, 
-                                title: "AI Expert Access", 
-                                desc: "Get answers to follow-up questions from our AI Master Technician in real-time." 
-                            },
-                        ].map((benefit, i) => (
-                            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
-                                <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">
-                                    {benefit.icon}
-                                </div>
-                                <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{benefit.title}</h3>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{benefit.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* How to Use Section */}
-                <div className="w-full max-w-7xl px-4 mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-250">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                    How to Decode Your Check Engine Light
-                    </h2>
-                    <div className="grid md:grid-cols-3 gap-8">
-                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                        <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-orange-500 flex items-center justify-center mb-4">
-                        <Zap className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Connect Scanner</h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        Plug your OBD2 scanner into the port typically found under your dashboard.
-                        </p>
-                    </div>
-                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                        <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
-                        <Search className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Enter Code</h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        Type the alphanumeric error code (e.g., P0300) into the box above.
-                        </p>
-                    </div>
-                    <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                        <div className="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center mb-4">
-                        <Wrench className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Get Solution</h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        View repair costs, severity alerts, and step-by-step DIY instructions instantly.
-                        </p>
-                    </div>
-                    </div>
-                </div>
-
-                {/* Testimonials Section */}
-                <div className="w-full max-w-7xl px-4 mb-20">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                    Trusted by US Drivers
-                    </h2>
-                    <div className="grid md:grid-cols-3 gap-6">
-                    {[
-                        { name: "James T.", loc: "Austin, TX", text: "Saved me $400 at the mechanic. I knew exactly what was wrong before I went in, so they couldn't upsell me on unnecessary parts.", stars: 5 },
-                        { name: "Sarah M.", loc: "Denver, CO", text: "The plain English explanation helped me understand that my 'major engine issue' was just a loose gas cap.", stars: 5 },
-                        { name: "Robert K.", loc: "Detroit, MI", text: "Spot on repair estimates. Helps me budget for repairs on my older truck without getting ripped off.", stars: 5 },
-                    ].map((review, i) => (
-                        <div key={i} className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                        <div className="flex gap-1 mb-4 text-orange-400">
-                            {[...Array(review.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                        </div>
-                        <p className="text-slate-700 dark:text-slate-300 mb-6 italic text-sm leading-relaxed">"{review.text}"</p>
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-500 dark:text-slate-400">
-                            {review.name.charAt(0)}
-                            </div>
-                            <div>
-                            <p className="text-sm font-bold text-slate-900 dark:text-white">{review.name}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{review.loc}</p>
-                            </div>
-                        </div>
-                        </div>
-                    ))}
-                    </div>
-                </div>
-
-                <FAQSection />
-                
-                <div className="mt-10 mb-10 flex items-center gap-2 text-slate-500 text-sm bg-white dark:bg-slate-900/50 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800">
-                    <Lock className="w-3 h-3" />
-                    <span>Secure & Professional Service. Data shared only to fulfill quote requests.</span>
-                </div>
-                </>
-            ) : (
-                <ResultCard 
-                data={currentResult} 
-                onReset={() => { setCurrentResult(null); setActiveVehicle(undefined); }} 
-                onCodeClick={(code) => handleSearch(code)}
-                vehicleInfo={activeVehicle}
-                />
+    <ToolPage
+      category="warnings"
+      title="Check engine code lookup"
+      intro="Enter the codes from your scanner to see what they mean, whether it's safe to drive, the likely causes and what each fix costs. Add your car for answers specific to it."
+      sources="SAE J2012 code definitions, Google Gemini AI for causes and costs, NHTSA owner complaints and recalls"
+    >
+      <Panel>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit(input, vehicle);
+          }}
+          className="space-y-5"
+        >
+          <Field
+            label="Codes from your scanner"
+            htmlFor="codes"
+            hint={`Up to ${MAX_CODES} codes, separated by spaces or commas. Codes that show up together are analyzed together.`}
+          >
+            <input
+              id="codes"
+              value={input}
+              onChange={(e) => setInput(e.target.value.toUpperCase())}
+              placeholder="P0171 P0174"
+              autoComplete="off"
+              autoCapitalize="characters"
+              spellCheck={false}
+              aria-invalid={Boolean(inputError) || undefined}
+              aria-describedby={inputError ? 'codes-error' : undefined}
+              className={cn(inputClass, 'h-14 font-mono text-xl font-semibold tracking-[0.06em]')}
+            />
+          </Field>
+          {inputError && (
+            <p id="codes-error" className="-mt-2 text-[0.9375rem] font-semibold text-sign-red">
+              {inputError}
+            </p>
+          )}
+          <div>
+            <p className="mb-2 text-[0.9375rem] font-semibold">Your car (optional, for answers specific to it)</p>
+            <VehicleFields value={vehicle} onChange={setVehicle} minYear={1996} />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <PrimaryButton type="submit" loading={loading} className="h-12 px-6 text-lg">
+              Look up {parseCodes(input).codes.length > 1 ? 'codes' : 'code'}
+            </PrimaryButton>
+            {!lookup && (
+              <div className="flex flex-wrap items-center gap-2 text-[0.9375rem]">
+                <span className="text-muted-foreground">Try:</span>
+                {EXAMPLES.map((ex) => (
+                  <button
+                    key={ex}
+                    type="button"
+                    onClick={() => {
+                      setInput(ex);
+                      submit(ex, vehicle);
+                    }}
+                    className={cn('cursor-pointer rounded-md border border-input px-2.5 py-1 font-mono font-semibold hover:bg-muted', focusRing)}
+                  >
+                    {ex}
+                  </button>
+                ))}
+              </div>
             )}
-        </div>
-    </>
+          </div>
+        </form>
+
+        {recent.length > 0 && (
+          <div className="mt-6 border-t border-border pt-4">
+            <h2 className="text-[0.9375rem] font-bold">Your recent lookups</h2>
+            <p className="text-sm text-muted-foreground">Saved in this browser only.</p>
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {recent.map((r) => (
+                <li key={describe(r)}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setInput(r.codes.join(' '));
+                      setVehicle(r.vehicle);
+                      submit(r.codes.join(' '), r.vehicle);
+                    }}
+                    className={cn('cursor-pointer rounded-md bg-muted px-2.5 py-1 text-[0.9375rem] hover:bg-secondary', focusRing)}
+                  >
+                    {describe(r)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Panel>
+
+      <div ref={resultsRef} className="scroll-mt-24">
+        {lookup && (
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+            <div className="min-w-0 space-y-6 lg:col-span-2">
+              <DiagnosisView
+                diagnosis={diagnosis}
+                fallback={fallback}
+                loading={loading}
+                error={error}
+                onRetry={() => run(lookup)}
+                laborRate={laborRate}
+                onLaborRateChange={setLaborRate}
+              />
+              {(diagnosis || error) && <MechanicChat codes={lookup.codes} vehicle={lookupVehicle} diagnosis={diagnosis} />}
+              {hasVehicle(lookup.vehicle) ? (
+                <OwnerReports vehicle={lookup.vehicle} codes={lookup.codes} />
+              ) : (
+                <Panel>
+                  <PanelTitle>See what other owners of your car report</PanelTitle>
+                  <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+                    Add your year, make and model above to see NHTSA owner complaints and recalls for the systems these codes point at.
+                  </p>
+                </Panel>
+              )}
+            </div>
+
+            <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+              <Panel>
+                <PanelTitle>Next steps</PanelTitle>
+                <div className="mt-4 space-y-3">
+                  <PrimaryButton type="button" onClick={() => setLeadOpen(true)} className="w-full">
+                    Get repair quotes from local shops
+                  </PrimaryButton>
+                  {[
+                    { to: '/maintenance-validator', icon: ReceiptText, label: 'Check a quote you already have' },
+                    { to: '/mechanic-finder', icon: MapPin, label: 'Find a mechanic near you' },
+                  ].map(({ to, icon: Icon, label }) => (
+                    <Link
+                      key={to}
+                      to={to}
+                      className={cn('flex items-center gap-2.5 rounded-lg border border-border px-3 py-2.5 font-semibold hover:bg-muted', focusRing)}
+                    >
+                      <Icon className="size-5 text-muted-foreground" aria-hidden="true" />
+                      {label}
+                    </Link>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={shareLink}
+                    className={cn('flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-border px-3 py-2.5 font-semibold hover:bg-muted', focusRing)}
+                  >
+                    <Link2 className="size-5 text-muted-foreground" aria-hidden="true" />
+                    {copied ? 'Link copied' : 'Copy a link to this result'}
+                  </button>
+                </div>
+              </Panel>
+            </aside>
+          </div>
+        )}
+      </div>
+
+      {lookup && (
+        <LeadForm isOpen={leadOpen} onClose={() => setLeadOpen(false)} errorCode={lookup.codes.join(', ')} vehicleName={lookupVehicle} />
+      )}
+
+      <div className="mt-16 space-y-16">
+        {lookup && <AffiliateSection />}
+        <FAQSection />
+      </div>
+    </ToolPage>
   );
 };
 

@@ -34,8 +34,13 @@ const RATE_LIMITS: Record<ModelKind, { windowMs: number; max: number }[]> = {
 // added with ALLOWED_ORIGINS="https://example.com,https://other.example".
 const DEFAULT_ALLOWED_HOSTS = ['www.myautospex.com', 'myautospex.com'];
 
-const MAX_BODY_BYTES = 64 * 1024;
-const MAX_PROMPT_CHARS = 10_000;
+// Large enough for one phone photo of a repair estimate (resized in the browser).
+const MAX_BODY_BYTES = 3_300_000;
+// Total text across the prompt, or across a whole chat history.
+const MAX_PROMPT_CHARS = 24_000;
+const MAX_CHAT_TURNS = 30;
+const MAX_IMAGE_BASE64_CHARS = 3_000_000;
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_SYSTEM_INSTRUCTION_CHARS = 4_000;
 const MAX_SCHEMA_CHARS = 10_000;
 const MAX_THINKING_BUDGET = 8_192;
@@ -121,28 +126,64 @@ function rateLimit(ip: string, kind: ModelKind): number {
 
 // --- Input validation -------------------------------------------------------
 
+type Part = { text: string } | { inlineData: { mimeType: string; data: string } };
+type ChatTurn = { role: 'user' | 'model'; parts: Part[] };
+
 interface GeminiRequest {
   model: string;
-  contents: string | { text: string }[];
+  /** A prompt, a list of parts, or a chat history of user/model turns. */
+  contents: string | Part[] | ChatTurn[];
   config?: Record<string, unknown>;
 }
 
-function validateContents(contents: unknown): GeminiRequest['contents'] {
-  let length = 0;
+/**
+ * Accepts text, at most one photo (text models only, for reading a repair
+ * estimate) and chat histories. Counts total text so long chats stay capped.
+ */
+function validateContents(contents: unknown, kind: ModelKind): GeminiRequest['contents'] {
+  let textLength = 0;
+  let images = 0;
+
+  const checkPart = (part: unknown) => {
+    if (!isPlainObject(part) || Object.keys(part).length !== 1) throw new BadRequest('each part must be { text } or { inlineData }');
+    if (typeof part.text === 'string') {
+      textLength += part.text.length;
+      return;
+    }
+    const data = part.inlineData;
+    if (!isPlainObject(data)) throw new BadRequest('each part must be { text } or { inlineData }');
+    onlyKeys(data, ['mimeType', 'data'], 'inlineData');
+    if (kind !== 'text') throw new BadRequest('images can only be sent to text models');
+    if (!IMAGE_TYPES.includes(data.mimeType as string)) throw new BadRequest('images must be JPEG, PNG or WebP');
+    if (typeof data.data !== 'string' || data.data.length > MAX_IMAGE_BASE64_CHARS || !/^[A-Za-z0-9+/=]+$/.test(data.data)) {
+      throw new BadRequest('image data must be base64 and under about 2 MB');
+    }
+    images++;
+  };
+
   if (typeof contents === 'string') {
-    length = contents.length;
-  } else if (Array.isArray(contents) && contents.length > 0 && contents.length <= 4) {
-    for (const part of contents) {
-      if (!isPlainObject(part) || typeof part.text !== 'string' || Object.keys(part).length !== 1) {
-        throw new BadRequest('contents parts must be { text: string }');
+    textLength = contents.length;
+  } else if (Array.isArray(contents) && contents.length > 0) {
+    const isChat = contents.every((c) => isPlainObject(c) && 'role' in c);
+    if (isChat) {
+      if (contents.length > MAX_CHAT_TURNS) throw new BadRequest(`chats can have at most ${MAX_CHAT_TURNS} turns`);
+      for (const turn of contents as Record<string, unknown>[]) {
+        onlyKeys(turn, ['role', 'parts'], 'turn');
+        if (turn.role !== 'user' && turn.role !== 'model') throw new BadRequest('turn role must be user or model');
+        if (!Array.isArray(turn.parts) || turn.parts.length === 0 || turn.parts.length > 4) throw new BadRequest('each turn needs 1-4 parts');
+        turn.parts.forEach(checkPart);
       }
-      length += part.text.length;
+    } else {
+      if (contents.length > 4) throw new BadRequest('at most 4 parts');
+      contents.forEach(checkPart);
     }
   } else {
-    throw new BadRequest('contents must be a string or a list of text parts');
+    throw new BadRequest('contents must be a string, a list of parts or a chat history');
   }
-  if (length === 0 || length > MAX_PROMPT_CHARS) {
-    throw new BadRequest(`contents must be 1-${MAX_PROMPT_CHARS} characters`);
+
+  if (images > 1) throw new BadRequest('at most one image per request');
+  if (textLength === 0 || textLength > MAX_PROMPT_CHARS) {
+    throw new BadRequest(`text must be 1-${MAX_PROMPT_CHARS} characters`);
   }
   return contents as GeminiRequest['contents'];
 }
@@ -216,7 +257,7 @@ function parseBody(raw: string): GeminiRequest & { kind: ModelKind } {
     throw new BadRequest('model is not allowed');
   }
   const kind = MODELS[model];
-  return { model, kind, contents: validateContents(body.contents), config: validateConfig(body.config, kind) };
+  return { model, kind, contents: validateContents(body.contents, kind), config: validateConfig(body.config, kind) };
 }
 
 // --- Handler ----------------------------------------------------------------

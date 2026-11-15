@@ -13,9 +13,13 @@ export const Type = {
   OBJECT: 'OBJECT',
 } as const;
 
+export type ContentPart = { text: string } | { inlineData: { mimeType: string; data: string } };
+export type ChatTurn = { role: 'user' | 'model'; parts: ContentPart[] };
+
 export interface GenerateContentRequest {
   model: 'gemini-3-flash-preview' | 'gemini-2.5-flash' | 'gemini-2.5-flash-image';
-  contents: string | { text: string }[];
+  /** A prompt, a list of parts (text and at most one photo), or a chat history. */
+  contents: string | ContentPart[] | ChatTurn[];
   config?: {
     systemInstruction?: string;
     responseMimeType?: 'application/json' | 'text/plain';

@@ -71,6 +71,16 @@ export async function findEpaVariants(
   return { make: epaMake, variants: perModel.flat() };
 }
 
+/** Makes with EPA ratings for a model year (for input suggestions). */
+export async function listEpaMakes(year: number): Promise<string[]> {
+  return menuItems(await getJson(`/vehicle/menu/make?year=${year}`)).map((m) => m.value);
+}
+
+/** Models with EPA ratings for a year and make (for input suggestions). */
+export async function listEpaModels(year: number, make: string): Promise<string[]> {
+  return menuItems(await getJson(`/vehicle/menu/model?${new URLSearchParams({ year: String(year), make })}`)).map((m) => m.value);
+}
+
 export async function getEpaRating(id: string): Promise<EpaRating> {
   const vehicle = await getJson(`/vehicle/${encodeURIComponent(id)}`);
   const rating = {
