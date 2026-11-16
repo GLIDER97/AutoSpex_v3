@@ -39,12 +39,14 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
 ## 2. One-time setup (owner, about 45 minutes total)
 
 1. **Merge PR #1** (internal links, titles, WebP images).
-2. **Search Console:** go to Sitemaps, enter `sitemap.xml` and click Submit. Then use URL inspection → Request indexing for `/`, `/fault-code-decoder`, `/vin-lookup`, `/recalls` and `/blog`.
+2. **Search Console (optional):**
+   - The agent submits `sitemap.xml` itself once it has Search Console access (step 5), and Google already finds the sitemap through `robots.txt`.
+   - "Request indexing" has no API. Doing it by hand for `/`, `/fault-code-decoder`, `/vin-lookup`, `/recalls` and `/blog` can speed up the first crawl, but it isn't required.
 3. **Bing Webmaster Tools** (bing.com/webmasters): sign in and **import the site from Search Console**. It's one click and also covers DuckDuckGo and Yahoo.
-4. **Vercel → Domains:** change the `myautospex.com` redirect from 307 to 308.
+4. **Vercel → Domains (optional, small impact):** change the `myautospex.com` redirect from 307 to 308. Every page already declares the `www` address as canonical, and the Vercel connector can't change this setting.
 5. **Search Console access for the agent.** Do this once; it lasts:
    - Google Cloud console → create a project → enable the "Google Search Console API" → create a **service account** → Keys → Add key → JSON.
-   - In Search Console → Settings → Users and permissions → Add user → the service account's email, with **Full** permission. Its API access is still read-only; claude-seo's setup guide uses Full for this.
+   - In Search Console → Settings → Users and permissions → Add user → the service account's email, with **Full** permission. Full lets the agent submit the sitemap; it can't remove the site or change owners.
    - In the Claude cloud environment "AutoSpex_v3" (environment menu → Edit), add an environment variable `GSC_SERVICE_ACCOUNT_JSON` containing the JSON file's text. Never paste it into a chat.
    - In the same settings, **delete the network secret "Search Console read-only token"**. It expired on 14 Nov, and while it's saved the proxy replaces the service account's sign-in with it.
 6. **Microsoft Clarity** (free; see section 6):
