@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, ExternalLink, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { saveLead } from '../utils/leadStorage';
 import { checkVin, decodeVin, getCrashRatings, type CrashRating, type DecodedVin } from '../utils/vehicleReport';
 import { searchRecalls, type Recall } from '../utils/nhtsaRecalls';
 import { formatComponent } from '../utils/nhtsa';
@@ -358,62 +357,6 @@ function Report({ vin, decoded }: { vin: string; decoded: DecodedVin }) {
   );
 }
 
-function InsuranceQuoteForm({ vin, vehicle }: { vin: string; vehicle: string }) {
-  const [data, setData] = useState({ zip: '', name: '', email: '', phone: '' });
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSending(true);
-    try {
-      await saveLead('VIN_lookup_leads.json', {
-        timestamp: new Date().toISOString(),
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        zip: data.zip,
-        car_model: vehicle,
-        vin,
-      });
-      setSent(true);
-    } catch (err) {
-      console.error('Lead submission failed', err);
-    } finally {
-      setSending(false);
-    }
-  };
-
-  if (sent) {
-    return (
-      <Notice tone="success" title="Request sent">
-        An insurance partner will contact you with quotes for the {vehicle}.
-      </Notice>
-    );
-  }
-  return (
-    <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
-      <Field label="ZIP code" htmlFor="ins-zip">
-        <input id="ins-zip" required inputMode="numeric" pattern="\d{5}" maxLength={5} value={data.zip} onChange={(e) => setData({ ...data, zip: e.target.value.replace(/\D/g, '') })} className={inputClass} />
-      </Field>
-      <Field label="Full name" htmlFor="ins-name">
-        <input id="ins-name" required autoComplete="name" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} className={inputClass} />
-      </Field>
-      <Field label="Email" htmlFor="ins-email">
-        <input id="ins-email" required type="email" autoComplete="email" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })} className={inputClass} />
-      </Field>
-      <Field label="Phone" htmlFor="ins-phone">
-        <input id="ins-phone" required type="tel" autoComplete="tel" value={data.phone} onChange={(e) => setData({ ...data, phone: e.target.value })} className={inputClass} />
-      </Field>
-      <div className="sm:col-span-2">
-        <PrimaryButton type="submit" loading={sending}>
-          Get insurance quotes
-        </PrimaryButton>
-        <p className="mt-2 text-sm text-muted-foreground">We share these details only with the insurance partner who sends your quotes.</p>
-      </div>
-    </form>
-  );
-}
 
 const FAQS = [
   ['What is a VIN?', 'A Vehicle Identification Number is the 17-character code that identifies one specific vehicle. It encodes the manufacturer, model details, model year and the plant where the vehicle was built, followed by a serial number.'],
@@ -559,8 +502,13 @@ const VinLookup: React.FC = () => {
           </Panel>
           <Panel>
             <PanelTitle>Insurance quotes for this {decoded.data.fields.Model}</PanelTitle>
-            <p className="mt-2 mb-4 text-[0.9375rem] text-muted-foreground">Compare rates for the {vehicleName} before you buy.</p>
-            <InsuranceQuoteForm vin={decoded.vin} vehicle={vehicleName} />
+            <p className="mt-2 text-[0.9375rem] text-muted-foreground">
+              Insurance can differ by hundreds of dollars a year between similar cars. Get a ballpark for the {vehicleName} before you buy,
+              then ask at least three insurers for quotes.
+            </p>
+            <Link to="/insurance-estimator" className={cn('mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-sign-green px-5 font-bold text-white hover:bg-sign-green-strong', focusRing)}>
+              Estimate insurance cost
+            </Link>
           </Panel>
         </div>
       )}

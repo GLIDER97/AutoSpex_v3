@@ -397,3 +397,51 @@ export function rememberZip(zip: string) {
     /* storage unavailable */
   }
 }
+
+/** A row of radio choices shown as chips (or cards when options have details). */
+export function ChoiceGroup<T extends string>({
+  legend,
+  name,
+  options,
+  value,
+  onChange,
+  columns,
+  className,
+}: {
+  legend: string;
+  name: string;
+  options: { id: T; label: string; detail?: string }[];
+  value: T;
+  onChange: (value: T) => void;
+  /** Grid columns for card-style options; chips wrap when omitted. */
+  columns?: 2 | 3;
+  className?: string;
+}) {
+  return (
+    <fieldset className={cn('min-w-0', className)}>
+      <legend className="mb-2 text-[0.9375rem] font-semibold">{legend}</legend>
+      <div className={cn(columns ? cn('grid gap-2', columns === 2 ? 'grid-cols-2' : 'grid-cols-3') : 'flex flex-wrap gap-2')}>
+        {options.map((o) => (
+          <label
+            key={o.id}
+            className={cn(
+              'cursor-pointer rounded-lg border transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+              o.detail ? 'p-3' : 'px-3.5 py-2 font-semibold',
+              value === o.id ? 'border-foreground bg-muted' : 'border-border hover:bg-muted/60',
+            )}
+          >
+            <input type="radio" name={name} className="sr-only" checked={value === o.id} onChange={() => onChange(o.id)} />
+            {o.detail ? (
+              <>
+                <span className="block font-bold">{o.label}</span>
+                <span className="mt-0.5 block text-sm text-muted-foreground">{o.detail}</span>
+              </>
+            ) : (
+              o.label
+            )}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}

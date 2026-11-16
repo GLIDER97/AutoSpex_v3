@@ -1,5 +1,9 @@
 # Google Sheets Lead Storage Setup Guide
 
+> **Retired (Nov 2026).** The site no longer has contact forms, so nothing sends data to this script.
+> If the Apps Script web app is still deployed, archive it in Apps Script (Deploy → Manage deployments → Archive)
+> so its public URL stops accepting data. This folder is kept for reference only.
+
 This guide explains how to set up Google Sheets as the backend storage for MyAutoSpex lead forms.
 
 ## Prerequisites

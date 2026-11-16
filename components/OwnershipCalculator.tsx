@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import OwnershipInsuranceLeadForm from './OwnershipInsuranceLeadForm';
 import { findEpaVariants, getEpaRating, type EpaVariant } from '../utils/fuelEconomy';
 import { CATEGORY_LABELS, SEGMENT_DEFAULTS, ownershipCost, type CarInput, type Segment, type SharedInput } from '../utils/ownership';
 import { BarList, PairedBars, StackedColumns } from './tool/charts';
@@ -188,7 +188,6 @@ const OwnershipCalculator: React.FC = () => {
   const [apr, setApr] = useState('7.5');
   const [term, setTerm] = useState(60);
   const [zip, setZip] = useState('');
-  const [leadOpen, setLeadOpen] = useState(false);
 
   const shared: SharedInput = {
     years,
@@ -362,25 +361,16 @@ const OwnershipCalculator: React.FC = () => {
 
           <Panel>
             <PanelTitle>Insurance is often the cost that varies most</PanelTitle>
-            <p className="mt-1 text-[0.9375rem] text-muted-foreground">Compare real quotes for {cars[0].name === 'Car 1' ? 'this car' : cars[0].name}.</p>
-            <PrimaryButton type="button" className="mt-4" onClick={() => setLeadOpen(true)}>
-              Get insurance quotes
-            </PrimaryButton>
+            <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+              See what your age, record, credit and coverage do to the price, then compare quotes from at least three insurers.
+            </p>
+            <Link to="/insurance-estimator" className={cn('mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-sign-green px-5 font-bold text-white hover:bg-sign-green-strong', focusRing)}>
+              Estimate insurance cost
+            </Link>
           </Panel>
         </div>
       </div>
 
-      <OwnershipInsuranceLeadForm
-        isOpen={leadOpen}
-        onClose={() => setLeadOpen(false)}
-        ownershipData={{
-          carType: cars[0].segment,
-          purchasePrice: String(n(cars[0].price)),
-          zipCode: zip,
-          annualMiles: milesBand,
-          ownershipPeriod: years <= 3 ? '3 years' : '5 years',
-        }}
-      />
     </ToolPage>
   );
 };

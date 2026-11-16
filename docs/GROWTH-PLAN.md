@@ -245,6 +245,9 @@ The owner chose these two features on 16 Nov, to build a real, owner-reported da
 - **At most 2 new pages a day,** each with something a reader can't get from a generic AI answer: real data (NHTSA, EPA), a working tool link, specific symptoms and steps.
 - **Every price, statistic, law or rule links to its source.** No source means the figure stays out.
 - **No first-person experience claims,** no invented people, reviews, ratings or testimonials. Pages are credited to the MyAutoSpex Editorial Team.
+- **No unprovable trust claims:** no user counts, accuracy percentages, "verified" or "certified" badges, partner networks, offices or team bios unless they are true and the owner has confirmed them.
+- **No contact forms.** The site doesn't collect names, emails or phone numbers (owner decision, 16 Nov 2026). Point people to real services by direct link instead.
+- **One design system.** New pages are built from `components/tool/kit.tsx` (`ToolPage`, `Panel`, `Field`, `ChoiceGroup`, `Faq`...) and products from `components/tool/ProductPicks.tsx` (text only, `rel="sponsored"`, disclosure shown). No gradients, purple accents, hotlinked Amazon images or hard-coded star ratings.
 - **No doorway pages:** don't make near-duplicate pages that differ only by a keyword, and don't create a recall page for a model/year with no recalls (link to the model's other years instead).
 - **Don't change how a tool calculates or answers** unless it's a clear bug fix with before and after checks in the PR.
 - **Never post to Reddit, forums, social media or review sites,** never send email without the owner's approval, and never buy or exchange links.

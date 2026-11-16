@@ -101,7 +101,6 @@ try {
     'value-shock': { year: '2019', make: 'Ford', model: 'F-150', trim: 'XLT', mileage: 60000, condition: 'good' },
     plates: { carModel: 'Mazda MX-5', state: 'California', hobbies: 'hiking, coffee', vibe: 'Punny' },
     coupons: {},
-    toolkits: {},
     'wrap-photo': { photo: PHOTO, width: 1200, height: 800, coverage: 'full', finish: 'satin', color: COLOR, extras: ['blackRoof', 'redCalipers'] },
     'wrap-render': { vehicle: '2022 Tesla Model 3', size: 'sedan', coverage: 'hood', finish: 'gloss', color: { name: 'Custom color', hex: ['#2f6f8f'] }, extras: [] },
   };
@@ -250,10 +249,10 @@ try {
     assert.equal((await call({ tool: 'plates', fields: VALID.plates })).status, 200);
   });
 
-  await test('coupons and toolkits are paid for once, then served from storage', async () => {
+  await test('coupons are paid for once, then served from storage', async () => {
     upstream.length = 0;
     for (let i = 0; i < 4; i++) {
-      const res = await call({ tool: 'toolkits', fields: {} }, { ip: '198.51.100.20' });
+      const res = await call({ tool: 'coupons', fields: {} }, { ip: '198.51.100.20' });
       assert.equal(res.status, 200);
       assert.equal((await res.json()).text, '{"ok":true}');
     }

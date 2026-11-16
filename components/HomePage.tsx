@@ -259,8 +259,8 @@ const SOURCES = [
     detail: "Written by AI (Anthropic's Claude). Use them to prepare for the shop, not as a quote.",
   },
   {
-    label: 'Your contact details',
-    detail: 'No account needed. We only share your details with a partner if you send a quote form.',
+    label: 'Your details',
+    detail: "Never asked for. No account, and no name, email or phone number. Nobody pays to change what a tool says.",
   },
 ];
 

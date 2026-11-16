@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { saveLead } from '../utils/leadStorage';
 import { runTool } from '../utils/ai';
 import {
   CREDIT_TIERS,
@@ -94,9 +93,6 @@ const AffordabilityPredictor: React.FC = () => {
   const [estimating, setEstimating] = useState(false);
   const [estimateError, setEstimateError] = useState<string | null>(null);
 
-  const [lead, setLead] = useState({ name: '', email: '', phone: '' });
-  const [leadSending, setLeadSending] = useState(false);
-  const [leadSent, setLeadSent] = useState(false);
 
   const setTierAndApr = (id: CreditTierId, cond = condition) => {
     setTier(id);
@@ -163,35 +159,6 @@ const AffordabilityPredictor: React.FC = () => {
       setEstimateError("Couldn't estimate a price right now. Enter the price you were quoted.");
     } finally {
       setEstimating(false);
-    }
-  };
-
-  const sendLead = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLeadSending(true);
-    try {
-      await saveLead('Car-affordability_leads.json', {
-        timestamp: new Date().toISOString(),
-        contactName: lead.name,
-        contactEmail: lead.email,
-        contactPhone: lead.phone,
-        vehicleYear: vehicle.year,
-        vehicleMake: vehicle.make,
-        vehicleModel: vehicle.model,
-        vehicleTrim: trim,
-        vehicleZip: zip,
-        monthlyIncome: income,
-        monthlyDebt: debts,
-        creditScore: tier,
-        downPayment: down,
-        termMonths: term,
-        source: 'Affordability_Predictor_PreApproval',
-      });
-      setLeadSent(true);
-    } catch (err) {
-      console.error('Lead submission failed', err);
-    } finally {
-      setLeadSending(false);
     }
   };
 
@@ -456,31 +423,12 @@ const AffordabilityPredictor: React.FC = () => {
           )}
 
           <Panel>
-            <PanelTitle>Get pre-approved</PanelTitle>
-            <p className="mt-1 text-[0.9375rem] text-muted-foreground">A real rate from a lender makes these numbers exact and gives you leverage at the dealer.</p>
-            {leadSent ? (
-              <Notice tone="success" className="mt-4" title="Request sent">
-                A lending partner will contact you with pre-approval options.
-              </Notice>
-            ) : (
-              <form onSubmit={sendLead} className="mt-4 grid gap-3 sm:grid-cols-3">
-                <Field label="Full name" htmlFor="lead-name">
-                  <input id="lead-name" required autoComplete="name" value={lead.name} onChange={(e) => setLead({ ...lead, name: e.target.value })} className={inputClass} />
-                </Field>
-                <Field label="Email" htmlFor="lead-email">
-                  <input id="lead-email" required type="email" autoComplete="email" value={lead.email} onChange={(e) => setLead({ ...lead, email: e.target.value })} className={inputClass} />
-                </Field>
-                <Field label="Phone" htmlFor="lead-phone">
-                  <input id="lead-phone" required type="tel" autoComplete="tel" value={lead.phone} onChange={(e) => setLead({ ...lead, phone: e.target.value })} className={inputClass} />
-                </Field>
-                <div className="sm:col-span-3">
-                  <PrimaryButton type="submit" loading={leadSending}>
-                    Check my rate
-                  </PrimaryButton>
-                  <p className="mt-2 text-sm text-muted-foreground">We share these details only with the lending partner who contacts you.</p>
-                </div>
-              </form>
-            )}
+            <PanelTitle>Get pre-approved before you shop</PanelTitle>
+            <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+              A real rate makes these numbers exact and gives you leverage at the dealer. Ask your bank or a local credit union for a
+              pre-approval (credit unions often have the lowest auto rates), then let the dealer try to beat it. Several applications within
+              about two weeks count as one credit check.
+            </p>
           </Panel>
         </div>
       </div>

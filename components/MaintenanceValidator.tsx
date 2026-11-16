@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Camera, Copy, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import SecondOpinionForm from './SecondOpinionForm';
 import {
   LINE_TYPES,
   auditQuote,
@@ -85,7 +84,6 @@ const MaintenanceValidator: React.FC = () => {
   const [audit, setAudit] = useState<{ input: QuoteInput; result: QuoteAudit } | null>(null);
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [secondOpinionOpen, setSecondOpinionOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -455,12 +453,14 @@ const MaintenanceValidator: React.FC = () => {
               )}
               <Panel>
                 <PanelTitle>Get a second opinion</PanelTitle>
-                <p className="mt-1 text-[0.9375rem] text-muted-foreground">Local shops can quote the same job so you can compare.</p>
-                <PrimaryButton type="button" className="mt-4 w-full" onClick={() => setSecondOpinionOpen(true)}>
-                  Request quotes from shops
-                </PrimaryButton>
-                <Link to={/^\d{5}$/.test(zip) ? `/mechanic-finder?zip=${zip}` : "/mechanic-finder"} className={cn('mt-3 block rounded-sm text-center font-semibold underline underline-offset-4', focusRing)}>
-                  Find a mechanic near you
+                <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+                  Call one or two other shops with the same list of work. Most will quote a common job over the phone.
+                </p>
+                <Link
+                  to={/^\d{5}$/.test(zip) ? `/mechanic-finder?zip=${zip}` : '/mechanic-finder'}
+                  className={cn('mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-sign-green px-5 font-bold text-white hover:bg-sign-green-strong', focusRing)}
+                >
+                  Find shops near you
                 </Link>
               </Panel>
             </aside>
@@ -468,18 +468,6 @@ const MaintenanceValidator: React.FC = () => {
         )}
       </div>
 
-      <SecondOpinionForm
-        isOpen={secondOpinionOpen}
-        onClose={() => setSecondOpinionOpen(false)}
-        maintenanceRequest={{
-          year: vehicle.year,
-          make: vehicle.make,
-          model: vehicle.model,
-          service: (audit?.input.lines ?? lines).slice(0, 3).map((l) => l.description).join(', '),
-          zip,
-          quoteAmount: String(Math.round((audit ? quoteMath(audit.input.lines) : math).total)),
-        }}
-      />
 
       <section className="mt-16 max-w-3xl" aria-labelledby="quote-faq">
         <h2 id="quote-faq" className="font-heading text-2xl font-extrabold">

@@ -58,7 +58,7 @@ export const STATIC_PAGES: PageMeta[] = [
     path: '/insurance-estimator',
     title: 'Car Insurance Cost Estimator (US)',
     description:
-      'Estimate a fair monthly car insurance premium for your vehicle, age, ZIP code and driving record, and see which factors raise or lower your rate.',
+      'Estimate a ballpark monthly car insurance premium for your age, driving record, credit, car and coverage, and see what each change would save.',
     priority: 0.8,
   },
   {
@@ -114,14 +114,14 @@ export const STATIC_PAGES: PageMeta[] = [
     path: '/coupons',
     title: 'Car Service Coupons & Maintenance Deals',
     description:
-      'Find current savings on oil changes, brakes, tires and diagnostics from national service networks in your area.',
+      'Typical promotions national chains advertise on oil changes, brakes, tires and batteries, so you know what deals to ask your shop about.',
     priority: 0.6,
   },
   {
     path: '/diy-toolkits',
     title: 'DIY Car Repair Guides & Essential Toolkits',
     description:
-      'Do-it-yourself car fixes with the exact tools and parts you need, from OBD-II scanners to roadside safety essentials.',
+      'The roadside gear and basic tools every driver should own, from jump starters and tire inflators to OBD-II scanners.',
     priority: 0.7,
   },
   {
@@ -149,7 +149,7 @@ export const STATIC_PAGES: PageMeta[] = [
   {
     path: '/contact',
     title: 'Contact MyAutoSpex',
-    description: 'Get in touch with the MyAutoSpex team with questions, feedback or partnership requests.',
+    description: 'Send MyAutoSpex a question, a correction or an idea for a new tool.',
     priority: 0.3,
   },
   {

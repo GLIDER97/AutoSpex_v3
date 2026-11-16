@@ -43,7 +43,7 @@ export interface BuiltRequest {
   cacheSeconds?: number;
 }
 
-// Coupons and toolkits load on every page view; one answer serves everyone for 12 hours.
+// The coupons page loads on every page view; one answer serves everyone for 12 hours.
 const SHARED_ANSWER_SECONDS = 12 * 60 * 60;
 
 interface ToolDef {
@@ -537,7 +537,7 @@ const plates: ToolDef = {
   },
 };
 
-// --- Service coupons and toolkits (components/ResourceHub.tsx) ------------------
+// --- Service coupons (components/ResourceHub.tsx) -------------------------------
 
 const coupons: ToolDef = {
   tier: 'text',
@@ -577,46 +577,6 @@ const coupons: ToolDef = {
   },
 };
 
-const toolkits: ToolDef = {
-  tier: 'text',
-  build(f) {
-    onlyKeys(f, [], 'fields');
-    return {
-      tier: 'text',
-      cacheSeconds: SHARED_ANSWER_SECONDS,
-      contents: `
-          Act as a Master Technician. Suggest 6 essential DIY toolkits or high-quality diagnostic parts currently popular on the US market.
-          Focus on tools like OBDII Scanners, Multimeters, and Socket Sets.
-          IMPORTANT: Do not include specific price numbers as they fluctuate.
-          Each item MUST have a real, working image URL of the product (use high-quality automotive tool photography URLs).
-          Return strictly valid JSON with an array called "items".
-          Each item must have: name, brand, rating (number 4.0-5.0), category, bestFor, and imageUrl.
-        `,
-      schema: {
-        type: T.OBJECT,
-        properties: {
-          items: {
-            type: T.ARRAY,
-            items: {
-              type: T.OBJECT,
-              properties: {
-                name: { type: T.STRING },
-                brand: { type: T.STRING },
-                rating: { type: T.NUMBER },
-                category: { type: T.STRING },
-                bestFor: { type: T.STRING },
-                imageUrl: { type: T.STRING },
-              },
-              required: ['name', 'brand', 'rating', 'category', 'bestFor', 'imageUrl'],
-            },
-          },
-        },
-        required: ['items'],
-      },
-      maxTokens: 3_000,
-    };
-  },
-};
 
 // --- Wrap visualizer (components/WrapDesigner.tsx) -------------------------------
 
@@ -677,7 +637,6 @@ export const TOOLS = {
   'value-shock': valueShock,
   plates,
   coupons,
-  toolkits,
   'wrap-photo': wrapPhoto,
   'wrap-render': wrapRender,
 } satisfies Record<string, ToolDef>;
