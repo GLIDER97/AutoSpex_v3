@@ -150,6 +150,7 @@ The owner chose not to pay for Semrush, Ahrefs or Ubersuggest. The agent picks t
 
 The owner added an OpenRouter key, saved as a hidden network secret for `openrouter.ai`, with a **budget of $10 a month**.
 
+- **Text and images only.** The owner allows OpenRouter to be used only for text and still images. Never generate video, audio or animation (GIFs included) with OpenRouter or any other service.
 - **Budget check first, every time.** Before generating any image, call `GET https://openrouter.ai/api/v1/key` and read `usage_monthly`.
   - If it is **$9.00 or more**, generate no images for the rest of the calendar month and note it in the log.
   - Record every generation (date, model, cost, file) in `docs/openrouter-spend.csv`.
