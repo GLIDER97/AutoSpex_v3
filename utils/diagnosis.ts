@@ -1,6 +1,7 @@
-// Check engine code diagnosis: parses codes, asks the AI (through /api/ai)
-// for a structured answer and checks every number before it reaches the page.
-import { generateContent, Type } from './ai';
+// Check engine code diagnosis: parses codes, asks the AI (through /api/ai,
+// tool "fault-code", whose prompt and schema are in api/_tools.ts) for a
+// structured answer and checks every number before it reaches the page.
+import { cleanName, runAiTool } from './ai';
 import type { OBDCodeData } from '../types';
 
 /** P, B, C or U followed by four hex characters (SAE J2012 format). */
@@ -62,51 +63,6 @@ const DRIVE: DriveVerdict[] = ['Safe to drive', 'Drive with caution', 'Stop driv
 const LIKELIHOOD: Likelihood[] = ['Most likely', 'Likely', 'Possible', 'Less likely'];
 const DIY: DiyLevel[] = ['Easy DIY', 'Moderate DIY', 'Shop job'];
 
-const schema = {
-  type: Type.OBJECT,
-  properties: {
-    codes: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          code: { type: Type.STRING },
-          title: { type: Type.STRING },
-          system: { type: Type.STRING },
-          meaning: { type: Type.STRING },
-          severity: { type: Type.STRING, enum: [...SEVERITIES] },
-          drive: { type: Type.STRING, enum: DRIVE },
-          driveAdvice: { type: Type.STRING },
-          symptoms: { type: Type.ARRAY, items: { type: Type.STRING } },
-        },
-        required: ['code', 'title', 'system', 'meaning', 'severity', 'drive', 'driveAdvice', 'symptoms'],
-      },
-    },
-    combined: { type: Type.STRING },
-    causes: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          cause: { type: Type.STRING },
-          likelihood: { type: Type.STRING, enum: LIKELIHOOD },
-          howToConfirm: { type: Type.STRING },
-          fix: { type: Type.STRING },
-          diy: { type: Type.STRING, enum: DIY },
-          partsLow: { type: Type.NUMBER },
-          partsHigh: { type: Type.NUMBER },
-          laborHoursLow: { type: Type.NUMBER },
-          laborHoursHigh: { type: Type.NUMBER },
-        },
-        required: ['cause', 'likelihood', 'howToConfirm', 'fix', 'diy', 'partsLow', 'partsHigh', 'laborHoursLow', 'laborHoursHigh'],
-      },
-    },
-    quickChecks: { type: Type.ARRAY, items: { type: Type.STRING } },
-    watchOut: { type: Type.STRING },
-  },
-  required: ['codes', 'combined', 'causes', 'quickChecks', 'watchOut'],
-};
-
 const clamp = (n: unknown, min: number, max: number) => {
   const x = Number(n);
   return Number.isFinite(x) ? Math.min(max, Math.max(min, x)) : min;
@@ -162,37 +118,11 @@ function sanitize(raw: any, codes: string[]): Diagnosis {
   };
 }
 
-export async function diagnose(
-  codes: string[],
-  vehicle: string,
-  known: Record<string, OBDCodeData>,
-): Promise<Diagnosis> {
-  const reference = codes
-    .filter((c) => known[c])
-    .map((c) => `${c}: ${known[c].title}`)
-    .join('\n');
-
-  const prompt = `You are an ASE-certified master technician helping a US car owner understand check engine codes.
-
-Codes read from the car: ${codes.join(', ')}
-Vehicle: ${vehicle || 'not given (answer for a typical US passenger vehicle)'}
-${reference ? `Standard definitions for reference:\n${reference}\n` : ''}
-Answer in plain English for a non-mechanic.
-
-For each code: the official title, the system it belongs to, what it means, severity, whether the car is safe to drive (Stop driving only for risks like flashing check engine light / severe misfire, overheating, oil pressure, brakes or fire risk), and short advice.
-${codes.length > 1 ? 'Explain in "combined" how these codes relate and whether one root cause likely explains several of them.' : 'Leave "combined" empty.'}
-Causes: the realistic causes for these codes on this vehicle, most likely first (consider well-known failure patterns for this vehicle if one is given). For each: how a shop or owner can confirm it, the fix, DIY difficulty, typical US aftermarket-to-OEM parts price range in USD, and typical labor hours from standard labor guides (book time).
-quickChecks: free or cheap things to check before paying for repairs.
-watchOut: the most common misdiagnosis or upsell for these codes.
-Do not invent technical service bulletin or recall numbers.`;
-
-  const response = await generateContent({
-    model: 'text',
-    contents: prompt,
-    config: { responseMimeType: 'application/json', responseSchema: schema },
-  });
-  if (!response.text) throw new Error('The AI returned no answer.');
-  const result = sanitize(JSON.parse(response.text), codes);
+/** Asks the AI about the codes. The server adds the standard definitions of codes in the built-in list. */
+export async function diagnose(codes: string[], vehicle: string): Promise<Diagnosis> {
+  const response = await runAiTool('fault-code', { codes, vehicle: cleanName(vehicle, 110) || undefined });
+  if (!response.data) throw new Error('The AI returned no answer.');
+  const result = sanitize(response.data, codes);
   if (!result.codes.length) throw new Error('The AI answer could not be read.');
   return result;
 }

@@ -3,6 +3,16 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
+import { initBotId } from 'botid/client/core';
+
+// Vercel BotID: adds an invisible bot check to the AI and shop search calls,
+// verified on the server in api/_botid.ts. Skipped in development.
+initBotId({
+  protect: [
+    { path: '/api/ai', method: 'POST' },
+    { path: '/api/places', method: 'GET' },
+  ],
+});
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
