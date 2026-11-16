@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl } =
   await import(pathToFileURL(ssrEntry).href);
 
 const template = await fs.readFile(path.join(distDir, 'index.html'), 'utf8');
@@ -44,9 +44,13 @@ const ORGANIZATION = {
   logo: `${SITE_URL}/favicon.svg`,
 };
 
-function buildHead({ title, description, canonical, noindex, image, type = 'website', structuredData = [] }) {
+// Share image for pages without their own (public/og-image.png, 1200x630).
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+
+function buildHead({ title, description, canonical, noindex, image = DEFAULT_IMAGE, type = 'website', structuredData = [] }) {
   const tags = [];
-  if (noindex) tags.push('<meta name="robots" content="noindex, follow" />');
+  // Indexable pages allow large image previews, which Google Discover needs to show a page with a big image.
+  tags.push(`<meta name="robots" content="${noindex ? 'noindex, follow' : 'max-image-preview:large'}" />`);
   if (canonical) tags.push(`<link rel="canonical" href="${escapeHtml(canonical)}" />`);
   tags.push(
     `<meta property="og:site_name" content="${escapeHtml(SITE_NAME)}" />`,
@@ -78,7 +82,9 @@ function fillTemplate(head, bodyHtml) {
     `<meta name="description" content="${escapeHtml(head.description)}" />`,
     'the meta description',
   );
-  replaceOnce(/<\/head>/, `${buildHead(head)}\n  </head>`, '</head>');
+  // The article list the client reads for guide links (Article/articleIndex.ts).
+  const index = `    <script id="article-index" type="application/json">${JSON.stringify(ARTICLE_INDEX).replace(/</g, '\\u003c')}</script>`;
+  replaceOnce(/<\/head>/, `${buildHead(head)}\n${index}\n  </head>`, '</head>');
   replaceOnce(/<div id="root"><\/div>/, `<div id="root">${bodyHtml}</div>`, '<div id="root"></div>');
   return html;
 }
@@ -120,6 +126,21 @@ for (const page of pages) {
       ],
     });
   } else {
+    const tool = TOOLS.find((t) => t.path === page.path);
+    if (tool) {
+      structuredData.push({
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: tool.name,
+        url: canonical,
+        description: page.description,
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'Any (web browser)',
+        isAccessibleForFree: true,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        publisher: { '@id': ORGANIZATION['@id'] },
+      });
+    }
     structuredData.push({
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -147,7 +168,7 @@ for (const article of ARTICLES) {
   const image = article.featuredImage ? absoluteUrl(article.featuredImage) : undefined;
   const published = isoDate(article.date);
   await writePage(routePath, {
-    title: formatTitle(article.title),
+    title: formatTitle(article.seoTitle || article.title),
     description: article.description,
     canonical,
     image,
@@ -160,7 +181,10 @@ for (const article of ARTICLES) {
         description: article.description,
         ...(image && { image: [image] }),
         ...(published && { datePublished: published, dateModified: published }),
-        ...(article.authorName && { author: { '@type': 'Person', name: article.authorName } }),
+        // Articles are credited to the editorial team (see /editorial-policy), so the author is an organization.
+        author: article.authorName && !/MyAutoSpex/i.test(article.authorName)
+          ? { '@type': 'Person', name: article.authorName }
+          : { '@type': 'Organization', name: 'MyAutoSpex Editorial Team', url: `${SITE_URL}/editorial-policy` },
         ...(article.category && { articleSection: article.category }),
         publisher: ORGANIZATION,
         mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
@@ -212,4 +236,30 @@ await fs.writeFile(
   `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
 );
 
-console.log(`prerender: wrote ${count} pages, 404.html, sitemap.xml (${sitemapEntries.length} URLs) and robots.txt`);
+// llms.txt: a plain-language map of the site for AI assistants (https://llmstxt.org).
+{
+  const line = (name, path, description) => `- [${name}](${absoluteUrl(path)}): ${description}`;
+  const home = STATIC_PAGES.find((p) => p.path === '/');
+  const llms = [
+    `# ${SITE_NAME}`,
+    '',
+    `> ${home.description}`,
+    '',
+    '## Tools',
+    '',
+    ...TOOLS.map((t) => line(t.name, t.path, t.description)),
+    '',
+    '## Guides',
+    '',
+    ...[...ARTICLE_INDEX].sort((a, b) => (b.published ?? '').localeCompare(a.published ?? '')).map((a) => line(a.title, `/article/${a.slug}`, a.description)),
+    '',
+    '## About',
+    '',
+    line('About MyAutoSpex', '/about', 'Who we are and what the tools do.'),
+    line('Editorial policy', '/editorial-policy', 'How our guides are written, how AI is used and how to report a mistake.'),
+    '',
+  ].join('\n');
+  await fs.writeFile(path.join(distDir, 'llms.txt'), llms);
+}
+
+console.log(`prerender: wrote ${count} pages, 404.html, sitemap.xml (${sitemapEntries.length} URLs), robots.txt and llms.txt`);

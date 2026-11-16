@@ -1,15 +1,15 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-import imgHero from '../assets/Featured images/Gas Saver.png';
+import imgHero from '../assets/Featured images/gas-saver.webp';
 
 export const meta = {
     title: "The True Cost of Your 30-Mile Commute: Is Your 'Gas Saver' Actually Saving You Money in 2026?",
-    description: "Calculate the real cost of your daily drive in 2026. Discover why '35 MPG' stickers are a lie, hidden insurance costs, and the break-even point for hybrids vs. paid-off beaters.",
+    seoTitle: "The True Cost of a 30-Mile Commute",
+    description: "What your daily drive really costs in 2026: why the MPG sticker misleads, the insurance costs people forget and when a hybrid beats a paid-off car.",
     date: "2026-02-15T15:36:43",
-    authorName: "John Smith",
-    authorRole: "Financial & Automotive Reviewer • 8+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Financial Guides",
     featuredImage: imgHero,
     slug: 'true-cost-of-commute-2026',
@@ -18,15 +18,11 @@ export const meta = {
 const CommuteCost2026Post: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="True Cost of Commuting 2026" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={896} decoding="async" alt="True Cost of Commuting 2026" className="w-full m-0 object-cover" />
             </div>
 
             {/* Commuter's Quick Math - AI Overview Optimization */}
@@ -122,7 +118,7 @@ const CommuteCost2026Post: React.FC = () => {
                 The "New Car" Trap: Math of the Break-Even Point
             </h2>
             <p>
-                I see this every week. A guy trading in a paid-off 2018 Ford F-150 because "it guzzles gas," only to sign a $750/month note on a 2026 Rav4 Hybrid.
+                It's a common mistake: trading in a paid-off 2018 Ford F-150 because "it guzzles gas," only to sign a $750/month note on a 2026 Rav4 Hybrid.
             </p>
             <p>
                 Let's run the math:

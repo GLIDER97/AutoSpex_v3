@@ -1,8 +1,5 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO'; // Assuming we keep SEO in shared components or move it too? The plan said "completely isolated".
-// But we can't easily move SEO if it's used elsewhere without updating all refs. 
-// For "Strict Isolation", I should properly just import it from where it is.
 // Images now in ../assets
 // Need to handle image imports. 
 // Vite can import images. 
@@ -10,20 +7,21 @@ import SEO from '../../components/SEO'; // Assuming we keep SEO in shared compon
 // No, Vite doesn't serve src/ folders as static. 
 // So we must Import them.
 
-import imgHero from '../assets/image5.png'; // Was /blogs/image5.png
-import imgObdExplain from '../assets/image4.png'; // Was image4.png
-import imgHowTo from '../assets/image2.jpg'; // Was image2.jpg
-import imgTool from '../assets/image6.jpg'; // Was image6.jpg
-import imgTop10 from '../assets/image3.jpg'; // Was image3.jpg
-import imgUser from '../assets/image1.jpg'; // Was image1.jpg
-import imgConclusion from '../assets/image7.png'; // Was image7.png
+import imgHero from '../assets/image5.webp';
+import imgObdExplain from '../assets/image4.webp';
+import imgHowTo from '../assets/image2.webp';
+import imgTool from '../assets/image6.webp';
+import imgTop10 from '../assets/image3.webp';
+import imgUser from '../assets/image1.webp';
+import imgConclusion from '../assets/image7.webp';
 
 export const meta = {
-    title: "Free Check Engine Light Decoder 2026: Codes & USA Repair Costs",
-    description: "Decode your check engine light for free. Get 2026 USA repair cost estimates, symptoms, and causes for OBD2 codes.",
+    title: "The 10 Most Common OBD2 Codes and What They Cost to Fix (2026)",
+    seoTitle: "Top 10 OBD2 Codes and What They Cost to Fix",
+    description: "The 10 most common OBD2 codes in 2026, what each one means, typical US repair costs and how to read the code from your car yourself.",
     date: "2026-02-09T01:34:07",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Articles & Guides",
     featuredImage: imgHero,
     // Legacy override removed. We now use standard /article/-slug with a redirect for old link.
@@ -34,15 +32,11 @@ export const meta = {
 const FreeObd2CodeDecoderPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Introduction */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="Check Engine Light Decoder" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={800} decoding="async" alt="Check Engine Light Decoder" className="w-full m-0 object-cover" />
             </div>
 
             <p className="lead text-xl text-slate-600 dark:text-slate-300 mt-12 !leading-loose">
@@ -62,7 +56,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             </div>
 
             <p>
-                I'm Keesha Lauren: Auto Tech Expert with 15+ Years in Vehicle Diagnostics, and at MyAutoSpex, we've built tools powered by real-world data from millions of USA vehicle reports to demystify these scares.
+                At MyAutoSpex, we've built free tools to take the mystery out of these warnings.
             </p>
             <p>
                 Our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 no-underline hover:underline font-bold">free OBD2 Code Decoder</a> instantly translates those cryptic five-digit codes into plain English, complete with symptoms, likely causes, and up-to-date 2026 USA repair cost estimates—national averages plus regional tweaks for high-cost states like California or New York.
@@ -82,7 +76,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">What Are OBD2 Codes and Why Do They Matter?</h2>
 
             <figure className="my-14">
-                <img src={imgObdExplain} alt="OBD2 Codes Explanation" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgObdExplain} width={1200} height={800} loading="lazy" decoding="async" alt="OBD2 Codes Explanation" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
                 <figcaption className="text-center text-sm text-slate-500 mt-3">Understanding the basics of OBD2 diagnostics.</figcaption>
             </figure>
 
@@ -124,13 +118,13 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 Beyond avoiding fines (up to $4,000 for ignored emissions fails in states like Texas), these codes prevent cascading failures. An ignored P0171 (lean fuel mix) could warp your pistons, ballooning a $200 fix into $5,000. Plus, with USA fuel prices hovering at $3.50/gallon, efficient running saves cash—OBD-II data shows unresolved codes drop MPG by 10-20%.
             </p>
             <p>
-                From my years diagnosing fleets in the Midwest, I've seen codes catch everything from a $20 gas cap to transmission woes costing $4,000. Ignoring them? That's like playing Russian roulette with your ride.
+                A code can point to anything from a $20 gas cap to transmission trouble costing $4,000. Ignoring them? That's like playing Russian roulette with your ride.
             </p>
 
             {/* Section 2 */}
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">How to Get Your OBD2 Code (Step-by-Step)</h2>
             <figure className="my-14">
-                <img src={imgHowTo} alt="How to get OBD2 Code" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgHowTo} width={1168} height={784} loading="lazy" decoding="async" alt="How to get OBD2 Code" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
             <p>
                 Pulling your code is easier than ever—no PhD in mechanics required. Most USA vehicles post-1996 have the 16-pin OBD-II port under the dash, near the steering column. Here's your no-fuss guide:
@@ -152,7 +146,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 pointer-events-none" />
                 <div className="relative z-10">
                     <h2 className="text-3xl font-black mb-6">Introducing the Best Free OBD2 Fault Code Decoder Tool in 2026</h2>
-                    <img src={imgTool} alt="Free OBD2 Fault Code Decoder Tool" className="w-full rounded-xl shadow-lg border border-slate-700/50 mb-8" />
+                    <img src={imgTool} width={1168} height={784} loading="lazy" decoding="async" alt="Free OBD2 Fault Code Decoder Tool" className="w-full rounded-xl shadow-lg border border-slate-700/50 mb-8" />
                     <p className="text-slate-300 text-lg mb-6">
                         Tired of Googling "P0300 meaning" and sifting through 1990s forums? Say hello to MyAutoSpex's Fault Code Decoder—the gold standard for USA drivers in 2026.
                     </p>
@@ -183,7 +177,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             {/* Section 4: Table */}
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">Top 10 Most Common OBD2 Codes in 2026</h2>
             <figure className="my-14">
-                <img src={imgTop10} alt="Top 10 Common OBD2 Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgTop10} width={1168} height={784} loading="lazy" decoding="async" alt="Top 10 Common OBD2 Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
             <p>
                 Drawing from CarMD's 2025 report and NHTSA data, these 10 codes trigger 70% of USA CELs. Costs are 2026 estimates: National averages, +10-25% in coastal states.
@@ -235,7 +229,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             {/* Section 5: Real Examples */}
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">Real User Examples: Decoding Codes</h2>
             <figure className="my-14">
-                <img src={imgUser} alt="Real User Examples" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgUser} width={1168} height={784} loading="lazy" decoding="async" alt="Real User Examples" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
             <p><strong>Let's make it real. These anonymized cases from our 2025 user logs show the decoder in action.</strong></p>
 
@@ -284,7 +278,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             {/* Conclusion */}
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">Conclusion</h2>
             <figure className="my-14">
-                <img src={imgConclusion} alt="Conclusion" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgConclusion} width={1200} height={446} loading="lazy" decoding="async" alt="Conclusion" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
             <p>
                 Don't let a light derail your drive—knowledge is your best mechanic. With MyAutoSpex's free OBD2 Decoder, you're steps from savings and sanity.

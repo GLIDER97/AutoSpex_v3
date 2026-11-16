@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateContent, type ChatTurn } from '../../utils/ai';
+import { runTool } from '../../utils/ai';
 import type { Diagnosis } from '../../utils/diagnosis';
 import { Panel, PanelTitle, focusRing, inputClass } from '../tool/kit';
 
@@ -11,7 +11,7 @@ interface Message {
 }
 
 const SUGGESTIONS = ['Can I fix this myself?', 'What should I ask the shop?', 'Is it safe for a long trip?'];
-const MAX_TURNS = 16; // the server accepts up to 30
+const MAX_TURNS = 16; // the server accepts up to 16
 
 /** Renders the model's light markdown: paragraphs, "-" / "*" bullets and **bold**. */
 function Formatted({ text }: { text: string }) {
@@ -56,21 +56,14 @@ export default function MechanicChat({ codes, vehicle, diagnosis }: { codes: str
     if (messages.length) endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages, sending]);
 
-  const context = [
-    `Codes: ${codes.join(', ')}.`,
-    `Vehicle: ${vehicle || 'not given'}.`,
-    diagnosis
-      ? `Diagnosis already shown to the owner: ${diagnosis.codes.map((c) => `${c.code} ${c.title} (${c.drive})`).join('; ')}. Likely causes: ${diagnosis.causes
-          .slice(0, 4)
-          .map((c) => `${c.cause} (${c.likelihood})`)
-          .join('; ')}.`
-      : '',
-  ].join(' ');
-
-  const systemInstruction = `You are an ASE-certified master technician chatting with a US car owner about their check engine codes. ${context}
-Answer the owner's questions in plain English, specific to these codes and this vehicle. Put safety first: say clearly when the car should not be driven.
-Give approximate US prices and labor hours when asked. Keep answers short (under 180 words) with short paragraphs or bullet lists.
-If a question needs a hands-on inspection, say what a shop should test. Never invent recall or service bulletin numbers.`;
+  // The chat's instructions are written on the server (api/_aiTools.ts, "mechanic-chat");
+  // the page only sends the codes, the vehicle, a summary of the diagnosis and the conversation.
+  const diagnosisSummary = diagnosis
+    ? {
+        codes: diagnosis.codes.map((c) => ({ code: c.code, title: c.title.slice(0, 120), drive: c.drive })),
+        causes: diagnosis.causes.slice(0, 4).map((c) => ({ cause: c.cause.slice(0, 160), likelihood: c.likelihood })),
+      }
+    : undefined;
 
   const send = async (question: string) => {
     const q = question.trim();
@@ -81,10 +74,10 @@ If a question needs a hands-on inspection, say what a shop should test. Never in
     setSending(true);
     setError(null);
     try {
-      const history: ChatTurn[] = next.slice(-MAX_TURNS).map((m) => ({ role: m.role, parts: [{ text: m.text }] }));
+      const history = next.slice(-MAX_TURNS).map((m) => ({ role: m.role, text: m.role === 'user' ? m.text.slice(0, 600) : m.text.slice(0, 2000) }));
       // A history must start with the owner's message.
       while (history.length && history[0].role !== 'user') history.shift();
-      const response = await generateContent({ model: 'text', contents: history, config: { systemInstruction } });
+      const response = await runTool('mechanic-chat', { codes, vehicle, diagnosis: diagnosisSummary, messages: history });
       if (!response.text) throw new Error('No answer');
       setMessages([...next, { role: 'model', text: response.text }]);
     } catch (err) {
@@ -159,7 +152,7 @@ If a question needs a hands-on inspection, say what a shop should test. Never in
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask about causes, costs or repairs"
-          maxLength={1000}
+          maxLength={600}
           className={inputClass}
         />
         <button

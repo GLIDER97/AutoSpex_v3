@@ -1,15 +1,15 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-import imgHero from '../assets/Featured images/P0420 Code.png';
+import imgHero from '../assets/Featured images/p0420-code.webp';
 
 export const meta = {
     title: "P0420 Code: Is Your Catalytic Converter Actually Dead or Is It a $50 Sensor?",
+    seoTitle: "P0420 Code: Catalytic Converter or Sensor?",
     description: "Expert guide on P0420 code causes, 2026 catalytic converter replacement costs, and how to avoid $2,800 repair bills when the fix might be a $50 sensor.",
     date: "2026-02-15T15:32:43",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Diagnostic Guides",
     featuredImage: imgHero,
     slug: 'p0420-code-catalytic-converter-sensor-guide',
@@ -18,15 +18,11 @@ export const meta = {
 const P0420CatalyticConverterPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="P0420 Catalytic Converter Diagnostic" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={896} decoding="async" alt="P0420 Catalytic Converter Diagnostic" className="w-full m-0 object-cover" />
             </div>
 
             {/* Quick Verdict / Featured Snippet Hook */}
@@ -36,7 +32,7 @@ const P0420CatalyticConverterPost: React.FC = () => {
                     <strong>P0420 = "Catalyst System Efficiency Below Threshold (Bank 1)"</strong> — But here's what they don't tell you: 60% of P0420 codes are NOT caused by a dead catalytic converter.
                 </p>
                 <p className="text-slate-700 dark:text-slate-300">
-                    I've seen dealerships quote $2,800 for a P0420 when the fix was a loose gas cap or a $40 gasket. Let's stop the bleeding.
+                    Dealerships can quote $2,800 for a P0420 when the real fix is a loose gas cap or a $40 gasket. Let's stop the bleeding.
                 </p>
             </div>
 

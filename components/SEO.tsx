@@ -40,12 +40,8 @@ const SEO: React.FC<SEOProps> = ({ title, description, canonical, rawTitle, noin
             upsertMeta('property', 'og:description', description);
         }
 
-        const robots = document.head.querySelector('meta[name="robots"]');
-        if (noindex) {
-            upsertMeta('name', 'robots', 'noindex, follow');
-        } else if (robots) {
-            robots.remove();
-        }
+        // Same values the prerender writes: large image previews (for Google Discover) unless the page is noindex.
+        upsertMeta('name', 'robots', noindex ? 'noindex, follow' : 'max-image-preview:large');
 
         let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
         if (noindex) {

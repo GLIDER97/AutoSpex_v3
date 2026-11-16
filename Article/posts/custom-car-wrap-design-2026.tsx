@@ -1,16 +1,16 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-// Using wrap-designer.png from Featured images folder
-import imgHero from '../assets/Featured images/wrap-designer.png';
+// Featured image: Featured images/wrap-designer.webp
+import imgHero from '../assets/Featured images/wrap-designer.webp';
 
 export const meta = {
     title: "Visualizing Your Dream Ride: How to Design a Custom Car Wrap Without a Graphic Designer in 2026",
+    seoTitle: "How to Design a Custom Car Wrap (2026)",
     description: "Design your custom car wrap with AI in 2026. Discover top color trends, matte vs. satin maintenance, and visualization tools to save thousands on design fees.",
     date: "Feb 15, 2026 14:00:00",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Car Culture",
     featuredImage: imgHero,
     slug: 'custom-car-wrap-design-2026',
@@ -19,15 +19,11 @@ export const meta = {
 const CarWrapDesignPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Featured Image */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="Custom Car Wrap Design AI 2026" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={800} decoding="async" alt="Custom Car Wrap Design AI 2026" className="w-full m-0 object-cover" />
             </div>
 
             {/* The Hook - Digital Paint Revolution */}
@@ -117,7 +113,7 @@ const CarWrapDesignPost: React.FC = () => {
                 <strong>The Solution:</strong> Always demand high-quality cast vinyl like 3M 2080 or Avery Dennison SW900.
             </p>
             <p>
-                Before you commit, use the <a href="/resale-checker" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Resale Value Checker</a>. If your current paint is already peeling, a wrap won't save it—it will peel right off with the vinyl.
+                Before you commit, use the <a href="/value-shock-calculator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Car Resale Value Checker</a>. If your current paint is already peeling, a wrap won't save it—it will peel right off with the vinyl.
             </p>
 
             {/* Section 4: AI Designer */}

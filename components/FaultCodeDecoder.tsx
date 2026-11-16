@@ -7,7 +7,6 @@ import { MAX_CODES, diagnose, explanationFromBuiltIn, parseCodes, type Diagnosis
 import DiagnosisView from './decoder/DiagnosisView';
 import MechanicChat from './decoder/MechanicChat';
 import OwnerReports from './decoder/OwnerReports';
-import LeadForm from './LeadForm';
 import AffiliateSection from './AffiliateSection';
 import FAQSection from './FAQSection';
 import {
@@ -65,7 +64,6 @@ const FaultCodeDecoder: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [laborRate, setLaborRate] = useState('140');
-  const [leadOpen, setLeadOpen] = useState(false);
   const [recent, setRecent] = useState<Lookup[]>([]);
   const [copied, setCopied] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -82,7 +80,7 @@ const FaultCodeDecoder: React.FC = () => {
     setRecent(saveRecent(next));
     requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     try {
-      const result = await diagnose(next.codes, hasVehicle(next.vehicle) ? vehicleLabel(next.vehicle) : '', INITIAL_OBD_DATABASE);
+      const result = await diagnose(next.codes, hasVehicle(next.vehicle) ? vehicleLabel(next.vehicle) : '');
       if (id === requestId.current) setDiagnosis(result);
     } catch (err) {
       if (id === requestId.current) setError(err instanceof Error ? err.message : 'Please try again.');
@@ -260,9 +258,6 @@ const FaultCodeDecoder: React.FC = () => {
               <Panel>
                 <PanelTitle>Next steps</PanelTitle>
                 <div className="mt-4 space-y-3">
-                  <PrimaryButton type="button" onClick={() => setLeadOpen(true)} className="w-full">
-                    Get repair quotes from local shops
-                  </PrimaryButton>
                   {[
                     { to: '/maintenance-validator', icon: ReceiptText, label: 'Check a quote you already have' },
                     { to: '/mechanic-finder?service=diagnostics', icon: MapPin, label: 'Find a mechanic near you' },
@@ -290,10 +285,6 @@ const FaultCodeDecoder: React.FC = () => {
           </div>
         )}
       </div>
-
-      {lookup && (
-        <LeadForm isOpen={leadOpen} onClose={() => setLeadOpen(false)} errorCode={lookup.codes.join(', ')} vehicleName={lookupVehicle} />
-      )}
 
       <div className="mt-16 space-y-16">
         {lookup && <AffiliateSection />}

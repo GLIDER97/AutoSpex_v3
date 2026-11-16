@@ -1,17 +1,17 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
-import imgHero from '../assets/Featured images/Generated_Image.png'; // Featured image
-import imgScanner from '../assets/image4.png'; // Scanner image
-import imgCalc from '../assets/image2.jpg'; // Calculator image
+import imgHero from '../assets/Featured images/generated-image.webp'; // Featured image
+import imgScanner from '../assets/image4.webp'; // Scanner image
+import imgCalc from '../assets/image2.webp'; // Calculator image
 
 export const meta = {
     title: "Are You Being Overcharged? How to Audit Your Mechanic's Quote in 3 Minutes",
+    seoTitle: "How to Check a Mechanic's Repair Quote",
     description: "Learn how to spot mechanic overcharges, understand labor rates, and audit your repair estimate in just 3 minutes with our expert guide.",
     date: "2026-02-15T15:29:48",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Money Saving Guides",
     featuredImage: imgHero,
     slug: 'mechanic-quote-audit-guide',
@@ -20,15 +20,11 @@ export const meta = {
 const MechanicQuoteAuditPost: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
             {/* Introduction */}
             <div className="my-16 relative group rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 transition-transform hover:scale-[1.01] duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                <img src={imgHero} alt="Mechanic Quote Audit" className="w-full m-0 object-cover" />
+                <img src={imgHero} width={1200} height={896} decoding="async" alt="Mechanic Quote Audit" className="w-full m-0 object-cover" />
             </div>
 
             <p className="lead text-xl text-slate-600 dark:text-slate-300 mt-12 !leading-loose">
@@ -38,7 +34,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
                 Here's the truth nobody at the dealership wants you to know: The average shop markup on parts hit 250-400% in 2026, and labor rates now vary by up to $80 per hour within the same zip code. Translation? You could pay $1,200 for a brake job at one shop and $450 for the identical service three blocks away.
             </p>
             <p>
-                I've spent two decades under hoods and inside service departments. I've seen single moms charged $800 to replace a $12 mass airflow sensor. I've watched "diagnostic fees" magically appear for problems the computer identified in 90 seconds.
+                Overcharging takes familiar forms: hundreds of dollars billed for a part that costs a fraction of that, or "diagnostic fees" for problems the car's computer identified in 90 seconds.
             </p>
             <p className="font-bold text-slate-800 dark:text-slate-100">
                 This article is your three-minute insurance policy against getting fleeced.
@@ -90,7 +86,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
 
             {/* Photo Caption 1 */}
             <figure className="my-10">
-                <img src={imgScanner} alt="OBD2 Scanner Comparison" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgScanner} width={1200} height={800} loading="lazy" decoding="async" alt="OBD2 Scanner Comparison" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
                 <figcaption className="text-center text-sm text-slate-500 mt-3 italic">
                     A side-by-side comparison showing an OBD2 scanner displaying code P0420, next to a shop estimate charging $185 for "comprehensive diagnostic testing" of the same code.
                 </figcaption>
@@ -268,7 +264,7 @@ const MechanicQuoteAuditPost: React.FC = () => {
 
             {/* Photo Caption 2 */}
             <figure className="my-10">
-                <img src={imgCalc} alt="Cost of Ownership Comparison" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={imgCalc} width={1168} height={784} loading="lazy" decoding="async" alt="Cost of Ownership Comparison" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
                 <figcaption className="text-center text-sm text-slate-500 mt-3 italic">
                     A calculator showing total cost of ownership comparison—$6,000 repair + 24 months of increased insurance ($1,440) vs. $8,500 replacement vehicle cost.
                 </figcaption>

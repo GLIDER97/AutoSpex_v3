@@ -8,6 +8,7 @@
 // minutes per ZIP and service (short enough to keep "open now" accurate), so
 // repeat searches in that window cost nothing.
 import { clientIp, createRateLimiter, isAllowedOrigin, json } from './_shared.js';
+import { takeDaily } from './_limits.js';
 
 export const SERVICES: Record<string, string> = {
   general: 'auto repair shop',
@@ -57,6 +58,10 @@ export async function GET(request: Request): Promise<Response> {
 
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) return json({ error: 'not_configured', mapsUrl }, 503);
+
+  // Site-wide and per-visitor daily caps on paid Google calls (api/_limits.ts).
+  const daily = await takeDaily('places', clientIp(request));
+  if (!daily.ok) return json({ error: 'Shop search is busy today. Use the Google Maps link instead.', mapsUrl }, 429, { 'Retry-After': '3600' });
 
   try {
     const res = await fetch('https://places.googleapis.com/v1/places:searchText', {

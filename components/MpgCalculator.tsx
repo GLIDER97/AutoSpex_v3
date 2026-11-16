@@ -1,48 +1,38 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { cn } from '@/lib/utils';
 import { findEpaVariants, getEpaRating, type EpaVariant } from '../utils/fuelEconomy';
-import { 
-  Calculator, 
-  Fuel, 
-  MapPin, 
-  TrendingUp, 
-  DollarSign, 
-  Users, 
-  Gauge, 
-  Info, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Car,
-  Zap,
-  Leaf,
-  Wrench,
-  Lock,
-  Star,
-  MessageSquare,
-  ChevronDown,
-  ArrowRight,
-  ShoppingCart,
-  ShieldCheck,
-  Globe,
-  Award,
-  ShieldAlert
-} from './Icons';
-import MpgLeadForm from './MpgLeadForm';
 import CompareCars from './mpg/CompareCars';
+import { ProductPicks } from './tool/ProductPicks';
+import {
+  Faq,
+  FactList,
+  Field,
+  Notice,
+  NumberField,
+  Panel,
+  PanelTitle,
+  PrimaryButton,
+  ToolPage,
+  VehicleFields,
+  Verdict,
+  focusRing,
+  hasVehicle,
+  inputClass,
+  money,
+  vehicleLabel,
+  type Vehicle,
+} from './tool/kit';
 
-interface MpgCalculatorProps {}
+type Mode = 'commute' | 'trip' | 'audit' | 'compare';
 
-type Mode = 'budget' | 'trip' | 'analysis' | 'compare';
+const MODES: [Mode, string][] = [
+  ['commute', 'Commute cost'],
+  ['trip', 'Road trip'],
+  ['audit', 'My MPG vs EPA'],
+  ['compare', 'Compare two cars'],
+];
 
-interface EpaData {
-  city: number;
-  hwy: number;
-  combined: number;
-  tips: string[];
-}
-
-// General maintenance checks that commonly cost fuel economy. The EPA data has
-// ratings only, no car-specific advice.
+// General checks that commonly cost fuel economy. The EPA data has ratings only, no car-specific advice.
 const MPG_TIPS = [
   'Check tire pressure monthly. Under-inflated tires raise rolling resistance and burn more fuel.',
   "Use the motor oil grade your owner's manual recommends.",
@@ -50,880 +40,316 @@ const MPG_TIPS = [
   "Remove roof racks and cargo you aren't using, and avoid long idling and hard acceleration.",
 ];
 
-const MPG_PRODUCTS = [
+const PICKS = [
   {
-    name: "Chevron Techron Concentrate Plus Fuel System Cleaner",
-    img: "https://m.media-amazon.com/images/I/716nfT-StoL._SX569_.jpg",
-    url: "https://www.amazon.com/s?k=Chevron+Techron+Fuel+System+Cleaner"
+    name: 'AstroAI digital tire pressure gauge',
+    use: 'Check all four tires once a month. Correct pressure is the cheapest fuel-economy fix there is.',
+    url: 'https://www.amazon.com/s?k=AstroAI+Digital+Tire+Pressure+Gauge',
   },
   {
-    name: "K&N Premium High-Flow Replacement Air Filter",
-    img: "https://m.media-amazon.com/images/I/81u8OQIm0kL._SX569_.jpg",
-    url: "https://www.amazon.com/s?k=KN+High+Flow+Air+Filter"
+    name: 'EPAuto 12V portable tire inflator',
+    use: 'Top up tires at home to the pressure on your door sticker instead of hunting for a gas station air pump.',
+    url: 'https://www.amazon.com/s?k=EPAuto+12V+Portable+Air+Compressor',
   },
   {
-    name: "AstroAI Digital Tire Pressure Gauge 150 PSI",
-    img: "https://m.media-amazon.com/images/I/61EZNZQXXfL._SL1500_.jpg",
-    url: "https://www.amazon.com/s?k=AstroAI+Digital+Tire+Pressure+Gauge"
-  }
+    name: 'ANCEL AD310 OBD-II scanner',
+    use: 'If your mileage suddenly drops, read the codes yourself. Misfires and oxygen sensor faults are common causes.',
+    url: 'https://Autospex.short.gy/diGnAb',
+  },
 ];
 
-const MpgCalculator: React.FC<MpgCalculatorProps> = () => {
-  const [mode, setMode] = useState<Mode>('budget');
-  
-  // Shared State
-  const [mpg, setMpg] = useState<number>(25);
-  const [fuelPrice, setFuelPrice] = useState<number>(3.50);
+const FAQS: [string, React.ReactNode][] = [
+  [
+    'How is cost per mile calculated?',
+    'Gas price per gallon divided by your MPG. At $3.50 a gallon and 25 MPG, each mile costs $3.50 ÷ 25 = $0.14.',
+  ],
+  [
+    'Where do the EPA ratings come from?',
+    'From fueleconomy.gov, the official fuel economy site run by the U.S. Department of Energy and the EPA, for your exact year, make, model and version.',
+  ],
+  [
+    'Why is my real MPG lower than the EPA rating?',
+    'Driving style, short trips, cold weather, A/C, cargo, tire pressure and age all lower real-world mileage. Being 10–15% under the rating is common; more than 20% under can point to a problem worth checking.',
+  ],
+  [
+    'Does a new air filter improve gas mileage?',
+    "Not on modern fuel-injected cars: fueleconomy.gov notes that replacing a clogged air filter improves acceleration but not fuel economy. Tire pressure, a lit check engine light and driving style matter far more.",
+  ],
+  ['Is this calculator free?', 'Yes, with no account. Some product links on this page are affiliate links, which is how the site is funded.'],
+];
 
-  // Budget Mode State
-  const [commuteDistance, setCommuteDistance] = useState<number>(30); // Round trip
-  const [daysPerWeek, setDaysPerWeek] = useState<number>(5);
+const n = (v: string) => Math.max(0, Number(v) || 0);
 
-  // Trip Mode State
-  const [tripDistance, setTripDistance] = useState<number>(400);
-  const [passengers, setPassengers] = useState<number>(1);
+const MpgCalculator: React.FC = () => {
+  const [mode, setMode] = useState<Mode>('commute');
 
-  // Analysis Mode State
-  const [vehicleYear, setVehicleYear] = useState('');
-  const [vehicleMake, setVehicleMake] = useState('');
-  const [vehicleModel, setVehicleModel] = useState('');
-  const [observedMpg, setObservedMpg] = useState<string>('');
-  const [epaData, setEpaData] = useState<EpaData | null>(null);
-  const [epaVariants, setEpaVariants] = useState<EpaVariant[]>([]);
-  const [epaVariantId, setEpaVariantId] = useState('');
+  // Shared
+  const [mpg, setMpg] = useState('25');
+  const [gas, setGas] = useState('3.50');
+
+  // Commute
+  const [dailyMiles, setDailyMiles] = useState('30');
+  const [days, setDays] = useState('5');
+
+  // Trip
+  const [tripMiles, setTripMiles] = useState('400');
+  const [people, setPeople] = useState('1');
+
+  // Audit
+  const [vehicle, setVehicle] = useState<Vehicle>({ year: '', make: '', model: '' });
+  const [observed, setObserved] = useState('');
+  const [rating, setRating] = useState<{ city: number; hwy: number; combined: number } | null>(null);
+  const [variants, setVariants] = useState<EpaVariant[]>([]);
+  const [variantId, setVariantId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [auditError, setAuditError] = useState<string | null>(null);
 
-  // Monetization State
-  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  const costPerMile = n(gas) / (n(mpg) || 1);
+  const daily = costPerMile * n(dailyMiles);
+  const monthly = daily * n(days) * 4.33;
+  const yearly = monthly * 12;
+  const savingWith5 = yearly - yearly * (n(mpg) / (n(mpg) + 5));
+  const tripCost = costPerMile * n(tripMiles);
+  const tripGallons = n(tripMiles) / (n(mpg) || 1);
 
-  // FAQ State
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-
-  // --- Calculations ---
-  const costPerMile = fuelPrice / (mpg || 1);
-  const gallonsPer100 = (100 / (mpg || 1)).toFixed(1);
-
-  // Budget Calcs
-  const dailyCost = costPerMile * commuteDistance;
-  const monthlyCost = dailyCost * daysPerWeek * 4.33; // Avg weeks/month
-  const yearlyCost = monthlyCost * 12;
-
-  // Trip Calcs
-  const tripTotalCost = costPerMile * tripDistance;
-  const tripGallons = tripDistance / (mpg || 1);
-  const costPerPerson = tripTotalCost / (passengers || 1);
-
-  // --- Efficiency Audit: official EPA ratings from fueleconomy.gov (free, no API key) ---
-  const loadEpaRating = async (variantId: string) => {
-    const rating = await getEpaRating(variantId);
-    setEpaData({ city: rating.city, hwy: rating.hwy, combined: rating.combined, tips: MPG_TIPS });
+  const loadRating = async (id: string) => {
+    const r = await getEpaRating(id);
+    setRating({ city: r.city, hwy: r.hwy, combined: r.combined });
   };
 
-  const handleAnalyze = async (e: React.FormEvent) => {
+  const runAudit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!vehicleYear || !vehicleMake || !vehicleModel) return;
-
-    const year = Number(vehicleYear);
-    const latestYear = new Date().getFullYear() + 1;
-    setAnalysisError(null);
-    setEpaData(null);
-    setEpaVariants([]);
-    if (!Number.isInteger(year) || year < 1984 || year > latestYear) {
-      setAnalysisError(`EPA ratings cover model years 1984 to ${latestYear}. Please check the year.`);
+    if (!hasVehicle(vehicle) || !observed) {
+      setAuditError('Enter the year, make, model and the MPG your car shows.');
       return;
     }
-
+    setAuditError(null);
+    setRating(null);
+    setVariants([]);
     setLoading(true);
     try {
-      const { make, variants } = await findEpaVariants(year, vehicleMake.trim(), vehicleModel.trim());
+      const year = Number(vehicle.year);
+      const { make, variants: found } = await findEpaVariants(year, vehicle.make.trim(), vehicle.model.trim());
       if (!make) {
-        setAnalysisError(`We couldn't find ${vehicleMake} in the EPA's ${year} listings. Please check the make.`);
+        setAuditError(`We couldn't find ${vehicle.make} in the EPA's ${year} listings. Please check the make.`);
         return;
       }
-      if (!variants.length) {
-        setAnalysisError(`No EPA-rated ${year} ${make} matches "${vehicleModel}". Try the model name as sold, for example Civic, CR-V or F150.`);
+      if (!found.length) {
+        setAuditError(`No EPA-rated ${year} ${make} matches "${vehicle.model}". Try the model name as sold, for example Civic, CR-V or F150.`);
         return;
       }
-      setEpaVariants(variants);
-      setEpaVariantId(variants[0].id);
-      await loadEpaRating(variants[0].id);
-    } catch (err) {
-      console.error(err);
-      setAnalysisError("Could not reach the EPA fuel economy database (fueleconomy.gov). Please try again.");
+      setVariants(found);
+      setVariantId(found[0].id);
+      await loadRating(found[0].id);
+    } catch {
+      setAuditError('Could not reach the EPA fuel economy database (fueleconomy.gov). Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Several EPA versions can match (2WD/4WD, engines, transmissions); let the user pick theirs.
-  const handleVariantChange = async (variantId: string) => {
-    setEpaVariantId(variantId);
-    setAnalysisError(null);
+  const pickVariant = async (id: string) => {
+    setVariantId(id);
+    setAuditError(null);
     setLoading(true);
     try {
-      await loadEpaRating(variantId);
-    } catch (err) {
-      console.error(err);
-      setEpaData(null);
-      setAnalysisError("Could not load the EPA rating for that version. Please try again.");
+      await loadRating(id);
+    } catch {
+      setRating(null);
+      setAuditError('Could not load the EPA rating for that version. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const getEfficiencyScore = () => {
-    if (!epaData || !observedMpg) return null;
-    const obs = parseFloat(observedMpg);
-    const diff = obs - epaData.combined;
-    const pct = (diff / epaData.combined) * 100;
-    
-    if (pct > -10) return { status: 'Good', color: 'text-green-500', bg: 'bg-green-500' };
-    if (pct > -20) return { status: 'Fair', color: 'text-yellow-500', bg: 'bg-yellow-500' };
-    return { status: 'Poor', color: 'text-red-500', bg: 'bg-red-500' };
-  };
-
-  const getCalculatorInputs = () => ({
-    mode,
-    mpg,
-    fuelPrice,
-    commuteDistance,
-    daysPerWeek,
-    tripDistance,
-    passengers,
-    vehicleYear,
-    vehicleMake,
-    vehicleModel,
-    observedMpg
-  });
-
-  const mpgFaqs = [
-    {
-      question: "How do you calculate Cost Per Mile?",
-      answer: "Cost Per Mile is calculated by dividing the price of gas per gallon by your vehicle's miles per gallon (MPG). For example, if gas is $3.50 and your car gets 25 MPG, your cost per mile is $3.50 / 25 = $0.14."
-    },
-    {
-      question: "Where does the 'Efficiency Audit' data come from?",
-      answer: "We pull the official EPA ratings for your exact year, make and model from fueleconomy.gov, the fuel economy site run by the U.S. Department of Energy and EPA. This provides a baseline to see if your car is performing as expected."
-    },
-    {
-      question: "Why is my real MPG lower than the EPA rating?",
-      answer: "Real-world MPG is often lower due to factors like driving style (aggressive acceleration), tire pressure, use of A/C, cargo weight, and vehicle age. A drop of 10-15% is common, but more than 20% may indicate a mechanical issue."
-    },
-    {
-      question: "Is this tool free to use?",
-      answer: "Yes, our MPG and Fuel Cost Calculator is 100% free to use. We generate revenue by connecting users with authorized fuel rewards partners."
-    },
-    {
-      question: "Can I save money on fuel using this tool?",
-      answer: "Yes, by understanding your true cost per mile and auditing your efficiency, you can identify if repairs (like new spark plugs or filters) will pay for themselves in fuel savings."
-    }
-  ];
+  const gap = rating && observed ? ((n(observed) - rating.combined) / rating.combined) * 100 : null;
+  const verdict =
+    gap === null
+      ? null
+      : gap > -10
+        ? { tone: 'go' as const, label: 'In line with the EPA rating', text: 'Your car is doing about as well as it should.' }
+        : gap > -20
+          ? { tone: 'caution' as const, label: 'A bit below the EPA rating', text: 'Common with city driving, cold weather or short trips. Check tire pressure first.' }
+          : { tone: 'stop' as const, label: 'Well below the EPA rating', text: 'More than 20% under is worth checking: tires, a lit check engine light, brakes dragging or a sensor fault.' };
 
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
-      <MpgLeadForm 
-        isOpen={isLeadFormOpen} 
-        onClose={() => setIsLeadFormOpen(false)} 
-        calculatorInputs={getCalculatorInputs()}
-      />
-
-      {/* Header */}
-      <div className="text-center mb-10 max-w-3xl">
-        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 text-sm font-semibold text-emerald-700 dark:text-emerald-400 mb-8 shadow-lg shadow-emerald-500/10 cursor-default">
-            <Fuel className="w-4 h-4" />
-            Smart Fuel Intelligence
-        </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-          MPG Calculator <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-linear-to-r from-emerald-500 to-teal-500">
-             & Cost Analyzer
-          </span>
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-          Calculate your true daily commute costs, plan road trip budgets, and audit your vehicle's efficiency against factory specs.
-        </p>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex flex-wrap justify-center p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-12 shadow-inner">
-        {[
-          { id: 'budget', label: 'Commute Budget', icon: <DollarSign className="w-4 h-4" /> },
-          { id: 'trip', label: 'Trip Planner', icon: <MapPin className="w-4 h-4" /> },
-          { id: 'analysis', label: 'Efficiency Audit', icon: <Gauge className="w-4 h-4" /> },
-          { id: 'compare', label: 'Compare Cars', icon: <Car className="w-4 h-4" /> },
-        ].map((tab) => (
+    <ToolPage
+      category="money"
+      title="MPG and fuel cost"
+      intro="Work out what your commute or a road trip costs in fuel, and check your real mileage against the official EPA rating for your car."
+      sources="EPA fuel economy ratings (fueleconomy.gov). Fuel costs use the gas price you enter."
+    >
+      <div role="tablist" aria-label="What do you want to work out?" className="mb-6 inline-flex max-w-full flex-wrap gap-1 rounded-lg bg-muted p-1">
+        {MODES.map(([id, label]) => (
           <button
-            key={tab.id}
-            onClick={() => setMode(tab.id as Mode)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-              mode === tab.id
-                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-            }`}
+            key={id}
+            role="tab"
+            type="button"
+            aria-selected={mode === id}
+            onClick={() => setMode(id)}
+            className={cn('cursor-pointer rounded-md px-4 py-2 font-semibold', mode === id ? 'bg-card shadow-xs' : 'text-muted-foreground hover:text-foreground', focusRing)}
           >
-            {tab.icon}
-            {tab.label}
+            {label}
           </button>
         ))}
       </div>
 
-      {mode === 'compare' && (
-        <div className="w-full max-w-5xl mb-12">
-          <CompareCars />
+      {mode === 'compare' ? (
+        <CompareCars />
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,25rem)_1fr]">
+          <Panel className="space-y-5 self-start">
+            {mode === 'commute' && (
+              <>
+                <div className="grid grid-cols-2 gap-3">
+                  <NumberField id="mpg" label="Your car's MPG" value={mpg} onChange={setMpg} suffix="mpg" />
+                  <NumberField id="gas" label="Gas price" value={gas} onChange={setGas} prefix="$" suffix="/gal" step="0.05" />
+                  <NumberField id="daily" label="Miles a day" value={dailyMiles} onChange={setDailyMiles} suffix="mi" hint="Round trip" />
+                  <NumberField id="days" label="Days a week" value={days} onChange={setDays} step="1" />
+                </div>
+              </>
+            )}
+            {mode === 'trip' && (
+              <div className="grid grid-cols-2 gap-3">
+                <NumberField id="trip" label="Trip distance" value={tripMiles} onChange={setTripMiles} suffix="mi" hint="Total miles you'll drive" />
+                <NumberField id="people" label="People splitting" value={people} onChange={setPeople} step="1" min={1} />
+                <NumberField id="mpg" label="Your car's MPG" value={mpg} onChange={setMpg} suffix="mpg" />
+                <NumberField id="gas" label="Gas price" value={gas} onChange={setGas} prefix="$" suffix="/gal" step="0.05" />
+              </div>
+            )}
+            {mode === 'audit' && (
+              <form onSubmit={runAudit} className="space-y-5">
+                <VehicleFields value={vehicle} onChange={setVehicle} />
+                <NumberField id="observed" label="MPG your car shows" value={observed} onChange={setObserved} suffix="mpg" step="0.1" hint="From the dashboard, or miles driven ÷ gallons at your last fill-up" />
+                <PrimaryButton type="submit" loading={loading} className="w-full">
+                  Compare with the EPA rating
+                </PrimaryButton>
+                {variants.length > 1 && (
+                  <Field label={`Your version (${variants.length} EPA ratings found)`} htmlFor="variant">
+                    <select id="variant" value={variantId} disabled={loading} onChange={(e) => pickVariant(e.target.value)} className={inputClass}>
+                      {variants.map((v) => (
+                        <option key={v.id} value={v.id}>
+                          {v.model} · {v.description}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                )}
+                {auditError && <Notice tone="error">{auditError}</Notice>}
+              </form>
+            )}
+          </Panel>
+
+          <div className="space-y-6" aria-live="polite">
+            {mode === 'commute' && (
+              <>
+                <Panel>
+                  <p className="text-sm text-muted-foreground">Fuel cost per mile</p>
+                  <p className="mt-1 font-heading text-5xl font-extrabold tracking-[-0.02em]">{money(costPerMile, 2)}</p>
+                  <FactList
+                    className="mt-4"
+                    items={[
+                      ['Each day', money(daily, 2)],
+                      ['Each month', money(monthly)],
+                      ['Each year', money(yearly)],
+                    ]}
+                  />
+                </Panel>
+                {n(mpg) > 0 && yearly > 0 && (
+                  <Notice tone="success" title={`A car that gets 5 MPG more would save about ${money(savingWith5)} a year`}>
+                    On this commute, at today's price. Keeping tires at the right pressure alone is worth a little every month.
+                  </Notice>
+                )}
+              </>
+            )}
+
+            {mode === 'trip' && (
+              <Panel>
+                <p className="text-sm text-muted-foreground">Fuel for the trip</p>
+                <p className="mt-1 font-heading text-5xl font-extrabold tracking-[-0.02em]">{money(tripCost, 2)}</p>
+                <FactList
+                  className="mt-4"
+                  items={[
+                    ['Gallons needed', tripGallons.toFixed(1)],
+                    ...(n(people) > 1 ? ([[`Each of ${n(people)} people pays`, money(tripCost / n(people), 2)]] as [string, string][]) : []),
+                  ]}
+                />
+              </Panel>
+            )}
+
+            {mode === 'audit' &&
+              (rating && verdict ? (
+                <>
+                  <Panel>
+                    <p className="text-sm text-muted-foreground">{vehicleLabel(vehicle)}, combined MPG</p>
+                    <div className="mt-2 grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">EPA rating</p>
+                        <p className="font-heading text-4xl font-extrabold">{rating.combined}</p>
+                        <p className="text-sm text-muted-foreground">
+                          City {rating.city} · Highway {rating.hwy}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Your car</p>
+                        <p className="font-heading text-4xl font-extrabold">{n(observed)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {gap! >= 0 ? '+' : ''}
+                          {gap!.toFixed(0)}% vs EPA
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-5 flex flex-wrap items-center gap-3">
+                      <Verdict tone={verdict.tone}>{verdict.label}</Verdict>
+                      <p className="text-[0.9375rem]">{verdict.text}</p>
+                    </div>
+                  </Panel>
+                  <Panel>
+                    <PanelTitle>Common causes of low mileage</PanelTitle>
+                    <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[0.9375rem]">
+                      {MPG_TIPS.map((t) => (
+                        <li key={t}>{t}</li>
+                      ))}
+                    </ul>
+                  </Panel>
+                </>
+              ) : (
+                <Panel className="flex min-h-48 flex-col justify-center">
+                  <PanelTitle>Is your car using more fuel than it should?</PanelTitle>
+                  <p className="mt-2 text-[0.9375rem] text-muted-foreground">
+                    Enter your car and the MPG it actually gets. We'll compare it with the official EPA rating for your exact version.
+                  </p>
+                </Panel>
+              ))}
+
+            <Panel>
+              <PanelTitle>Cash back on gas</PanelTitle>
+              <p className="mt-1 text-[0.9375rem] text-muted-foreground">
+                Free apps such as Upside give cash back at participating gas stations. Offers vary by station and area. MyAutoSpex isn't affiliated
+                with Upside.
+              </p>
+              <a
+                href="https://www.upside.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn('mt-3 inline-flex font-semibold underline underline-offset-4', focusRing)}
+              >
+                See offers near you on Upside<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </Panel>
+          </div>
         </div>
       )}
 
-      {/* Main Content Card */}
-      <div className={`w-full max-w-5xl grid lg:grid-cols-12 gap-8 mb-12 ${mode === 'compare' ? 'hidden' : ''}`}>
-        
-        {/* LEFT COLUMN: CONTROLS */}
-        <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xl">
-          
-          {mode === 'budget' && (
-            <div className="space-y-8 animate-in fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
-                  <Calculator className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">Daily Commute Calculator</h2>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">How much does work actually cost you?</p>
-                </div>
-              </div>
+      <ProductPicks
+        id="mpg-picks"
+        title="Tools that help your mileage"
+        intro="Simple things that make a real difference. We don't list 'gas-saving' gadgets or additives: when the EPA tested more than 100 of them, very few improved fuel economy at all."
+        items={PICKS}
+      />
 
-              {/* Sliders */}
-              <div className="space-y-6">
-                 <div>
-                    <div className="flex justify-between mb-2">
-                      <label className="font-semibold text-slate-700 dark:text-slate-300">Vehicle MPG</label>
-                      <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">{mpg} mpg</span>
-                    </div>
-                    <input 
-                      type="range" min="5" max="100" step="1" aria-label="Vehicle MPG" 
-                      value={mpg} onChange={(e) => setMpg(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-                    />
-                 </div>
-
-                 <div>
-                    <div className="flex justify-between mb-2">
-                      <label className="font-semibold text-slate-700 dark:text-slate-300">Gas Price</label>
-                      <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">${fuelPrice.toFixed(2)}/gal</span>
-                    </div>
-                    <input 
-                      type="range" min="1.00" max="7.00" step="0.05" aria-label="Gas price per gallon" 
-                      value={fuelPrice} onChange={(e) => setFuelPrice(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-                    />
-                 </div>
-
-                 <div className="grid grid-cols-2 gap-4">
-                   <div>
-                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Daily Miles (Round Trip)</label>
-                      <div className="relative">
-                        <input 
-                          type="number" aria-label="Daily miles, round trip" 
-                          value={commuteDistance} 
-                          onChange={(e) => setCommuteDistance(Number(e.target.value))}
-                          className="w-full p-3 pl-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                        />
-                        <span className="absolute right-4 top-3.5 text-sm text-slate-600 dark:text-slate-400">mi</span>
-                      </div>
-                   </div>
-                   <div>
-                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Days Per Week</label>
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => setDaysPerWeek(Math.max(1, daysPerWeek - 1))}
-                          className="w-10 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-slate-600 dark:text-emerald-500 font-bold text-xl transition-colors"
-                        >-</button>
-                        <div className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl h-11 flex items-center justify-center font-mono font-bold">
-                          {daysPerWeek}
-                        </div>
-                        <button 
-                          onClick={() => setDaysPerWeek(Math.min(7, daysPerWeek + 1))}
-                          className="w-10 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-slate-600 dark:text-emerald-500 font-bold text-xl transition-colors"
-                        >+</button>
-                      </div>
-                   </div>
-                 </div>
-              </div>
-            </div>
-          )}
-
-          {mode === 'trip' && (
-            <div className="space-y-8 animate-in fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">Trip Cost Planner</h2>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Calculate fuel needs for your next adventure.</p>
-                </div>
-              </div>
-
-               <div className="space-y-6">
-                 <div>
-                    <label className="font-semibold text-slate-700 dark:text-slate-300 mb-2 block">One-Way Distance</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        value={tripDistance} 
-                        onChange={(e) => setTripDistance(Number(e.target.value))}
-                        className="w-full p-4 pl-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 font-mono text-lg font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
-                      />
-                      <MapPin className="absolute left-4 top-4.5 w-5 h-5 text-slate-600 dark:text-slate-400" />
-                      <span className="absolute right-4 top-4.5 text-sm text-slate-600 dark:text-slate-400 font-bold">MILES</span>
-                    </div>
-                 </div>
-
-                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="font-semibold text-slate-700 dark:text-slate-300 mb-2 block">MPG</label>
-                      <input 
-                        type="number" value={mpg} onChange={(e) => setMpg(Number(e.target.value))}
-                        className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Price/Gal</label>
-                      <input 
-                        type="number" step="0.01" value={fuelPrice} onChange={(e) => setFuelPrice(Number(e.target.value))}
-                        className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-hidden"
-                      />
-                    </div>
-                 </div>
-
-                 <div>
-                    <label className="font-semibold text-slate-700 dark:text-slate-300 mb-4 block">Passengers (Split Cost)</label>
-                    <div className="flex gap-2">
-                       {[1, 2, 3, 4, 5].map(num => (
-                         <button
-                           key={num}
-                           onClick={() => setPassengers(num)}
-                           className={`flex-1 py-3 rounded-xl font-bold transition-all ${
-                             passengers === num 
-                               ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' 
-                               : 'bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-                           }`}
-                         >
-                           {num}
-                         </button>
-                       ))}
-                    </div>
-                 </div>
-               </div>
-            </div>
-          )}
-
-          {mode === 'analysis' && (
-            <div className="space-y-6 animate-in fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600">
-                  <Gauge className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">Efficiency Audit</h2>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Compare your real-world MPG vs Factory EPA ratings.</p>
-                </div>
-              </div>
-
-              <form onSubmit={handleAnalyze} className="space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                   <input 
-                     type="text" placeholder="Year" required
-                     value={vehicleYear} onChange={e => setVehicleYear(e.target.value)}
-                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-hidden"
-                   />
-                   <input 
-                     type="text" placeholder="Make" required
-                     value={vehicleMake} onChange={e => setVehicleMake(e.target.value)}
-                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-hidden"
-                   />
-                   <input 
-                     type="text" placeholder="Model" required
-                     value={vehicleModel} onChange={e => setVehicleModel(e.target.value)}
-                     className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-hidden"
-                   />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Observed MPG (Dashboard)</label>
-                  <input 
-                     type="number" placeholder="e.g. 18.5" step="0.1" required
-                     value={observedMpg} onChange={e => setObservedMpg(e.target.value)}
-                     className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xl font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden"
-                   />
-                </div>
-
-                <button 
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-4 rounded-xl bg-indigo-600 text-white font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? 'Analyzing...' : 'Run Audit'} <Zap className="w-5 h-5" />
-                </button>
-              </form>
-
-              {epaVariants.length > 1 && (
-                <div>
-                  <label htmlFor="epa-variant" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                    Your version ({epaVariants.length} EPA ratings found)
-                  </label>
-                  <select
-                    id="epa-variant"
-                    value={epaVariantId}
-                    disabled={loading}
-                    onChange={e => handleVariantChange(e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500 outline-hidden"
-                  >
-                    {epaVariants.map(v => (
-                      <option key={v.id} value={v.id}>{v.model} · {v.description}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {analysisError && (
-                 <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" /> {analysisError}
-                 </div>
-              )}
-            </div>
-          )}
-
-        </div>
-
-        {/* RIGHT COLUMN: RESULTS */}
-        <div className="lg:col-span-5 space-y-6">
-           
-           {/* Budget Results */}
-           {mode === 'budget' && (
-             <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-right delay-100">
-                <div className="absolute top-0 right-0 p-6 opacity-5">
-                   <DollarSign className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
-                </div>
-                
-                <div className="relative z-10">
-                   <h3 className="text-slate-300 font-bold text-xs uppercase tracking-widest mb-1">True Cost Per Mile</h3>
-                   <div className="text-6xl font-black tracking-tighter mb-8 text-emerald-400">
-                     ${costPerMile.toFixed(2)}
-                   </div>
-
-                   <div className="space-y-6">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <span className="text-slate-300 font-medium">Daily Cost</span>
-                        <span className="text-2xl font-bold">${dailyCost.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <span className="text-slate-300 font-medium">Monthly Fuel</span>
-                        <span className="text-2xl font-bold">${monthlyCost.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-slate-300 font-medium">Yearly Spend</span>
-                        <span className="text-3xl font-bold text-emerald-400">${yearlyCost.toFixed(0)}</span>
-                      </div>
-                   </div>
-                   
-                   <div className="mt-8 p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                      <div className="flex items-start gap-3">
-                         <TrendingUp className="w-5 h-5 text-emerald-400 mt-1" />
-                         <p className="text-sm text-slate-300 leading-relaxed">
-                            Improving your MPG by just <span className="text-white font-bold">5 MPG</span> would save you <span className="text-emerald-400 font-bold">${((yearlyCost) - ((monthlyCost * 12 * (mpg / (mpg + 5))))).toFixed(0)}</span> per year.
-                         </p>
-                      </div>
-                   </div>
-                </div>
-             </div>
-           )}
-
-           {/* Trip Results */}
-           {mode === 'trip' && (
-             <div className="bg-linear-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-right delay-100">
-                <div className="absolute top-0 right-0 p-6 opacity-10">
-                   <MapPin className="w-48 h-48 -rotate-12 translate-x-8 -translate-y-8" />
-                </div>
-                
-                <div className="relative z-10">
-                   <h3 className="text-blue-200 font-bold text-xs uppercase tracking-widest mb-1">Estimated Trip Cost</h3>
-                   <div className="text-6xl font-black tracking-tighter mb-2">
-                     ${tripTotalCost.toFixed(2)}
-                   </div>
-                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/30 border border-blue-400/30 text-sm font-medium mb-8">
-                      <Fuel className="w-4 h-4" /> {tripGallons.toFixed(1)} Gallons Required
-                   </div>
-
-                   {passengers > 1 && (
-                     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                        <div className="flex items-center gap-3 mb-2">
-                           <Users className="w-5 h-5 text-blue-200" />
-                           <span className="font-bold text-lg">Split the Bill</span>
-                        </div>
-                        <div className="flex justify-between items-end">
-                           <span className="text-blue-100">Cost per person</span>
-                           <span className="text-4xl font-black text-white">${costPerPerson.toFixed(2)}</span>
-                        </div>
-                     </div>
-                   )}
-                </div>
-             </div>
-           )}
-
-           {/* Analysis Results */}
-           {mode === 'analysis' && epaData && (
-             <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-xl animate-in slide-in-from-right delay-100">
-                <div className="flex items-center justify-between mb-6">
-                   <h3 className="font-bold text-slate-900 dark:text-white">EPA Rating vs You</h3>
-                   <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold uppercase text-slate-600 dark:text-slate-400">
-                     Combined MPG
-                   </span>
-                </div>
-
-                <div className="flex justify-center items-center gap-8 mb-8">
-                   <div className="text-center">
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Factory EPA</p>
-                      <p className="text-3xl font-black text-slate-900 dark:text-white">{epaData.combined}</p>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">City {epaData.city} · Hwy {epaData.hwy}</p>
-                   </div>
-                   <div className="h-12 w-px bg-slate-200 dark:bg-slate-700"></div>
-                   <div className="text-center">
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Your Car</p>
-                      <p className={`text-3xl font-black ${getEfficiencyScore()?.color}`}>
-                         {observedMpg}
-                      </p>
-                   </div>
-                </div>
-
-                {/* Gauge Bar */}
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-4 rounded-full overflow-hidden mb-6 relative">
-                   <div 
-                      className="absolute top-0 bottom-0 left-0 bg-slate-300 dark:bg-slate-600 transition-all duration-1000"
-                      style={{ width: '100%' }} // Background placeholder
-                   ></div>
-                   <div 
-                      className={`absolute top-0 bottom-0 left-0 ${getEfficiencyScore()?.bg} transition-all duration-1000`}
-                      style={{ width: `${Math.min(100, (parseFloat(observedMpg) / (epaData.combined * 1.5)) * 100)}%` }}
-                   ></div>
-                </div>
-
-                <div className={`p-4 rounded-xl mb-6 flex items-center gap-3 ${
-                   getEfficiencyScore()?.status === 'Good' 
-                     ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400' 
-                     : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
-                }`}>
-                   {getEfficiencyScore()?.status === 'Good' ? <CheckCircle2 className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
-                   <span className="font-bold">Efficiency Status: {getEfficiencyScore()?.status}</span>
-                </div>
-
-                <div>
-                   <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-3 flex items-center gap-2">
-                     <Wrench className="w-4 h-4 text-slate-600 dark:text-slate-400" /> Potential Fixes
-                   </h4>
-                   <ul className="space-y-2">
-                      {epaData.tips.map((tip, idx) => (
-                        <li key={idx} className="text-sm text-slate-600 dark:text-slate-400 flex items-start gap-2">
-                           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0"></span>
-                           {tip}
-                        </li>
-                      ))}
-                   </ul>
-                   <p className="mt-6 text-[11px] text-slate-600 dark:text-slate-400">
-                     EPA ratings from fueleconomy.gov (U.S. Department of Energy and EPA). Fixes are general maintenance advice.
-                   </p>
-                </div>
-             </div>
-           )}
-
-        </div>
-      </div>
-
-      {/* --- MONETIZATION: FUEL REWARDS & AFFILIATE --- */}
-      <div className="w-full max-w-5xl space-y-12 mb-20 px-4">
-          
-          {/* Fuel Rewards CTA */}
-          <div className="bg-linear-to-br from-emerald-600 to-teal-700 rounded-[2.5rem] p-8 sm:p-12 border border-white/10 shadow-2xl relative overflow-hidden text-white animate-in slide-in-from-bottom-4 duration-700">
-             <div className="absolute top-0 right-0 p-8 opacity-10">
-                <Fuel className="w-64 h-64 -rotate-12 translate-x-24 -translate-y-24" />
-             </div>
-             <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] font-black uppercase tracking-widest text-white/90 mb-4">
-                    <Zap className="w-3 h-3" /> Exclusive Offer
-                  </div>
-                  <h2 className="text-3xl sm:text-4xl font-black mb-4">Earn Cash Back <br /> on Every Gallon.</h2>
-                  <p className="text-emerald-50 leading-relaxed font-medium mb-8">
-                    Your estimated monthly fuel spend is <strong>${monthlyCost.toFixed(2)}</strong>. Join our partner network and save up to 25¢ per gallon at thousands of local stations.
-                  </p>
-                  <button 
-                    onClick={() => setIsLeadFormOpen(true)}
-                    className="px-10 py-5 bg-white text-emerald-700 font-black rounded-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-black/20 animate-slow-glow"
-                  >
-                    Earn Cash Back on Fuel <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="hidden md:flex flex-col gap-4">
-                  {[
-                    "Instant savings at 30,000+ stations",
-                    "Redeem cash via PayPal or Bank",
-                    "Stack with your credit card rewards"
-                  ].map((benefit, i) => (
-                    <div key={i} className="flex items-center gap-4 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/5">
-                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                        <CheckCircle2 className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="font-bold text-sm">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-             </div>
-          </div>
-
-          {/* Amazon Affiliate Products */}
-          <div>
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-               <div>
-                  <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">MPG-Boosting Products</h2>
-                  <p className="text-slate-600 dark:text-slate-400">Mechanical upgrades and maintenance tools you can use today to increase efficiency.</p>
-               </div>
-               <div className="flex items-center gap-1 text-orange-800 dark:text-orange-300 bg-orange-400/10 px-4 py-2 rounded-full border border-orange-400/20 shrink-0">
-                  <Star className="w-4 h-4 fill-current" />
-                  <span className="text-xs font-black uppercase tracking-widest">Efficiency Picks</span>
-               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-               {MPG_PRODUCTS.map((product, idx) => (
-                 <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-2xl transition-all group relative overflow-hidden">
-                    <div className="h-32 flex items-center justify-center mb-6 relative">
-                       <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950 rounded-2xl z-0 opacity-40 group-hover:opacity-60 transition-opacity" />
-                       <img 
-                         src={product.img} 
-                         alt={product.name} 
-                         className="max-h-full max-w-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-700" 
-                       />
-                    </div>
-                    <div className="grow flex flex-col">
-                       <h3 className="font-bold text-slate-900 dark:text-white text-xs line-clamp-2 mb-6 leading-snug group-hover:text-emerald-500 transition-colors">
-                         {product.name}
-                       </h3>
-                       <a 
-                         href={product.url} 
-                         target="_blank" 
-                         rel="noopener noreferrer"
-                         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs hover:opacity-90 transition-all mt-auto"
-                       >
-                         Buy on Amazon <ShoppingCart className="w-4 h-4" />
-                       </a>
-                    </div>
-                 </div>
-               ))}
-            </div>
-            <p className="text-center text-[10px] text-slate-600 dark:text-slate-400 mt-8 font-medium italic">
-               *As an Amazon Associate, MyAutoSpex earns from qualifying purchases.
-            </p>
-          </div>
-      </div>
-
-      <div className="w-full max-w-7xl px-4 flex flex-col items-center">
-            
-          {/* Trust Indicators */}
-          <div className="flex flex-wrap justify-center gap-6 mt-12 mb-20 text-slate-600 dark:text-slate-400 text-sm font-medium">
-              <div className="flex items-center gap-2"><Lock className="w-4 h-4 text-green-500" /> Secure Analysis</div>
-              <div className="flex items-center gap-2"><Fuel className="w-4 h-4 text-emerald-500" /> Real-Time Fuel Data</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Verified EPA Specs</div>
-          </div>
-
-          {/* About This Tool Section */}
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-24 w-full animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-              <div className="order-2 md:order-1">
-                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6">About the MPG Auditor</h2>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg">
-                      The MyAutoSpex MPG Calculator & Cost Analyzer is a dual-purpose financial utility designed to help US drivers understand the literal cost of their commute. We combine real-time fuel market prices with official factory efficiency data to build a complete profile of your vehicle's energy consumption.
-                  </p>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                      Our system doesn't just calculate math; it acts as a mechanical diagnostic tool. By comparing your "Observed MPG" against the <span className="font-bold text-emerald-700 dark:text-emerald-400">factory EPA ratings</span> for your specific make and model, we can identify hidden mechanical inefficiencies that are costing you hundreds of dollars at the pump every year.
-                  </p>
-              </div>
-              <div className="order-1 md:order-2 bg-emerald-50 dark:bg-emerald-900/10 rounded-[3rem] p-10 sm:p-14 border border-emerald-100 dark:border-emerald-900/30 relative overflow-hidden shadow-2xl">
-                  <Globe className="absolute -bottom-8 -right-8 w-64 h-64 text-emerald-500/10 -rotate-12" />
-                  <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 relative z-10">Localized Market Data</h3>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed relative z-10 text-lg mb-8 font-medium">
-                      Access official EPA benchmarks for every vehicle manufactured after 1984. Our engine cross-references these with regional fuel costs to ensure your budget is based on reality, not theory.
-                  </p>
-                  <div className="flex items-center gap-3 text-emerald-800 dark:text-emerald-300 font-black text-sm relative z-10">
-                      <ShieldCheck className="w-6 h-6" /> VERIFIED EPA DATASETS
-                  </div>
-              </div>
-          </div>
-
-          {/* Why Use This Tool Section */}
-          <div className="w-full mb-24 text-center">
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-12">
-                  Why Drivers Use the MPG Auditor
-              </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                      { 
-                          icon: <DollarSign className="w-8 h-8 text-green-500" />, 
-                          title: "Commute Budgeting", 
-                          desc: "See exactly how many days of work are required just to pay for the gas to get there." 
-                      },
-                      { 
-                          icon: <Zap className="w-8 h-8 text-blue-500" />, 
-                          title: "Efficiency Check", 
-                          desc: "Identify if your car is performing poorly due to dirty filters, bad sensors, or low tire pressure." 
-                      },
-                      { 
-                          icon: <Award className="w-8 h-8 text-amber-500" />, 
-                          title: "Trip Planning", 
-                          desc: "Plan road trip stops and split costs with passengers accurately using real-time prices." 
-                      },
-                      { 
-                          icon: <ShieldAlert className="w-8 h-8 text-red-500" />, 
-                          title: "Early Warning", 
-                          desc: "Sudden drops in MPG are often the first sign of a major engine fault before the CEL even lights up." 
-                      },
-                  ].map((item, i) => (
-                      <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all group">
-                          <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
-                          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">{item.title}</h3>
-                          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                      </div>
-                  ))}
-              </div>
-          </div>
-
-          {/* How It Works Section */}
-          <div className="w-full mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-center mb-10">
-                  How It Works
-              </h2>
-              <div className="grid md:grid-cols-3 gap-8">
-                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center mb-4">
-                        <Calculator className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">1. Choose Mode</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        Pick 'Commute' to budget your daily drive, 'Trip' to plan fuel costs, or 'Audit' to check health.
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-4">
-                        <MapPin className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">2. Input Details</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        Enter your vehicle year/make/model and current gas prices in your specific neighborhood.
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-4">
-                        <TrendingUp className="w-7 h-7" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">3. Review Audit</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                        Instantly see your yearly spend, split trip costs, or compare your real MPG with the official EPA rating.
-                    </p>
-                  </div>
-              </div>
-          </div>
-
-          {/* Testimonials Section */}
-          <div className="w-full max-w-7xl px-4 mb-24">
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-16">Stories from Smarter Drivers</h2>
-              <div className="grid md:grid-cols-3 gap-8">
-                  {[
-                      {
-                          name: "Marcus K.",
-                          loc: "Atlanta, GA",
-                          text: "I realized my commute was costing me $450/month! This tool helped me justify trading in for a hybrid, which saved me $280/mo immediately.",
-                          stars: 5
-                      },
-                      {
-                          name: "Sarah L.",
-                          loc: "Denver, CO",
-                          text: "The efficiency audit was spot on. It showed my SUV was getting 25% worse MPG than factory. Turns out my air filter was almost entirely clogged.",
-                          stars: 5
-                      },
-                      {
-                          name: "David P.",
-                          loc: "Phoenix, AZ",
-                          text: "Planned a 1200-mile road trip with this. The fuel cost estimate was within $5 of our actual pump total. The split-cost feature made venmo-ing simple.",
-                          stars: 5
-                      }
-                  ].map((t, i) => (
-                      <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col hover:shadow-xl transition-all">
-                          <div className="flex gap-1 mb-6 text-emerald-500">
-                              {[...Array(t.stars)].map((_, si) => <Star key={si} className="w-4 h-4 fill-current" />)}
-                          </div>
-                          <p className="text-slate-700 dark:text-slate-300 italic mb-8 grow">"{t.text}"</p>
-                          <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-                              <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-black text-sm">
-                                  {t.name.charAt(0)}
-                              </div>
-                              <div>
-                                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">{t.name}</h4>
-                                  <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">{t.loc}</p>
-                              </div>
-                          </div>
-                      </div>
-                  ))}
-              </div>
-          </div>
-
-          {/* FAQ Section */}
-          <div className="w-full max-w-4xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="text-center mb-10">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center justify-center gap-2">
-                  <MessageSquare className="w-6 h-6 text-emerald-500" />
-                  Frequently Asked Questions
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400">Common questions about fuel costs and efficiency.</p>
-            </div>
-            
-            <div className="space-y-4">
-                {mpgFaqs.map((faq, index) => (
-                  <div 
-                      key={index} 
-                      className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
-                        openFaqIndex === index 
-                        ? 'bg-white dark:bg-slate-900 border-emerald-500/30 shadow-lg shadow-emerald-500/5' 
-                        : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                      }`}
-                  >
-                      <button
-                        onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                        className="w-full flex items-center justify-between p-5 text-left focus:outline-hidden"
-                      >
-                        <span className={`font-semibold pr-4 ${openFaqIndex === index ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                            {faq.question}
-                        </span>
-                        <ChevronDown 
-                            className={`w-5 h-5 text-slate-600 dark:text-slate-400 transition-transform duration-300 shrink-0 ${
-                              openFaqIndex === index ? 'rotate-180 text-emerald-500' : ''
-                            }`} 
-                        />
-                      </button>
-                      <div 
-                        className={`transition-all duration-300 ease-in-out ${
-                            openFaqIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                        }`}
-                      >
-                        <p className="px-5 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-3 mt-0">
-                            {faq.answer}
-                        </p>
-                      </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-      </div>
-
-    </div>
+      <Faq id="mpg-faq" title="Questions about fuel cost and MPG" items={FAQS} />
+    </ToolPage>
   );
 };
 

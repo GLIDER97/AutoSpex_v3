@@ -1,21 +1,21 @@
 import React from 'react';
 import BlogTemplate from '../templates/BlogTemplate';
-import SEO from '../../components/SEO';
 
 // Import images from ../assets/
-import img1 from '../assets/check_engine_image1.jpg';
-import img2 from '../assets/check_engine_image2.jpg';
-import img3 from '../assets/check_engine_image3.jpg';
-import img4 from '../assets/check_engine_image4.jpg';
-import img5 from '../assets/check_engine_image5.jpg';
-import imgFeatured from '../assets/check_engine_featured.jpg';
+import img1 from '../assets/check-engine-image1.webp';
+import img2 from '../assets/check-engine-image2.webp';
+import img3 from '../assets/check-engine-image3.webp';
+import img4 from '../assets/check-engine-image4.webp';
+import img5 from '../assets/check-engine-image5.webp';
+import imgFeatured from '../assets/check-engine-featured.webp';
 
 export const meta = {
-    title: "What Does Your Check Engine Light Code Mean? Free Instant Decoder Tool with Repair Costs Explained (2026)",
-    description: "Your 2026 guide to understanding check engine light codes. Use our free decoder tool for instant explanations, symptoms, and USA repair cost estimates.",
+    title: "What Does Your Check Engine Light Mean? Causes, Common Codes and Repair Costs (2026)",
+    seoTitle: "What Your Check Engine Light Means (2026)",
+    description: "Why your check engine light is on, what the most common codes mean, whether it's safe to keep driving and what typical fixes cost in the US.",
     date: "2026-02-09T01:34:07",
-    authorName: "Keesha Lauren",
-    authorRole: "Auto Tech Expert • 15+ Years Exp.",
+    authorName: "MyAutoSpex Editorial Team",
+    authorRole: "Car ownership guides",
     category: "Articles & Guides",
     featuredImage: imgFeatured,
     slug: 'check-engine-light-meaning',
@@ -24,10 +24,6 @@ export const meta = {
 const CheckEngineLightMeaning: React.FC = () => {
     return (
         <BlogTemplate meta={meta}>
-            <SEO
-                title={meta.title}
-                description={meta.description}
-            />
 
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -44,7 +40,7 @@ const CheckEngineLightMeaning: React.FC = () => {
             </p>
 
             <figure className="my-14">
-                <img src={img4} alt="Check Engine Light Indicators" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={img4} width={960} height={960} decoding="async" alt="Check Engine Light Indicators" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -68,7 +64,7 @@ const CheckEngineLightMeaning: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={img5} alt="Understanding Diagnostics" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={img5} width={960} height={960} loading="lazy" decoding="async" alt="Understanding Diagnostics" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -194,7 +190,7 @@ const CheckEngineLightMeaning: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={img3} alt="Common Engine Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={img3} width={960} height={960} loading="lazy" decoding="async" alt="Common Engine Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -347,7 +343,7 @@ const CheckEngineLightMeaning: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={img2} alt="Real Life Repairs" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={img2} width={960} height={960} loading="lazy" decoding="async" alt="Real Life Repairs" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
@@ -408,7 +404,7 @@ const CheckEngineLightMeaning: React.FC = () => {
             </h2>
 
             <figure className="my-14">
-                <img src={img1} alt="Peace of Mind" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
+                <img src={img1} width={960} height={960} loading="lazy" decoding="async" alt="Peace of Mind" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
