@@ -146,6 +146,23 @@ The owner chose not to pay for Semrush, Ahrefs or Ubersuggest. The agent picks t
 
 **How the agent uses them:** before writing a page, it checks the target query's Bing volume and Google suggestions and records both in the log. It writes the page around the main query plus the suggested subtopics. Every Monday, it re-ranks the backlog by Search Console impressions first, then Bing volume.
 
+## 4a-2. Regex mining of Search Console (every Monday, from week 2)
+
+Search Console's API accepts regex filters (`dimensionFilterGroups` with operator `includingRegex`). Every Monday, once the site has a few hundred impressions a week, pull the last 28 days of queries for these patterns:
+
+| Pattern | Regex | What it tells the agent |
+|---|---|---|
+| Check engine codes | `\b[pbcu][0-3][0-9a-f]{3}\b` | which code pages to write or improve next |
+| Car and year | `\b(19|20)\d{2}\b` | which make, model and year pages to add (recalls, MPG, costs) |
+| Questions | `^(what|how|why|can|is|does|should|when)\b` | FAQ sections and guide topics |
+| Money | `cost|price|how much|cheap|worth` | cost guides and where repair-cost reports matter most |
+
+For each pattern, the agent lists:
+- **gaps:** queries with impressions but no dedicated page. These become next week's pages, in order of impressions.
+- **near-misses:** queries where a page ranks 5–20. Improve that page first.
+
+Record the top findings in the log. Programmatic page types grow only where Google is indexing them and giving them impressions. Pause any page type whose pages stay unindexed after 2–3 weeks.
+
 ## 4b. Images, charts and the OpenRouter budget
 
 The owner added an OpenRouter key, saved as a hidden network secret for `openrouter.ai`, with a **budget of $10 a month**.
