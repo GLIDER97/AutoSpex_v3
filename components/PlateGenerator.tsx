@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateContent, Type } from '../utils/ai';
+import { aiErrorMessage, cleanName, runAiTool } from '../utils/ai';
 import { 
   Tag, Zap, Sparkles, MessageSquare, ChevronDown, 
   ArrowRight, RefreshCw, Star, Info, Lock, 
@@ -109,42 +109,20 @@ const PlateGenerator: React.FC = () => {
     setError(null);
 
     try {
-      const prompt = `Generate 6 clever, creative vanity plate ideas for a ${request.carModel} in ${request.state} with hobbies ${request.hobbies} and vibe ${request.vibe}. Ensure they are 7 characters or less.`;
-
-      const response = await generateContent({
-        model: 'text',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              plates: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    plate: { type: Type.STRING },
-                    meaning: { type: Type.STRING },
-                    category: { type: Type.STRING }
-                  },
-                  required: ['plate', 'meaning', 'category']
-                }
-              }
-            },
-            required: ['plates']
-          }
-        }
+      // The server writes the prompt and the answer's schema from these fields.
+      const response = await runAiTool('plate-ideas', {
+        carModel: cleanName(request.carModel, 60),
+        hobbies: cleanName(request.hobbies, 100),
+        vibe: request.vibe,
+        state: request.state,
       });
 
-      const text = response.text;
-      if (!text) throw new Error("No ideas generated.");
-      const data = JSON.parse(text);
-      setResults(data.plates);
+      if (!response.data) throw new Error("No ideas generated.");
+      setResults(response.data.plates);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error(err);
-      setError("AI stalled! Try giving us more specific details about your vibe.");
+      setError(aiErrorMessage(err, "AI stalled! Try giving us more specific details about your vibe."));
     } finally {
       setLoading(false);
     }
@@ -183,6 +161,7 @@ const PlateGenerator: React.FC = () => {
                   <input 
                     type="text" 
                     placeholder="e.g. Tesla Model Y, Jeep Wrangler" 
+                    maxLength={60}
                     value={request.carModel}
                     onChange={(e) => updateRequest('carModel', e.target.value)}
                     className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-hidden transition-all"
@@ -196,6 +175,7 @@ const PlateGenerator: React.FC = () => {
                   <input 
                     type="text" 
                     placeholder="e.g. Coding, Hiking, Coffee" 
+                    maxLength={100}
                     value={request.hobbies}
                     onChange={(e) => updateRequest('hobbies', e.target.value)}
                     className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 outline-hidden transition-all"

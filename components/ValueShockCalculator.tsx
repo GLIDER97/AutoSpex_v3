@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateContent, Type } from '../utils/ai';
+import { aiErrorMessage, cleanName, runAiTool } from '../utils/ai';
 import { 
   TrendingDown, TrendingUp, Car, DollarSign, Clock, 
   Hourglass, AlertCircle, AlertOctagon, Info, ChevronRight, 
@@ -34,78 +34,31 @@ const ValueShockCalculator: React.FC = () => {
       setError("Please fill in all vehicle details.");
       return;
     }
+    const year = request.year.trim();
+    const mileage = Number(request.mileage);
+    if (!/^(19|20)\d\d$/.test(year)) {
+      setError("Enter the model year as 4 digits, for example 2020.");
+      return;
+    }
+    if (!Number.isFinite(mileage) || mileage < 0 || mileage > 2000000) {
+      setError("Enter the current mileage as a number.");
+      return;
+    }
 
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const prompt = `
-        Act as a Used Car Market Analyst and Financial Auditor.
-        Analyze the following vehicle for depreciation:
-        Vehicle: ${request.year} ${request.make} ${request.model} ${request.trim}
-        Current Mileage: ${request.mileage} miles
-        Condition: ${request.condition}
-
-        1. Estimate current US Private Party & Trade-In value.
-        2. Project the value 12 months from now (assuming +12,000 miles).
-        3. Calculate the daily dollar loss due to depreciation.
-        4. Provide a brutally honest verdict on its financial trajectory.
-        
-        Return valid JSON matching this schema:
-        {
-          "currentValue": { "tradeIn": number, "privateParty": number },
-          "futureValue": { "tradeIn": number, "privateParty": number },
-          "depreciation": { 
-             "totalOneYear": number (positive number representing loss), 
-             "perDay": number, 
-             "percentDrop": number 
-          },
-          "verdict": {
-            "status": "Holding Strong" | "Normal Depreciation" | "Free Fall" | "Money Pit",
-            "color": "text-green-500" | "text-yellow-500" | "text-orange-500" | "text-red-600",
-            "description": "One sentence summary of why."
-          },
-          "marketFactors": ["Factor 1", "Factor 2", "Factor 3"]
-        }
-      `;
-
-      const aiResponse = await generateContent({
-        model: 'text',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              currentValue: {
-                type: Type.OBJECT,
-                properties: { tradeIn: { type: Type.NUMBER }, privateParty: { type: Type.NUMBER } },
-                required: ['tradeIn', 'privateParty']
-              },
-              futureValue: {
-                 type: Type.OBJECT,
-                 properties: { tradeIn: { type: Type.NUMBER }, privateParty: { type: Type.NUMBER } },
-                 required: ['tradeIn', 'privateParty']
-              },
-              depreciation: {
-                 type: Type.OBJECT,
-                 properties: { totalOneYear: { type: Type.NUMBER }, perDay: { type: Type.NUMBER }, percentDrop: { type: Type.NUMBER } },
-                 required: ['totalOneYear', 'perDay', 'percentDrop']
-              },
-              verdict: {
-                 type: Type.OBJECT,
-                 properties: { status: { type: Type.STRING }, color: { type: Type.STRING }, description: { type: Type.STRING } },
-                 required: ['status', 'color', 'description']
-              },
-              marketFactors: { type: Type.ARRAY, items: { type: Type.STRING } }
-            },
-            required: ['currentValue', 'futureValue', 'depreciation', 'verdict', 'marketFactors']
-          }
-        }
+      // The server writes the prompt and the answer's schema from these fields.
+      const aiResponse = await runAiTool('depreciation', {
+        vehicle: { year, make: cleanName(request.make, 40), model: cleanName(request.model, 60) },
+        trim: cleanName(request.trim, 40) || undefined,
+        mileage,
+        condition: request.condition,
       });
 
-      const data = JSON.parse(aiResponse.text || '{}');
+      const data = aiResponse.data ?? {};
       
       // Strict validation of the core calculation objects to prevent UI crashes
       if (!data.depreciation || !data.currentValue || !data.futureValue || !data.verdict) {
@@ -115,7 +68,7 @@ const ValueShockCalculator: React.FC = () => {
       setResult(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to analyze vehicle value. Please try again.");
+      setError(aiErrorMessage(err, "Failed to analyze vehicle value. Please try again."));
     } finally {
       setLoading(false);
     }

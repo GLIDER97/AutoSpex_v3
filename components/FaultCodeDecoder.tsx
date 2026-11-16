@@ -82,7 +82,7 @@ const FaultCodeDecoder: React.FC = () => {
     setRecent(saveRecent(next));
     requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     try {
-      const result = await diagnose(next.codes, hasVehicle(next.vehicle) ? vehicleLabel(next.vehicle) : '', INITIAL_OBD_DATABASE);
+      const result = await diagnose(next.codes, hasVehicle(next.vehicle) ? vehicleLabel(next.vehicle) : '');
       if (id === requestId.current) setDiagnosis(result);
     } catch (err) {
       if (id === requestId.current) setError(err instanceof Error ? err.message : 'Please try again.');

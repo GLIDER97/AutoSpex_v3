@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { generateContent } from '../utils/ai';
+import { cleanName, isDailyLimit, runAiTool } from '../utils/ai';
 import {
   ShieldCheck, TrendingUp, DollarSign, Award, ArrowRight,
   MapPin, Car, Users, CheckCircle2, AlertTriangle, Info,
@@ -110,27 +110,26 @@ const InsuranceEstimator: React.FC = () => {
 
     // AI Integration
     try {
-      const prompt = `
-        Act as an expert insurance underwriter.
-        I have estimated a monthly auto insurance premium of $${result.monthlyPremium.min} - $${result.monthlyPremium.max} for a driver with these details:
-        - Vehicle: ${formData.year} ${formData.make} ${formData.model}
-        - Location ZIP: ${formData.zipCode}
-        - Profile: Age ${formData.ageGroup}, ${formData.drivingHistory} history, ${formData.creditTier} credit.
-        - Coverage: ${formData.coverageLevel} (Deductible: $${formData.deductible})
-
-        Provide a concise, helpful 3-sentence explanation of why the price is in this range. 
-        Focus on the biggest risk factors provided.
-        Address the user directly as "you".
-      `;
-
-      const response = await generateContent({
-        model: 'text',
-        contents: prompt,
+      // The server writes the explanation prompt from these fields.
+      const response = await runAiTool('insurance', {
+        year: /^\d{4}$/.test(formData.year.trim()) ? formData.year.trim() : undefined,
+        make: cleanName(formData.make, 40) || undefined,
+        model: cleanName(formData.model, 60) || undefined,
+        zipCode: /^\d{5}$/.test(formData.zipCode) ? formData.zipCode : undefined,
+        ageGroup: formData.ageGroup,
+        drivingHistory: formData.drivingHistory,
+        creditTier: formData.creditTier,
+        coverageLevel: formData.coverageLevel,
+        deductible: formData.deductible,
+        monthlyMin: result.monthlyPremium.min,
+        monthlyMax: result.monthlyPremium.max,
       });
       setAiAnalysis(response.text);
     } catch (e) {
       console.error("AI Analysis Failed", e);
-      setAiAnalysis("We calculated this estimate based on standard actuarial tables for your demographic and vehicle type.");
+      setAiAnalysis(isDailyLimit(e)
+        ? `${e.message} Your estimate isn't affected.`
+        : "We calculated this estimate based on standard actuarial tables for your demographic and vehicle type.");
     } finally {
       setLoading(false);
     }

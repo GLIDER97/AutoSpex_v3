@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Download, ImagePlus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateContent, imageDataUrl } from '../utils/ai';
+import { cleanName, imageDataUrl, runAiTool } from '../utils/ai';
 import { searchShops, type ShopSearch } from '../utils/places';
 import {
   CARE,
   COVERAGE,
+  CUSTOM_COLOR,
   FINISHES,
   SIZES,
   choiceLabel,
   nearestAspect,
-  photoPrompt,
   preparePhoto,
-  vehiclePrompt,
   wrapCost,
   type CoverageId,
   type FinishId,
@@ -37,7 +36,6 @@ import {
   moneyRange,
   rememberZip,
   rememberedZip,
-  vehicleLabel,
   type Vehicle,
 } from './tool/kit';
 import ShopResults from './tool/ShopResults';
@@ -143,7 +141,6 @@ export default function WrapDesigner() {
   const [finish, setFinish] = useState<FinishId>('satin');
   const [color, setColor] = useState<WrapColor>(FINISHES[0].colors[3]);
   const [customHex, setCustomHex] = useState('#2f6f8f');
-  const [extra, setExtra] = useState('');
 
   const [renders, setRenders] = useState<Render[]>([]);
   const [currentId, setCurrentId] = useState<number | null>(null);
@@ -192,19 +189,20 @@ export default function WrapDesigner() {
   };
 
   const render = async () => {
-    const choice = { coverage, finish, color, extra };
+    const choice = { coverage, finish, color };
     setRendering(true);
     setRenderError(null);
     try {
-      const response = await generateContent(
-        photo
-          ? {
-              model: 'image',
-              contents: [{ inlineData: { mimeType: 'image/jpeg', data: photo.base64 } }, { text: photoPrompt(choice) }],
-              config: { imageConfig: { aspectRatio: nearestAspect(photo.width, photo.height) } },
-            }
-          : { model: 'image', contents: vehiclePrompt(choice, vehicleLabel(vehicle), size), config: { imageConfig: { aspectRatio: '3:2' } } },
-      );
+      // Only the choices are sent; the server writes the image prompt.
+      const hasCar = Boolean(vehicle.year && vehicle.make.trim() && vehicle.model.trim());
+      const response = await runAiTool('wrap', {
+        finish,
+        color: color.name === CUSTOM_COLOR ? { name: CUSTOM_COLOR, hex: color.hex[0] } : { name: color.name },
+        coverage,
+        size,
+        vehicle: !photo && hasCar ? { year: vehicle.year, make: cleanName(vehicle.make, 40), model: cleanName(vehicle.model, 60) } : undefined,
+        ...(photo ? { photo: photo.base64, aspectRatio: nearestAspect(photo.width, photo.height) } : {}),
+      });
       const src = imageDataUrl(response);
       if (!src) throw new Error('No picture came back. Please try again.');
       const next: Render = { id: Date.now(), src, before: photo, label: choiceLabel(choice) };
@@ -396,17 +394,6 @@ export default function WrapDesigner() {
                 )}
               </div>
             </fieldset>
-
-            <Field label="Anything else? (optional)" htmlFor="wrap-extra" className="mt-5" hint="For example: gloss black roof, bronze wheels, red brake calipers.">
-              <textarea
-                id="wrap-extra"
-                value={extra}
-                onChange={(e) => setExtra(e.target.value)}
-                maxLength={200}
-                rows={2}
-                className={cn(inputClass, 'h-auto py-2')}
-              />
-            </Field>
 
             <PrimaryButton type="button" className="mt-5 w-full" loading={rendering} onClick={render}>
               {photo ? 'Show it on my car' : 'Draw my wrap'}

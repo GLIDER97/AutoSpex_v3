@@ -36,7 +36,12 @@ function hostOf(url: string | null): string | null {
   }
 }
 
-/** True for requests made by the site's own pages (stops other websites using our endpoints). */
+/**
+ * True for requests made by the site's own pages. This stops other websites'
+ * pages from using our endpoints in their visitors' browsers, but a script can
+ * send any Origin header, so it is not a security boundary: the endpoints
+ * accept only fixed tools (api/_tools.ts) and enforce daily caps (api/_usage.ts).
+ */
 export function isAllowedOrigin(request: Request): boolean {
   const callerHost = hostOf(request.headers.get('origin')) ?? hostOf(request.headers.get('referer'));
   if (!callerHost) {
@@ -54,8 +59,42 @@ export function isAllowedOrigin(request: Request): boolean {
 
 // --- Rate limit -------------------------------------------------------------
 
+// On Vercel these headers are set by the platform (a client's own values are overwritten).
 export function clientIp(request: Request): string {
-  return request.headers.get('x-real-ip') ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+  return (
+    request.headers.get('x-vercel-forwarded-for')?.split(',')[0].trim() ||
+    request.headers.get('x-real-ip')?.trim() ||
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    'unknown'
+  );
+}
+
+/** Expands an IPv6 address to its 8 groups, or returns null. */
+function ipv6Groups(ip: string): string[] | null {
+  if (!ip.includes(':')) return null;
+  const [head, tail = ''] = ip.split('::');
+  const parse = (part: string) => (part ? part.split(':') : []);
+  const left = parse(head);
+  const right = parse(tail);
+  if (ip.includes('::')) {
+    const missing = 8 - left.length - right.length;
+    if (missing < 0) return null;
+    return [...left, ...Array(missing).fill('0'), ...right];
+  }
+  return left.length === 8 ? left : null;
+}
+
+/**
+ * Who is calling, for rate limits: the IPv4 address, or the /64 network of an
+ * IPv6 address (one home or phone usually gets a whole /64).
+ */
+export function clientKey(request: Request): string {
+  const ip = clientIp(request).toLowerCase();
+  const mapped = ip.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
+  if (mapped) return mapped[1];
+  const groups = ipv6Groups(ip.split('%')[0]);
+  if (!groups) return ip;
+  return `${groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, '')).join(':')}::/64`;
 }
 
 /**

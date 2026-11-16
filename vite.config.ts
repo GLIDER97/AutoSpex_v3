@@ -2,10 +2,25 @@ import path from 'path';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// OPENROUTER_API_KEY and GOOGLE_MAPS_API_KEY are server-only secrets. They are
-// read by the Vercel functions in api/ and must never be inlined into client
-// code with `define` or exposed with a VITE_ prefix.
-const SERVER_ENV = ['OPENROUTER_API_KEY', 'GOOGLE_MAPS_API_KEY', 'AI_TEXT_MODEL', 'AI_IMAGE_MODEL', 'ALLOWED_ORIGINS'];
+// OPENROUTER_API_KEY, GOOGLE_MAPS_API_KEY and DATABASE_URL are server-only
+// secrets. They are read by the Vercel functions in api/ and must never be
+// inlined into client code with `define` or exposed with a VITE_ prefix.
+// Without DATABASE_URL, `npm run dev` counts the daily limits in memory.
+const SERVER_ENV = [
+  'OPENROUTER_API_KEY',
+  'GOOGLE_MAPS_API_KEY',
+  'DATABASE_URL',
+  'USAGE_HASH_SECRET',
+  'AI_TEXT_MODEL',
+  'AI_IMAGE_MODEL',
+  'ALLOWED_ORIGINS',
+  'AI_TEXT_DAILY_LIMIT',
+  'AI_TEXT_DAILY_LIMIT_PER_IP',
+  'AI_IMAGE_DAILY_LIMIT',
+  'AI_IMAGE_DAILY_LIMIT_PER_IP',
+  'PLACES_DAILY_LIMIT',
+  'PLACES_DAILY_LIMIT_PER_IP',
+];
 
 /** The functions in api/ with the HTTP method each one answers. */
 const ROUTES: Record<string, { file: string; method: 'GET' | 'POST' }> = {

@@ -6,8 +6,14 @@
 // Without it the endpoint answers 503 with a free Google Maps search link,
 // which the page shows instead. Results are cached by Vercel's CDN for 30
 // minutes per ZIP and service (short enough to keep "open now" accurate), so
-// repeat searches in that window cost nothing.
-import { clientIp, createRateLimiter, isAllowedOrigin, json } from './_shared.js';
+// repeat searches in that window cost nothing. Only the exact URL the page
+// builds is accepted, so extra query parameters can't bypass that cache.
+//
+// Every uncached search takes one unit of a daily allowance, per visitor and
+// site-wide (PLACES_DAILY_LIMIT, PLACES_DAILY_LIMIT_PER_IP; see api/_usage.ts).
+import { clientKey, createRateLimiter, isAllowedOrigin, json } from './_shared.js';
+import { takeDailyQuota } from './_usage.js';
+import { isBot } from './_botid.js';
 
 export const SERVICES: Record<string, string> = {
   general: 'auto repair shop',
@@ -42,14 +48,16 @@ export async function GET(request: Request): Promise<Response> {
 
   const url = new URL(request.url);
   const zip = url.searchParams.get('zip') ?? '';
-  const service = url.searchParams.get('service') ?? 'general';
+  const service = url.searchParams.get('service') ?? '';
   if (!/^\d{5}$/.test(zip)) return json({ error: 'Enter a 5-digit US ZIP code.' }, 400);
   if (!Object.hasOwn(SERVICES, service)) return json({ error: 'Unknown service.' }, 400);
+  // The one URL shape utils/places.ts sends, which is what the CDN caches by.
+  if (url.search !== `?zip=${zip}&service=${service}`) return json({ error: 'Unexpected query parameters.' }, 400);
 
   const query = `${SERVICES[service]} near ${zip}, USA`;
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
-  const retryAfter = rateLimit(clientIp(request), [
+  const retryAfter = rateLimit(clientKey(request), [
     { windowMs: 60_000, max: 10 },
     { windowMs: 60 * 60_000, max: 60 },
   ]);
@@ -57,6 +65,18 @@ export async function GET(request: Request): Promise<Response> {
 
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) return json({ error: 'not_configured', mapsUrl }, 503);
+  if (await isBot()) return json({ error: 'Forbidden', mapsUrl }, 403);
+
+  const refused = await takeDailyQuota(request, 'places');
+  if (refused) {
+    const error =
+      refused.reason === 'unavailable'
+        ? 'Shop search is busy right now. Try again in a few minutes, or search on Google Maps.'
+        : refused.reason === 'site'
+          ? 'Shop search is very busy today and has reached its daily limit. Please try again tomorrow, or search on Google Maps.'
+          : "You've reached today's limit for shop searches. Please try again tomorrow, or search on Google Maps.";
+    return json({ error, code: 'daily_limit', mapsUrl }, refused.reason === 'unavailable' ? 503 : 429, { 'Retry-After': String(refused.retryAfter) });
+  }
 
   try {
     const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
