@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generateContent, Type } from '../utils/ai';
+import { runTool } from '../utils/ai';
 import { searchRecalls, latestFeaturedRecalls } from '../utils/nhtsaRecalls';
 import {
   ShieldAlert, ShoppingCart, Zap, ArrowRight,
@@ -159,76 +159,8 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
         return;
       }
 
-      let prompt = '';
-      let schema: any = {};
-
-      if (type === 'toolkits') {
-        prompt = `
-          Act as a Master Technician. Suggest 6 essential DIY toolkits or high-quality diagnostic parts currently popular on the US market.
-          Focus on tools like OBDII Scanners, Multimeters, and Socket Sets.
-          IMPORTANT: Do not include specific price numbers as they fluctuate.
-          Each item MUST have a real, working image URL of the product (use high-quality automotive tool photography URLs).
-          Return strictly valid JSON with an array called "items".
-          Each item must have: name, brand, rating (number 4.0-5.0), category, bestFor, and imageUrl.
-        `;
-        schema = {
-          type: Type.OBJECT,
-          properties: {
-            items: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  name: { type: Type.STRING },
-                  brand: { type: Type.STRING },
-                  rating: { type: Type.NUMBER },
-                  category: { type: Type.STRING },
-                  bestFor: { type: Type.STRING },
-                  imageUrl: { type: Type.STRING }
-                },
-                required: ['name', 'brand', 'rating', 'category', 'bestFor', 'imageUrl']
-              }
-            }
-          },
-          required: ['items']
-        };
-      } else {
-        prompt = `
-          List 6 kinds of maintenance promotions that national US service chains commonly advertise (oil changes, brakes, tires, batteries).
-          Describe typical offers only; do not invent coupon codes, expiry dates or claims that a deal is active now.
-          Return strictly valid JSON with an array called "items".
-          Each item must have: shop, offer, savingValue (e.g. "$20 Off"), validIn (Regions), and category (Oil Change/Brakes/Tires).
-        `;
-        schema = {
-          type: Type.OBJECT,
-          properties: {
-            items: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  shop: { type: Type.STRING },
-                  offer: { type: Type.STRING },
-                  savingValue: { type: Type.STRING },
-                  validIn: { type: Type.STRING },
-                  category: { type: Type.STRING }
-                },
-                required: ['shop', 'offer', 'savingValue', 'validIn', 'category']
-              }
-            }
-          },
-          required: ['items']
-        };
-      }
-
-      const response = await generateContent({
-        model: 'text',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: schema
-        }
-      });
+      // Prompts and schemas are written on the server (api/_aiTools.ts, "toolkits" and "coupons").
+      const response = await runTool(type === 'toolkits' ? 'toolkits' : 'coupons');
 
       const data = JSON.parse(response.text);
       if (!isCurrent()) return;

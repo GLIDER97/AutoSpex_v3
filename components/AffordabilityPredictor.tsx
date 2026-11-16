@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { saveLead } from '../utils/leadStorage';
-import { generateContent, Type } from '../utils/ai';
+import { runTool } from '../utils/ai';
 import {
   CREDIT_TIERS,
   amortizationByYear,
@@ -61,18 +61,8 @@ function RuleBar({ label, value, ok, max, note }: { label: string; value: number
 }
 
 async function estimatePrice(vehicle: string, trim: string, zip: string) {
-  const response = await generateContent({
-    model: 'text',
-    contents: `Estimate today's typical US dealer retail price for a used ${vehicle} ${trim} in average condition with typical mileage${zip ? `, near ZIP ${zip}` : ''}. If it is a current model year, estimate the typical transaction price. Return USD numbers and one sentence on what moves the price most.`,
-    config: {
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: { priceLow: { type: Type.NUMBER }, priceHigh: { type: Type.NUMBER }, fairPrice: { type: Type.NUMBER }, note: { type: Type.STRING } },
-        required: ['priceLow', 'priceHigh', 'fairPrice', 'note'],
-      },
-    },
-  });
+  // The prompt is written on the server (api/_aiTools.ts, "car-price").
+  const response = await runTool('car-price', { vehicle, trim, zip });
   const raw = JSON.parse(response.text ?? '{}');
   const low = Math.max(0, Number(raw.priceLow) || 0);
   const high = Math.max(low, Number(raw.priceHigh) || 0);

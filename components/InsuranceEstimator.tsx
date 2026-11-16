@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { generateContent } from '../utils/ai';
+import { runTool } from '../utils/ai';
 import {
   ShieldCheck, TrendingUp, DollarSign, Award, ArrowRight,
   MapPin, Car, Users, CheckCircle2, AlertTriangle, Info,
@@ -110,22 +110,19 @@ const InsuranceEstimator: React.FC = () => {
 
     // AI Integration
     try {
-      const prompt = `
-        Act as an expert insurance underwriter.
-        I have estimated a monthly auto insurance premium of $${result.monthlyPremium.min} - $${result.monthlyPremium.max} for a driver with these details:
-        - Vehicle: ${formData.year} ${formData.make} ${formData.model}
-        - Location ZIP: ${formData.zipCode}
-        - Profile: Age ${formData.ageGroup}, ${formData.drivingHistory} history, ${formData.creditTier} credit.
-        - Coverage: ${formData.coverageLevel} (Deductible: $${formData.deductible})
-
-        Provide a concise, helpful 3-sentence explanation of why the price is in this range. 
-        Focus on the biggest risk factors provided.
-        Address the user directly as "you".
-      `;
-
-      const response = await generateContent({
-        model: 'text',
-        contents: prompt,
+      // The prompt is written on the server (api/_aiTools.ts, "insurance-explain").
+      const response = await runTool('insurance-explain', {
+        min: result.monthlyPremium.min,
+        max: result.monthlyPremium.max,
+        year: /^(19|20)\d\d$/.test(formData.year.trim()) ? formData.year.trim() : '',
+        make: formData.make,
+        model: formData.model,
+        zipCode: formData.zipCode,
+        ageGroup: formData.ageGroup,
+        drivingHistory: formData.drivingHistory,
+        creditTier: formData.creditTier,
+        coverageLevel: formData.coverageLevel,
+        deductible: formData.deductible,
       });
       setAiAnalysis(response.text);
     } catch (e) {

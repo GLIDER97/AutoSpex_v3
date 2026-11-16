@@ -1,24 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Download, ImagePlus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateContent, imageDataUrl } from '../utils/ai';
+import { imageDataUrl, runTool } from '../utils/ai';
 import { searchShops, type ShopSearch } from '../utils/places';
 import {
   CARE,
   COVERAGE,
   FINISHES,
   SIZES,
+  MAX_WRAP_EXTRAS,
+  WRAP_EXTRAS,
   choiceLabel,
-  nearestAspect,
-  photoPrompt,
   preparePhoto,
-  vehiclePrompt,
   wrapCost,
   type CoverageId,
   type FinishId,
   type PreparedPhoto,
   type SizeId,
   type WrapColor,
+  type WrapExtraId,
 } from '../utils/wrap';
 import {
   Faq,
@@ -143,7 +143,7 @@ export default function WrapDesigner() {
   const [finish, setFinish] = useState<FinishId>('satin');
   const [color, setColor] = useState<WrapColor>(FINISHES[0].colors[3]);
   const [customHex, setCustomHex] = useState('#2f6f8f');
-  const [extra, setExtra] = useState('');
+  const [extras, setExtras] = useState<WrapExtraId[]>([]);
 
   const [renders, setRenders] = useState<Render[]>([]);
   const [currentId, setCurrentId] = useState<number | null>(null);
@@ -192,19 +192,14 @@ export default function WrapDesigner() {
   };
 
   const render = async () => {
-    const choice = { coverage, finish, color, extra };
+    const choice = { coverage, finish, color, extras };
     setRendering(true);
     setRenderError(null);
     try {
-      const response = await generateContent(
-        photo
-          ? {
-              model: 'image',
-              contents: [{ inlineData: { mimeType: 'image/jpeg', data: photo.base64 } }, { text: photoPrompt(choice) }],
-              config: { imageConfig: { aspectRatio: nearestAspect(photo.width, photo.height) } },
-            }
-          : { model: 'image', contents: vehiclePrompt(choice, vehicleLabel(vehicle), size), config: { imageConfig: { aspectRatio: '3:2' } } },
-      );
+      // The image prompt is written on the server (api/_aiTools.ts, "wrap-photo" and "wrap-render").
+      const response = photo
+        ? await runTool('wrap-photo', { photo: { mimeType: 'image/jpeg', data: photo.base64 }, width: photo.width, height: photo.height, ...choice })
+        : await runTool('wrap-render', { vehicle: vehicleLabel(vehicle), size, ...choice });
       const src = imageDataUrl(response);
       if (!src) throw new Error('No picture came back. Please try again.');
       const next: Render = { id: Date.now(), src, before: photo, label: choiceLabel(choice) };
@@ -397,16 +392,36 @@ export default function WrapDesigner() {
               </div>
             </fieldset>
 
-            <Field label="Anything else? (optional)" htmlFor="wrap-extra" className="mt-5" hint="For example: gloss black roof, bronze wheels, red brake calipers.">
-              <textarea
-                id="wrap-extra"
-                value={extra}
-                onChange={(e) => setExtra(e.target.value)}
-                maxLength={200}
-                rows={2}
-                className={cn(inputClass, 'h-auto py-2')}
-              />
-            </Field>
+            <fieldset className="mt-5">
+              <legend className="mb-2 text-sm font-medium">
+                Extras <span className="font-normal text-muted-foreground">(optional, up to {MAX_WRAP_EXTRAS})</span>
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {WRAP_EXTRAS.map((x) => {
+                  const on = extras.includes(x.id);
+                  const full = !on && extras.length >= MAX_WRAP_EXTRAS;
+                  return (
+                    <label
+                      key={x.id}
+                      className={cn(
+                        'cursor-pointer rounded-full border px-3 py-1.5 text-sm transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring has-[:focus-visible]:outline-solid',
+                        on ? 'border-foreground bg-foreground text-background' : 'border-border hover:bg-muted',
+                        full && 'cursor-not-allowed opacity-50 hover:bg-transparent',
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={on}
+                        disabled={full}
+                        onChange={() => setExtras((prev) => (on ? prev.filter((id) => id !== x.id) : [...prev, x.id].slice(0, MAX_WRAP_EXTRAS)))}
+                      />
+                      {x.label}
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
 
             <PrimaryButton type="button" className="mt-5 w-full" loading={rendering} onClick={render}>
               {photo ? 'Show it on my car' : 'Draw my wrap'}
