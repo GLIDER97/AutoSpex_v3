@@ -120,6 +120,7 @@ The tier-1 focus means **US first**: the content already uses US prices, NHTSA a
 - Add cost guides that link the tools together, such as "Catalytic converter replacement cost by car" and "Is it worth fixing a car with 150,000 miles?", each with sourced figures.
 - **Link outreach (needs Gmail connected and the owner's approval):** list 30 relevant sites, such as car blogs, "best free car tools" lists and local news "money-saving" columns, and draft personalized emails. No mass sending.
 - Rewrite titles and intros on pages with high impressions and low CTR.
+- From day 15: build the community data feature (section 4d).
 - **Target by day 21:** 200+ pages indexed, 8,000+ weekly impressions, 200+ clicks in the week.
 
 ### Week 4 (7–15 Dec): double down on what works
@@ -182,7 +183,44 @@ Tools matter differently:
 
 So:
 - Improve the existing 13 tools using Clarity data.
-- Build **at most 1 new tool** in the 30 days, and only after day 14, if Search Console or Bing data shows clear demand with weak competition and it can be built in one run.
+- The **one new tool** for these 30 days is the community data feature in section 4d, which the owner chose on 16 Nov. No other new tools.
+
+## 4d. Community data: repair-cost reports and "What fixed it?" (from day 15)
+
+The owner chose these two features on 16 Nov, to build a real, owner-reported dataset no competitor has. Nothing in them needs daily human moderation.
+
+**1. "What did you pay?" repair-cost reports.** Asked right after a result in the code lookup and the repair quote checker, and on code and cost pages.
+- One short form:
+  - car year, make and model (pre-filled where the tool already knows them)
+  - the code or repair, chosen from a list
+  - total price paid
+  - shop type: dealer, independent or DIY
+  - US state
+  - month of the repair
+- No names, emails, free text, photos or ZIP codes.
+
+**2. "What fixed it?" on code pages.**
+- One tap on a list of that code's known fixes, taken from the page's own content, plus "Something else".
+- No text box in the first version.
+- One vote per visitor per code.
+
+**How it works:**
+- **Storage:** a free Postgres database the owner connects once in Vercel (Storage → Create Database → Neon, connected to this project). Only the site's `api/` serverless functions use it. The agent's sandbox never holds database credentials.
+- **Abuse protection without extra accounts:**
+  - only allowed values, and price limits per repair
+  - a hidden honeypot field and a minimum time on the page
+  - a few submissions per visitor per day, tracked with a salted hash of the IP that is deleted after 30 days
+  - outlier flags based on the median
+- **Only totals are public:**
+  - A public endpoint returns stats only where at least **5 reports** exist: median, typical range and count for costs, and percentages for fixes. Individual reports are never shown.
+  - Each day the agent saves a snapshot to `data/community-stats.json`, and the pre-render writes those numbers into the static pages, so Google sees them.
+  - Pages label them "Reported by N MyAutoSpex visitors" with the date range.
+- **No seeding:** never add made-up reports or votes, not even to make a page look active.
+- **Encourage contributions honestly:** ask at the moment a tool shows its result, keep it to taps, and show impact ("Your report helped N drivers compare prices").
+- **Health check:** `/api/community/health` reports whether the database is connected, so the agent can tell whether the owner's setup is done.
+- **Legal pages:** add the data use to the Privacy Policy, and a short contribution clause to the Terms.
+
+**Timing:** build from day 15 (1 Dec). If the health check shows no database, ship the feature switched off, log the owner action and carry on with content.
 
 ## 5. Quality rules the agent must follow (non-negotiable)
 
@@ -215,3 +253,4 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 2. **Merging: allowed.** The agent may merge its own PRs, and PR #1, once Vercel's preview passes and its own build and browser checks pass.
 3. **Start: 16 Nov 2026.** Until the owner's setup is done, the agent builds and ships pages and skips the measurement steps it has no access to, noting that in the log.
 4. **Community distribution:** not chosen. The agent doesn't post anywhere.
+5. **Community data (16 Nov):** build repair-cost reports and "What fixed it?" (section 4d) from day 15. My Garage recall alerts and a parts marketplace are not in scope.
