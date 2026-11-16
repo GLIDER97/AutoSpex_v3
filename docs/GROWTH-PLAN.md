@@ -51,7 +51,8 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
    - Create a project for www.myautospex.com.
    - Install it through your existing Google Tag Manager container (Tags → New → "Microsoft Clarity" template, or a Custom HTML tag with Clarity's snippet), then Publish.
    - In Clarity → Settings → Data Export → Generate API token. In the "AutoSpex_v3" environment settings → Network secrets, add it for host `www.clarity.ms`, header `Authorization`, prefix `Bearer`.
-7. **Optional, only if you choose paid traffic:** create a Google Ads or Microsoft Advertising account, add billing, set a daily cap, and connect an ads connector so the agent can manage campaigns.
+7. **Free keyword data:** in Bing Webmaster Tools (after step 3), go to Settings (gear icon) → API Access → API Key → Generate. In the "AutoSpex_v3" environment settings, add it as the environment variable `BING_WEBMASTER_API_KEY`. claude-seo's Bing scripts read the same variable.
+8. **Optional, only if you choose paid traffic:** create a Google Ads or Microsoft Advertising account, add billing, set a daily cap, and connect an ads connector so the agent can manage campaigns.
 
 ---
 
@@ -126,6 +127,21 @@ The tier-1 focus means **US first**: the content already uses US prices, NHTSA a
 - **Target by day 30, organic only:** 250+ pages indexed, 15,000+ weekly impressions, 300–1,500 visits in the month. Anything paid comes on top.
 
 ---
+
+## 4a. Free keyword research (no paid tools)
+
+The owner chose not to pay for Semrush, Ahrefs or Ubersuggest. The agent picks topics with these free sources, in this order:
+
+1. **Google Search Console** (once the service account is set up). These are the real queries the site already appears for. Queries ranking 5–20 with impressions are the best opportunities, because the page only needs improving.
+2. **Bing Webmaster Tools keyword API** (free, official; needs `BING_WEBMASTER_API_KEY`). It returns real Bing search volumes by country:
+   - `GetKeyword`: `https://ssl.bing.com/webmaster/api.svc/json/GetKeyword?q=<query>&country=us&language=en-US&startDate=<date>&endDate=<date>&apikey=<key>`
+   - `GetRelatedKeywords`, with the same parameters, for related terms and their volumes.
+
+   Bing's volumes are smaller than Google's but rank topics in roughly the same order, which is all the agent needs to prioritize. Use the US market for tier-1 focus, and keep it to about 100 calls a day.
+3. **Google search suggestions** (free, no key): `https://suggestqueries.google.com/complete/search?client=firefox&hl=en&gl=us&q=<query>`. These show how people actually phrase searches. For example, "p0420 code" suggests "chevy", "toyota", "ford", "bank 1" and "how to fix", which become sections and FAQs on the P0420 page. Use them for phrasing and subtopics, not volumes. Keep it light: a few dozen requests a day, a second or more apart.
+4. **NHTSA complaint counts** (free; `api.nhtsa.gov` is already allowed). For recall pages, models with more owner complaints and recalls get more searches, so build those first.
+
+**How the agent uses them:** before writing a page, it checks the target query's Bing volume and Google suggestions and records both in the log. It writes the page around the main query plus the suggested subtopics. Every Monday, it re-ranks the backlog by Search Console impressions first, then Bing volume.
 
 ## 5. Quality rules the agent must follow (non-negotiable)
 
