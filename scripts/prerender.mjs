@@ -49,7 +49,8 @@ const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 function buildHead({ title, description, canonical, noindex, image = DEFAULT_IMAGE, type = 'website', structuredData = [] }) {
   const tags = [];
-  if (noindex) tags.push('<meta name="robots" content="noindex, follow" />');
+  // Indexable pages allow large image previews, which Google Discover needs to show a page with a big image.
+  tags.push(`<meta name="robots" content="${noindex ? 'noindex, follow' : 'max-image-preview:large'}" />`);
   if (canonical) tags.push(`<link rel="canonical" href="${escapeHtml(canonical)}" />`);
   tags.push(
     `<meta property="og:site_name" content="${escapeHtml(SITE_NAME)}" />`,

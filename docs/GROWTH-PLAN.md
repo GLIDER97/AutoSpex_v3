@@ -145,6 +145,45 @@ The owner chose not to pay for Semrush, Ahrefs or Ubersuggest. The agent picks t
 
 **How the agent uses them:** before writing a page, it checks the target query's Bing volume and Google suggestions and records both in the log. It writes the page around the main query plus the suggested subtopics. Every Monday, it re-ranks the backlog by Search Console impressions first, then Bing volume.
 
+## 4b. Images, charts and the OpenRouter budget
+
+The owner added an OpenRouter key, saved as a hidden network secret for `openrouter.ai`, with a **budget of $10 a month**.
+
+- **Budget check first, every time.** Before generating any image, call `GET https://openrouter.ai/api/v1/key` and read `usage_monthly`.
+  - If it is **$9.00 or more**, generate no images for the rest of the calendar month and note it in the log.
+  - Record every generation (date, model, cost, file) in `docs/openrouter-spend.csv`.
+- **Volume and model.**
+  - At most **1 AI image per new article**, and none for refreshed articles.
+  - Pick the cheapest image-capable model from `GET https://openrouter.ai/api/v1/models` (output modalities include image), and never one costing more than $0.10 per image.
+- **What AI images may show.** Only illustrative hero images (a car on a road, a dashboard glow, a mechanic's tools).
+  - No text, labels, numbers, logos, real brands or real people.
+  - Never use them to show facts such as a part's location, a wiring diagram or a warning-light chart: image models get those wrong, and on a car-repair site that is misinformation.
+- **Charts and diagrams that carry facts are drawn in code** (SVG or HTML) from the sourced data, with a source caption. Examples: repair cost by model, recalls by year.
+- **Every image:**
+  - WebP, at most 1200 px wide and about 120 KB
+  - a descriptive file name (`p0420-catalytic-converter.webp`)
+  - real `width` and `height`
+  - alt text that describes it
+  - `loading="lazy"` unless it's the first image
+
+  Indexable pages carry `max-image-preview:large`, so these images can appear in Google Discover.
+- **Monday refresh:** also refresh 1–2 older articles. Add sources, fix outdated figures, add links to newer pages, and change `meta.date` only when the content meaningfully changes.
+
+## 4c. New tools or new content?
+
+**For the first 30 days, content comes first.**
+- Pages answering specific searches (codes, recalls, costs) are what a new site can get indexed and ranked quickly.
+- New tools mostly compete for broad, hard terms ("vin decoder", "depreciation calculator") held by big sites, and they take longer to rank.
+
+Tools matter differently:
+- they keep visitors on the site
+- they are what other sites link to
+- every content page should link to, or pre-fill, the matching tool
+
+So:
+- Improve the existing 13 tools using Clarity data.
+- Build **at most 1 new tool** in the 30 days, and only after day 14, if Search Console or Bing data shows clear demand with weak competition and it can be built in one run.
+
 ## 5. Quality rules the agent must follow (non-negotiable)
 
 - **At most 2 new pages a day,** each with something a reader can't get from a generic AI answer: real data (NHTSA, EPA), a working tool link, specific symptoms and steps.
