@@ -6,8 +6,8 @@ import imgHero from '../assets/Featured images/surprise.png';
 
 export const meta = {
     title: "Surprise Premiums: Why Insuring an EV Might Cost More Than Your Car Payment in 2026",
-    description: "Discover why EV insurance costs 49% more in 2026. Learn about gigacasting total loss risks, battery protection costs, and which EVs are cheapest to insure.",
-    date: "2026-02-15T15:39:44",
+    description: "Insurify data shows EVs cost 49% more to insure than gas cars. Learn why repair and battery costs drive the gap and how to check premiums before you buy.",
+    date: "2026-11-16T12:00:00",
     authorName: "John Smith",
     authorRole: "Financial & Automotive Reviewer • 8+ Years Exp.",
     category: "Financial Guides",
@@ -33,7 +33,7 @@ const EVInsuranceCostPost: React.FC = () => {
             <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 p-6 mb-12 rounded-r-xl">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Quick Answer: The 2026 EV Insurance Gap</h2>
                 <p className="text-slate-700 dark:text-slate-300">
-                    <strong>Electric vehicles cost an average of 49% more to insure than gas cars in 2026.</strong> EV drivers pay around <strong>$4,058 annually</strong> compared to $2,732 for traditional gas vehicles. The culprit? Battery replacement costs, gigacasting total-loss risks, and a shortage of certified EV technicians.
+                    <strong>Electric vehicles cost an average of 49% more to insure than gas cars</strong>, according to Insurify's 2025 analysis of more than 97 million quotes, <a href="https://www.kbb.com/car-news/study-evs-cost-49-more-to-insure/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">as reported by Kelley Blue Book</a>. EV drivers paid around <strong>$4,058 annually</strong> compared to $2,732 for gas vehicles. The culprit? Higher repair and replacement costs; the <a href="https://content.naic.org/insurance-topics/electric-vehicle-insurance-rates" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">NAIC</a> also points to battery repair costs, parts availability, and the limited number of shops equipped for EV repair.
                 </p>
             </div>
 
@@ -42,13 +42,13 @@ const EVInsuranceCostPost: React.FC = () => {
                 Battery anxiety is real, but "Premium Anxiety" is what's actually killing the EV dream for American drivers in 2026.
             </p>
             <p>
-                Listen, I've spent the last eight years reading insurance policies that could cure insomnia. I've watched the EV market explode, and I've watched insurance premiums explode right alongside it. The silent motor might be peaceful, but the bill at renewal time? That's loud.
+                Insurance policies could cure insomnia, but EV shoppers have a reason to read them closely. The silent motor might be peaceful, but the bill at renewal time? That's loud.
             </p>
             <p>
-                Here's what nobody tells you at the dealership: That $55,000 electric SUV you're eyeing? Your insurance company sees it as a $90,000 liability waiting to happen. One minor fender-bender involving the battery housing, and they're cutting you a check for total loss instead of fixing the bumper.
+                Here's what nobody tells you at the dealership: your insurer prices in what that electric SUV could cost to fix. Batteries are expensive to repair or replace, and relatively few shops specialize in EV repair, <a href="https://content.naic.org/insurance-topics/electric-vehicle-insurance-rates" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">according to the NAIC</a>. Damage near the battery housing can turn a modest collision into a very expensive claim.
             </p>
             <p className="font-bold text-slate-800 dark:text-slate-100">
-                The 2026 data is in, and it's brutal: EV insurance now averages $4,058 per year versus $2,732 for gas cars. That's $1,326 more annually—or $110 extra every single month.
+                The data is brutal: in Insurify's numbers, EV insurance averaged $4,058 per year versus $2,732 for gas cars. That's $1,326 more annually—or about $110 extra every single month.
             </p>
 
             {/* The Hidden EV Tax */}
@@ -63,24 +63,24 @@ const EVInsuranceCostPost: React.FC = () => {
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6 rounded-xl">
                     <h4 className="font-bold text-red-700 dark:text-red-400 mb-3 text-lg">1. Gigacasting (Single-Piece Frames)</h4>
                     <p className="text-sm text-slate-700 dark:text-slate-300">
-                        Tesla, Hyundai, and others are using massive presses to create entire car sections in one piece. Sounds efficient, right? But if that frame bends by even 3mm in a collision, there's no fixing it. The entire section must be replaced—often meaning the car is totaled.
+                        Tesla and others are using massive presses to create entire car sections in one piece. Sounds efficient, right? But if a large one-piece casting is damaged in a collision, repair options can be limited and the whole section may need replacing—which raises the odds the car is totaled.
                     </p>
                 </div>
                 <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 p-6 rounded-xl">
                     <h4 className="font-bold text-orange-700 dark:text-orange-400 mb-3 text-lg">2. Structural Battery Packs</h4>
                     <p className="text-sm text-slate-700 dark:text-slate-300">
-                        Some manufacturers bond the battery directly to the chassis for weight savings. A 1-inch crack in the battery housing requires replacing the entire $25,000+ battery pack <em>and</em> the frame. Repair cost? Often exceeds the car's value.
+                        Some manufacturers bond the battery directly to the chassis for weight savings. Damage to the battery housing can mean replacing the pack, one of the most expensive parts of the car, <em>and</em> repairing the structure around it. Repair cost? It can exceed the car's value.
                     </p>
                 </div>
             </div>
 
             <p className="mt-4">
-                <strong>Real-World Impact:</strong> A $2,000 repair on a gas car (new bumper, paint, labor) becomes a $50,000 write-off on an EV because the insurance company won't risk battery fires or structural integrity issues.
+                <strong>Real-World Impact:</strong> Damage that would be a routine bumper, paint, and labor job on a gas car can become a total loss on an EV if the battery or a structural casting is involved, because insurers won't risk battery fires or structural integrity issues.
             </p>
 
             {/* Experience Block */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl italic text-slate-700 dark:text-slate-300">
-                "Friend of mine bought a 2025 Tesla Model Y. Six months later, someone backed into him in a Target parking lot—barely tapped the rear quarter panel. The impact bent the gigapress rear frame by 3 millimeters. Tesla's official quote? 'Structural integrity compromised. Recommend total loss.' The insurance company totaled a six-month-old, 8,000-mile SUV because the one-piece frame couldn't be straightened. He had $48,000 of loan left and got a $42,000 payout. He's still underwater on a car he doesn't own anymore."
+                "Consider a common worst case: a low-speed parking-lot bump damages a one-piece rear casting on a nearly new EV. If the manufacturer won't approve a repair, the insurer may declare it a total loss—and if the owner owes more on the loan than the payout, they're left paying for a car they no longer have. Gap coverage exists for exactly this situation."
             </div>
 
             {/* The Repairability Crisis */}
@@ -91,38 +91,34 @@ const EVInsuranceCostPost: React.FC = () => {
                 Even when an EV <em>can</em> be repaired, there's a new problem: Nobody's certified to touch it.
             </p>
             <p>
-                High-voltage battery systems (400V to 800V in 2026 models) require specialized training. Most traditional mechanics aren't certified. The ones who are? They know they're rare and charge accordingly.
+                High-voltage battery systems require specialized training, and the <a href="https://content.naic.org/insurance-topics/electric-vehicle-insurance-rates" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">NAIC</a> notes that a limited number of repair shops specialize in EV repair. The ones that do know they're in demand.
             </p>
 
             <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl my-8">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">2026 Labor Rate Reality</h3>
                 <div className="space-y-3 text-slate-700 dark:text-slate-300">
                     <div className="flex justify-between items-center pb-2 border-b border-slate-300 dark:border-slate-700">
-                        <span className="font-medium">Standard Mechanic (Gas Car)</span>
-                        <span className="font-bold text-green-600 dark:text-green-400">$28-35/hr</span>
+                        <span className="font-medium">Median automotive technician pay (May 2025)</span>
+                        <span className="font-bold text-green-600 dark:text-green-400">$24.34/hr</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-300 dark:border-slate-700">
-                        <span className="font-medium">ASE Master Tech (Gas Car)</span>
-                        <span className="font-bold text-blue-600 dark:text-blue-400">$45-55/hr</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b border-slate-300 dark:border-slate-700">
-                        <span className="font-medium">High-Voltage Certified EV Tech</span>
-                        <span className="font-bold text-orange-600 dark:text-orange-400">$65-85/hr</span>
+                        <span className="font-medium">Lowest-paid 10% of technicians</span>
+                        <span className="font-bold text-blue-600 dark:text-blue-400">under $34,660/yr</span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="font-medium">Master EV Tech (CA, DC, NY)</span>
-                        <span className="font-bold text-red-600 dark:text-red-400">$90-120/hr</span>
+                        <span className="font-medium">Highest-paid 10% of technicians</span>
+                        <span className="font-bold text-red-600 dark:text-red-400">over $81,790/yr</span>
                     </div>
                 </div>
                 <p className="text-sm text-slate-500 mt-4 italic">
-                    These labor costs are baked directly into your insurance premium because insurers know they'll be paying for specialist labor when claims happen.
+                    Wage data from the <a href="https://www.bls.gov/ooh/installation-maintenance-and-repair/automotive-service-technicians-and-mechanics.htm" target="_blank" rel="noopener noreferrer" className="underline">U.S. Bureau of Labor Statistics</a>, which doesn't report EV-certified technicians separately. Specialized repair needs are one of the cost factors insurers price into EV premiums, per the NAIC.
                 </p>
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-800 my-8">
                 <h3 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-2">Check Your Local EV Repair Rates</h3>
                 <p className="text-blue-800 dark:text-blue-200">
-                    Before you commit to an EV, use the <a href="/maintenance-validator" className="font-bold underline decoration-blue-400">Car repair & overcharge validator</a> to see what specialized EV labor costs in your specific ZIP code. Some areas have zero certified techs within 100 miles—meaning tow fees and out-of-area labor premiums.
+                    Before you commit to an EV, use the <a href="/maintenance-validator" className="font-bold underline decoration-blue-400">Car repair & overcharge validator</a> to see what specialized EV labor costs in your specific ZIP code. Some areas have few certified EV techs nearby—meaning tow fees and out-of-area labor premiums.
                 </p>
             </div>
 
@@ -131,12 +127,12 @@ const EVInsuranceCostPost: React.FC = () => {
                 The "Torque Trap": Why EVs Crash More Often
             </h2>
             <p>
-                2026 data from major insurers shows EVs have <strong>17% more insurance claims</strong> than gas cars. The reason isn't what you'd expect.
+                LexisNexis Risk Solutions' <a href="https://risk.lexisnexis.com/about-us/press-room/press-release/20240620-auto-trends-report" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">2024 U.S. Auto Insurance Trends Report</a> found EV claim frequency <strong>17% higher</strong> and claim severity 34% higher than for gas vehicles, based on 2023 data. Not every study agrees: the <a href="https://content.naic.org/insurance-topics/electric-vehicle-insurance-rates" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">NAIC</a> summarizes Highway Loss Data Institute research showing lower claim frequencies for EVs than comparable gas models, though some severity measures were higher. Here's what can push claims up.
             </p>
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mt-8 mb-4">It's the Physics</h3>
             <ul className="list-disc pl-6 space-y-2 marker:text-red-600">
                 <li><strong>Instant Torque:</strong> Zero lag from throttle to acceleration. New EV drivers unfamiliar with instant power underestimate stopping distances and over-accelerate in tight spaces.</li>
-                <li><strong>Heavy Curb Weight:</strong> Battery packs add 800-1,200 lbs. A Tesla Model Y weighs 4,555 lbs—300+ lbs heavier than a comparable gas SUV. More mass = more damage in collisions.</li>
+                <li><strong>Heavy Curb Weight:</strong> Battery packs make EVs heavier than comparable gas models. More mass = more energy in collisions.</li>
                 <li><strong>Silent Operation:</strong> Pedestrians and cyclists don't hear EVs approaching, leading to more low-speed impacts.</li>
             </ul>
 
@@ -153,7 +149,7 @@ const EVInsuranceCostPost: React.FC = () => {
                 </p>
                 <div className="bg-white/10 p-4 rounded-lg">
                     <p className="text-sm font-medium">
-                        <strong>Example:</strong> You save $1,800/year on gas switching to an EV. But insurance goes up $1,326/year. Net savings? $474. That's $39 per month—barely enough for a Netflix subscription.
+                        <strong>Example:</strong> If switching to an EV saves you less on fuel each year than the $1,326 average insurance gap in Insurify's data, you're behind before you even count maintenance and depreciation.
                     </p>
                 </div>
             </div>
@@ -163,7 +159,7 @@ const EVInsuranceCostPost: React.FC = () => {
                 The Geographic Lottery: State-by-State EV Insurance Gaps
             </h2>
             <p className="mb-6">
-                Where you live drastically changes how much more you'll pay to insure an EV. Here are the 2026 spreads:
+                Where you live drastically changes how much more you'll pay to insure an EV. In <a href="https://www.kbb.com/car-news/study-evs-cost-49-more-to-insure/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Insurify's 2025 data</a>, the gap ranged from 15% to 99%, and EV insurance tended to be more affordable in states where electric cars are common:
             </p>
 
             <div className="overflow-x-auto my-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
@@ -172,34 +168,24 @@ const EVInsuranceCostPost: React.FC = () => {
                         <tr className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
                             <th className="p-4 font-bold border-b border-slate-700">State</th>
                             <th className="p-4 font-bold border-b border-slate-700">EV Premium Increase</th>
-                            <th className="p-4 font-bold border-b border-slate-700">Why?</th>
+                            <th className="p-4 font-bold border-b border-slate-700">Ranking</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-900">
                         <tr className="hover:bg-green-50 dark:hover:bg-green-900/10">
                             <td className="p-4 font-bold text-green-600 dark:text-green-400">New Jersey</td>
                             <td className="p-4 font-bold text-green-600 dark:text-green-400">+15%</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">High EV adoption = more certified techs, competitive repair pricing</td>
-                        </tr>
-                        <tr className="hover:bg-blue-50 dark:hover:bg-blue-900/10">
-                            <td className="p-4 font-bold text-blue-600 dark:text-blue-400">California</td>
-                            <td className="p-4 font-bold text-blue-600 dark:text-blue-400">+28%</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">High labor costs offset by large EV infrastructure</td>
-                        </tr>
-                        <tr className="hover:bg-yellow-50 dark:hover:bg-yellow-900/10">
-                            <td className="p-4 font-bold text-yellow-600 dark:text-yellow-400">Texas</td>
-                            <td className="p-4 font-bold text-yellow-600 dark:text-yellow-400">+42%</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">Growing EV market but limited certified repair facilities</td>
-                        </tr>
-                        <tr className="hover:bg-orange-50 dark:hover:bg-orange-900/10">
-                            <td className="p-4 font-bold text-orange-600 dark:text-orange-400">Florida</td>
-                            <td className="p-4 font-bold text-orange-600 dark:text-orange-400">+67%</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">Hurricane risk + saltwater battery corrosion concerns</td>
+                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">Smallest gap of any state</td>
                         </tr>
                         <tr className="hover:bg-red-50 dark:hover:bg-red-900/10">
-                            <td className="p-4 font-bold text-red-600 dark:text-red-400">Arkansas</td>
+                            <td className="p-4 font-bold text-red-600 dark:text-red-400">Alabama</td>
                             <td className="p-4 font-bold text-red-600 dark:text-red-400">+99%</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">Almost zero EV infrastructure, parts must be shipped from out-of-state</td>
+                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">Tied for largest gap</td>
+                        </tr>
+                        <tr className="hover:bg-red-50 dark:hover:bg-red-900/10">
+                            <td className="p-4 font-bold text-red-600 dark:text-red-400">Pennsylvania</td>
+                            <td className="p-4 font-bold text-red-600 dark:text-red-400">+99%</td>
+                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">Tied for largest gap</td>
                         </tr>
                     </tbody>
                 </table>
@@ -217,35 +203,35 @@ const EVInsuranceCostPost: React.FC = () => {
                 <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-700 p-6 rounded-xl">
                     <h4 className="font-bold text-green-700 dark:text-green-400 mb-3 uppercase text-sm tracking-wide">✅ Insurance-Friendly EVs</h4>
                     <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
-                        <strong>Modular battery designs</strong> that can be repaired section-by-section:
+                        <strong>Signs an EV may be cheaper to insure</strong> (ask the dealer and your insurer):
                     </p>
                     <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                        <li className="flex gap-2"><span>•</span> Chevrolet Bolt EUV</li>
-                        <li className="flex gap-2"><span>•</span> Nissan Ariya</li>
-                        <li className="flex gap-2"><span>•</span> Ford Mustang Mach-E (Standard Range)</li>
-                        <li className="flex gap-2"><span>•</span> Hyundai Ioniq 5 (base trim)</li>
+                        <li className="flex gap-2"><span>•</span> Battery can be repaired module by module</li>
+                        <li className="flex gap-2"><span>•</span> Common model with good parts supply</li>
+                        <li className="flex gap-2"><span>•</span> Certified EV repair shops near you</li>
+                        <li className="flex gap-2"><span>•</span> Lower purchase price</li>
                     </ul>
-                    <p className="text-xs text-green-600 dark:text-green-400 mt-3 font-bold">Average premium increase: 22-35%</p>
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-3 font-bold">These match the cost drivers the NAIC lists for EV premiums.</p>
                 </div>
                 <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 p-6 rounded-xl">
                     <h4 className="font-bold text-red-700 dark:text-red-400 mb-3 uppercase text-sm tracking-wide">âŒ Premium-Heavy EVs</h4>
                     <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
-                        <strong>Structural batteries or gigacasting</strong> that require total replacement:
+                        <strong>Signs an EV may cost more to insure</strong>:
                     </p>
                     <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                        <li className="flex gap-2"><span>•</span> Tesla Model Y / Model 3 (2023+)</li>
-                        <li className="flex gap-2"><span>•</span> Rivian R1T / R1S</li>
-                        <li className="flex gap-2"><span>•</span> BMW iX / i4</li>
-                        <li className="flex gap-2"><span>•</span> Porsche Taycan</li>
+                        <li className="flex gap-2"><span>•</span> Structural battery pack or large one-piece castings</li>
+                        <li className="flex gap-2"><span>•</span> Hard-to-get parts</li>
+                        <li className="flex gap-2"><span>•</span> Few certified repair shops in your area</li>
+                        <li className="flex gap-2"><span>•</span> High purchase price</li>
                     </ul>
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-3 font-bold">Average premium increase: 55-85%</p>
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-3 font-bold">Get model-specific quotes before you buy.</p>
                 </div>
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-800 my-8">
                 <h3 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-2">Consider the Hybrid Middle Ground</h3>
                 <p className="text-blue-800 dark:text-blue-200 mb-4">
-                    Hybrids in 2026 have insurance premiums only <strong>8-12% higher</strong> than gas cars—a fraction of the EV penalty. You still get fuel savings without the repair cost risk.
+                    Hybrids still use a gasoline engine and a smaller battery, so <strong>get a hybrid quote</strong> alongside the EV and gas versions you're considering. You still get fuel savings, and the premium gap may be smaller.
                 </p>
                 <p className="text-blue-900 dark:text-blue-100">
                     Use the <a href="/affordability-predictor" className="font-bold underline decoration-blue-400">car affordability checker</a> to compare total monthly costs (payment + insurance + fuel) for an EV vs. a Hybrid vs. a gas car. The results might surprise you.
@@ -264,7 +250,7 @@ const EVInsuranceCostPost: React.FC = () => {
                     <li>Projected maintenance over 5 years</li>
                 </ul>
                 <p className="text-sm text-slate-500 mt-4 italic">
-                    If the total cost of ownership doesn't beat a comparable gas or hybrid vehicle by at least $2,000 over 5 years, the EV might not be worth the hassle in 2026.
+                    If the EV's total cost of ownership doesn't clearly beat a comparable gas or hybrid vehicle over the years you plan to keep it, the EV might not be worth the hassle in 2026.
                 </p>
             </div>
 
@@ -279,7 +265,7 @@ const EVInsuranceCostPost: React.FC = () => {
                         <strong className="text-white">The EV dream is real.</strong> But the insurance reality in 2026 is a wake-up call.
                     </p>
                     <p>
-                        If you're buying an EV, factor in that 49% premium increase from day one. Get quotes from at least three insurers before you sign any paperwork. Ask specifically about battery coverage, gigacasting repair policies, and whether they have certified EV repair shops in your area.
+                        If you're buying an EV, factor in a premium gap like the 49% average Insurify found from day one. Get quotes from at least three insurers before you sign any paperwork. Ask specifically about battery coverage, gigacasting repair policies, and whether they have certified EV repair shops in your area.
                     </p>
                     <p className="pt-4 border-t border-slate-700">
                         <strong className="text-blue-400">Bottom Line:</strong> Don't let the silent motor fool you; the bill is loud. Run your specific model through the Insurance Cost Estimator before you sign the lease.
@@ -300,6 +286,14 @@ const EVInsuranceCostPost: React.FC = () => {
                     </a>
                 </div>
             </div>
+
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-16 mb-4">Sources</h2>
+            <ul className="list-disc pl-6 mb-6 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><a href="https://www.kbb.com/car-news/study-evs-cost-49-more-to-insure/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Kelley Blue Book: Study: EVs Cost 49% More to Insure</a> (Insurify data)</li>
+                <li><a href="https://risk.lexisnexis.com/about-us/press-room/press-release/20240620-auto-trends-report" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">LexisNexis Risk Solutions: 2024 U.S. Auto Insurance Trends Report</a></li>
+                <li><a href="https://content.naic.org/insurance-topics/electric-vehicle-insurance-rates" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">NAIC: Electric Vehicle Insurance Rates</a></li>
+                <li><a href="https://www.bls.gov/ooh/installation-maintenance-and-repair/automotive-service-technicians-and-mechanics.htm" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">U.S. Bureau of Labor Statistics: Automotive Service Technicians and Mechanics</a></li>
+            </ul>
 
         </BlogTemplate>
     );

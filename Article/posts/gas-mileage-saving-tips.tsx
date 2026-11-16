@@ -6,7 +6,7 @@ import img1 from '../assets/Featured images/Gas Saver.png';
 export const meta = {
     title: "The Hidden Truth About Gas Mileage: How to Actually Save Money at the Pump - 2026",
     description: "Tired of wasting money on gas? Keesha Lauren reveals the real reasons your MPG is low and simple fixes to boost your fuel economy instantly.",
-    date: "2026-02-15T20:15:00",
+    date: "2026-11-16T12:00:00",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Fuel Economy",
@@ -28,7 +28,7 @@ const GasMileageTips: React.FC = () => {
             </p>
 
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                As a mechanic, I see customers blame "bad gas" or "old spark plugs" all the time. But the real reason your MPG is tanking is usually much simpler—and much easier to fix.
+                Drivers often blame "bad gas" or "old spark plugs." But the real reason your MPG is tanking is usually much simpler—and much easier to fix.
             </p>
 
             <h2 className="text-3xl font-black mt-12 mb-6 text-slate-900 dark:text-white">Why Is My MPG Suddenly Low?</h2>
@@ -47,7 +47,7 @@ const GasMileageTips: React.FC = () => {
 
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-8 mb-4">Myth: Premium Gas Gives Better Mileage</h3>
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                <strong>Reality:</strong> Put 87 octane in a car designed for 87. Putting 93 in a Honda Civic is literally burning money. Only use premium if your owner's manual <em>requires</em> it.
+                <strong>Reality:</strong> Put 87 octane in a car designed for 87. <a href="https://www.fueleconomy.gov/feg/octane.shtml" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a> says most gasoline vehicles are designed to run on 87 and that you should use the octane your manufacturer requires; higher octane mainly helps engines built for it, or slightly under severe duty like towing. In everyday driving, premium in a regular-fuel car is burning money. Only use premium if your owner's manual <em>requires</em> it.
             </p>
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
                 Wondering if a new car would save you money on gas? Check our <a href="/affordability-predictor" className="text-blue-600 font-bold hover:underline">Affordability Predictor</a> to calculate long-term fuel costs for any vehicle.
@@ -55,22 +55,22 @@ const GasMileageTips: React.FC = () => {
 
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-8 mb-4">Myth: Windows Down vs. AC</h3>
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                <strong>Reality:</strong> At highway speeds (55+ MPH), open windows create drag (like a parachute). Use the AC. Around town, roll 'em down.
+                <strong>Reality:</strong> At highway speeds, open windows create drag (like a parachute). Use the AC. Around town, roll 'em down. That's the advice from <a href="https://www.fueleconomy.gov/feg/hotweather.shtml" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a>.
             </p>
 
             <h2 className="text-3xl font-black mt-12 mb-6 text-slate-900 dark:text-white">The "Check Engine" Connection</h2>
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                If your Check Engine Light is on, your car is likely in "Limp Mode" or "Open Loop," dumping extra fuel into the engine to protect itself.
+                If your Check Engine Light is on, your car may be in "Limp Mode" or "Open Loop," dumping extra fuel into the engine to protect itself.
             </p>
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
-                Ignoring an O2 sensor code can cut your MPG by 40%. Diagnose it immediately with our <a href="/fault-code-decoder" className="text-blue-600 font-bold hover:underline">Fault Code Decoder</a>.
+                <a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a> warns that the problem behind a check engine light, such as a failing O2 sensor, can reduce your fuel economy. Diagnose it immediately with our <a href="/fault-code-decoder" className="text-blue-600 font-bold hover:underline">Fault Code Decoder</a>.
             </p>
 
             <h2 className="text-3xl font-black mt-12 mb-6 text-slate-900 dark:text-white">Simple Fixes for Better Mileage</h2>
             <ul className="list-disc pl-6 mb-6 text-slate-600 dark:text-slate-300 space-y-2">
-                <li><strong>Check Tire Pressure:</strong> Low tires = more friction = less MPG. Keep them at the door sticker PSI (usually 32-35).</li>
-                <li><strong>Change Air Filters:</strong> A clogged filter strangles your engine. It's a $15 part you can change in 2 minutes.</li>
-                <li><strong>Empty the Trunk:</strong> Carrying 100 lbs of junk reduces MPG by 1-2%. Create a lightweight toolkit using our <a href="/diy-toolkits" className="text-blue-600 font-bold hover:underline">DIY Toolkit Guide</a> and leave the rest at home.</li>
+                <li><strong>Check Tire Pressure:</strong> Low tires = more friction = less MPG. Keep them at the PSI on the driver's door-jamb sticker. Proper inflation improves mileage by 0.6% on average, and up to 3% in some cases, according to <a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a>.</li>
+                <li><strong>Change Air Filters:</strong> A clogged filter strangles your engine's performance. On modern fuel-injected cars, <a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a> says a new filter improves acceleration but not MPG, so replace it on schedule without expecting fuel savings.</li>
+                <li><strong>Empty the Trunk:</strong> An extra 100 lbs in your vehicle could reduce MPG by about 1%, per <a href="https://www.fueleconomy.gov/feg/driveHabits.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a>. Create a lightweight toolkit using our <a href="/diy-toolkits" className="text-blue-600 font-bold hover:underline">DIY Toolkit Guide</a> and leave the rest at home.</li>
             </ul>
 
             <h2 className="text-3xl font-black mt-12 mb-6 text-slate-900 dark:text-white">Final Thoughts</h2>
@@ -80,6 +80,14 @@ const GasMileageTips: React.FC = () => {
             <p className="mb-6 leading-loose text-slate-600 dark:text-slate-300">
                 For official fuel economy ratings and tips, visit <a href="https://www.fueleconomy.gov/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov</a>.
             </p>
+
+            <h2 className="text-2xl font-bold mt-12 mb-4 text-slate-900 dark:text-white">Sources</h2>
+            <ul className="list-disc pl-6 mb-6 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><a href="https://www.fueleconomy.gov/feg/octane.shtml" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov: Selecting the Right Octane Fuel</a></li>
+                <li><a href="https://www.fueleconomy.gov/feg/hotweather.shtml" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov: Fuel Economy in Hot Weather</a></li>
+                <li><a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov: Keeping Your Vehicle in Shape</a></li>
+                <li><a href="https://www.fueleconomy.gov/feg/driveHabits.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">FuelEconomy.gov: Driving More Efficiently</a></li>
+            </ul>
 
         </BlogTemplate>
     );

@@ -13,7 +13,7 @@ import imgFeatured from '../assets/check_engine_featured.jpg';
 export const meta = {
     title: "What Does Your Check Engine Light Code Mean? Free Instant Decoder Tool with Repair Costs Explained (2026)",
     description: "Your 2026 guide to understanding check engine light codes. Use our free decoder tool for instant explanations, symptoms, and USA repair cost estimates.",
-    date: "2026-02-09T01:34:07",
+    date: "2026-11-16T12:00:00",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Articles & Guides",
@@ -75,16 +75,16 @@ const CheckEngineLightMeaning: React.FC = () => {
                 At its core, the check engine light—often called the CEL—acts as your vehicle's early warning system.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Since the OBD2 standard became mandatory in all USA cars post-1996, it monitors hundreds of sensors for anomalies. When something's amiss, like irregular fuel mixture or emissions spikes, the ECU logs a Diagnostic Trouble Code (DTC) and lights up the dashboard to prompt action.
+                Since OBD-II became <a href="https://ww2.arb.ca.gov/resources/fact-sheets/board-diagnostic-ii-obd-ii-systems-fact-sheet" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">required on all 1996 and newer cars and light trucks</a> sold in the U.S., it monitors sensors across the engine and emissions systems for anomalies. When something's amiss, like irregular fuel mixture or emissions spikes, the ECU logs a Diagnostic Trouble Code (DTC) and lights up the dashboard to prompt action.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 The frustration is real: A vague glow doesn't reveal details, leading to unnecessary stress or inflated mechanic bills.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                With average vehicle ages hitting 12.6 years in 2026 and repair expenses averaging around $415 per incident, procrastination can escalate minor problems into major headaches. That's where our free decoder shines.
+                With the average U.S. light vehicle now <a href="https://www.spglobal.com/automotive-insights/en/blogs/2025/05/average-age-of-vehicle-in-us" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">12.8 years old (S&amp;P Global Mobility, 2025)</a> and the average check engine repair hitting a record <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">$554 in 2025, up from $415 a year earlier (CarMD, via Edmunds)</a>, procrastination can escalate minor problems into major headaches. That's where our free decoder shines.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Head to myautospex.com/fault-code-decoder, enter your code (such as P0171), and get tailored insights: the issue in plain language, common causes, DIY options, and USA-wide cost averages adjusted for regions like the pricey West Coast ($430 on average).
+                Head to myautospex.com/fault-code-decoder, enter your code (such as P0171), and get tailored insights: the issue in plain language, common causes, DIY options, and typical repair cost ranges.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 It's quick, secure, and mobile-optimized—no sign-up required. For a holistic view of your car's health, pair it with our Vehicle Ownership Calculator at <a href="/ownership-calculator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">myautospex.com/ownership-calculator</a> to factor in long-term costs beyond just this fix.
@@ -95,25 +95,25 @@ const CheckEngineLightMeaning: React.FC = () => {
             </h2>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                As vehicles evolve with more hybrids and EVs on USA roads, check engine triggers remain rooted in core systems—but with rising part prices and labor rates (up slightly in 2025), understanding them is crucial. Based on 2025 data from millions of scans, here are the top culprits:
+                As vehicles evolve with more hybrids and EVs on USA roads, check engine triggers remain rooted in core systems—and with <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD reporting higher parts and labor costs in 2025</a>, understanding them is crucial. CarMD's 2026 index ranks catalytic converter, oxygen sensor, and ignition coil/spark plug replacements as the most common check engine repairs. Here are the usual culprits:
             </p>
 
             <ul className="list-disc pl-6 mb-6 leading-loose text-slate-600 dark:text-slate-300 space-y-2">
-                <li><strong>Faulty Gas Cap:</strong> Tops the list for simplicity—loose or damaged caps cause EVAP leaks, affecting 15-20% of cases. Codes like P0455 appear, but a $20-30 replacement often resolves it.</li>
+                <li><strong>Faulty Gas Cap:</strong> The simplest fix—loose or damaged caps cause EVAP leaks and codes like P0455. Tightening the cap is free, and <a href="https://repairpal.com/estimator/gas-cap-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal puts a shop replacement at $138–$150</a>.</li>
                 <li><strong>Oxygen Sensor Failures:</strong> These gauge exhaust for optimal fuel burn; wear leads to inefficiency and codes like P0171. Common in older models, impacting MPG.</li>
-                <li><strong>Catalytic Converter Problems:</strong> Age or contamination reduces emissions control, triggering P0420. Prevalent in high-mileage fleets.</li>
-                <li><strong>Ignition System Issues:</strong> Bad spark plugs or coils cause misfires (P0300), especially in cold starts for 2025 trucks.</li>
+                <li><strong>Catalytic Converter Problems:</strong> Age or contamination reduces emissions control, triggering P0420. CarMD ranks converter replacement as the single most common check engine repair.</li>
+                <li><strong>Ignition System Issues:</strong> Bad spark plugs or coils cause misfires (P0300), especially on cold starts.</li>
                 <li><strong>Mass Airflow Sensor Malfunctions:</strong> Dirt buildup skews air-fuel ratios, leading to P0101 and hesitation.</li>
-                <li><strong>Thermostat Glitches:</strong> Fails to regulate coolant temp, causing P0128 and poor heating—worse in northern states.</li>
-                <li><strong>EVAP System Leaks:</strong> Hoses or valves fail, common in dry areas like the Southwest, with codes like P0442.</li>
-                <li><strong>EGR Valve Blockages:</strong> Reduces NOx emissions; clogs prompt P0401 in diesels.</li>
+                <li><strong>Thermostat Glitches:</strong> Fails to regulate coolant temp, causing P0128 and poor heating.</li>
+                <li><strong>EVAP System Leaks:</strong> Hoses or valves fail, with codes like P0442.</li>
+                <li><strong>EGR Valve Blockages:</strong> The EGR system reduces NOx emissions; clogs can trigger P0401.</li>
             </ul>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 A steady light suggests a non-critical issue—address soon to pass emissions in strict states like California. Flashing?
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                It's urgent, indicating potential catalyst damage that could cost thousands if ignored. Pro tip: Before repairs, validate quotes with our Vehicle Repair Cost Validator at <a href="/maintenance-validator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">myautospex.com/maintenance-validator</a> to ensure you're not overpaying based on national averages.
+                It's urgent, indicating potential catalyst damage; a catalytic converter replacement averaged <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">$1,511 in CarMD's 2026 index</a>. Pro tip: Before repairs, validate quotes with our Vehicle Repair Cost Validator at <a href="/maintenance-validator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">myautospex.com/maintenance-validator</a> to ensure you're not overpaying based on national averages.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -127,12 +127,12 @@ const CheckEngineLightMeaning: React.FC = () => {
                 Getting the Code (Scanner Options)
             </h3>
             <ol className="list-decimal pl-6 mb-6 leading-loose text-slate-600 dark:text-slate-300 space-y-2">
-                <li><strong>Find the Port:</strong> It's under the dash, driver's side—a trapezoid-shaped 16-pin connector.</li>
+                <li><strong>Find the Port:</strong> It's usually under the dash on the driver's side—a trapezoid-shaped connector.</li>
                 <li><strong>Scan It:</strong>
                     <ul className="list-disc pl-6 mt-2 space-y-2">
                         <li>Free: Stores like AutoZone or Advance Auto Parts offer complimentary scans nationwide.</li>
-                        <li>Budget-Friendly: Grab a $25 Bluetooth OBD2 reader from Amazon; pair with apps like Carly or BlueDriver for iOS/Android.</li>
-                        <li>Pro-Level: For detailed data, invest in a $50-100 scanner with live monitoring.</li>
+                        <li>Budget-Friendly: Grab an inexpensive Bluetooth OBD2 reader; pair with apps like Carly or BlueDriver for iOS/Android.</li>
+                        <li>Pro-Level: For detailed data, invest in a scanner with live monitoring.</li>
                     </ul>
                 </li>
                 <li><strong>Run the Scan:</strong> Ignition on (engine off for basics), connect, and retrieve codes plus supporting data like vehicle speed at fault.</li>
@@ -143,12 +143,12 @@ const CheckEngineLightMeaning: React.FC = () => {
                 Breaking Down Code Format with Simple Examples
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Every OBD2 code is structured as a letter followed by four digits, standardized across manufacturers.
+                Every OBD2 code is structured as a letter followed by four digits, <a href="https://us.haynes.com/blogs/tips-tutorials/what-are-diagnostic-trouble-codes" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">standardized across manufacturers</a>.
             </p>
             <ul className="list-disc pl-6 mb-6 leading-loose text-slate-600 dark:text-slate-300 space-y-2">
-                <li><strong>Letter:</strong> Indicates the system—P for Powertrain (engine/transmission, 80% of CEL codes), B for Body, C for Chassis, U for Network/Communication.</li>
-                <li><strong>First Digit:</strong> 0 means generic (universal), 1-3 are manufacturer-specific (e.g., Ford-only).</li>
-                <li><strong>Second Digit:</strong> Subcategory, like 1 for fuel/air metering, 3 for ignition.</li>
+                <li><strong>Letter:</strong> Indicates the system—P for Powertrain (engine/transmission), B for Body, C for Chassis, U for Network/Communication.</li>
+                <li><strong>First Digit:</strong> 0 means a generic SAE-standard code; 1 means a manufacturer-specific code (e.g., Ford-only).</li>
+                <li><strong>Second Digit:</strong> Subcategory, like 3 for the ignition system or misfires.</li>
                 <li><strong>Last Two Digits:</strong> Precise fault identifier.</li>
             </ul>
 
@@ -167,7 +167,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                 4. The Easiest Way to Decode Any OBD2 Code for Free
             </h2>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Skip the hassle of endless searches or $100 diagnostic fees. Our tool at myautospex.com/fault-code-decoder leverages real-time USA data for accurate decodes.
+                Skip the hassle of endless searches or a shop diagnostic fee, which <a href="https://repairpal.com/estimator/check-engine-light-diagnosis-testing-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal puts at $125–$183 on average</a>. Our tool at myautospex.com/fault-code-decoder leverages real-time USA data for accurate decodes.
             </p>
 
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-12 mb-6">
@@ -180,10 +180,10 @@ const CheckEngineLightMeaning: React.FC = () => {
                     <ul className="list-disc pl-6 mt-2 space-y-2">
                         <li><strong>Explanation:</strong> E.g., for P0300: "Multiple cylinders misfiring, risking engine damage."</li>
                         <li><strong>Symptoms & Causes:</strong> Rough running, low power; bad ignition or fuel problems.</li>
-                        <li><strong>Fixes & Costs:</strong> DIY spark plug swap ($50-100) or pro repair ($398 average).</li>
+                        <li><strong>Fixes & Costs:</strong> DIY spark plug swap or a pro coil-and-plug replacement (about $480 on average in <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 index</a>).</li>
                     </ul>
                 </li>
-                <li>Extras: Regional cost tweaks and links to parts.</li>
+                <li>Extras: Set your local shop's labor rate to adjust the estimate.</li>
             </ol>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 Visuals? The interface features a simple input box, detailed result cards, and export options. Users love how it saves time—try it with a sample code today.
@@ -198,10 +198,10 @@ const CheckEngineLightMeaning: React.FC = () => {
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Drawing from 2025 USA data, these 12 codes dominate check engine incidents, accounting for over 60% of repairs.
+                These 12 codes are among the ones drivers run into most often, and several map directly to the most common repairs in CarMD's 2026 Vehicle Health Index.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                We've detailed each with meanings, symptoms, tips, and updated costs (national averages; coastal areas add 10-20%).
+                We've detailed each with meanings, symptoms, and tips. Costs are national averages from <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD (via Edmunds)</a> and <a href="https://repairpal.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal</a>; your price depends on your vehicle, region, and shop.
             </p>
 
             {[
@@ -211,8 +211,8 @@ const CheckEngineLightMeaning: React.FC = () => {
                     items: [
                         { label: 'Meaning', desc: 'Converter not processing exhaust effectively.' },
                         { label: 'Symptoms', desc: 'Sluggish performance, exhaust odor.' },
-                        { label: 'DIY/Pro Tips', desc: 'Inspect sensors; replace if confirmed. Common post-100k miles.' },
-                        { label: 'Cost', desc: '$1,200–$2,500 (average $1,460 for replacement).' }
+                        { label: 'DIY/Pro Tips', desc: 'Inspect sensors and check for exhaust leaks; replace the converter only if confirmed.' },
+                        { label: 'Cost', desc: <>Catalytic converter replacement averaged $1,511 in <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 index</a>.</> }
                     ]
                 },
                 {
@@ -222,7 +222,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Excess air in fuel mix.' },
                         { label: 'Symptoms', desc: 'Hesitation, low MPG.' },
                         { label: 'DIY/Pro Tips', desc: 'Check vacuums; clean MAF. Often O2 sensor-related.' },
-                        { label: 'Cost', desc: '$100–$500 (O2 swap $254 average).' }
+                        { label: 'Cost', desc: <>Depends on the cause. An oxygen sensor replacement averaged about $287 (<a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD 2026</a>); a MAF sensor replacement averages $274–$381 (<a href="https://repairpal.com/estimator/mass-airflow-sensor-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal</a>).</> }
                     ]
                 },
                 {
@@ -232,7 +232,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Uneven cylinder firing.' },
                         { label: 'Symptoms', desc: 'Vibration, power loss.' },
                         { label: 'DIY/Pro Tips', desc: 'New plugs/coils; scan specifics.' },
-                        { label: 'Cost', desc: '$300–$800 (average $398 for coils/plugs).' }
+                        { label: 'Cost', desc: <>Ignition coil and spark plug replacement averaged about $480 in <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 index</a>.</> }
                     ]
                 },
                 {
@@ -242,7 +242,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Engine temp too low.' },
                         { label: 'Symptoms', desc: 'Weak heater, potential overheating.' },
                         { label: 'DIY/Pro Tips', desc: 'Replace thermostat; flush system.' },
-                        { label: 'Cost', desc: '$200–$400 (average $254).' }
+                        { label: 'Cost', desc: <>Thermostat replacement averaged $323.59 in <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 index</a>.</> }
                     ]
                 },
                 {
@@ -252,7 +252,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'EGR not recirculating exhaust properly.' },
                         { label: 'Symptoms', desc: 'Knocking, emissions fail.' },
                         { label: 'DIY/Pro Tips', desc: 'Clean valve; test solenoid.' },
-                        { label: 'Cost', desc: '$150–$500.' }
+                        { label: 'Cost', desc: <>An EGR valve replacement averages $489–$632 (<a href="https://repairpal.com/estimator/egr-valve-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal</a>).</> }
                     ]
                 },
                 {
@@ -262,7 +262,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Minor vapor leak.' },
                         { label: 'Symptoms', desc: 'Fuel smell.' },
                         { label: 'DIY/Pro Tips', desc: 'Tighten cap; check hoses.' },
-                        { label: 'Cost', desc: '$50–$300 (purge valve $144).' }
+                        { label: 'Cost', desc: <>Tightening the cap is free; an EVAP purge control valve replacement averaged about $172 in <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 index</a>.</> }
                     ]
                 },
                 {
@@ -272,7 +272,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Lean condition on opposite bank.' },
                         { label: 'Symptoms', desc: 'Similar to P0171.' },
                         { label: 'DIY/Pro Tips', desc: 'Mirror Bank 1 checks.' },
-                        { label: 'Cost', desc: '$100–$500.' }
+                        { label: 'Cost', desc: 'Same as P0171: depends on the cause.' }
                     ]
                 },
                 {
@@ -282,7 +282,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Significant vapor escape.' },
                         { label: 'Symptoms', desc: 'Strong gas odor.' },
                         { label: 'DIY/Pro Tips', desc: 'New cap or valve.' },
-                        { label: 'Cost', desc: '$0–$200 (average $144 for solenoid).' }
+                        { label: 'Cost', desc: <>Tightening the cap is free; <a href="https://repairpal.com/estimator/gas-cap-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal</a> puts a shop gas cap replacement at $138–$150.</> }
                     ]
                 },
                 {
@@ -292,7 +292,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'MAF readings off.' },
                         { label: 'Symptoms', desc: 'Stalling.' },
                         { label: 'DIY/Pro Tips', desc: 'Clean or replace sensors.' },
-                        { label: 'Cost', desc: '$200–$400 (average $323).' }
+                        { label: 'Cost', desc: <>A MAF sensor replacement averages $274–$381 (<a href="https://repairpal.com/estimator/mass-airflow-sensor-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal</a>).</> }
                     ]
                 },
                 {
@@ -302,7 +302,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'General EVAP fault.' },
                         { label: 'Symptoms', desc: 'Emissions issues.' },
                         { label: 'DIY/Pro Tips', desc: 'Inspect components.' },
-                        { label: 'Cost', desc: '$100–$300.' }
+                        { label: 'Cost', desc: <>Varies by component; an EVAP purge control valve replacement averaged about $172 in <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 index</a>.</> }
                     ]
                 },
                 {
@@ -312,7 +312,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Bank 2 converter issue.' },
                         { label: 'Symptoms', desc: 'Like P0420.' },
                         { label: 'DIY/Pro Tips', desc: 'Address root causes.' },
-                        { label: 'Cost', desc: '$1,200–$2,500.' }
+                        { label: 'Cost', desc: 'Same as P0420 if the converter is confirmed bad.' }
                     ]
                 },
                 {
@@ -322,7 +322,7 @@ const CheckEngineLightMeaning: React.FC = () => {
                         { label: 'Meaning', desc: 'Fuel injector problem.' },
                         { label: 'Symptoms', desc: 'Misfires.' },
                         { label: 'DIY/Pro Tips', desc: 'Wiring check; replace if needed.' },
-                        { label: 'Cost', desc: '$300–$600 (average $464).' }
+                        { label: 'Cost', desc: <>If an injector must be replaced, <a href="https://repairpal.com/estimator/fuel-injector-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal</a> puts the average at $768–$953.</> }
                     ]
                 }
             ].map((item, index) => (
@@ -351,17 +351,17 @@ const CheckEngineLightMeaning: React.FC = () => {
             </figure>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                See the tool in action through USA-based stories:
+                Here's how decoding typically plays out for a few common codes (illustrative scenarios, not individual customer records):
             </p>
             <ul className="list-disc pl-6 mb-6 leading-loose text-slate-600 dark:text-slate-300 space-y-2">
-                <li><strong>Texas Driver with P0420:</strong> High-mileage truck; decoder flagged $1,460 cat fix. Checked sensors first (DIY $254), saved $1,000 vs. initial quote.</li>
-                <li><strong>California Commuter with P0171:</strong> Smog worry; tool suggested vacuum leak ($100 fix). Avoided $400 shop overcharge.</li>
-                <li><strong>Florida Family Van (P0300):</strong> Shaking ride; identified coils ($398). DIY plugs saved $200.</li>
-                <li><strong>New York Sedan (P0455):</strong> Gas smell; free cap tighten per tool, dodged $150 diag fee.</li>
+                <li><strong>High-mileage truck with P0420:</strong> Before paying for a new converter, check the oxygen sensors and look for exhaust leaks—both can set this code on their own.</li>
+                <li><strong>Commuter car with P0171:</strong> A cracked vacuum hose is a common cause of a lean code; finding it first avoids buying sensors you don't need.</li>
+                <li><strong>Family van with P0300:</strong> A shaking ride often points to worn spark plugs or a failing coil, the third most common check engine repair in CarMD's 2026 index.</li>
+                <li><strong>Sedan with P0455 and a gas smell:</strong> Tighten or replace the gas cap first, before paying for a diagnosis.</li>
             </ul>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Savings average 25-40% when informed. Factor in insurance hikes from unresolved issues? Use our Car Insurance Cost Estimator at <a href="/insurance-estimator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">myautospex.com/insurance-estimator</a>.
+                Knowing the likely cause before you visit a shop makes it easier to compare quotes. Factor in insurance hikes from unresolved issues? Use our Car Insurance Cost Estimator at <a href="/insurance-estimator" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">myautospex.com/insurance-estimator</a>.
             </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
@@ -372,14 +372,14 @@ const CheckEngineLightMeaning: React.FC = () => {
                 Why is my check engine light on but the car runs fine?
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Minor faults like early sensor wear; scan ASAP to prevent escalation. Early fixes average $100-300 vs. later thousands.
+                Minor faults like early sensor wear; scan ASAP to prevent escalation. <a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">FuelEconomy.gov</a> notes that a car can seem to drive normally while a problem that could lead to costly repairs later goes unaddressed.
             </p>
 
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-12 mb-6">
                 How accurate are repair cost estimates?
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
-                Sourced from national data like CarMD/RepairPal; within 15-25% variance by region/vehicle.
+                They're national averages from sources like CarMD and RepairPal; your actual price will vary by vehicle, region, and shop.
             </p>
 
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-12 mb-6">
@@ -417,6 +417,20 @@ const CheckEngineLightMeaning: React.FC = () => {
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 Dive into the full MyAutoSpex platform for more. Drive smarter in 2026!
             </p>
+
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-16 mb-4">Sources</h2>
+            <ul className="list-disc pl-6 mb-6 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Edmunds: What Does Your Check Engine Light Mean?</a> (CarMD 2026 Vehicle Health Index averages)</li>
+                <li><a href="https://www.spglobal.com/automotive-insights/en/blogs/2025/05/average-age-of-vehicle-in-us" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">S&amp;P Global Mobility: Average age of vehicles in the US (2025)</a></li>
+                <li><a href="https://ww2.arb.ca.gov/resources/fact-sheets/board-diagnostic-ii-obd-ii-systems-fact-sheet" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">California Air Resources Board: OBD II Systems Fact Sheet</a></li>
+                <li><a href="https://us.haynes.com/blogs/tips-tutorials/what-are-diagnostic-trouble-codes" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Haynes: Decoding OBD-II Diagnostic Trouble Codes</a></li>
+                <li><a href="https://repairpal.com/estimator/check-engine-light-diagnosis-testing-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: Check Engine Light Diagnosis &amp; Testing Cost Estimate</a></li>
+                <li><a href="https://repairpal.com/estimator/gas-cap-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: Gas Cap Replacement Cost Estimate</a></li>
+                <li><a href="https://repairpal.com/estimator/mass-airflow-sensor-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: Mass Airflow Sensor Replacement Cost Estimate</a></li>
+                <li><a href="https://repairpal.com/estimator/egr-valve-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: EGR Valve Replacement Cost Estimate</a></li>
+                <li><a href="https://repairpal.com/estimator/fuel-injector-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: Fuel Injector Replacement Cost Estimate</a></li>
+                <li><a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">FuelEconomy.gov: Keeping Your Vehicle in Shape</a></li>
+            </ul>
 
         </BlogTemplate>
     );

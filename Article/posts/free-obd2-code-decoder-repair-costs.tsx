@@ -21,7 +21,7 @@ import imgConclusion from '../assets/image7.png'; // Was image7.png
 export const meta = {
     title: "Free Check Engine Light Decoder 2026: Codes & USA Repair Costs",
     description: "Decode your check engine light for free. Get 2026 USA repair cost estimates, symptoms, and causes for OBD2 codes.",
-    date: "2026-02-09T01:34:07",
+    date: "2026-11-16T12:00:00",
     authorName: "Keesha Lauren",
     authorRole: "Auto Tech Expert • 15+ Years Exp.",
     category: "Articles & Guides",
@@ -49,10 +49,10 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 Hey there, fellow driver—picture this: You're cruising down I-95 in Florida, the sun's dipping low, and suddenly, that dreaded amber check engine light flickers on your dashboard.
             </p>
             <p>
-                Your heart sinks. Is it a loose gas cap, or is your wallet about to take a $2,000 hit for a new catalytic converter?
+                Your heart sinks. Is it a loose gas cap, or is your wallet about to take a big hit for a new catalytic converter, which averaged $1,511 in CarMD's latest data?
             </p>
             <p>
-                According to the latest data from CarMD's 2025 Vehicle Health Index, over 60 million check engine light (CEL) activations happen annually in the USA, leading to an average repair bill of $415 per incident.
+                According to CarMD's 2026 Vehicle Health Index, <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">as reported by Edmunds</a>, the average check engine light (CEL) repair hit a record $554 in 2025, up from $415 the year before.
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl">
@@ -62,15 +62,15 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             </div>
 
             <p>
-                I'm Keesha Lauren: Auto Tech Expert with 15+ Years in Vehicle Diagnostics, and at MyAutoSpex, we've built tools powered by real-world data from millions of USA vehicle reports to demystify these scares.
+                At MyAutoSpex, we've built free tools to demystify these scares.
             </p>
             <p>
-                Our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 no-underline hover:underline font-bold">free OBD2 Code Decoder</a> instantly translates those cryptic five-digit codes into plain English, complete with symptoms, likely causes, and up-to-date 2026 USA repair cost estimates—national averages plus regional tweaks for high-cost states like California or New York.
+                Our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 no-underline hover:underline font-bold">free OBD2 Code Decoder</a> instantly translates those cryptic five-character codes into plain English, complete with symptoms, likely causes, and repair cost estimates you can adjust to your local shop's labor rate.
             </p>
 
             <h3>Why now, in 2026?</h3>
             <p>
-                Repair costs are climbing 3-5% year-over-year due to supply chain hiccups from global chip shortages and EV transition pressures, per AAA's latest automotive report. What cost $1,200 last year for a sensor swap might nudge toward $1,300 this year. But armed with knowledge, you can spot DIY fixes, negotiate smarter with shops, or even prevent bigger issues.
+                Repair costs are climbing fast: CarMD's average check engine repair rose about 33% in 2025, which it attributes to higher parts and labor costs. But armed with knowledge, you can spot DIY fixes, negotiate smarter with shops, or even prevent bigger issues.
             </p>
             <p>
                 In this guide, we'll break it all down: from understanding OBD2 codes to decoding the top 10 culprits with real costs. Stick around, and you'll walk away empowered to tackle that light without the panic.
@@ -87,7 +87,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             </figure>
 
             <p>
-                Let's rewind to the '90s. Back in 1996, the EPA mandated the On-Board Diagnostics II (OBD-II) system for all USA light-duty vehicles sold here—think cars, trucks, and SUVs under 14,000 pounds GVWR.
+                Let's rewind to the '90s. Starting with the 1996 model year, the EPA required the On-Board Diagnostics II (OBD-II) system on <a href="https://ww2.arb.ca.gov/resources/fact-sheets/board-diagnostic-ii-obd-ii-systems-fact-sheet" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">all new passenger cars and light trucks sold in the U.S.</a>
             </p>
             <p>
                 This wasn't just bureaucracy; it was a game-changer for emissions control and driver safety. OBD-II is essentially your vehicle's built-in snitch: a network of sensors monitoring everything from the engine's air-fuel mix to exhaust gases, transmission shifts, and even ABS brakes.
@@ -96,14 +96,14 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 At its core, the Engine Control Unit (ECU)—that computer brain under your hood—constantly scans for glitches. When it detects one outside normal parameters, it logs a Diagnostic Trouble Code (DTC), flips on the CEL, and stores the data for retrieval.
             </p>
             <p>
-                These aren't random; they're standardized five-character alphanumeric codes, like P0420 or B1234, following SAE J2012 protocols.
+                These aren't random; they're <a href="https://us.haynes.com/blogs/tips-tutorials/what-are-diagnostic-trouble-codes" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">standardized five-character alphanumeric codes</a>, like P0420 or B1234, following the SAE J2012 standard.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 my-10 not-prose">
                 <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
                     <div className="text-blue-600 font-bold mb-2">First Character</div>
                     <ul className="text-sm space-y-2 text-slate-600 dark:text-slate-300">
-                        <li><strong>P</strong>: Powertrain (Engine/Trans) - 80% of CELs</li>
+                        <li><strong>P</strong>: Powertrain (Engine/Trans)</li>
                         <li><strong>B</strong>: Body Systems</li>
                         <li><strong>C</strong>: Chassis (Suspension/Steering)</li>
                         <li><strong>U</strong>: Network/Communication</li>
@@ -112,7 +112,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
                     <div className="text-blue-600 font-bold mb-2">The Structure</div>
                     <ul className="text-sm space-y-2 text-slate-600 dark:text-slate-300">
-                        <li><strong>2nd Digit</strong>: 0/1 (Generic) or 2/3 (OEM Specific)</li>
+                        <li><strong>2nd Character</strong>: 0 (Generic SAE) or 1 (Manufacturer-Specific)</li>
                         <li><strong>Last 3</strong>: Specific Fault Component</li>
                         <li className="text-xs text-slate-500 mt-2">Example: P0420 = Catalyst Efficiency Low</li>
                     </ul>
@@ -121,10 +121,10 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
 
             <p><strong>Why do they matter in 2026?</strong></p>
             <p>
-                Beyond avoiding fines (up to $4,000 for ignored emissions fails in states like Texas), these codes prevent cascading failures. An ignored P0171 (lean fuel mix) could warp your pistons, ballooning a $200 fix into $5,000. Plus, with USA fuel prices hovering at $3.50/gallon, efficient running saves cash—OBD-II data shows unresolved codes drop MPG by 10-20%.
+                Beyond keeping you legal in states with emissions inspections, these codes help prevent cascading failures. An ignored misfire or failing oxygen sensor can end up damaging the catalytic converter—the most expensive common check engine repair. And <a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">FuelEconomy.gov</a> notes that engine problems behind a check engine light can reduce your fuel economy.
             </p>
             <p>
-                From my years diagnosing fleets in the Midwest, I've seen codes catch everything from a $20 gas cap to transmission woes costing $4,000. Ignoring them? That's like playing Russian roulette with your ride.
+                Codes can point to anything from a loose gas cap to a serious transmission fault. Ignoring them? That's like playing Russian roulette with your ride.
             </p>
 
             {/* Section 2 */}
@@ -133,18 +133,18 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 <img src={imgHowTo} alt="How to get OBD2 Code" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
             <p>
-                Pulling your code is easier than ever—no PhD in mechanics required. Most USA vehicles post-1996 have the 16-pin OBD-II port under the dash, near the steering column. Here's your no-fuss guide:
+                Pulling your code is easier than ever—no PhD in mechanics required. Vehicles from the 1996 model year on have an OBD-II port, usually under the dash near the steering column. Here's your no-fuss guide:
             </p>
 
             <ol className="list-decimal space-y-4 marker:text-blue-600 marker:font-bold">
-                <li className="pl-2"><strong>Prep Your Tools:</strong> Grab a basic OBD-II scanner ($20-50 on Amazon, like the BlueDriver) or head to AutoZone/O'Reilly—they offer free reads with printouts. Pro tip: Avoid cheap Bluetooth dongles under $15; they glitch on newer ECUs with CAN-bus protocols.</li>
+                <li className="pl-2"><strong>Prep Your Tools:</strong> Grab a basic OBD-II scanner or head to AutoZone/O'Reilly—they offer free reads with printouts. Pro tip: Bargain-bin no-name Bluetooth dongles can be unreliable; stick with a reputable brand.</li>
                 <li className="pl-2"><strong>Locate the Port:</strong> It's trapezoid-shaped, often hidden behind a plastic cover. Turn ignition to "ON" (don't start engine yet).</li>
                 <li className="pl-2"><strong>Plug In and Scan:</strong> Connect the scanner, fire it up, and select "Read Codes." It'll list active (current problems), pending (intermittent), and history. Note the P-codes first—they're the stars.</li>
-                <li className="pl-2"><strong>Interpret Basics:</strong> If it's flashing, pull over—misfire risk. Steady? Safe to drive short-term, but diagnose within 100 miles.</li>
+                <li className="pl-2"><strong>Interpret Basics:</strong> If it's flashing, pull over—misfire risk. Steady? Usually safe to drive short-term, but get it diagnosed soon.</li>
             </ol>
 
             <p>
-                Safety first: Even if your car runs like a dream (common with emissions codes), unresolved issues spike emissions and could fail your next smog check in California or New York. In 2026, with 15 states mandating biennial tests, that's no joke—fines start at $50, plus retest fees.
+                Safety first: Even if your car runs like a dream (common with emissions codes), unresolved issues spike emissions and could fail your next smog check in California or New York. In California, most vehicles need a <a href="https://www.bar.ca.gov/smog-check" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Smog Check every two years</a>, and for most 2000 and newer models it's an OBD-based test—so an active fault is no joke.
             </p>
 
             {/* Section 3 */}
@@ -163,7 +163,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                         </li>
                         <li className="flex items-start gap-3">
                             <div className="p-1 bg-blue-500 rounded-full mt-1 shrink-0" />
-                            <span className="text-slate-200">USA-Centric Costs (ZIP-adjusted)</span>
+                            <span className="text-slate-200">Costs at Your Shop's Labor Rate</span>
                         </li>
                         <li className="flex items-start gap-3">
                             <div className="p-1 bg-blue-500 rounded-full mt-1 shrink-0" />
@@ -171,7 +171,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                         </li>
                         <li className="flex items-start gap-3">
                             <div className="p-1 bg-blue-500 rounded-full mt-1 shrink-0" />
-                            <span className="text-slate-200">Updated Quarterly for 2026</span>
+                            <span className="text-slate-200">Updated for 2026</span>
                         </li>
                     </ul>
                     <a href="/fault-code-decoder" className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-blue-900/50">
@@ -186,7 +186,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                 <img src={imgTop10} alt="Top 10 Common OBD2 Codes" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
             <p>
-                Drawing from CarMD's 2025 report and NHTSA data, these 10 codes trigger 70% of USA CELs. Costs are 2026 estimates: National averages, +10-25% in coastal states.
+                These 10 codes come up often, and several match the most common repairs in CarMD's 2026 Vehicle Health Index. Costs below are national averages for the most likely repair, from CarMD and RepairPal; your price depends on your vehicle, region, and shop.
             </p>
 
             <div className="not-prose my-12 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl">
@@ -202,16 +202,16 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                             {[
-                                { code: 'P0300', title: 'Random Misfire', symptoms: 'Rough idle, power loss', fix: 'Plugs/Coils (DIY: Yes)', cost: '$150–$1,000' },
-                                { code: 'P0420', title: 'Catalyst Efficiency Low', symptoms: 'Sulfur smell, slow accel', fix: 'Cat Converter/O2 (DIY: Hard)', cost: '$1,200–$2,500' },
-                                { code: 'P0171', title: 'System Too Lean', symptoms: 'Hesitation, black smoke', fix: 'Vacuum Leaks (DIY: Yes)', cost: '$100–$800' },
-                                { code: 'P0174', title: 'System Too Lean (Bank 2)', symptoms: 'Same as P0171', fix: 'Same as P0171', cost: '$100–$800' },
-                                { code: 'P0442', title: 'Small Evap Leak', symptoms: 'Check gas cap', fix: 'Tighten/Replace Cap (DIY: Easy)', cost: '$100–$400' },
-                                { code: 'P0455', title: 'Gross Evap Leak', symptoms: 'Fuel odor', fix: 'Hoses/Valves (DIY: Medium)', cost: '$200–$600' },
-                                { code: 'P0135', title: 'O2 Heater Malfunction', symptoms: 'Poor MPG', fix: 'Replace O2 Sensor (DIY: Medium)', cost: '$200–$500' },
-                                { code: 'P0011', title: 'Camshaft Timing Over-Adv', symptoms: 'Rattling startup', fix: 'VVT Solenoid (DIY: Hard)', cost: '$500–$1,500' },
-                                { code: 'P0301', title: 'Cylinder 1 Misfire', symptoms: 'Shake at idle', fix: 'Plug/Coil Cyl 1 (DIY: Yes)', cost: '$100–$500' },
-                                { code: 'P0421', title: 'Catalyst Efficiency Low', symptoms: 'Same as P0420', fix: 'Downstream issues', cost: '$1,200–$2,500' },
+                                { code: 'P0300', title: 'Random Misfire', symptoms: 'Rough idle, power loss', fix: 'Plugs/Coils (DIY: Yes)', cost: '~$480 (coils + plugs)' },
+                                { code: 'P0420', title: 'Catalyst Efficiency Low', symptoms: 'Sulfur smell, slow accel', fix: 'Cat Converter/O2 (DIY: Hard)', cost: '$1,511 (converter)' },
+                                { code: 'P0171', title: 'System Too Lean', symptoms: 'Hesitation, black smoke', fix: 'Vacuum Leaks (DIY: Yes)', cost: 'Varies; MAF $274–$381' },
+                                { code: 'P0174', title: 'System Too Lean (Bank 2)', symptoms: 'Same as P0171', fix: 'Same as P0171', cost: 'Varies; MAF $274–$381' },
+                                { code: 'P0442', title: 'Small Evap Leak', symptoms: 'Check gas cap', fix: 'Tighten/Replace Cap (DIY: Easy)', cost: '$0–$150 (cap)' },
+                                { code: 'P0455', title: 'Gross Evap Leak', symptoms: 'Fuel odor', fix: 'Hoses/Valves (DIY: Medium)', cost: '~$172 (purge valve)' },
+                                { code: 'P0135', title: 'O2 Heater Malfunction', symptoms: 'Poor MPG', fix: 'Replace O2 Sensor (DIY: Medium)', cost: '~$287 (O2 sensor)' },
+                                { code: 'P0011', title: 'Camshaft Timing Over-Adv', symptoms: 'Rattling startup', fix: 'VVT Solenoid (DIY: Hard)', cost: 'Varies by engine' },
+                                { code: 'P0301', title: 'Cylinder 1 Misfire', symptoms: 'Shake at idle', fix: 'Plug/Coil Cyl 1 (DIY: Yes)', cost: '~$256 (one coil)' },
+                                { code: 'P0421', title: 'Catalyst Efficiency Low', symptoms: 'Same as P0420', fix: 'Downstream issues', cost: '$1,511 (converter)' },
                             ].map((row, i) => (
                                 <tr key={i} className={i % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/50 dark:bg-slate-900/50'}>
                                     <td className="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">{row.code}</td>
@@ -229,7 +229,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             </div>
 
             <p className="text-sm text-slate-500 italic">
-                * Costs estimated based on national averages. Coastal states may see +10-25% labor variances.
+                * National averages before taxes and local labor differences. Converter, O2 sensor, coil, coil-and-plug, and purge valve figures are from <a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">CarMD's 2026 Vehicle Health Index (via Edmunds)</a>; MAF sensor and gas cap figures are from RepairPal's <a href="https://repairpal.com/estimator/mass-airflow-sensor-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">MAF</a> and <a href="https://repairpal.com/estimator/gas-cap-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">gas cap</a> estimates.
             </p>
 
             {/* Section 5: Real Examples */}
@@ -237,14 +237,14 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             <figure className="my-14">
                 <img src={imgUser} alt="Real User Examples" className="w-full rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />
             </figure>
-            <p><strong>Let's make it real. These anonymized cases from our 2025 user logs show the decoder in action.</strong></p>
+            <p><strong>Let's make it real. These are illustrative scenarios built from each code's typical causes, not individual customer records. Costs are the CarMD averages cited above.</strong></p>
 
             <div className="not-prose grid gap-6 my-10">
                 {[
-                    { title: "Sarah's 2018 Honda Civic", location: "ZIP 90210", code: "P0420", story: "Likely failing O2 sensor upstream (70%) or clogged cat.", cost: "$1,450", finding: "Saved $150 by negotiating using our data." },
-                    { title: "Mike's 2022 Ford F-150", location: "ZIP 33101", code: "P0300", story: "Random Cylinder Misfire. Bad coil pack found.", cost: "$350", finding: "Avoided $2k engine scare, fixed in 1hr." },
-                    { title: "Tom's 2015 Toyota Camry", location: "ZIP 60601", code: "P0171", story: "Lean mix Bank 1. Vacuum leak suspected.", cost: "$0 (DIY)", finding: "Fixed loose hose himself. Tool flagged low severity." },
-                    { title: "Lisa's 2019 Jeep Wrangler", location: "ZIP 85001", code: "P0455", story: "Gross evap leak. Fuel smell.", cost: "$400", finding: "Cracked line found by pro mechanic." }
+                    { title: "High-mileage compact sedan", location: "Illustrative example", code: "P0420", story: "Could be a failing oxygen sensor, an exhaust leak, or a worn converter.", cost: "~$287 if it's the O2 sensor", finding: "Rule out cheaper causes before a $1,511 converter." },
+                    { title: "Full-size pickup", location: "Illustrative example", code: "P0300", story: "Random cylinder misfire traced to a bad coil pack.", cost: "~$256 per coil", finding: "Coils and plugs together averaged ~$480." },
+                    { title: "Midsize sedan", location: "Illustrative example", code: "P0171", story: "Lean mix on Bank 1. A loose vacuum hose is a common cause.", cost: "Low if it's a hose", finding: "Check for vacuum leaks before buying sensors." },
+                    { title: "Off-road SUV", location: "Illustrative example", code: "P0455", story: "Gross EVAP leak with a fuel smell.", cost: "~$172 if it's the purge valve", finding: "Check the gas cap first." }
                 ].map((item, i) => (
                     <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-3">
@@ -270,7 +270,7 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
             <div className="not-prose space-y-4 my-8">
                 {[
                     { q: "What does my check engine code mean?", a: "It flags a specific fault. Our key-in decoder translates it instantly." },
-                    { q: "Are repair costs accurate for my area?", a: "Yes, ZIP-adjusted from 2026 data sources like RepairPal and NHTSA." },
+                    { q: "Are repair costs accurate for my area?", a: "They're national averages, and the decoder lets you enter your local shop's labor rate. Use them as a starting point for comparing quotes." },
                     { q: "Can I clear the code myself?", a: "Yes, with a scanner. But fix the root cause first, or it will return." },
                     { q: "How does a CEL affect insurance?", a: "Unresolved issues can lead to claims or safety flags. Check with our estimator." }
                 ].map((faq, i) => (
@@ -299,6 +299,17 @@ const FreeObd2CodeDecoderPost: React.FC = () => {
                     <a href="/insurance-estimator" className="hover:text-blue-600 underline">Estimate Insurance</a>
                 </div>
             </div>
+
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-16 mb-4">Sources</h2>
+            <ul className="list-disc pl-6 mb-6 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><a href="https://www.edmunds.com/car-maintenance/what-your-check-engine-light-is-telling-you.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Edmunds: What Does Your Check Engine Light Mean?</a> (CarMD 2026 Vehicle Health Index averages)</li>
+                <li><a href="https://ww2.arb.ca.gov/resources/fact-sheets/board-diagnostic-ii-obd-ii-systems-fact-sheet" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">California Air Resources Board: OBD II Systems Fact Sheet</a></li>
+                <li><a href="https://us.haynes.com/blogs/tips-tutorials/what-are-diagnostic-trouble-codes" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">Haynes: Decoding OBD-II Diagnostic Trouble Codes</a></li>
+                <li><a href="https://www.bar.ca.gov/smog-check" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">California Bureau of Automotive Repair: Smog Check</a></li>
+                <li><a href="https://repairpal.com/estimator/mass-airflow-sensor-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: Mass Airflow Sensor Replacement Cost Estimate</a></li>
+                <li><a href="https://repairpal.com/estimator/gas-cap-replacement-cost" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">RepairPal: Gas Cap Replacement Cost Estimate</a></li>
+                <li><a href="https://www.fueleconomy.gov/feg/maintain.jsp" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">FuelEconomy.gov: Keeping Your Vehicle in Shape</a></li>
+            </ul>
         </BlogTemplate>
     );
 };
