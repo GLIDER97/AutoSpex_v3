@@ -9,6 +9,7 @@ import MechanicChat from './decoder/MechanicChat';
 import OwnerReports from './decoder/OwnerReports';
 import AffiliateSection from './AffiliateSection';
 import FAQSection from './FAQSection';
+import { CODE_PAGES } from '../data/codePages';
 import {
   Field,
   Panel,
@@ -288,6 +289,21 @@ const FaultCodeDecoder: React.FC = () => {
 
       <div className="mt-16 space-y-16">
         {lookup && <AffiliateSection />}
+        <section aria-labelledby="code-guides" className="max-w-3xl">
+          <h2 id="code-guides" className="font-heading text-2xl font-extrabold">
+            Code guides
+          </h2>
+          <p className="mt-2 text-muted-foreground">Reviewed guides to common codes: causes, symptoms, whether it's safe to drive and what to check first.</p>
+          <ul className="mt-4 divide-y divide-border border-y border-border">
+            {CODE_PAGES.map((p) => (
+              <li key={p.code} className="py-3">
+                <Link to={`/codes/${p.code.toLowerCase()}`} className={cn('font-semibold underline underline-offset-4', focusRing)}>
+                  {p.code}: {p.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
         <FAQSection />
       </div>
     </ToolPage>

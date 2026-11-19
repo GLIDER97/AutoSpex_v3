@@ -31,6 +31,10 @@ Pages without their own image share `public/og-image.png` (1200×630) on social 
   - Link to at least one tool with `<a href="/tool-path">`: the build reads those links and
     lists the article under "Guides for this tool" on that tool's page.
   - Use WebP images no wider than 1200 px, with `width`, `height` and `loading="lazy"`.
+- **New OBD-II code page:** add an entry to `CODE_PAGES` in `data/codePages.ts` (every figure needs a
+  listed source; no dollar amounts without one). It is pre-rendered at `/codes/<code>`, added to the
+  sitemap and `llms.txt`, and listed under "Code guides" on `/fault-code-decoder` automatically.
+  After the deploy, run `node scripts/indexnow.mjs /codes/<code>`.
 - **New tool or info page:** add the route in `routes.tsx` **and** an entry (path, title,
   description) in `seo/site.ts`. Pages missing from `seo/site.ts` are not prerendered and
   return a 404 on Vercel.
