@@ -351,3 +351,86 @@ Never run paid data sources (DataForSEO, Moz, Keywords Everywhere) without the o
 2. **Keep the daily runs affordable:** fixing the original scheduled task (add this repository under its repositories in claude.ai) lets each run start in a fresh, small session instead of this long one.
 3. **Optional:** suggest a citable public source for repair-cost figures, so code and cost pages can show prices.
 4. **Optional, outside "organic only":** a person answering questions on Reddit or car forums and linking the tools where they genuinely help is the fastest early traffic, but it can't be automated.
+
+---
+
+## 9. Goals the owner tracks (set 19 Nov 2026)
+
+**What counts:**
+- **Tier-1 clicks:** Google Search Console clicks from tier-1 countries (US, UK, Canada, Australia, New Zealand, Ireland and western/northern EU), plus Bing Webmaster clicks once Bing reports by country.
+- **Indexed pages:** sitemap URLs that URL Inspection reports as "Submitted and indexed".
+- **Impressions:** tier-1 impressions in Search Console.
+- **Linking sites:** distinct external sites linking to us (Search Console Links report, or `seo-backlinks` / `commoncrawl_graph.py`).
+
+Week N runs from day 7N−6 to day 7N, with day 1 = Thu 19 Nov 2026, so weeks end on Wednesdays. Search Console data lags about 2 days, so each week is scored on the Thursday run after it ends, using the latest 7 days of data.
+
+**Effort goals** are what the daily runs control. **Result goals** are Google's response, which lags effort by 1–4 weeks. Both are reported every week in `docs/scoreboard.md`.
+
+### 9.1 Weekly goals: first month
+
+| Week | Dates | Effort goals | Result goals (Google) |
+|---|---|---|---|
+| 1 | 19–25 Nov | 12+ new code pages; `/codes` hub page; every deploy submitted to IndexNow; 0 broken builds | 12+ pages indexed; 50+ tier-1 impressions in the week |
+| 2 | 26 Nov–2 Dec | 12+ new pages (code pages plus the first 10 recall pages); first Monday quick-win pass | 25+ indexed; 300+ tier-1 impressions; 3+ tier-1 clicks |
+| 3 | 3–9 Dec | 12+ new pages; first data study published; outreach list of 15 sites with drafted emails | 40+ indexed; 800+ tier-1 impressions; 10+ tier-1 clicks |
+| 4 | 10–16 Dec | 12+ new pages, including the first topic cluster; Monday quick wins | 60+ indexed; 1,500+ tier-1 impressions; 25+ tier-1 clicks |
+
+### 9.2 Weekly goals: from week 5 onward
+- **Effort, every week:**
+  - 12+ new or substantially improved pages
+  - Monday quick-win and refresh pass done
+  - every deploy submitted to IndexNow
+  - outreach drafts ready for the month's data study
+- **Result, every week:**
+  - tier-1 impressions up 10% or more on the previous week
+  - tier-1 clicks up on the previous week
+  - 80%+ of pages older than 3 weeks indexed
+
+### 9.3 Monthly goals
+
+| Month ends | Tier-1 clicks in the month | Tier-1 impressions in the month | Pages indexed | Linking sites | Data studies published (total) |
+|---|---|---|---|---|---|
+| 1 (19 Dec) | 100 | 5,000 | 60 | 3 | 1 |
+| 2 (19 Jan) | 400 | 15,000 | 100 | 6 | 2 |
+| 3 (19 Feb) | 1,000 | 30,000 | 150 | 10 | 3 |
+| 4 (19 Mar) | 2,000 | 60,000 | 200 | 15 | 4 |
+| 5 (19 Apr) | 3,500 | 100,000 | 250 | 20 | 5 |
+| 6 (19 May) | 5,000 | 150,000 | 300 | 25 | 6 |
+| 7 (19 Jun) | 6,500 | 180,000 | 330 | 30 | 7 |
+| 8 (19 Jul) | 8,000 | 210,000 | 360 | 38 | 8 |
+| 9 (19 Aug) | **10,000** | 250,000 | 400 | 45 | 9 |
+| 10–12 | 10,000+ held, stretch 12,000–15,000 | 250,000+ | 400+ | 50+ | 1 a month |
+
+**Grading:**
+- **Green:** at or above goal.
+- **Amber:** 50–99% of goal.
+- **Red:** under 50% of goal.
+- **Two red weeks in a row, or a red month:** stop adding new page types, run a full claude-seo audit, and put the cause and the proposed change at the top of the next status reply.
+
+---
+
+## 10. Daily runs, status replies and owner permission
+
+The owner opens this chat once a day and asks **"status"** (or "what's the status"). That reply is the only place the agent asks for permission.
+
+**Every daily run:**
+- Do everything the plan allows without asking.
+- Never wait for an answer: if a step needs permission, skip it, add it to `docs/owner-requests.md`, and carry on with the rest.
+- Update `docs/scoreboard.md`: the current week's row every day, and the finished week (and month) on the Thursday after it ends.
+
+**Needs the owner's permission (ask in the status reply; never do it without a "yes" in this chat):**
+- spending money: ads, paid data sources (DataForSEO, Moz, Keywords Everywhere), anything over the OpenRouter budget
+- sending emails or messages to anyone, including outreach
+- connecting or changing connectors, environment settings, secrets or billing
+- changing what a tool calculates (beyond a clear bug fix), removing pages, or changing the site's design or navigation in a big way
+- anything in the "Never" list in section 3 or rule 5
+
+**Reply to "status", in this order, short and plain:**
+1. **Since the last status:** what shipped, with links to live pages and PRs.
+2. **Scoreboard:** this week and this month against the goals in section 9, graded green, amber or red.
+3. **Needs your OK:** numbered questions from `docs/owner-requests.md`, each answerable with yes or no, saying what happens if yes. If none, say "Nothing needs your OK."
+4. **Blocked or at risk:** anything stopping progress, and the owner action that would fix it.
+5. **Next:** the next 1–3 days of work.
+
+When the owner answers, record the decision in `docs/owner-requests.md` (and section 7 if it changes the plan), then act on it.
+
