@@ -1,6 +1,8 @@
-# 30-day growth plan: www.myautospex.com
+# Growth plan: www.myautospex.com
 
-**Goal set by the owner:** 10,000 visitors from tier-1 countries (US, UK, Canada, Australia and similar) between 16 Nov and 15 Dec 2026, with the day-to-day work done by a scheduled Claude agent.
+**Goal set by the owner (19 Nov 2026):** 10,000 organic visits a month from tier-1 countries (US, UK, Canada, Australia and similar), as fast as possible, with the day-to-day work done by Claude. **Section 8 is the long-term plan to get there;** sections 3–6 are how each daily run works.
+
+**Original 30-day goal (15 Nov):** 10,000 tier-1 visitors between 16 Nov and 15 Dec 2026. Section 1 explains why organic search alone can't do that in 30 days; the owner chose organic only (section 7), so the 30-day roadmap in section 4 is now phase 1 of section 8.
 
 **Starting point (Search Console, 14 Nov 2026):**
 - 2 clicks and 901 impressions since January, at an average position of 59.
@@ -60,7 +62,7 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
 
 ## 3. What the daily agent does
 
-**Schedule:** every day at 06:36 IST. It runs as a fresh cloud session on the `AutoSpex_v3` environment with this repository.
+**Schedule:** every day at 06:36 IST, as the scheduled task "MyAutoSpex daily growth (this session)". Since 19 Nov it fires into the owner's main Claude session, which can push to this repository; the earlier fresh-session task couldn't push and is paused. Days are counted from the first entry in `docs/growth-log.md` (day 1 = 19 Nov 2026), not from the calendar dates in section 4.
 
 **Every run, in this order:**
 1. **Read:** this plan, `docs/growth-log.md`, and the latest Vercel deploy state of `main`.
@@ -242,7 +244,7 @@ The owner chose these two features on 16 Nov, to build a real, owner-reported da
 
 ## 5. Quality rules the agent must follow (non-negotiable)
 
-- **At most 2 new pages a day,** each with something a reader can't get from a generic AI answer: real data (NHTSA, EPA), a working tool link, specific symptoms and steps.
+- **New pages: at most 2 a day by default,** each with something a reader can't get from a generic AI answer: real data (NHTSA, EPA), a working tool link, specific symptoms and steps. **Up to 4 a day** for a page type once at least 60% of its published pages are indexed and the type is getting impressions (section 8). Never more, whatever the deadline: scaled thin content is what gets new sites demoted.
 - **Every price, statistic, law or rule links to its source.** No source means the figure stays out.
 - **No first-person experience claims,** no invented people, reviews, ratings or testimonials. Pages are credited to the MyAutoSpex Editorial Team.
 - **No unprovable trust claims:** no user counts, accuracy percentages, "verified" or "certified" badges, partner networks, offices or team bios unless they are true and the owner has confirmed them.
@@ -275,3 +277,77 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 3. **Start: 16 Nov 2026.** Until the owner's setup is done, the agent builds and ships pages and skips the measurement steps it has no access to, noting that in the log.
 4. **Community distribution:** not chosen. The agent doesn't post anywhere.
 5. **Community data (16 Nov):** build repair-cost reports and "What fixed it?" (section 4d) from day 15. My Garage recall alerts and a parts marketplace are not in scope.
+6. **New goal (19 Nov):** 10,000 tier-1 organic visits a month, as fast as possible. Organic only still applies. The owner judges progress by the checkpoints in section 8.
+7. **Daily runs move into the owner's main session (19 Nov),** because the separate scheduled task couldn't push to GitHub. Day 1 shipped on 19 Nov.
+
+---
+
+## 8. Path to 10,000 tier-1 organic visits a month
+
+### 8.1 What it takes, honestly
+- **The math:** 10,000 visits a month is about 330 a day. Long-tail searches (a specific code, a specific recall) get roughly 10–30% of clicks in the top 3 and 2–5% at positions 5–10. Blended, that means roughly **200,000–350,000 tier-1 impressions a month**, with many pages in the top 5. On 19 Nov the site had 118 impressions in 28 days and 5 pages indexed.
+- **Realistic timing: 6–12 months**, if indexing works and the site earns links. It can't be promised for a date. The checkpoints in 8.3 show early whether it's on track.
+- **What limits speed, in order:** getting pages indexed, then the site's authority (links from other sites), then the number of genuinely useful pages, then click-through from results.
+- **What won't be done to go faster:** buying links, link schemes, mass AI pages, near-duplicate city or model pages, posting on forums or social media, fake reviews or data. Each risks a manual action or algorithmic demotion that would end the goal entirely.
+
+### 8.2 Phases
+
+**Phase 1 (days 1–30, to about 19 Dec): get indexed and build the page systems.** Follow the section 4 roadmap, counted from day 1 = 19 Nov:
+- Code pages in demand order (2 a day), skipping codes that already have a full guide.
+- Add a `/codes` hub page that lists every code page, linked from the header Tools menu, the footer and the code lookup, so Google finds and values them.
+- Recall pages (`/recalls/:make/:model/:year`) from NHTSA data for the 10 best-selling models.
+- Every day, check why sitemap URLs are "discovered – currently not indexed" (usually thin content or weak internal links) and fix the cause rather than waiting.
+- Submit every new or changed URL to IndexNow.
+
+**Phase 2 (months 2–3): topic clusters and the first links.**
+- Turn each top code into a cluster with `seo-cluster`: the code page, the most common fix (for example "spark plug and coil replacement: when it's needed"), what drives the cost of that fix, and the related codes, all linked together.
+- **One data study a month from free government data** (NHTSA complaints and recalls, EPA fuel economy), for example "2018–2024 SUVs with the most transmission complaints" or "the recalls owners ignore most". Original data is what journalists and car blogs link to. Publish the method and the raw numbers.
+- **Weekly outreach drafts:** for each study, list 10–20 relevant sites (car blogs, local news consumer columns, "free car tools" lists) and draft a short, personal email for each. The owner sends them (see 8.5). Never mass-send.
+- **Every Monday:** rewrite titles and intros on pages ranking 5–20 (section 3 quick wins), and refresh pages whose impressions dropped (`seo-drift`).
+- Community data feature (section 4d) from day 15.
+
+**Phase 3 (months 4–6): scale what Google rewards.**
+- Each month, put most of the new pages into the one or two page types that gained the most impressions and indexing; pause any type still mostly unindexed after 3 weeks.
+- Seasonal pages ahead of demand: winter battery, tire-pressure and cold-start problems (from October); A/C and overheating (from April).
+- Second data study each month if the first earned links.
+- Make the tools rank for their own terms: improve the tool pages that get impressions (Clarity findings, clearer answers above the fold, FAQ for the exact queries).
+
+**Phase 4 (months 7–12): authority and depth.**
+- Keep the monthly data studies and outreach going: links compound.
+- Expand page types only where they already rank; consider guides for Canada and Australia only if Search Console shows demand from those countries.
+
+### 8.3 Checkpoints (judge progress here)
+
+| Checkpoint | Pages indexed (Google) | Tier-1 impressions per month | Tier-1 clicks per month | Sites linking to us |
+|---|---|---|---|---|
+| Day 30 (about 19 Dec) | 60+ | 5,000+ | 100+ | 3+ |
+| Month 3 (about 19 Feb) | 150+ | 30,000+ | 1,000+ | 10+ |
+| Month 6 (about 19 May) | 300+ | 150,000+ | 5,000+ | 25+ |
+| Month 9–12 | 400+ | 250,000+ | **10,000+** | 50+ |
+
+- **On track:** at or above the row. Keep going and speed up the winning page types (up to 4 pages a day).
+- **Behind by more than half at month 3:** stop adding new page types. Spend two weeks finding the cause (indexing, quality, competition or links) with a full claude-seo audit, write it at the top of the log, and tell the owner plainly what would change the outcome.
+
+### 8.4 How claude-seo is used
+All of these run on free data sources.
+
+| Need | claude-seo skill or script | When |
+|---|---|---|
+| Index status and search data | `seo-google` (`gsc_query.py`, `gsc_inspect.py`), `bing_webmaster.py` | Every run |
+| Fast discovery by Bing and others | `indexnow_submit.py` (or `scripts/indexnow.mjs`) | After every deploy |
+| Page quality before publishing | `page_checks.py`, `content_quality.py`, `content_verify.py` | Every new or changed page |
+| Pages at scale without thin content | `seo-programmatic` guardrails | Before adding any page type or batch |
+| Topic clusters and briefs | `seo-cluster`, `seo-content-brief` | Phase 2 onward, weekly |
+| AI search citations (ChatGPT, Perplexity, Google AI answers) | `seo-geo` | Monthly |
+| Ranking and traffic drops | `seo-drift` | Weekly |
+| Links and link prospects | `seo-backlinks`, `commoncrawl_graph.py` | Monthly, with each data study |
+| Full health check | `seo-audit`, `seo-technical`, `pagespeed_check.py` | Mondays |
+| Structured data | `seo-schema`, `schema_generate.py` | New page types |
+
+Never run paid data sources (DataForSEO, Moz, Keywords Everywhere) without the owner's approval.
+
+### 8.5 What only the owner can do to make it faster
+1. **Send the outreach emails** the agent drafts (or connect Gmail and approve each batch). Links are the biggest lever after month 2.
+2. **Keep the daily runs affordable:** fixing the original scheduled task (add this repository under its repositories in claude.ai) lets each run start in a fresh, small session instead of this long one.
+3. **Optional:** suggest a citable public source for repair-cost figures, so code and cost pages can show prices.
+4. **Optional, outside "organic only":** a person answering questions on Reddit or car forums and linking the tools where they genuinely help is the fastest early traffic, but it can't be automated.
