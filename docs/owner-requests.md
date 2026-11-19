@@ -4,8 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Recreate the original scheduled task with the repository attached (recommended, saves Claude usage).** Today the daily runs fire into this very long chat, so each run uses much more of your Claude plan than a fresh session would. In claude.ai, edit or recreate "MyAutoSpex daily growth" with repository `GLIDER97/AutoSpex_v3` selected, then tell me and I'll move the daily runs there and pause the in-chat one. *Owner action, about 1 minute.*
-2. **Repair-cost source.** Code pages show no dollar figures because no citable cost source is reachable from the sandbox. If you know one you trust, name it; otherwise reply "leave costs out".
+Nothing open.
 
 ## Answered
 
@@ -14,3 +13,5 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-16 | Lead forms: does anyone follow up? | Nobody: forms replaced with direct links |
 | 2026-11-19 | Route daily runs through this session | Yes |
 | 2026-11-19 | Start day 1 now | Yes |
+| 2026-11-19 | Move daily runs out of the long main chat to save Claude usage | Yes: runs now fire into a dedicated session ("MyAutoSpex daily growth runs"); the main chat answers "status" |
+| 2026-11-19 | Repair-cost source | None: pages show no dollar figures and link to the code lookup's labeled AI estimate |

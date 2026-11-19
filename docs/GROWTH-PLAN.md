@@ -62,7 +62,7 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
 
 ## 3. What the daily agent does
 
-**Schedule:** every day at 06:36 IST, as the scheduled task "MyAutoSpex daily growth (this session)". Since 19 Nov it fires into the owner's main Claude session, which can push to this repository; the earlier fresh-session task couldn't push and is paused. Days are counted from the first entry in `docs/growth-log.md` (day 1 = 19 Nov 2026), not from the calendar dates in section 4.
+**Schedule:** every day at 06:36 IST, as the scheduled task "MyAutoSpex daily growth (dedicated session)". It fires into a dedicated Claude session ("MyAutoSpex daily growth runs") that has this repository attached and can push. The owner asks for status in their main session, which reads the results from this repository. Earlier tasks that couldn't push, or ran in the long main chat, are paused. Days are counted from the first entry in `docs/growth-log.md` (day 1 = 19 Nov 2026), not from the calendar dates in section 4.
 
 **Every run, in this order:**
 1. **Read:** this plan, `docs/growth-log.md`, and the latest Vercel deploy state of `main`.
@@ -278,7 +278,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 4. **Community distribution:** not chosen. The agent doesn't post anywhere.
 5. **Community data (16 Nov):** build repair-cost reports and "What fixed it?" (section 4d) from day 15. My Garage recall alerts and a parts marketplace are not in scope.
 6. **New goal (19 Nov):** 10,000 tier-1 organic visits a month, as fast as possible. Organic only still applies. The owner judges progress by the checkpoints in section 8.
-7. **Daily runs move into the owner's main session (19 Nov),** because the separate scheduled task couldn't push to GitHub. Day 1 shipped on 19 Nov.
+7. **Daily runs (19 Nov):** day 1 shipped from the owner's main session; from day 2 the runs fire into a dedicated session with the repository attached, to keep each run small. The owner has no citable repair-cost source, so pages show no dollar figures.
 
 ---
 
