@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl } =
   await import(pathToFileURL(ssrEntry).href);
 
 const template = await fs.readFile(path.join(distDir, 'index.html'), 'utf8');
@@ -204,6 +204,43 @@ for (const article of ARTICLES) {
   sitemapEntries.push({ loc: canonical, lastmod: published?.slice(0, 10), priority: 0.8 });
 }
 
+// OBD-II code pages (data/codePages.ts).
+for (const page of CODE_PAGES) {
+  const routePath = `/codes/${page.code.toLowerCase()}`;
+  const canonical = absoluteUrl(routePath);
+  await writePage(routePath, {
+    title: formatTitle(page.seoTitle),
+    description: page.description,
+    canonical,
+    type: 'article',
+    structuredData: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: `${page.code}: ${page.title}`,
+        description: page.description,
+        about: { '@type': 'Thing', name: `OBD-II trouble code ${page.code}` },
+        dateModified: page.reviewed,
+        author: { '@type': 'Organization', name: 'MyAutoSpex Editorial Team', url: `${SITE_URL}/editorial-policy` },
+        citation: page.sources.map((s) => s.url),
+        publisher: ORGANIZATION,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: 'Check engine codes', item: `${SITE_URL}/fault-code-decoder` },
+          { '@type': 'ListItem', position: 3, name: page.code, item: canonical },
+        ],
+      },
+    ],
+  });
+  count++;
+  sitemapEntries.push({ loc: canonical, lastmod: page.reviewed, priority: 0.8 });
+}
+
 // 404 page: Vercel serves dist/404.html with a 404 status for unknown URLs.
 {
   const body = await render('/__page-not-found__');
@@ -233,7 +270,8 @@ await fs.writeFile(path.join(distDir, 'sitemap.xml'), sitemap);
 
 await fs.writeFile(
   path.join(distDir, 'robots.txt'),
-  `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
+  // Decoder lookups in the URL (?codes=...) run a paid AI request on load, so crawlers skip them.
+  `User-agent: *\nAllow: /\nDisallow: /fault-code-decoder?\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
 );
 
 // llms.txt: a plain-language map of the site for AI assistants (https://llmstxt.org).
@@ -252,6 +290,10 @@ await fs.writeFile(
     '## Guides',
     '',
     ...[...ARTICLE_INDEX].sort((a, b) => (b.published ?? '').localeCompare(a.published ?? '')).map((a) => line(a.title, `/article/${a.slug}`, a.description)),
+    '',
+    '## Check engine code guides',
+    '',
+    ...CODE_PAGES.map((p) => line(`${p.code}: ${p.title}`, `/codes/${p.code.toLowerCase()}`, p.description)),
     '',
     '## About',
     '',
