@@ -4,7 +4,8 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-Nothing open.
+1. **Make the myautospex.com → www redirect permanent (2 minutes, your Vercel account).** It's a temporary (307) redirect today; permanent (308) tells Google the `www` address is the only one. Vercel → your project → Settings → Domains → `myautospex.com` → edit → redirect to `www.myautospex.com` with status 308. Reply "done" when it's changed, or "you do it" if you'd like me to try through the Vercel connector.
+2. **Optional, high impact: ask Google to crawl 10 key pages (about 5 minutes).** Google has no API for this. In Search Console, paste each URL into the inspection bar at the top and click "Request indexing": `/fault-code-decoder`, `/vin-lookup`, `/codes/p0300`, `/codes/p0171`, `/codes/p0128`, `/maintenance-validator`, `/insurance-estimator`, `/ownership-calculator`, `/article/check-engine-light-meaning`, `/article/p0420-code-catalytic-converter-sensor-guide` (all on https://www.myautospex.com). Reply "done" or "skip".
 
 ## Answered
 

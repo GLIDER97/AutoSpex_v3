@@ -16,11 +16,16 @@ export interface PageMeta {
   noindex?: boolean;
   /** Sitemap priority, 0.0 to 1.0. */
   priority?: number;
+  /** Date of the last substantial content change (YYYY-MM-DD), sent as the sitemap <lastmod>. */
+  updated?: string;
+  /** false keeps an indexable page out of the sitemap (low-value pages such as legal text), so Google spends its crawls on the pages that matter. */
+  sitemap?: boolean;
 }
 
 export const STATIC_PAGES: PageMeta[] = [
   {
     path: '/',
+    updated: '2026-11-20',
     title: 'Free OBD2 Code Decoder, VIN Lookup & Car Tools',
     description:
       'Free car tools: decode check engine light codes, look up VIN specs, check recalls, audit repair quotes and estimate insurance, MPG and ownership costs.',
@@ -28,6 +33,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/fault-code-decoder',
+    updated: '2026-11-19',
     title: 'OBD-II Fault Code Decoder & Repair Cost Guide',
     description:
       'Translate check engine light (OBD-II) codes into plain English. Get the severity, likely causes, DIY fixes and estimated repair costs for your vehicle.',
@@ -35,6 +41,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/vin-lookup',
+    updated: '2026-11-16',
     title: 'Free VIN Decoder & Vehicle Specs Lookup',
     description:
       'Decode any 17-digit VIN for free. See the make, model, year, engine, trim and factory specs, plus what to check before you buy a used car.',
@@ -42,6 +49,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/recalls',
+    updated: '2026-11-16',
     title: 'Vehicle Recalls & Safety Alerts (NHTSA Data)',
     description:
       'Check for open safety recalls and manufacturer alerts on your car using official NHTSA data, and learn what to do next.',
@@ -49,6 +57,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/maintenance-validator',
+    updated: '2026-11-16',
     title: 'Car Repair Quote Checker: Are You Overcharged?',
     description:
       "Check a mechanic's repair quote against fair price ranges for parts and labor, and find out if you are being overcharged before you pay.",
@@ -56,6 +65,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/insurance-estimator',
+    updated: '2026-11-16',
     title: 'Car Insurance Cost Estimator (US)',
     description:
       'Estimate a ballpark monthly car insurance premium for your age, driving record, credit, car and coverage, and see what each change would save.',
@@ -63,6 +73,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/mpg-calculator',
+    updated: '2026-11-16',
     title: 'MPG Calculator & Fuel Cost Analyzer',
     description:
       'Calculate your real MPG, fuel cost per mile and the true daily cost of your commute, with practical tips to cut what you spend on gas.',
@@ -70,6 +81,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/affordability-predictor',
+    updated: '2026-11-16',
     title: 'Car Affordability Calculator & Price Predictor',
     description:
       'Find out how much car you can really afford. Estimate the out-the-door price, monthly payment and total loan cost before you visit the dealer.',
@@ -77,6 +89,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/value-shock-calculator',
+    updated: '2026-11-16',
     title: 'Car Depreciation Calculator: Resale Value Check',
     description:
       'See how fast your car is losing value per day, month and year, and estimate what it will be worth when you sell it or trade it in.',
@@ -84,6 +97,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/ownership-calculator',
+    updated: '2026-11-16',
     title: 'Total Cost of Car Ownership (TCO) Calculator',
     description:
       'Estimate the 5-year cost of owning a car: depreciation, fuel, insurance, maintenance, repairs and financing, all in one report.',
@@ -91,6 +105,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/plate-generator',
+    updated: '2026-11-16',
     title: 'AI Vanity License Plate Generator',
     description:
       "Generate clever vanity license plate ideas for your car with AI, based on your model, your personality and your state's character limits.",
@@ -98,6 +113,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/wrap-designer',
+    updated: '2026-11-16',
     title: 'Car Wrap Visualizer: See a Wrap on Your Own Car',
     description:
       'Upload a photo of your car and preview any wrap color and finish on it, with a before and after view, typical 2026 prices and wrap shops near you.',
@@ -105,6 +121,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/mechanic-finder',
+    updated: '2026-11-16',
     title: 'Find Trusted Local Mechanics Near You',
     description:
       'Repair shops near your ZIP code with Google ratings, review counts, open-now status and phone numbers, plus the questions to ask before you book.',
@@ -112,6 +129,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/coupons',
+    updated: '2026-11-16',
     title: 'Car Service Coupons & Maintenance Deals',
     description:
       'Typical promotions national chains advertise on oil changes, brakes, tires and batteries, so you know what deals to ask your shop about.',
@@ -119,6 +137,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/diy-toolkits',
+    updated: '2026-11-16',
     title: 'DIY Car Repair Guides & Essential Toolkits',
     description:
       'The roadside gear and basic tools every driver should own, from jump starters and tire inflators to OBD-II scanners.',
@@ -126,6 +145,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/blog',
+    updated: '2026-11-16',
     title: 'Car Repair Guides & Ownership Articles',
     description:
       'Practical guides on check engine lights, OBD-II codes, used-car VIN checks, insurance, depreciation and saving money on car repairs.',
@@ -133,6 +153,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/about',
+    updated: '2026-11-16',
     title: 'About MyAutoSpex: Free Tools for Drivers',
     rawTitle: true,
     description:
@@ -141,6 +162,7 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/editorial-policy',
+    updated: '2026-11-16',
     title: 'Editorial Policy: How We Write Our Guides',
     description:
       'Who writes the MyAutoSpex guides, how AI is used, where our figures come from and how to report a mistake so we can correct it.',
@@ -148,24 +170,32 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/contact',
+    updated: '2026-11-16',
+    sitemap: false,
     title: 'Contact MyAutoSpex',
     description: 'Send MyAutoSpex a question, a correction or an idea for a new tool.',
     priority: 0.3,
   },
   {
     path: '/privacy-policy',
+    updated: '2026-11-16',
+    sitemap: false,
     title: 'Privacy Policy',
     description: 'How MyAutoSpex collects, uses and protects your information.',
     priority: 0.2,
   },
   {
     path: '/terms-of-service',
+    updated: '2026-11-16',
+    sitemap: false,
     title: 'Terms of Service',
     description: 'The terms that apply when you use MyAutoSpex tools and content.',
     priority: 0.2,
   },
   {
     path: '/cookie-policy',
+    updated: '2026-11-16',
+    sitemap: false,
     title: 'Cookie Policy',
     description: 'How MyAutoSpex uses cookies and similar technologies.',
     priority: 0.2,

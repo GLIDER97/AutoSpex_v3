@@ -7,6 +7,7 @@ import { CATEGORY_BY_ID, TOOL_CATEGORIES, type Tool } from '../data/tools';
 import { SignMarker } from './brand';
 import GuideList from './GuideList';
 import { sortNewestFirst, useArticleIndex } from '../Article/articleIndex';
+import { CODE_PAGES } from '../data/codePages';
 
 // Same format the fault code decoder accepts: P, B, C or U plus four or more hex digits.
 const CODE_PATTERN = /^[PCBU][0-9A-F]{4,}$/;
@@ -304,11 +305,45 @@ function LatestGuides() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Check engine code guides (data/codePages.ts), linked from the page Google crawls most.
+// ---------------------------------------------------------------------------
+
+function CodeGuides() {
+  if (!CODE_PAGES.length) return null;
+  return (
+    <section aria-labelledby="code-guides-title" className="border-t border-border">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <h2 id="code-guides-title" className="font-heading text-[2rem] leading-tight font-extrabold tracking-[-0.015em] sm:text-4xl">
+          Check engine code guides
+        </h2>
+        <p className="mt-3 max-w-[60ch] text-[1.0625rem] leading-relaxed text-muted-foreground">
+          What common codes mean, whether it's safe to keep driving and what to check first.
+        </p>
+        <ul className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+          {CODE_PAGES.map((p) => (
+            <li key={p.code} className="border-t border-border pt-4">
+              <Link
+                to={`/codes/${p.code.toLowerCase()}`}
+                className="rounded-sm font-bold underline-offset-4 hover:underline outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                {p.code}: {p.title}
+              </Link>
+              <p className="mt-1 line-clamp-2 text-[0.9375rem] text-muted-foreground">{p.summary}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 const HomePage: React.FC = () => (
   <LazyMotion features={domAnimation} strict>
     <MotionConfig reducedMotion="user">
       <Hero />
       <ToolDirectory />
+      <CodeGuides />
       <Sources />
       <LatestGuides />
     </MotionConfig>
