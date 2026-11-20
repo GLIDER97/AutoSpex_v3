@@ -183,6 +183,167 @@ export const CODE_PAGES: CodePage[] = [
     sources: [{ label: 'RepairPal: P0171 OBD-II trouble code', url: 'https://repairpal.com/obd-ii-code-p0171' }],
     reviewed: '2026-11-19',
   },
+  {
+    code: 'P0128',
+    title: 'Coolant Thermostat (Coolant Temperature Below Thermostat Regulating Temperature)',
+    shortName: 'Engine running too cold',
+    seoTitle: 'P0128 Code: Coolant Thermostat Causes, Fixes',
+    description:
+      'P0128 means the engine takes too long to warm up or runs too cold. The usual causes, whether it is safe to drive and what to check before replacing parts.',
+    system: 'Engine cooling and temperature monitoring',
+    summary:
+      "Your engine isn't reaching its normal operating temperature quickly enough, or it keeps dropping below it while you drive. The most common reason is a thermostat that is stuck open, letting coolant flow through the radiator before the engine has warmed up.",
+    howItSets:
+      'Most engine computers expect the coolant temperature sensor to read above about 160–170 °F within about 15 minutes of starting, and to stay above it while driving. If it fails either check, the computer records the event; if it happens again on the next start, it stores P0128 and turns on the check engine light.',
+    symptoms: [
+      'Check engine light',
+      'Temperature gauge reads lower than usual or takes a long time to rise',
+      'Weak heat from the heater in cold weather',
+      'Worse fuel economy, because a cold engine runs a richer warm-up mixture',
+      'Some automatics will not shift into top gear at highway speed',
+      'Often no other symptoms at all',
+    ],
+    causes: [
+      'A thermostat stuck open or opening too early (the most common cause)',
+      'A faulty engine coolant temperature sensor or its wiring',
+      'Low engine coolant',
+      'A cooling fan stuck on, so the engine is cooled all the time',
+      'A faulty intake air temperature sensor, which some engines compare against coolant temperature',
+      'Old or dirty coolant giving the temperature sensor false readings',
+    ],
+    misdiagnoses: [
+      'Oxygen sensors',
+      'Cooling fans, when the fan itself is fine and only its control is at fault',
+      'Internal engine problems',
+      'Replacing the coolant temperature sensor when the thermostat is the real cause',
+    ],
+    drive: {
+      verdict: 'caution',
+      text:
+        "Usually safe to drive for now if the temperature gauge never reads high and the coolant level is correct. Get it fixed soon: a cold engine uses more fuel and puts out more pollution, and in winter you may have little cabin heat or defrosting. If the gauge ever reads hot, stop driving: that is a different and more urgent problem.",
+    },
+    checks: [
+      'With the engine cold, check the coolant level in the reservoir and top it up with the coolant your owner manual specifies.',
+      'Read the freeze-frame data: the speed, load and coolant and intake air temperatures when the code set show whether it failed on warm-up or while cruising.',
+      "Watch live coolant temperature on a scanner from a cold start with the heater off. If it doesn't pass about 160–170 °F within 15 minutes, a thermostat stuck open is the most likely cause.",
+      'Check that the cooling fan is not running all the time on a cold engine.',
+      "On a cold start the coolant and intake air temperature readings should be almost the same. If one is far off, suspect that sensor or its wiring before the thermostat.",
+      'Ask the dealer whether there is a service bulletin for P0128 on your model; some engines have a known thermostat or software fix.',
+    ],
+    costDrivers: [
+      'The cause: topping up coolant or replacing a sensor is a small job; a thermostat is usually a modest repair, but more on some engines.',
+      'Access: on some engines the thermostat sits deep under the intake or other parts, which adds labor time.',
+      'Coolant: replacing the thermostat means draining and refilling some coolant, and some engines need special coolant and air bleeding.',
+      'Whether the thermostat comes as a sealed housing assembly on your engine, which costs more than a thermostat alone.',
+    ],
+    related: [
+      { code: 'P0125', note: 'Insufficient coolant temperature for closed-loop fuel control' },
+      { code: 'P0126', note: 'Insufficient coolant temperature for stable operation' },
+      { code: 'P0117', note: 'Engine coolant temperature sensor circuit low' },
+      { code: 'P0171', note: 'System too lean, bank 1: another code that affects fuel mixture' },
+    ],
+    faqs: [
+      [
+        'Can low coolant cause a P0128 code?',
+        'Yes. If the coolant is low, the temperature sensor may sit in air or steam instead of liquid and read too low. Check the level with the engine cold before replacing anything.',
+      ],
+      [
+        'Will a P0128 code go away on its own?',
+        "The light can go off after several drives without the fault, which is more likely in warm weather. If the thermostat is stuck open, the code usually comes back, especially when it's cold outside.",
+      ],
+      [
+        'Is P0128 more common in winter?',
+        "Yes. Cold air and cold coolant make a weak or stuck-open thermostat struggle to warm the engine within the time limit, so the code often first appears when the weather turns cold.",
+      ],
+      [
+        'Should I replace the thermostat or the temperature sensor first?',
+        "Check before buying either. If the live coolant temperature rises slowly and the gauge reads low, the thermostat is the usual cause. If the sensor's reading doesn't match the intake air temperature on a cold start, the sensor or its wiring is more likely.",
+      ],
+    ],
+    sources: [{ label: 'RepairPal: P0128 OBD-II trouble code', url: 'https://repairpal.com/obd-ii-code-p0128' }],
+    reviewed: '2026-11-20',
+  },
+  {
+    code: 'P0455',
+    title: 'Evaporative Emission System Leak Detected (Large Leak)',
+    shortName: 'EVAP large leak',
+    seoTitle: 'P0455 Code: EVAP Large Leak Causes and Fixes',
+    description:
+      'P0455 means the fuel vapor (EVAP) system found a large leak. The usual causes, starting with the gas cap, whether it is safe to drive and what to check first.',
+    system: 'Evaporative emission (EVAP) control',
+    summary:
+      "Your car's fuel vapor system, which traps gasoline fumes from the tank and burns them in the engine, failed its self-test because it couldn't hold vacuum. That usually means a large leak, and the most common one is a loose, missing or worn gas cap.",
+    howItSets:
+      "After the car has sat for several hours (typically four to eight) and with the tank between about 15% and 85% full, the engine computer runs a leak test. It closes the canister vent valve, opens the purge valve to pull vacuum on the system for a few seconds, then closes it and watches the fuel tank pressure sensor. If no vacuum builds, or it disappears too fast, on two tests in a row, it stores P0455.",
+    symptoms: [
+      'Check engine light',
+      'Usually nothing else: the car drives normally',
+      'Sometimes a smell of gasoline near the car, especially around the filler or the rear',
+    ],
+    causes: [
+      'A missing, loose, damaged or wrong gas cap (or a worn seal on it)',
+      'A damaged or rusted fuel filler neck',
+      'Torn, cracked or disconnected EVAP hoses',
+      'A purge valve or canister vent valve stuck open or closed',
+      'A cracked or damaged charcoal canister',
+      'A leaking seal or gasket on the fuel pump or fuel level sender at the top of the tank',
+      'A faulty fuel tank pressure sensor',
+      'A damaged fuel tank',
+    ],
+    misdiagnoses: [
+      'The purge valve and the vent valve: often replaced without a smoke test proving they are at fault',
+      "The gas cap: easy to check and replace, but if a new cap doesn't clear the code, the leak is somewhere else",
+    ],
+    drive: {
+      verdict: 'go',
+      text:
+        "Generally safe to drive: it doesn't affect how the car runs. Get it fixed reasonably soon, though, because gasoline vapor is escaping into the air, the car will likely fail an emissions inspection while the light is on, and the light can hide a new, more serious problem. If you smell strong fuel, have it checked promptly.",
+    },
+    checks: [
+      "Check the gas cap first: is it there, tight (clicked), and is its rubber seal intact? If it's damaged or not the right part, replace it.",
+      'Look at the filler neck behind the fuel door for rust or damage.',
+      'Clear the code and drive normally for a few days: the leak test only runs under certain conditions, so it can take several drives to see if the code returns.',
+      'If the code comes back, ask a shop for an EVAP smoke test. It shows exactly where vapor escapes instead of guessing at parts.',
+      'Ask the shop to check the purge and vent valves and the fuel tank pressure sensor reading during the test: a valve stuck open or a sensor that misreads can set this code without any leak.',
+    ],
+    costDrivers: [
+      'The cause: a gas cap is a cheap part you can fit yourself; a canister, filler neck or fuel tank part costs much more.',
+      'Diagnosis time: a smoke test is the reliable way to find the leak and is usually charged as diagnostic time.',
+      'Access: valves and the canister often sit under the car near the tank, and tank-top seals may need the tank lowered.',
+    ],
+    related: [
+      { code: 'P0442', note: 'EVAP system small leak' },
+      { code: 'P0456', note: 'EVAP system very small leak' },
+      { code: 'P0457', note: 'EVAP leak detected: fuel cap loose or off' },
+      { code: 'P0452', note: 'EVAP system pressure sensor low' },
+    ],
+    faqs: [
+      [
+        'Can a gas cap cause a P0455 code?',
+        "Yes, it's the most common cause. A missing, loose or worn cap lets the system leak during the self-test. Tighten it until it clicks, or replace a damaged cap, then give the car several drives to re-run the test.",
+      ],
+      [
+        'How long does it take P0455 to clear after fixing the leak?',
+        "The light goes off only after the EVAP self-test passes, and that test runs only under certain conditions (for example after the car has sat for hours and with a partly full tank). It can take several days of normal driving. Clearing the code with a scanner turns the light off immediately, but don't do it right before an emissions test: the car will show as not ready.",
+      ],
+      [
+        'Can I pass emissions with a P0455 code?',
+        "Usually not in areas with OBD-II inspection: under EPA guidance for state programs, a lit check engine light is a fail. Fix the cause, then drive normally (EPA suggests about a week) so the readiness monitors can complete before the test. Rules vary by state, so check yours.",
+      ],
+      [
+        "What's the difference between P0455 and P0442?",
+        'Both mean the EVAP system failed its leak test. P0455 is a large leak (or no vacuum at all), often a missing or loose cap or a disconnected hose. P0442 is a small leak, often a worn cap seal or a small crack.',
+      ],
+    ],
+    sources: [
+      { label: 'RepairPal: P0455 OBD-II trouble code', url: 'https://repairpal.com/obd-ii-code-p0455' },
+      {
+        label: 'US EPA: Performing onboard diagnostic system checks as part of a vehicle inspection and maintenance program (EPA420-R-01-015)',
+        url: 'https://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P1002KRN.pdf',
+      },
+    ],
+    reviewed: '2026-11-20',
+  },
 ];
 
 export const codePage = (code: string) => CODE_PAGES.find((p) => p.code.toLowerCase() === code.toLowerCase());

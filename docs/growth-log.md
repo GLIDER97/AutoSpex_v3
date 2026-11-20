@@ -2,6 +2,51 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-20: day 2 (week 1, day 2)
+
+### What changed
+- **Two new OBD-II code pages,** the highest-demand codes without a page or guide:
+  - `/codes/p0128` (coolant thermostat: engine running too cold). Bing US 610 in 90 days, the most of the remaining top-10 codes.
+  - `/codes/p0455` (EVAP large leak). Bing US 549.
+  - Same structure as day 1. Sources: RepairPal for both; the P0455 emissions-inspection answer cites EPA's OBD inspection guidance (EPA420-R-01-015). No dollar figures (no cost source, see owner request 2).
+- **Fix:** the code-page H1 lowercased the whole short name, which would have printed "eVAP". Only a normal capitalized first word is lowercased now.
+- **IndexNow:** day 1's `/codes/p0300`, `/codes/p0171`, `/fault-code-decoder` and `robots.txt` submitted, HTTP 200.
+
+### Keyword research (section 4a)
+| Target query | Bing US, last 90 days | Google suggestions (subtopics) |
+|---|---|---|
+| p0128 code | 610 | Chevy, Dodge (Charger), Honda Civic, Jeep (Wrangler, Grand Cherokee), Ford, Chrysler 300 |
+| p0455 code | 549 | Chevy (Silverado 1500), Toyota, Ford, Hyundai, Honda; "how to fix", "repair cost" |
+| p0442 code | 288 | Chevy (Silverado, Impala), Ford, Toyota, VW Jetta, Buick Enclave, GMC |
+| p0301 code | 241 | causes; Chevy, Ford, Toyota, Jeep Wrangler, Nissan, Honda Accord |
+| p0172 code | 131 | Chevy (Equinox), Ford, Honda, BMW, Toyota, Subaru (WRX); "how to fix" |
+| p0401 code | 118 | Ford (F150, 6.0 Powerstroke), Toyota, Chevy, 6.7 Cummins, Jeep |
+| p0174 code | 0 (Bing returned none) | Chevy, Ford (F150), "bank 2 location", Toyota, BMW, Nissan |
+
+New demand order for the remaining codes: P0442, P0301, P0172, P0401, P0174. The pages answer the make-specific searches by sending people to the decoder with their car, not with per-make pages.
+
+### Numbers
+| | Last 28 days (22 Oct–18 Nov) | Last 3 days (16–18 Nov) |
+|---|---|---|
+| Clicks | 1 (India, homepage) | 1 |
+| Impressions | 116 (tier-1: 106) | 17 (16 US) |
+| Average position | 51.0 | 36.2 |
+| Tier-1 clicks | 0 | 0 |
+
+- **Week 1 so far (latest 7 days of data, 12–18 Nov):** 34 tier-1 impressions (goal 50+), 0 tier-1 clicks. The new code pages aren't in this data yet (2-day lag, and not crawled).
+- **Index:** 5 of 38 inspected sitemap URLs indexed, unchanged. 18 discovered but not indexed (including `/fault-code-decoder` and `/vin-lookup`), 12 unknown to Google, 1 crawled but not indexed, 2 inspections timed out. No manual action, no drop. Sitemap last read by Google 18 Nov (before the code pages); 0 errors.
+- **Top pages (3 days):** `/recalls` 13 impressions at position 29.9; homepage 5.
+- **Clarity, last day:** 1 session (India, PC: probably the owner), homepage and `/coupons`, 61.5% scroll depth, **5 dead clicks** in that session, no rage clicks or quick-backs; 8 bot sessions filtered. One session is too little to act on; watch whether dead clicks repeat on `/coupons`.
+- **OpenRouter:** $0.00 of $10 this month. No images generated.
+- **Community data:** not live yet (day 15+).
+
+### Blocked
+- Nothing new. Open owner requests 1 (move the daily runs to a fresh-session scheduled task) and 2 (repair-cost source) still stand.
+
+### Tomorrow (day 3)
+- The `/codes` hub page (week 1 effort goal), linked from the Tools menu, footer and code lookup, plus P0442 (EVAP small leak, Bing 288).
+- Submit today's two pages to IndexNow once the deploy is live (done in this run if the deploy finishes).
+
 ## 2026-11-19: day 1 (week 1, day 1)
 
 **Late start.** The scheduled runs on 17, 18 and 19 Nov could read the repository but not push to it, so nothing shipped. The daily run now fires into the owner's main session, which can push. The 30-day plan starts today, three days behind the roadmap dates.
