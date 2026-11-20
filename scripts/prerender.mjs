@@ -158,7 +158,7 @@ for (const page of pages) {
     structuredData,
   });
   count++;
-  if (!page.noindex) sitemapEntries.push({ loc: canonical, priority: page.priority });
+  if (!page.noindex && page.sitemap !== false) sitemapEntries.push({ loc: canonical, lastmod: page.updated, priority: page.priority });
 }
 
 // Articles.
