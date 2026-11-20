@@ -56,7 +56,7 @@ const CodePage: React.FC = () => {
         <h1 className="flex items-start gap-3 font-heading text-[2.25rem] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance sm:text-5xl">
           <SignMarker category="warnings" className="mt-2 size-7 sm:mt-3 sm:size-8" />
           <span>
-            {page.code} code: {page.shortName.toLowerCase()}
+            {page.code} code: {/^[A-Z][a-z]/.test(page.shortName) ? page.shortName.charAt(0).toLowerCase() + page.shortName.slice(1) : page.shortName}
           </span>
         </h1>
         <p className="mt-3 font-semibold text-muted-foreground">Standard definition: {page.title}</p>
