@@ -23,7 +23,7 @@ const formatCost = (text: string) =>
 const focusRing = 'outline-none focus-visible:outline-solid focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 // ---------------------------------------------------------------------------
-// Hero: the check engine code lookup, set on a green guide sign.
+// Hero: the check engine code lookup on the green brand band, with a studio photo.
 // ---------------------------------------------------------------------------
 
 function CodeLookup() {
@@ -141,48 +141,75 @@ const OTHER_START_POINTS: { tool: Tool; category: keyof typeof CATEGORY_BY_ID }[
   { tool: CATEGORY_BY_ID.warnings.tools[2], category: 'warnings' }, // VIN decoder
 ];
 
+// Brand color-block studio photo (docs/IMAGE-STYLE.md, style 2). Its backdrop is matched to sign green, so the
+// band and the photo read as one surface.
+const HERO_IMAGE = {
+  src: '/images/hero-parts-color-block.webp',
+  srcSet: '/images/hero-parts-color-block-800.webp 800w, /images/hero-parts-color-block.webp 1376w',
+  width: 1376,
+  height: 768,
+  alt: 'A brake rotor with a red caliper, spark plugs, an OBD2 code scanner and a tire pressure gauge',
+};
+
 function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="mx-auto max-w-7xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12 lg:px-8">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
-        {/* The guide sign: green panel, white inset border, rounded corners. */}
-        <div className="min-w-0 rounded-[1.375rem] bg-sign-green p-1.5 lg:col-span-8">
-          <div className="sign-inset rounded-2xl px-6 py-9 sm:px-10 sm:py-12">
-            <h1
-              id="hero-title"
-              className="text-balance font-heading text-[2.75rem] leading-[1.02] font-extrabold tracking-[-0.02em] text-white sm:text-[3.5rem] lg:text-[4rem]"
-            >
-              Check engine light on?
-            </h1>
-            <p className="mt-5 max-w-[52ch] text-lg leading-normal text-white sm:text-[1.1875rem]">
-              Type the code from your scanner to find out what it means, how serious it is and what the repair should
-              cost. Free, and no account needed.
-            </p>
-            <div className="mt-8">
-              <CodeLookup />
-            </div>
+    <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-sign-green">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-10 pb-4 sm:px-6 sm:pt-14 lg:px-8 lg:pt-20 lg:pb-24 xl:pt-24 xl:pb-28">
+        <div className="max-w-xl">
+          <h1
+            id="hero-title"
+            className="text-balance font-heading text-[2.75rem] leading-[1.02] font-extrabold tracking-[-0.02em] text-white sm:text-[3.5rem] lg:text-[4rem]"
+          >
+            Check engine light on?
+          </h1>
+          <p className="mt-5 max-w-[52ch] text-lg leading-normal text-white sm:text-[1.1875rem]">
+            Type the code from your scanner to find out what it means, how serious it is and what the repair should cost.
+            Free, and no account needed.
+          </p>
+          <div className="mt-8">
+            <CodeLookup />
           </div>
         </div>
-
-        <div className="flex min-w-0 flex-col justify-center lg:col-span-4">
-          <h2 className="font-heading text-2xl font-extrabold tracking-[-0.01em]">Not a warning light?</h2>
-          <ul className="mt-4 divide-y divide-border border-y border-border">
-            {OTHER_START_POINTS.map(({ tool, category }) => (
-              <li key={tool.path}>
-                <Link to={tool.path} className={cn('group flex gap-3 py-4 hover:bg-muted/60', focusRing)}>
-                  <SignMarker category={category} className="mt-0.5" />
-                  <span>
-                    <span className="block text-[1.0625rem] font-bold group-hover:underline group-hover:underline-offset-4">
-                      {tool.name}
-                    </span>
-                    <span className="mt-0.5 block text-[0.9375rem] leading-snug text-muted-foreground">{tool.description}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
+
+      {/* Phones and tablets: the photo sits under the lookup. lg: it sits in the bottom right of the band at its own
+          shape, clear of the lookup. xl and up: it fills the right side of the band. */}
+      <img
+        src={HERO_IMAGE.src}
+        srcSet={HERO_IMAGE.srcSet}
+        sizes="(min-width: 1024px) 62vw, 100vw"
+        width={HERO_IMAGE.width}
+        height={HERO_IMAGE.height}
+        alt={HERO_IMAGE.alt}
+        fetchPriority="high"
+        decoding="async"
+        className="block h-72 w-full object-cover object-[100%_60%] mask-t-from-90% sm:h-80 sm:object-top md:h-96 lg:absolute lg:right-0 lg:bottom-0 lg:h-auto lg:w-[62%] lg:mask-l-from-75% xl:top-0 xl:h-full xl:object-right xl:mask-t-from-100% xl:mask-l-from-85%"
+      />
+    </section>
+  );
+}
+
+function OtherStartPoints() {
+  return (
+    <section aria-labelledby="other-start-title" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <h2 id="other-start-title" className="font-heading text-2xl font-extrabold tracking-[-0.01em]">
+        Not a warning light?
+      </h2>
+      <ul className="mt-4 grid divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        {OTHER_START_POINTS.map(({ tool, category }) => (
+          <li key={tool.path}>
+            <Link to={tool.path} className={cn('group flex h-full gap-3 py-4 hover:bg-muted/60 sm:px-4 sm:first:pl-0', focusRing)}>
+              <SignMarker category={category} className="mt-0.5" />
+              <span>
+                <span className="block text-[1.0625rem] font-bold group-hover:underline group-hover:underline-offset-4">
+                  {tool.name}
+                </span>
+                <span className="mt-0.5 block text-[0.9375rem] leading-snug text-muted-foreground">{tool.description}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -348,6 +375,7 @@ const HomePage: React.FC = () => (
   <LazyMotion features={domAnimation} strict>
     <MotionConfig reducedMotion="user">
       <Hero />
+      <OtherStartPoints />
       <ToolDirectory />
       <CodeGuides />
       <Sources />

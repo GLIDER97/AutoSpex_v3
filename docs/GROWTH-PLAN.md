@@ -176,7 +176,7 @@ The owner added an OpenRouter key, saved as a hidden network secret for `openrou
 - **Style, models and prompts: follow `docs/IMAGE-STYLE.md`** (owner's choice, 21 Nov). It sets the two styles (studio catalog and brand color-block), the model for each job (Nano Banana Pro for hero images and anything showing a car, Nano Banana 2.1 for everything else), the exact prompt recipes, and the hard rules: real photos for items for sale, generic cars only, no text, logos or people.
 - **This overrides older image rules.** The daily task's own instructions (written 19 Nov) still say "cheapest model, max $0.10 each". `docs/IMAGE-STYLE.md` replaces that line: use the models it names, including Nano Banana Pro for any image that shows a car.
 - **Volume:** at most **1 AI image per new article** or code page (code pages get a Style 1 image of the part the code is about), plus the rollout batch in `docs/IMAGE-STYLE.md`, at most **4 rollout images a run**. Update the rollout table's status column as items are done.
-- **Homepage hero:** don't change it in a daily run. The owner is picking it in the main session.
+- **Homepage hero:** the owner picked it on 21 Nov (parts and tools, `public/images/hero-parts-color-block.webp`). Don't change it in a daily run; a new hero needs the owner's OK.
 - **Never use AI images to show facts** such as a part's location, a wiring diagram or a warning-light chart: image models get those wrong, and on a car-repair site that is misinformation.
 - **Charts and diagrams that carry facts are drawn in code** (SVG or HTML) from the sourced data, with a source caption. Examples: repair cost by model, recalls by year.
 - **Every image:**
