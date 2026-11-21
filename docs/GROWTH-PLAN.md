@@ -327,6 +327,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 | Month 9–12 | 400+ | 250,000+ | **10,000+** | 50+ |
 
 - **On track:** at or above the row. Keep going and speed up the winning page types (up to 4 pages a day).
+- **Week 3 check (scored Thu 10 Dec):** if week 3's tier-1 impressions or clicks are under half the goal (under 400 impressions or under 5 clicks), add no new page types until the cause is found (indexing, quality, competition or links). Write the finding at the top of the log and tell the owner plainly in the next status what would change the outcome (owner told 21 Nov).
 - **Behind by more than half at month 3:** stop adding new page types. Spend two weeks finding the cause (indexing, quality, competition or links) with a full claude-seo audit, write it at the top of the log, and tell the owner plainly what would change the outcome.
 
 ### 8.4 How claude-seo is used
@@ -372,8 +373,8 @@ Week N runs from day 7N−6 to day 7N, with day 1 = Thu 19 Nov 2026, so weeks en
 | Week | Dates | Effort goals | Result goals (Google) |
 |---|---|---|---|
 | 1 | 19–25 Nov | 12+ new code pages; `/codes` hub page; every deploy submitted to IndexNow; 0 broken builds | 12+ pages indexed; 50+ tier-1 impressions in the week |
-| 2 | 26 Nov–2 Dec | 12+ new pages (code pages plus the first 10 recall pages); first Monday quick-win pass | 25+ indexed; 300+ tier-1 impressions; 3+ tier-1 clicks |
-| 3 | 3–9 Dec | 12+ new pages; first data study published; outreach list of 15 sites with drafted emails | 40+ indexed; 800+ tier-1 impressions; 10+ tier-1 clicks |
+| 2 | 26 Nov–2 Dec | 12+ new pages (code pages plus the first 10 recall pages); first Monday quick-win pass; outreach list of 15 sites with drafted emails for the first data study (moved up from week 3 on 21 Nov: links are the biggest gap) | 25+ indexed; 300+ tier-1 impressions; 3+ tier-1 clicks |
+| 3 | 3–9 Dec | 12+ new pages; outreach follow-ups (one polite follow-up draft per site that hasn't replied after 7 days) | 40+ indexed; 800+ tier-1 impressions; 10+ tier-1 clicks |
 | 4 | 10–16 Dec | 12+ new pages, including the first topic cluster; Monday quick wins | 60+ indexed; 1,500+ tier-1 impressions; 25+ tier-1 clicks |
 
 ### 9.2 Weekly goals: from week 5 onward

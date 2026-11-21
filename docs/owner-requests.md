@@ -25,3 +25,4 @@ Nothing open.
 | 2026-11-21 | Pick the homepage hero image | **Option 2** (parts and tools on green and yellow, no car). Live on the homepage from 21 Nov |
 | 2026-11-21 | Add credit to OpenRouter (balance was $0.44 after the page-image batch hit HTTP 402) | **Done by the owner:** $10 added (balance $9.04 at 21 Nov); the last 5 page images were made |
 | 2026-11-21 | Images on every page, not just the homepage | Yes, but the articles keep their own images. Done: 24 page images (14 tools, 6 code guides plus the index, about, editorial policy, contact, 404) |
+| 2026-11-21 | Request indexing for `/codes/p0300`, `/codes/p0171` and `/codes/p0442` in Search Console | Done by the owner on 21 Nov (track them from the next run; the first 10 requests took the index from 7 to 14) |
