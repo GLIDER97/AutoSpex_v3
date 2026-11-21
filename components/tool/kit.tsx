@@ -2,10 +2,13 @@
 // flat panels, Overpass type, sign colors that keep their road meaning
 // (green = go/guidance, yellow = caution, red = stop, blue = services).
 import React, { useEffect, useId, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ToolCategoryId } from '../../data/tools';
 import { SignMarker } from '../brand';
+import { PageImage } from '../PageImage';
+import { pageImageFor } from '../../data/pageImages';
 import { listEpaMakes, listEpaModels } from '../../utils/fuelEconomy';
 
 export const focusRing =
@@ -41,18 +44,42 @@ export function ToolPage({
   sources?: string;
   children: React.ReactNode;
 }) {
+  const { pathname } = useLocation();
   return (
     <div className="w-full max-w-6xl">
-      <header className="mb-8 max-w-3xl">
+      <HeaderWithImage path={pathname}>
         <h1 className="flex items-start gap-3 font-heading text-[2.25rem] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance sm:text-5xl">
           <SignMarker category={category} className="mt-2 size-7 sm:mt-3 sm:size-8" />
           <span>{title}</span>
         </h1>
         <p className="mt-4 max-w-[62ch] text-lg leading-relaxed text-muted-foreground">{intro}</p>
         {sources && <p className="mt-3 text-sm text-muted-foreground">Data: {sources}</p>}
-      </header>
+      </HeaderWithImage>
       {children}
     </div>
+  );
+}
+
+/**
+ * A page header with the page's studio photo (data/pageImages.ts) beside it from lg up, and under it on smaller
+ * screens, cropped wider there so the page's content stays close to the top. Without a photo it is a plain header.
+ */
+export function HeaderWithImage({ path, className, children }: { path: string; className?: string; children: React.ReactNode }) {
+  if (!pageImageFor(path)) return <header className={cn('mb-8 max-w-3xl', className)}>{children}</header>;
+  return (
+    <header
+      className={cn(
+        'mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]',
+        className,
+      )}
+    >
+      <div className="max-w-3xl">{children}</div>
+      <PageImage
+        path={path}
+        sizes="(min-width: 1280px) 28rem, (min-width: 1024px) 24rem, (min-width: 640px) 28rem, 100vw"
+        className="aspect-[2/1] sm:max-w-md lg:aspect-video lg:max-w-none"
+      />
+    </header>
   );
 }
 
