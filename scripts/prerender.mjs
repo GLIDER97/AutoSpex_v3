@@ -47,7 +47,7 @@ const ORGANIZATION = {
   '@id': `${SITE_URL}/#organization`,
   name: SITE_NAME,
   url: `${SITE_URL}/`,
-  logo: `${SITE_URL}/favicon.svg`,
+  logo: `${SITE_URL}/icon-512.png`,
 };
 
 // Share image for pages without their own (public/og-image.png, 1200x630).
