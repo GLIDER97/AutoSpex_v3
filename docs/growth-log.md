@@ -2,6 +2,42 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-21: day 3 (week 1, day 3)
+
+### What changed
+- **`/codes` hub page** (week 1 effort goal): every code guide grouped by system (misfires, fuel mixture, engine temperature, EVAP leaks, catalytic converter), each with its drive verdict and summary, a "how to read a code" box sourced to SAE J2012, and a link to the code lookup for codes not listed. Linked from the header Tools menu (desktop and mobile), the footer, the homepage code section and the code lookup's "Code guides". Code pages' breadcrumb (visible and structured data) now points to `/codes` instead of the decoder. Added to the sitemap and `llms.txt`.
+- **`/codes/p0442`** (EVAP small leak; Bing US 288, next in demand order). Sources: RepairPal; EPA OBD inspection guidance for the emissions answer. Links both ways with P0455.
+- Builds on PR #8 (owner-session indexing audit, 20 Nov): the hub adds the extra internal links that audit called for.
+
+### Keyword research (section 4a)
+| Target query | Bing US, last 90 days | Google suggestions (subtopics) |
+|---|---|---|
+| p0442 code | 288 | Chevy (Silverado 1500, Impala), Ford, Toyota, VW Jetta, Buick Enclave, GMC |
+
+(Researched on day 2; the hub targets the code guides as a set, no single query.)
+
+### Numbers
+| | Last 28 days (23 Oct–19 Nov) | Last 3 days (17–19 Nov) |
+|---|---|---|
+| Clicks | 1 (India, homepage) | 1 |
+| Impressions | 126 (tier-1: 115, US 106) | 18 |
+| Average position | 46.9 | **5.0** (was 36.2) |
+| Tier-1 clicks | 0 | 0 |
+
+- **Index: 7 indexed (was 5)**, including **`/codes/p0455`, indexed within a day of going live**, and `/editorial-policy`. 20 discovered but not indexed (`/codes/p0300`, `/codes/p0171`), 8 unknown to Google (`/codes/p0128`), 1 crawled but not indexed. No manual action, no drop. Google read the sitemap again on 20 Nov, 0 errors.
+- **Top pages (3 days):** `/recalls` 14 impressions at position 4.8; homepage 5 at 5.4.
+- **Week 1 so far (latest 7 days of data, 13–19 Nov):** 39 tier-1 impressions (goal 50+), 0 tier-1 clicks (goal 0).
+- **Clarity, last day:** 0 human sessions (4 bot sessions filtered). Nothing to act on.
+- **OpenRouter:** $0.00 of $10 this month. No images.
+- **Community data:** not live yet (day 15+).
+
+### Blocked
+- Nothing new. Open owner requests: 1 (make the apex redirect 308) and 2 (request indexing for 10 key pages in Search Console).
+
+### Tomorrow (day 4)
+- Two code pages in demand order: P0301 (cylinder 1 misfire, Bing 241) and P0172 (system too rich, bank 1, Bing 131), both of which link into the existing misfire and fuel-mixture groups.
+- Days 6–7: the first data study (moved up by the indexing audit).
+
 ## 2026-11-20: day 2 (week 1, day 2)
 
 ### What changed

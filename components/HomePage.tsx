@@ -318,7 +318,13 @@ function CodeGuides() {
           Check engine code guides
         </h2>
         <p className="mt-3 max-w-[60ch] text-[1.0625rem] leading-relaxed text-muted-foreground">
-          What common codes mean, whether it's safe to keep driving and what to check first.
+          What common codes mean, whether it's safe to keep driving and what to check first.{' '}
+          <Link
+            to="/codes"
+            className="rounded-sm font-semibold text-foreground underline underline-offset-4 outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            All code guides
+          </Link>
         </p>
         <ul className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
           {CODE_PAGES.map((p) => (

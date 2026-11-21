@@ -344,6 +344,87 @@ export const CODE_PAGES: CodePage[] = [
     ],
     reviewed: '2026-11-20',
   },
+  {
+    code: 'P0442',
+    title: 'Evaporative Emission System Leak Detected (Small Leak)',
+    shortName: 'EVAP small leak',
+    seoTitle: 'P0442 Code: EVAP Small Leak Causes and Fixes',
+    description:
+      'P0442 means the fuel vapor (EVAP) system found a small leak. The usual causes, from the gas cap to cracked hoses, whether it is safe to drive and what to check.',
+    system: 'Evaporative emission (EVAP) control',
+    summary:
+      "Your car's fuel vapor system, which traps gasoline fumes from the tank and burns them in the engine, held vacuum during its self-test but lost it a little too fast. That points to a small leak: a worn gas cap seal, a hairline crack in a hose or a tired O-ring.",
+    howItSets:
+      'After the car has sat for several hours (typically four to eight) and with the tank between about 15% and 85% full, the engine computer seals the system and pulls a vacuum on it, using engine vacuum or a leak detection pump. It then times how fast the vacuum fades. If it fades faster than allowed on two tests in a row, it stores P0442. Most modern systems fail with a hole as small as about 0.020 inch (half a millimeter).',
+    symptoms: [
+      'Check engine light',
+      'Usually nothing else: the car drives normally',
+      'Sometimes a faint smell of gasoline near the car',
+    ],
+    causes: [
+      'A worn, damaged or wrong gas cap, or a hardened seal on it',
+      'A small tear or crack in an EVAP hose',
+      'Loose or worn clamps, or hardened O-rings, anywhere in the EVAP system',
+      'A small split in a seam of the charcoal canister',
+      'A purge valve or canister vent valve that does not seal fully',
+      'A leaking seal or gasket on the fuel pump or fuel level sender at the top of the tank',
+      'A damaged fuel filler neck',
+      'A faulty leak detection pump or fuel tank pressure sensor',
+    ],
+    misdiagnoses: [
+      "The gas cap: a common cause, but if a new cap doesn't stop the code, the leak is somewhere else",
+      'The purge valve and the vent valve: often replaced without a smoke test proving they leak',
+    ],
+    drive: {
+      verdict: 'go',
+      text:
+        "Generally safe to drive: it doesn't affect how the car runs. Get it fixed reasonably soon, though: fuel vapor is escaping, the car will likely fail an emissions inspection while the light is on, and the light can hide a new, more serious problem.",
+    },
+    checks: [
+      "Check the gas cap: tighten it until it clicks and look at its rubber seal for cracks or flattening. A cap that's damaged or not the correct part is worth replacing first.",
+      'Clear the code (or let it clear) and drive normally for several days: the leak test only runs under certain conditions, so it can take a while to see if the code returns.',
+      'Look over the hoses you can see near the tank, canister and filler neck for cracks and loose clamps.',
+      'If the code comes back, ask a shop for an EVAP smoke test. Small leaks are hard to find by eye, and the smoke shows exactly where vapor escapes.',
+      'Ask the dealer whether there is a service bulletin for P0442 on your model: some vehicles have known canister, valve or seal problems.',
+    ],
+    costDrivers: [
+      'The cause: a gas cap is a cheap part you can fit yourself; a canister, valve or tank seal costs more.',
+      'Diagnosis time: tiny leaks can take a smoke test and some searching to find.',
+      'Access: valves and the canister often sit under the car near the tank, and tank-top seals may need the tank lowered.',
+    ],
+    related: [
+      { code: 'P0455', note: 'EVAP system large leak' },
+      { code: 'P0456', note: 'EVAP system very small leak' },
+      { code: 'P0457', note: 'EVAP leak detected: fuel cap loose or off' },
+      { code: 'P0441', note: 'EVAP system incorrect purge flow' },
+    ],
+    faqs: [
+      [
+        'Can a loose gas cap cause P0442?',
+        'Yes. A loose cap or one with a worn seal is one of the most common causes. Tighten or replace it, then give the car several days of normal driving so the self-test can run again.',
+      ],
+      [
+        'How long does it take P0442 to clear after the fix?',
+        "The light goes off only once the EVAP self-test runs and passes, which needs particular conditions (such as the car sitting for hours and a partly full tank). That can take several days of normal driving.",
+      ],
+      [
+        'Can I pass emissions with a P0442 code?',
+        "Usually not in areas with OBD-II inspection: under EPA guidance for state programs, a lit check engine light is a fail. Fix the cause, then drive normally (EPA suggests about a week) so the readiness monitors can complete before the test. Rules vary by state, so check yours.",
+      ],
+      [
+        "What's the difference between P0442 and P0455?",
+        'Both mean the EVAP system failed its leak test. P0442 is a small leak, where the system holds vacuum but loses it too fast. P0455 is a large leak, where it cannot build vacuum at all, often a missing cap or a disconnected hose.',
+      ],
+    ],
+    sources: [
+      { label: 'RepairPal: P0442 OBD-II trouble code', url: 'https://repairpal.com/obd-ii-code-p0442' },
+      {
+        label: 'US EPA: Performing onboard diagnostic system checks as part of a vehicle inspection and maintenance program (EPA420-R-01-015)',
+        url: 'https://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P1002KRN.pdf',
+      },
+    ],
+    reviewed: '2026-11-21',
+  },
 ];
 
 export const codePage = (code: string) => CODE_PAGES.find((p) => p.code.toLowerCase() === code.toLowerCase());

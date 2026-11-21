@@ -231,7 +231,7 @@ for (const page of CODE_PAGES) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: 'Check engine codes', item: `${SITE_URL}/fault-code-decoder` },
+          { '@type': 'ListItem', position: 2, name: 'Check engine codes', item: `${SITE_URL}/codes` },
           { '@type': 'ListItem', position: 3, name: page.code, item: canonical },
         ],
       },
@@ -293,6 +293,7 @@ await fs.writeFile(
     '',
     '## Check engine code guides',
     '',
+    line('All check engine code guides', '/codes', 'Every code guide, grouped by system.'),
     ...CODE_PAGES.map((p) => line(`${p.code}: ${p.title}`, `/codes/${p.code.toLowerCase()}`, p.description)),
     '',
     '## About',
