@@ -15,7 +15,7 @@
 // Caps can be changed in Vercel with these environment variables:
 //   AI_DAILY_TEXT_LIMIT (default 1500)     AI_DAILY_TEXT_PER_VISITOR (default 80)
 //   AI_DAILY_IMAGE_LIMIT (default 150)     AI_DAILY_IMAGE_PER_VISITOR (default 12)
-//   PLACES_DAILY_LIMIT (default 500)       PLACES_DAILY_PER_VISITOR (default 40)
+//   PLACES_DAILY_LIMIT (default 30)        PLACES_DAILY_PER_VISITOR (default 5)
 import { createHash } from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 
@@ -24,7 +24,8 @@ export type UsageKind = 'text' | 'image' | 'places';
 const DEFAULTS: Record<UsageKind, { site: number; visitor: number }> = {
   text: { site: 1500, visitor: 80 },
   image: { site: 150, visitor: 12 },
-  places: { site: 500, visitor: 40 },
+  // 30 a day stays inside Google's free monthly Places (Text Search Enterprise) usage, about 1,000 searches a month.
+  places: { site: 30, visitor: 5 },
 };
 
 const ENV: Record<UsageKind, { site: string; visitor: string }> = {
