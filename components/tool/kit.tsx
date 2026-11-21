@@ -64,12 +64,12 @@ export function ToolPage({
  * A page header with the page's studio photo (data/pageImages.ts) beside it from lg up, and under it on smaller
  * screens, cropped wider there so the page's content stays close to the top. Without a photo it is a plain header.
  */
-export function HeaderWithImage({ path, className, children }: { path: string; className?: string; children: React.ReactNode }) {
-  if (!pageImageFor(path)) return <header className={cn('mb-8 max-w-3xl', className)}>{children}</header>;
+export function HeaderWithImage({ path, className = 'mb-8', children }: { path: string; className?: string; children: React.ReactNode }) {
+  if (!pageImageFor(path)) return <header className={cn('max-w-3xl', className)}>{children}</header>;
   return (
     <header
       className={cn(
-        'mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]',
+        'grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]',
         className,
       )}
     >

@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Add credit to OpenRouter (21 Nov, urgent):** the OpenRouter account balance is down to about **$0.44** ($34.62 bought, $34.18 used across all keys). The $10 monthly limit is on the key; the balance is what actually pays. If the website's own key is on this account (most likely), the site's AI features (code explanations, repair estimates) stop working when it reaches $0. **Yes** = add credit at https://openrouter.ai/settings/credits (for example $10); then the last 5 page images (P0455, P0442, about, editorial policy, contact, about $0.20) get made on the next run.
+Nothing open.
 
 ## Answered
 
@@ -23,3 +23,5 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-21 | Run a 4-model image test (~$0.50) | Yes. Result: Nano Banana Pro for heroes and cars, Nano Banana 2.1 for everything else |
 | 2026-11-21 | Allow Nano Banana Pro (~$0.14) above the $0.10 cap | Yes, for homepage hero images and any image showing a car |
 | 2026-11-21 | Pick the homepage hero image | **Option 2** (parts and tools on green and yellow, no car). Live on the homepage from 21 Nov |
+| 2026-11-21 | Add credit to OpenRouter (balance was $0.44 after the page-image batch hit HTTP 402) | **Done by the owner:** $10 added (balance $9.04 at 21 Nov); the last 5 page images were made |
+| 2026-11-21 | Images on every page, not just the homepage | Yes, but the articles keep their own images. Done: 24 page images (14 tools, 6 code guides plus the index, about, editorial policy, contact, 404) |

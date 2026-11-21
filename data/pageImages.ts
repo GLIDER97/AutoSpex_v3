@@ -34,8 +34,12 @@ export const PAGE_IMAGES: Record<string, PageImage> = {
   '/codes/p0300': { file: 'code-p0300', alt: 'Four new spark plugs in front of ignition coil packs' },
   '/codes/p0171': { file: 'code-p0171', alt: 'A mass airflow sensor next to a cracked rubber vacuum hose' },
   '/codes/p0128': { file: 'code-p0128', alt: 'An engine thermostat with its gasket beside a coolant temperature sensor' },
-  // Site pages. /codes/p0455, /codes/p0442, /about, /editorial-policy and /contact get theirs once the OpenRouter
-  // balance is topped up (docs/owner-requests.md).
+  '/codes/p0455': { file: 'code-p0455', alt: 'A fuel filler cap next to an EVAP charcoal canister' },
+  '/codes/p0442': { file: 'code-p0442', alt: 'A fuel filler cap turned over to show its seal, next to an EVAP purge valve' },
+  // Site pages (privacy, terms and cookie pages have none)
+  '/about': { file: 'about', alt: 'A blank yellow diamond road sign on a steel post' },
+  '/editorial-policy': { file: 'editorial-policy', alt: 'A magnifying glass on a stack of blank paper, with a red pen and a steel ruler' },
+  '/contact': { file: 'contact', alt: 'A white paper airplane in flight' },
   '/404': { file: 'not-found', alt: 'A single orange traffic cone' },
 };
 

@@ -52,7 +52,7 @@ const CodePage: React.FC = () => {
         <span>{page.code}</span>
       </nav>
 
-      <HeaderWithImage path={`/codes/${page.code.toLowerCase()}`} className="mt-4">
+      <HeaderWithImage path={`/codes/${page.code.toLowerCase()}`} className="mt-4 mb-8">
         <h1 className="flex items-start gap-3 font-heading text-[2.25rem] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance sm:text-5xl">
           <SignMarker category="warnings" className="mt-2 size-7 sm:mt-3 sm:size-8" />
           <span>

@@ -46,6 +46,8 @@ Build every prompt as **style base + subject + rules**. Keep the wording below s
 
 **Composition:** when text will sit over or beside the image, add *"the subject sits on the right half; the left 45% is calm, empty backdrop"*.
 
+**Studio (style 1) framing:** Nano Banana 2.1 often shows the softbox lights and backdrop edges when asked for generous empty space. For style 1, ask for *"photographed close: the objects fill about 60% of the frame, with no studio equipment, lights or backdrop edges visible"*, or crop them out.
+
 ## Hard rules
 1. **Items for sale use real photos only.** When the site sells a specific part, accessory or used car, its listing shows real photos of that actual item, never an AI image. AI images are for banners, categories, guides and articles. Anything else would mislead buyers.
 2. **No facts in AI images.** No part locations, wiring, warning-light charts or numbers. Facts go in charts and diagrams drawn in code from sourced data.
@@ -62,7 +64,7 @@ Build every prompt as **style base + subject + rules**. Keep the wording below s
 
 ## Budget
 - **Before every batch:** read `usage_monthly` from `GET https://openrouter.ai/api/v1/key`. At $9.00 or more, make no images for the rest of the month.
-- **Also check the account balance:** `GET https://openrouter.ai/api/v1/credits` gives `total_credits` and `total_usage`; the balance is the difference. If it is under **$2.00**, make no images and ask the owner to add credit (`docs/owner-requests.md`). The account is most likely shared with the website's own AI tools (code explanations, repair estimates), which stop working when it reaches $0, so the balance matters more than the $10 key limit. On 21 Nov the balance ran out partway through a batch (HTTP 402) with only $3.03 of the $10 limit used.
+- **Also check the account balance:** `GET https://openrouter.ai/api/v1/credits` gives `total_credits` and `total_usage`; the balance is the difference. If it is under **$2.00**, make no images and ask the owner to add credit (`docs/owner-requests.md`). The account is most likely shared with the website's own AI tools (code explanations, repair estimates), which stop working when it reaches $0, so the balance matters more than the $10 key limit. On 21 Nov the balance ran out partway through a batch (HTTP 402) with only $3.03 of the $10 limit used; the owner added $10 the same day.
 - **Log every image** in `docs/openrouter-spend.csv`.
 
 ## Rollout (first pass, owner-approved 21 Nov 2026)
@@ -71,6 +73,6 @@ Build every prompt as **style base + subject + rules**. Keep the wording below s
 |---|---|---|---|---|
 | Homepage hero (3 options for the owner to pick) | 2 | Pro | 3 | done 21 Nov: the owner picked the parts option (`public/images/hero-parts-color-block.webp`, backdrop color-matched to `#006b4f`); both car options resembled real models |
 | One image per tool page (14 tools; they double as the category look and each page's share image) | 2 (DIY tools: 1) | 2.1 | 14 | done 21 Nov |
-| Code guide images (the part each code is about) and the `/codes` index | 1 | 2.1 | 6 + 1 per new code page | 4 of 6 done 21 Nov (index, P0300, P0171, P0128); **P0455 and P0442 waiting for credit** |
-| About, editorial policy, contact and 404 pages | 2 (editorial policy: 1) | 2.1 | 4 | 404 done 21 Nov; **about, editorial policy and contact waiting for credit**. Prompts are in the 21 Nov batch: a blank yellow diamond road sign; a magnifying glass on blank paper; a paper airplane |
+| Code guide images (the part each code is about) and the `/codes` index | 1 | 2.1 | 6 + 1 per new code page | done 21 Nov (index, P0300, P0171, P0128, P0455, P0442); add one per new code page |
+| About, editorial policy, contact and 404 pages | 2 (editorial policy: 1) | 2.1 | 4 | done 21 Nov (privacy, terms and cookie pages have none) |
 | ~~Replace the 14 mixed article covers~~ | | | | cancelled 21 Nov: the owner said the articles keep their own images |
