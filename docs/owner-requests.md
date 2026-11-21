@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Optional, high impact: ask Google to crawl 10 key pages (about 5 minutes).** Google has no API for this. In Search Console, paste each URL into the inspection bar at the top and click "Request indexing": `/fault-code-decoder`, `/vin-lookup`, `/codes/p0300`, `/codes/p0171`, `/codes/p0128`, `/maintenance-validator`, `/insurance-estimator`, `/ownership-calculator`, `/article/check-engine-light-meaning`, `/article/p0420-code-catalytic-converter-sensor-guide` (all on https://www.myautospex.com). Reply "done" or "skip".
+1. **Optional, high impact: ask Google to crawl 10 key pages (about 5 minutes).** Google has no API for this. In Search Console, paste each URL into the inspection bar at the top and click "Request indexing": `/fault-code-decoder`, `/vin-lookup`, `/codes/p0300`, `/codes/p0171`, `/codes/p0128`, `/codes`, `/maintenance-validator`, `/insurance-estimator`, `/article/check-engine-light-meaning`, `/article/p0420-code-catalytic-converter-sensor-guide` (all on https://www.myautospex.com). Reply "done" or "skip".
 
 ## Answered
 
@@ -16,3 +16,5 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-19 | Move daily runs out of the long main chat to save Claude usage | Yes: runs now fire into a dedicated session ("MyAutoSpex daily growth runs"); the main chat answers "status" |
 | 2026-11-19 | Repair-cost source | None: pages show no dollar figures and link to the code lookup's labeled AI estimate |
 | 2026-11-21 | Make the myautospex.com → www redirect permanent | Done by the owner: verified live as 308 on 21 Nov |
+| 2026-11-21 | Spending limit on the website's own OpenRouter key | Done by the owner |
+| 2026-11-21 | Save outreach emails as Gmail drafts | **Yes.** The agent may create drafts in the owner's Gmail (Gmail connector); it never sends. The owner reviews and clicks Send. Owner also given guides for the Places quota/budget alert and archiving the Apps Script deployment (21 Nov) |
