@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Optional, high impact: ask Google to crawl 10 key pages (about 5 minutes).** Google has no API for this. In Search Console, paste each URL into the inspection bar at the top and click "Request indexing": `/fault-code-decoder`, `/vin-lookup`, `/codes/p0300`, `/codes/p0171`, `/codes/p0128`, `/codes`, `/maintenance-validator`, `/insurance-estimator`, `/article/check-engine-light-meaning`, `/article/p0420-code-catalytic-converter-sensor-guide` (all on https://www.myautospex.com). Reply "done" or "skip".
+1. **Image style for the site (21 Nov):** three directions were mocked up on the homepage: A service-manual exploded diagrams, B soft 3D clay garage, C night dashboard photography. Waiting for the owner's pick; no site change until then.
 
 ## Answered
 
@@ -18,3 +18,4 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-21 | Make the myautospex.com → www redirect permanent | Done by the owner: verified live as 308 on 21 Nov |
 | 2026-11-21 | Spending limit on the website's own OpenRouter key | Done by the owner |
 | 2026-11-21 | Save outreach emails as Gmail drafts | **Yes.** The agent may create drafts in the owner's Gmail (Gmail connector); it never sends. The owner reviews and clicks Send. Owner also given guides for the Places quota/budget alert and archiving the Apps Script deployment (21 Nov) |
+| 2026-11-21 | Request indexing for 10 key pages in Search Console | Done by the owner on 21 Nov (track indexing of those pages from the next run) |
