@@ -173,12 +173,9 @@ The owner added an OpenRouter key, saved as a hidden network secret for `openrou
 - **Budget check first, every time.** Before generating any image, call `GET https://openrouter.ai/api/v1/key` and read `usage_monthly`.
   - If it is **$9.00 or more**, generate no images for the rest of the calendar month and note it in the log.
   - Record every generation (date, model, cost, file) in `docs/openrouter-spend.csv`.
-- **Volume and model.**
-  - At most **1 AI image per new article**, and none for refreshed articles.
-  - Pick the cheapest image-capable model from `GET https://openrouter.ai/api/v1/models` (output modalities include image), and never one costing more than $0.10 per image.
-- **What AI images may show.** Only illustrative hero images (a car on a road, a dashboard glow, a mechanic's tools).
-  - No text, labels, numbers, logos, real brands or real people.
-  - Never use them to show facts such as a part's location, a wiring diagram or a warning-light chart: image models get those wrong, and on a car-repair site that is misinformation.
+- **Style, models and prompts: follow `docs/IMAGE-STYLE.md`** (owner's choice, 21 Nov). It sets the two styles (studio catalog and brand color-block), the model for each job (Nano Banana Pro for hero images and anything showing a car, Nano Banana 2.1 for everything else), the exact prompt recipes, and the hard rules: real photos for items for sale, generic cars only, no text, logos or people.
+- **Volume:** at most **1 AI image per new article** or code page, plus the rollout batch listed in `docs/IMAGE-STYLE.md`.
+- **Never use AI images to show facts** such as a part's location, a wiring diagram or a warning-light chart: image models get those wrong, and on a car-repair site that is misinformation.
 - **Charts and diagrams that carry facts are drawn in code** (SVG or HTML) from the sourced data, with a source caption. Examples: repair cost by model, recalls by year.
 - **Every image:**
   - WebP, at most 1200 px wide and about 120 KB
@@ -280,6 +277,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 6. **New goal (19 Nov):** 10,000 tier-1 organic visits a month, as fast as possible. Organic only still applies. The owner judges progress by the checkpoints in section 8.
 7. **Daily runs (19 Nov):** day 1 shipped from the owner's main session; from day 2 the runs fire into a dedicated session with the repository attached, to keep each run small. The owner has no citable repair-cost source, so pages show no dollar figures.
 8. **Outreach drafts in Gmail (21 Nov):** the agent may save outreach emails as drafts in the owner's Gmail through the Gmail connector, one draft per site, personalized, and never sends anything. The owner reviews and sends. If the session running the work has no Gmail tools, it writes the drafts to `docs/outreach/<date>.md` and the owner's main session saves them to Gmail at the next "status".
+9. **Image style (21 Nov):** studio catalog plus brand color-block, as set out in `docs/IMAGE-STYLE.md`. Nano Banana Pro (about $0.14) is allowed above the $0.10 cap for hero images and any image showing a car; everything else uses Nano Banana 2.1 (about $0.04).
 
 ---
 

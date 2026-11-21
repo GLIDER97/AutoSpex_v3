@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Image style for the site (21 Nov):** three directions were mocked up on the homepage: A service-manual exploded diagrams, B soft 3D clay garage, C night dashboard photography. Waiting for the owner's pick; no site change until then.
+1. **Pick the homepage hero image (21 Nov):** three options made with Nano Banana Pro, shown in the chat. Option 2 (parts and tools, no car) is recommended. Options 1 and 3 resembled a Volvo and a VW and would need regenerating (about $0.14 per try). Waiting for the owner's pick.
 
 ## Answered
 
@@ -19,3 +19,6 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-21 | Spending limit on the website's own OpenRouter key | Done by the owner |
 | 2026-11-21 | Save outreach emails as Gmail drafts | **Yes.** The agent may create drafts in the owner's Gmail (Gmail connector); it never sends. The owner reviews and clicks Send. Owner also given guides for the Places quota/budget alert and archiving the Apps Script deployment (21 Nov) |
 | 2026-11-21 | Request indexing for 10 key pages in Search Console | Done by the owner on 21 Nov (track indexing of those pages from the next run) |
+| 2026-11-21 | Image style for the site | Styles 1 (studio catalog) and 2 (brand color-block); site must feel premium, authentic and highly trustworthy (`docs/IMAGE-STYLE.md`) |
+| 2026-11-21 | Run a 4-model image test (~$0.50) | Yes. Result: Nano Banana Pro for heroes and cars, Nano Banana 2.1 for everything else |
+| 2026-11-21 | Allow Nano Banana Pro (~$0.14) above the $0.10 cap | Yes, for homepage hero images and any image showing a car |
