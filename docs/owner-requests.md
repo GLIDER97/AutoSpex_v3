@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Pick the homepage hero image (21 Nov):** three options made with Nano Banana Pro, shown in the chat. Option 2 (parts and tools, no car) is recommended. Options 1 and 3 resembled a Volvo and a VW and would need regenerating (about $0.14 per try). Waiting for the owner's pick.
+Nothing open.
 
 ## Answered
 
@@ -22,3 +22,4 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-21 | Image style for the site | Styles 1 (studio catalog) and 2 (brand color-block); site must feel premium, authentic and highly trustworthy (`docs/IMAGE-STYLE.md`) |
 | 2026-11-21 | Run a 4-model image test (~$0.50) | Yes. Result: Nano Banana Pro for heroes and cars, Nano Banana 2.1 for everything else |
 | 2026-11-21 | Allow Nano Banana Pro (~$0.14) above the $0.10 cap | Yes, for homepage hero images and any image showing a car |
+| 2026-11-21 | Pick the homepage hero image | **Option 2** (parts and tools on green and yellow, no car). Live on the homepage from 21 Nov |

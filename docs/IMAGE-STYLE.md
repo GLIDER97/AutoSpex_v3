@@ -67,7 +67,7 @@ Build every prompt as **style base + subject + rules**. Keep the wording below s
 
 | What | Style | Model | Images | Status |
 |---|---|---|---|---|
-| Homepage hero (3 options for the owner to pick) | 2 | Pro | 3 | options made 21 Nov: the parts option recommended; both car options resembled real models |
+| Homepage hero (3 options for the owner to pick) | 2 | Pro | 3 | done 21 Nov: the owner picked the parts option (`public/images/hero-parts-color-block.webp`, backdrop color-matched to `#006b4f`); both car options resembled real models |
 | Category banners and default social share image | 2 | 2.1 (Pro if it shows a car) | 5 | to do |
 | Code guide images (the part each code is about) | 1 | 2.1 | 6 + 1 per new code page | to do |
 | Replace the 14 mixed article covers | 1 or 2 by topic | 2.1 (Pro if it shows a car) | 14 | to do |
