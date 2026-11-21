@@ -10,7 +10,53 @@
 - Most impressions came from outside the tier-1 countries.
 - The technical fixes went live on 15 Nov; the PR #1 follow-ups (internal links, titles, images) are waiting to be merged.
 
+**Direction (21 Nov): section 0 comes first.** Only work that AI apps can't replace or will cite.
+
 This file is the agent's instructions as well as the owner's plan. The agent reads it at the start of every run and records its progress in `docs/growth-log.md`.
+
+---
+
+## 0. Direction: only work that AI apps can't replace, or will cite (owner, 21 Nov 2026)
+
+**Binding. This section overrides the rest of this plan, and the daily task's own instructions, wherever they conflict.**
+
+People increasingly ask ChatGPT, Gemini and Google's AI answers instead of clicking a search result. A page that only explains something general ("what does P0300 mean") is exactly what those apps answer without sending anyone to us. So every hour of work goes into one of two things:
+
+1. **What AI apps can't replace:**
+   - **Live official data about one exact vehicle:** NHTSA owner complaints, recalls, investigations and crash ratings, plus EPA fuel economy, for each make, model and year, refreshed weekly.
+   - **Data that exists only here:** real repair prices people paid and "What fixed it?" votes (section 4d). Never seeded or invented.
+   - **Tools that work on the visitor's own details:** VIN recall check, repair quote check, cost calculators, the code lookup with their car.
+   - **Things other sites embed:** a free recall checker widget.
+   - **Later, things you can buy:** parts that fit the visitor's car, and cars for sale (owner's future plans).
+2. **What AI apps cite as a source.** AI search (Google AI answers, ChatGPT search, Perplexity, Copilot) links the pages it takes facts from. Pages with original numbers, clear dates and named sources get cited.
+
+**The test before any task:** "Could an AI app answer this fully without sending anyone to us?" If yes, don't build it, or add unique data or a working tool until the answer is no.
+
+**Every data page carries these citation features:**
+- a short **key numbers** box at the top: our own computed figures (counts, rankings, medians), each with its date and source link
+- question-style headings, each answered directly in the first one or two sentences
+- **"Data as of <date>"** and an updated date in the sitemap
+- a **downloadable CSV** of the table, the method in plain words, and a **"How to cite this"** line ("Source: MyAutoSpex analysis of NHTSA complaint data, updated <date>, <URL>")
+- matching structured data (`Dataset` where there is a table; `Car` or `Vehicle` details on vehicle pages)
+- a listing in `llms.txt`
+- AI crawlers stay allowed in `robots.txt` (GPTBot, OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended, Bingbot). Never block them.
+
+**What stops:**
+- No new general explainer articles.
+- Code guides drop to **at most 1 a day**, and only with a unique-data element. Examples: NHTSA complaint counts for that system on the most affected models, with links to those vehicle pages; or, once live, community prices and "What fixed it?" results. Existing code guides get these added on Monday refreshes.
+
+**Schedule (replaces section 4 from day 4):**
+
+| When | Work |
+|---|---|
+| Day 4 (Sat 22 Nov) | **Vehicle report pages (owner yes, 21 Nov, A).** Template `/cars/:make/:model/:year` from a weekly data snapshot (`data/vehicles/`), built at deploy time from the free NHTSA APIs (complaints, recalls, safety ratings) and fueleconomy.gov. Each page has: the key numbers box; complaints by component with a chart drawn in code; the recall list; crash ratings; EPA MPG; links to the VIN recall check, the code guides for the top complaint areas, and the cost tools; CSV download; structured data. Launch with **2 model-years**, picked by search demand (Bing volume for "<year> <make> <model> problems" or "reliability") among the best-selling US models of 2015–2022. **Publish only model-years with at least 25 complaints or at least 1 recall**, so no page is thin. |
+| Day 5 | 2 more vehicle pages and a `/cars` hub (make, model, year), linked from the header Tools menu, `/recalls`, the VIN tool and the code guides. |
+| Days 6–7 | **First data study** from the same NHTSA data, for example "the 2015–2022 SUVs with the most owner complaints per model-year, and what owners complain about". Method, CSV and "How to cite this" included. |
+| Week 2 (26 Nov–2 Dec) | Vehicle pages 2 a day (4 once 60% of them are indexed). **Community real prices and "What fixed it?" live (owner yes, 21 Nov, B)**, moved up from day 15. Outreach list of 15 sites and email drafts for the data study. Code guides at most 1 a day, with unique data. |
+| Week 3 (3–9 Dec) | **Free embeddable recall checker (owner yes, 21 Nov, C):** a small script or iframe other sites add, showing the official NHTSA result with a "Powered by MyAutoSpex" link, plus a `/recall-checker-widget` page with the copy-paste code. Outreach drafts offering it to car blogs, independent mechanics and local news. Follow-ups on the study outreach. |
+| Monthly | One new data study; the vehicle snapshot refreshed weekly; Monday refresh adds unique data to older pages. |
+
+**Measure the new channel:** each run records visits referred by AI apps (chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com, claude.ai) from Clarity's referrer data where available, in `docs/growth-metrics.csv` and the status reply. There's no goal yet; set one at day 30.
 
 ---
 
@@ -90,6 +136,8 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
 ---
 
 ## 4. 30-day roadmap
+
+*From day 4 (22 Nov), section 0's schedule replaces this roadmap. Kept for its targets and history.*
 
 The tier-1 focus means **US first**: the content already uses US prices, NHTSA and the EPA.
 
@@ -201,8 +249,8 @@ Tools matter differently:
 - every content page should link to, or pre-fill, the matching tool
 
 So:
-- Improve the existing 13 tools using Clarity data.
-- The **one new tool** for these 30 days is the community data feature in section 4d, which the owner chose on 16 Nov. No other new tools.
+- Improve the existing tools using Clarity data.
+- New tools for these 30 days: the community data feature (section 4d, chosen 16 Nov) and the embeddable recall checker (section 0, chosen 21 Nov). No others without the owner's OK.
 
 ## 4d. Community data: repair-cost reports and "What fixed it?" (from day 15)
 
@@ -224,7 +272,7 @@ The owner chose these two features on 16 Nov, to build a real, owner-reported da
 - One vote per visitor per code.
 
 **How it works:**
-- **Storage:** a free Postgres database the owner connects once in Vercel (Storage → Create Database → Neon, connected to this project). Only the site's `api/` serverless functions use it. The agent's sandbox never holds database credentials.
+- **Storage:** the site's existing Neon Postgres database (`DATABASE_URL`, already used by `api/_limits.ts`), so the owner has nothing to set up. Only the site's `api/` serverless functions use it. The agent's sandbox never holds database credentials.
 - **Abuse protection without extra accounts:**
   - only allowed values, and price limits per repair
   - a hidden honeypot field and a minimum time on the page
@@ -239,7 +287,7 @@ The owner chose these two features on 16 Nov, to build a real, owner-reported da
 - **Health check:** `/api/community/health` reports whether the database is connected, so the agent can tell whether the owner's setup is done.
 - **Legal pages:** add the data use to the Privacy Policy, and a short contribution clause to the Terms.
 
-**Timing:** build from day 15 (1 Dec). If the health check shows no database, ship the feature switched off, log the owner action and carry on with content.
+**Timing:** build in week 2 (26 Nov–2 Dec), moved up by decision 10. If the health check shows no database, ship the feature switched off, log the owner action and carry on with content.
 
 ## 5. Quality rules the agent must follow (non-negotiable)
 
@@ -275,11 +323,12 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 2. **Merging: allowed.** The agent may merge its own PRs, and PR #1, once Vercel's preview passes and its own build and browser checks pass.
 3. **Start: 16 Nov 2026.** Until the owner's setup is done, the agent builds and ships pages and skips the measurement steps it has no access to, noting that in the log.
 4. **Community distribution:** not chosen. The agent doesn't post anywhere.
-5. **Community data (16 Nov):** build repair-cost reports and "What fixed it?" (section 4d) from day 15. My Garage recall alerts and a parts marketplace are not in scope.
+5. **Community data (16 Nov):** build repair-cost reports and "What fixed it?" (section 4d), moved up to week 2 by decision 10. My Garage recall alerts and a parts marketplace are not in scope.
 6. **New goal (19 Nov):** 10,000 tier-1 organic visits a month, as fast as possible. Organic only still applies. The owner judges progress by the checkpoints in section 8.
 7. **Daily runs (19 Nov):** day 1 shipped from the owner's main session; from day 2 the runs fire into a dedicated session with the repository attached, to keep each run small. The owner has no citable repair-cost source, so pages show no dollar figures.
 8. **Outreach drafts in Gmail (21 Nov):** the agent may save outreach emails as drafts in the owner's Gmail through the Gmail connector, one draft per site, personalized, and never sends anything. The owner reviews and sends. If the session running the work has no Gmail tools, it writes the drafts to `docs/outreach/<date>.md` and the owner's main session saves them to Gmail at the next "status".
 9. **Image style (21 Nov):** studio catalog plus brand color-block, as set out in `docs/IMAGE-STYLE.md`. Nano Banana Pro (about $0.14) is allowed above the $0.10 cap for hero images and any image showing a car; everything else uses Nano Banana 2.1 (about $0.04).
+10. **AI-proof direction (21 Nov):** yes to all three of A, B and C, and to section 0's rule: every piece of work must be something AI apps can't replace, or something they cite as a source. The owner's words: "make sure you must always use your energy on something that AI apps/models cant beat and also do something that AI apps/models also compliments and cite as a source for answers." A: vehicle report pages from live government data, from day 4, with code guides cut to at most 1 a day. B: community real prices and "What fixed it?" from week 2 instead of day 15. C: a free embeddable recall checker in week 3; this lifts section 4c's one-new-tool limit.
 
 ---
 
@@ -373,8 +422,8 @@ Week N runs from day 7N−6 to day 7N, with day 1 = Thu 19 Nov 2026, so weeks en
 | Week | Dates | Effort goals | Result goals (Google) |
 |---|---|---|---|
 | 1 | 19–25 Nov | 12+ new code pages; `/codes` hub page; every deploy submitted to IndexNow; 0 broken builds | 12+ pages indexed; 50+ tier-1 impressions in the week |
-| 2 | 26 Nov–2 Dec | 12+ new pages (code pages plus the first 10 recall pages); first Monday quick-win pass; outreach list of 15 sites with drafted emails for the first data study (moved up from week 3 on 21 Nov: links are the biggest gap) | 25+ indexed; 300+ tier-1 impressions; 3+ tier-1 clicks |
-| 3 | 3–9 Dec | 12+ new pages; outreach follow-ups (one polite follow-up draft per site that hasn't replied after 7 days) | 40+ indexed; 800+ tier-1 impressions; 10+ tier-1 clicks |
+| 2 | 26 Nov–2 Dec | 12+ new pages, mostly vehicle reports (section 0), with code guides at most 1 a day; community real prices and "What fixed it?" live; first Monday quick-win pass; outreach list of 15 sites with drafted emails for the first data study (moved up from week 3 on 21 Nov: links are the biggest gap) | 25+ indexed; 300+ tier-1 impressions; 3+ tier-1 clicks |
+| 3 | 3–9 Dec | 12+ new pages (vehicle reports first); embeddable recall checker live with outreach drafts offering it; outreach follow-ups (one polite follow-up draft per site that hasn't replied after 7 days) | 40+ indexed; 800+ tier-1 impressions; 10+ tier-1 clicks |
 | 4 | 10–16 Dec | 12+ new pages, including the first topic cluster; Monday quick wins | 60+ indexed; 1,500+ tier-1 impressions; 25+ tier-1 clicks |
 
 ### 9.2 Weekly goals: from week 5 onward
