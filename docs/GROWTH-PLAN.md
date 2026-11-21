@@ -279,6 +279,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 5. **Community data (16 Nov):** build repair-cost reports and "What fixed it?" (section 4d) from day 15. My Garage recall alerts and a parts marketplace are not in scope.
 6. **New goal (19 Nov):** 10,000 tier-1 organic visits a month, as fast as possible. Organic only still applies. The owner judges progress by the checkpoints in section 8.
 7. **Daily runs (19 Nov):** day 1 shipped from the owner's main session; from day 2 the runs fire into a dedicated session with the repository attached, to keep each run small. The owner has no citable repair-cost source, so pages show no dollar figures.
+8. **Outreach drafts in Gmail (21 Nov):** the agent may save outreach emails as drafts in the owner's Gmail through the Gmail connector, one draft per site, personalized, and never sends anything. The owner reviews and sends. If the session running the work has no Gmail tools, it writes the drafts to `docs/outreach/<date>.md` and the owner's main session saves them to Gmail at the next "status".
 
 ---
 
@@ -433,4 +434,3 @@ The owner opens this chat once a day and asks **"status"** (or "what's the statu
 5. **Next:** the next 1–3 days of work.
 
 When the owner answers, record the decision in `docs/owner-requests.md` (and section 7 if it changes the plan), then act on it.
-
