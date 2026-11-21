@@ -40,6 +40,14 @@ export const STATIC_PAGES: PageMeta[] = [
     priority: 0.9,
   },
   {
+    path: '/codes',
+    updated: '2026-11-21',
+    title: 'Check Engine Code Guides (OBD-II)',
+    description:
+      "Plain-English guides to common check engine (OBD-II) codes: what each means, whether it's safe to drive, the usual causes and what to check first.",
+    priority: 0.8,
+  },
+  {
     path: '/vin-lookup',
     updated: '2026-11-16',
     title: 'Free VIN Decoder & Vehicle Specs Lookup',

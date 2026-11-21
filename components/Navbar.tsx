@@ -74,6 +74,11 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                             <Link to={tool.path}>{tool.name}</Link>
                           </DropdownMenuItem>
                         ))}
+                        {category.id === 'warnings' && (
+                          <DropdownMenuItem asChild className="rounded-md px-2 py-1.5 text-[0.9375rem]">
+                            <Link to="/codes">Code guides</Link>
+                          </DropdownMenuItem>
+                        )}
                       </div>
                     );
                   })}
@@ -159,6 +164,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                 ))}
                 <ul className="border-t border-border pt-4">
                   {[
+                    { to: '/codes', label: 'Code guides' },
                     { to: '/blog', label: 'Articles' },
                     { to: '/about', label: 'About' },
                     { to: '/contact', label: 'Contact' },

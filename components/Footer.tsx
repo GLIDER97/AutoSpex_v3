@@ -16,6 +16,7 @@ const COMPANY_LINKS = [
   { to: '/contact', label: 'Contact' },
   { to: '/editorial-policy', label: 'Editorial policy' },
   { to: '/blog', label: 'Articles' },
+  { to: '/codes', label: 'Check engine code guides' },
   { to: '/privacy-policy', label: 'Privacy policy' },
   { to: '/terms-of-service', label: 'Terms of service' },
   { to: '/cookie-policy', label: 'Cookie policy' },

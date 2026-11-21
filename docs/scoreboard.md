@@ -8,7 +8,7 @@ Baseline (19 Nov 2026, day 1): 5 pages indexed; about 25 tier-1 impressions and 
 
 | Week | Dates | New/improved pages (goal) | Pages indexed (goal) | Tier-1 impressions (goal) | Tier-1 clicks (goal) | Grade |
 |---|---|---|---|---|---|---|
-| 1 | 19–25 Nov | 4 so far (12+) | 5 (12+) | 34 in the latest 7 days of data, 12–18 Nov (50+) | 0 (0) | in progress |
+| 1 | 19–25 Nov | 6 so far: 5 code pages + `/codes` hub (12+) | 7 (12+) | 39 in the latest 7 days of data, 13–19 Nov (50+) | 0 (0) | in progress |
 | 2 | 26 Nov–2 Dec | (12+) | (25+) | (300+) | (3+) | |
 | 3 | 3–9 Dec | (12+) | (40+) | (800+) | (10+) | |
 | 4 | 10–16 Dec | (12+) | (60+) | (1,500+) | (25+) | |

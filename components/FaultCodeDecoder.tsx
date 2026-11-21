@@ -293,7 +293,12 @@ const FaultCodeDecoder: React.FC = () => {
           <h2 id="code-guides" className="font-heading text-2xl font-extrabold">
             Code guides
           </h2>
-          <p className="mt-2 text-muted-foreground">Reviewed guides to common codes: causes, symptoms, whether it's safe to drive and what to check first.</p>
+          <p className="mt-2 text-muted-foreground">
+            Reviewed guides to common codes: causes, symptoms, whether it's safe to drive and what to check first.{' '}
+            <Link to="/codes" className={cn('font-semibold text-foreground underline underline-offset-4', focusRing)}>
+              All code guides by system
+            </Link>
+          </p>
           <ul className="mt-4 divide-y divide-border border-y border-border">
             {CODE_PAGES.map((p) => (
               <li key={p.code} className="py-3">

@@ -43,7 +43,7 @@ const CodePage: React.FC = () => {
       <SEO title={page.seoTitle} description={page.description} />
 
       <nav aria-label="Breadcrumb" className="text-[0.9375rem] text-muted-foreground">
-        <Link to="/fault-code-decoder" className={cn('font-semibold text-foreground underline-offset-4 hover:underline', focusRing)}>
+        <Link to="/codes" className={cn('font-semibold text-foreground underline-offset-4 hover:underline', focusRing)}>
           Check engine codes
         </Link>
         <span aria-hidden="true" className="mx-2">
