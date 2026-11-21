@@ -58,9 +58,11 @@ Build every prompt as **style base + subject + rules**. Keep the wording below s
 - **Name:** descriptive, for example `hero-sedan-color-block.webp` or `p0300-spark-plugs-studio.webp`.
 - **Markup:** real `width` and `height`, alt text describing what's shown, and `loading="lazy"` except for the first image on the page.
 - **Hero images:** load with `fetchpriority="high"`.
+- **Page images** (one per tool, code guide or site page): 16:9, saved as `public/images/pages/<file>-1200.webp` (1200x675), `<file>-640.webp` (640x360) and `<file>-share.jpg` (1200x675, the social share image), then listed by route in `data/pageImages.ts`. The page header (`HeaderWithImage` in `components/tool/kit.tsx`) and the share image pick them up automatically. Each new code page adds `'/codes/pxxxx'` there with a Style 1 photo of the part the code is about.
 
 ## Budget
 - **Before every batch:** read `usage_monthly` from `GET https://openrouter.ai/api/v1/key`. At $9.00 or more, make no images for the rest of the month.
+- **Also check the account balance:** `GET https://openrouter.ai/api/v1/credits` gives `total_credits` and `total_usage`; the balance is the difference. If it is under **$2.00**, make no images and ask the owner to add credit (`docs/owner-requests.md`). The account is most likely shared with the website's own AI tools (code explanations, repair estimates), which stop working when it reaches $0, so the balance matters more than the $10 key limit. On 21 Nov the balance ran out partway through a batch (HTTP 402) with only $3.03 of the $10 limit used.
 - **Log every image** in `docs/openrouter-spend.csv`.
 
 ## Rollout (first pass, owner-approved 21 Nov 2026)
@@ -68,6 +70,7 @@ Build every prompt as **style base + subject + rules**. Keep the wording below s
 | What | Style | Model | Images | Status |
 |---|---|---|---|---|
 | Homepage hero (3 options for the owner to pick) | 2 | Pro | 3 | done 21 Nov: the owner picked the parts option (`public/images/hero-parts-color-block.webp`, backdrop color-matched to `#006b4f`); both car options resembled real models |
-| Category banners and default social share image | 2 | 2.1 (Pro if it shows a car) | 5 | to do |
-| Code guide images (the part each code is about) | 1 | 2.1 | 6 + 1 per new code page | to do |
-| Replace the 14 mixed article covers | 1 or 2 by topic | 2.1 (Pro if it shows a car) | 14 | to do |
+| One image per tool page (14 tools; they double as the category look and each page's share image) | 2 (DIY tools: 1) | 2.1 | 14 | done 21 Nov |
+| Code guide images (the part each code is about) and the `/codes` index | 1 | 2.1 | 6 + 1 per new code page | 4 of 6 done 21 Nov (index, P0300, P0171, P0128); **P0455 and P0442 waiting for credit** |
+| About, editorial policy, contact and 404 pages | 2 (editorial policy: 1) | 2.1 | 4 | 404 done 21 Nov; **about, editorial policy and contact waiting for credit**. Prompts are in the 21 Nov batch: a blank yellow diamond road sign; a magnifying glass on blank paper; a paper airplane |
+| ~~Replace the 14 mixed article covers~~ | | | | cancelled 21 Nov: the owner said the articles keep their own images |

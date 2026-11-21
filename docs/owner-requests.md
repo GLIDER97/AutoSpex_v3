@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-Nothing open.
+1. **Add credit to OpenRouter (21 Nov, urgent):** the OpenRouter account balance is down to about **$0.44** ($34.62 bought, $34.18 used across all keys). The $10 monthly limit is on the key; the balance is what actually pays. If the website's own key is on this account (most likely), the site's AI features (code explanations, repair estimates) stop working when it reaches $0. **Yes** = add credit at https://openrouter.ai/settings/credits (for example $10); then the last 5 page images (P0455, P0442, about, editorial policy, contact, about $0.20) get made on the next run.
 
 ## Answered
 
