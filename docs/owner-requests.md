@@ -23,3 +23,5 @@ Nothing open.
 | 2026-11-21 | Run a 4-model image test (~$0.50) | Yes. Result: Nano Banana Pro for heroes and cars, Nano Banana 2.1 for everything else |
 | 2026-11-21 | Allow Nano Banana Pro (~$0.14) above the $0.10 cap | Yes, for homepage hero images and any image showing a car |
 | 2026-11-21 | Pick the homepage hero image | **Option 2** (parts and tools on green and yellow, no car). Live on the homepage from 21 Nov |
+| 2026-11-21 | Add credit to OpenRouter (balance was $0.44 after the page-image batch hit HTTP 402) | **Done by the owner:** $10 added (balance $9.04 at 21 Nov); the last 5 page images were made |
+| 2026-11-21 | Images on every page, not just the homepage | Yes, but the articles keep their own images. Done: 24 page images (14 tools, 6 code guides plus the index, about, editorial policy, contact, 404) |

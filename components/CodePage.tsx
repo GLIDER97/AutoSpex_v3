@@ -7,7 +7,7 @@ import { CODE_PAGES, codePage } from '../data/codePages';
 import NotFound from './NotFound';
 import SEO from './SEO';
 import { SignMarker } from './brand';
-import { Faq, Notice, Panel, PanelTitle, Verdict, focusRing } from './tool/kit';
+import { Faq, Notice, Panel, PanelTitle, Verdict, focusRing, HeaderWithImage } from './tool/kit';
 
 const VERDICT_LABEL = { go: 'Safe to drive', caution: 'Drive with caution', stop: 'Get it checked now' } as const;
 
@@ -52,7 +52,7 @@ const CodePage: React.FC = () => {
         <span>{page.code}</span>
       </nav>
 
-      <header className="mt-4 mb-8 max-w-3xl">
+      <HeaderWithImage path={`/codes/${page.code.toLowerCase()}`} className="mt-4 mb-8">
         <h1 className="flex items-start gap-3 font-heading text-[2.25rem] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance sm:text-5xl">
           <SignMarker category="warnings" className="mt-2 size-7 sm:mt-3 sm:size-8" />
           <span>
@@ -67,7 +67,7 @@ const CodePage: React.FC = () => {
             MyAutoSpex Editorial Team
           </Link>
         </p>
-      </header>
+      </HeaderWithImage>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,22rem)]">
         <div className="min-w-0 space-y-6">

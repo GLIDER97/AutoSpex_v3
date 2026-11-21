@@ -12,6 +12,7 @@ import { toDay, toPublished, type ArticleSummary } from './Article/articleIndex'
 export { SITE_URL, SITE_NAME, STATIC_PAGES, NOT_FOUND_META, formatTitle, absoluteUrl } from './seo/site';
 // Reviewed OBD-II code pages, rendered at /codes/<code>.
 export { CODE_PAGES } from './data/codePages';
+export { pageImageFor, pageShareImageSrc } from './data/pageImages';
 
 // Tool pages (name, path, one-line description), for WebApplication markup and llms.txt.
 export const TOOLS = TOOL_CATEGORIES.flatMap((c) => c.tools.map((t) => ({ name: t.name, path: t.path, description: t.description })));

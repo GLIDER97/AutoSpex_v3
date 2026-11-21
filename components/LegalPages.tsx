@@ -1,24 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { FactList, Panel, focusRing } from './tool/kit';
+import { FactList, HeaderWithImage, Panel, focusRing } from './tool/kit';
 
 const FEEDBACK_URL = 'https://forms.gle/XtuvETokH5R83r1q7';
 const UPDATED = 'November 16, 2026';
 
 const linkClass = cn('font-semibold text-foreground underline underline-offset-4', focusRing);
 
-/** Shared layout for the about, policy and contact pages: one readable column in the site's type scale. */
+/**
+ * Shared layout for the about, policy and contact pages: one readable column in the site's type scale, with the
+ * page's studio photo beside the header where it has one (data/pageImages.ts).
+ */
 function ContentPage({ title, intro, updated, children }: { title: string; intro?: React.ReactNode; updated?: string; children: React.ReactNode }) {
+  const { pathname } = useLocation();
   return (
-    <article className="w-full max-w-3xl">
-      <header className="mb-10">
+    <article className="w-full max-w-6xl">
+      <HeaderWithImage path={pathname} className="mb-10">
         <h1 className="font-heading text-[2.25rem] leading-[1.08] font-extrabold tracking-[-0.02em] text-balance sm:text-5xl">{title}</h1>
         {intro && <p className="mt-4 max-w-[62ch] text-lg leading-relaxed text-muted-foreground">{intro}</p>}
         {updated && <p className="mt-3 text-sm text-muted-foreground">Last updated {updated}</p>}
-      </header>
-      <div className="space-y-10 text-[1.0625rem] leading-relaxed [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:tracking-[-0.01em] [&_li]:mt-1.5 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5">
+      </HeaderWithImage>
+      <div className="max-w-3xl space-y-10 text-[1.0625rem] leading-relaxed [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:tracking-[-0.01em] [&_li]:mt-1.5 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5">
         {children}
       </div>
     </article>

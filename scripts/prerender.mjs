@@ -19,8 +19,14 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
+
+// A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
+const pageShareImage = (routePath) => {
+  const img = pageImageFor(routePath);
+  return img ? absoluteUrl(pageShareImageSrc(img.file)) : undefined;
+};
 
 const template = await fs.readFile(path.join(distDir, 'index.html'), 'utf8');
 
@@ -110,6 +116,7 @@ let count = 0;
 const pages = [...STATIC_PAGES].sort((a, b) => (a.path === '/') - (b.path === '/'));
 for (const page of pages) {
   const canonical = absoluteUrl(page.path === '/' ? '/' : page.path);
+  const shareImage = pageShareImage(page.path);
   const structuredData = [];
   if (page.path === '/') {
     structuredData.push({
@@ -138,6 +145,7 @@ for (const page of pages) {
         operatingSystem: 'Any (web browser)',
         isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        ...(shareImage && { image: shareImage }),
         publisher: { '@id': ORGANIZATION['@id'] },
       });
     }
@@ -155,6 +163,7 @@ for (const page of pages) {
     description: page.description,
     canonical,
     noindex: page.noindex,
+    image: shareImage,
     structuredData,
   });
   count++;
@@ -208,11 +217,13 @@ for (const article of ARTICLES) {
 for (const page of CODE_PAGES) {
   const routePath = `/codes/${page.code.toLowerCase()}`;
   const canonical = absoluteUrl(routePath);
+  const shareImage = pageShareImage(routePath);
   await writePage(routePath, {
     title: formatTitle(page.seoTitle),
     description: page.description,
     canonical,
     type: 'article',
+    image: shareImage,
     structuredData: [
       {
         '@context': 'https://schema.org',
@@ -221,6 +232,7 @@ for (const page of CODE_PAGES) {
         description: page.description,
         about: { '@type': 'Thing', name: `OBD-II trouble code ${page.code}` },
         dateModified: page.reviewed,
+        ...(shareImage && { image: [shareImage] }),
         author: { '@type': 'Organization', name: 'MyAutoSpex Editorial Team', url: `${SITE_URL}/editorial-policy` },
         citation: page.sources.map((s) => s.url),
         publisher: ORGANIZATION,
