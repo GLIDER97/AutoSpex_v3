@@ -2,6 +2,18 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-21: owner session note (not a daily run; day numbering unchanged)
+
+- **Direction change (owner, 21 Nov evening):** GROWTH-PLAN section 0 is now the top rule. Only work that AI apps can't replace (live official data per vehicle, real prices people paid, working tools, an embeddable widget) or that they will cite (original numbers, dates, sources, CSV, "How to cite this"). Owner said yes to A, B and C (decision 10).
+- **Day 4 therefore builds the vehicle report pages** (`/cars/:make/:model/:year`, 2 model-years), instead of the P0301 and P0172 code guides planned above. Code guides drop to at most 1 a day, each with unique data.
+- **Also shipped in the owner session on 21 Nov:**
+  - the homepage hero (PR #16)
+  - a studio photo on 24 pages that doubles as each page's share image (PR #17)
+  - the site icon (PR #18)
+  - outreach moved to week 2 and a week-3 checkpoint (PR #19)
+- **Index after the owner's indexing requests:** 14 pages (Search Console, evening of 21 Nov). The owner also requested indexing for P0300, P0171 and P0442.
+- **OpenRouter:** $3.25 of $10 this month. The owner added $10 credit after the account balance ran out mid-batch. Check the account balance as well as the key limit (IMAGE-STYLE.md, Budget).
+
 ## 2026-11-21: day 3 (week 1, day 3)
 
 ### What changed

@@ -26,3 +26,4 @@ Nothing open.
 | 2026-11-21 | Add credit to OpenRouter (balance was $0.44 after the page-image batch hit HTTP 402) | **Done by the owner:** $10 added (balance $9.04 at 21 Nov); the last 5 page images were made |
 | 2026-11-21 | Images on every page, not just the homepage | Yes, but the articles keep their own images. Done: 24 page images (14 tools, 6 code guides plus the index, about, editorial policy, contact, 404) |
 | 2026-11-21 | Request indexing for `/codes/p0300`, `/codes/p0171` and `/codes/p0442` in Search Console | Done by the owner on 21 Nov (track them from the next run; the first 10 requests took the index from 7 to 14) |
+| 2026-11-21 | Re-aim the plan at work AI apps can't replace or will cite: A vehicle report pages from live NHTSA and EPA data, B community real prices sooner, C an embeddable recall checker | **Yes to all.** Standing rule: only work AI apps can't beat or will cite (GROWTH-PLAN section 0, decision 10) |
