@@ -3,13 +3,13 @@
 // (green = go/guidance, yellow = caution, red = stop, blue = services).
 import React, { useEffect, useId, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ToolCategoryId } from '../../data/tools';
 import { SignMarker } from '../brand';
 import { PageImage } from '../PageImage';
 import { pageImageFor } from '../../data/pageImages';
 import { listEpaMakes, listEpaModels } from '../../utils/fuelEconomy';
+import { CarLoader, WheelIcon } from './CarLoader';
 
 export const focusRing =
   'outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
@@ -179,13 +179,13 @@ export function PrimaryButton({ className, children, loading, ...props }: React.
       disabled={loading || props.disabled}
       {...props}
     >
-      {loading && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+      {loading && <WheelIcon className="size-6" />}
       {children}
     </button>
   );
 }
 
-export function SecondaryButton({ className, children, ...props }: React.ComponentProps<'button'>) {
+export function SecondaryButton({ className, children, loading, ...props }: React.ComponentProps<'button'> & { loading?: boolean }) {
   return (
     <button
       className={cn(
@@ -195,7 +195,9 @@ export function SecondaryButton({ className, children, ...props }: React.Compone
         className,
       )}
       {...props}
+      disabled={loading || props.disabled}
     >
+      {loading && <WheelIcon className="size-5" />}
       {children}
     </button>
   );
@@ -243,13 +245,8 @@ export function Verdict({ tone, children, className }: { tone: keyof typeof VERD
   );
 }
 
-export function Spinner({ label }: { label: string }) {
-  return (
-    <p role="status" className="flex items-center gap-2 text-[0.9375rem] text-muted-foreground">
-      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-      {label}
-    </p>
-  );
+export function Spinner({ label, size = 'lg' }: { label: string; size?: 'md' | 'lg' | 'xl' }) {
+  return <CarLoader label={label} size={size} />;
 }
 
 // ---------------------------------------------------------------------------

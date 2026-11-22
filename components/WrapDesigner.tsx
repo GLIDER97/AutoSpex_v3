@@ -468,7 +468,7 @@ export default function WrapDesigner() {
             <PanelTitle>
               <span id="preview-title">Preview</span>
             </PanelTitle>
-            <div className="mt-4" aria-busy={rendering}>
+            <div className="relative mt-4" aria-busy={rendering}>
               {current ? (
                 current.before ? (
                   <CompareSlider key={current.id} before={current.before} after={current.src} label={current.label} />
@@ -478,13 +478,14 @@ export default function WrapDesigner() {
               ) : photo ? (
                 <img src={photo.dataUrl} alt="Your car before the wrap" className="w-full rounded-lg" />
               ) : (
-                <div className="flex aspect-[3/2] items-center justify-center rounded-lg border-2 border-dashed border-input p-6 text-center text-muted-foreground">
+                <div className="flex aspect-[3/2] min-h-64 items-center justify-center rounded-lg border-2 border-dashed border-input p-6 text-center text-muted-foreground">
                   Upload a photo of your car, choose a wrap and your preview appears here.
                 </div>
               )}
               {rendering && (
-                <div className="mt-3">
-                  <Spinner label={photo ? 'Wrapping your car… this usually takes 10 to 20 seconds.' : 'Drawing your car… this usually takes 10 to 20 seconds.'} />
+                // Over the preview area, where the picture will appear.
+                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-card/85 backdrop-blur-[2px]">
+                  <Spinner size="xl" label={photo ? 'Wrapping your car… this usually takes 10 to 20 seconds.' : 'Drawing your car… this usually takes 10 to 20 seconds.'} />
                 </div>
               )}
             </div>

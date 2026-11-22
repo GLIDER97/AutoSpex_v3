@@ -110,7 +110,7 @@ export default function DiagnosisView({
 
       {loading && (
         <Panel>
-          <Spinner label="Working out the likely causes and repair costs…" />
+          <Spinner size="xl" label="Working out the likely causes and repair costs…" />
         </Panel>
       )}
 

@@ -213,7 +213,7 @@ const AffordabilityPredictor: React.FC = () => {
                       <input id="est-zip" inputMode="numeric" maxLength={5} value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))} className={inputClass} />
                     </Field>
                   </div>
-                  <SecondaryButton type="button" onClick={runEstimate} disabled={estimating} className="h-10">
+                  <SecondaryButton type="button" onClick={runEstimate} loading={estimating} className="h-10">
                     {estimating ? 'Estimating…' : 'Estimate the price'}
                   </SecondaryButton>
                   {estimateError && <p className="text-[0.9375rem] text-sign-red">{estimateError}</p>}

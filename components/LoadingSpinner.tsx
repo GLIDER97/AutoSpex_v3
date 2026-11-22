@@ -1,11 +1,7 @@
 import React from 'react';
-import { Loader2 } from 'lucide-react';
+import { CarLoader } from './tool/CarLoader';
 
-const LoadingSpinner: React.FC = () => (
-  <div role="status" className="flex min-h-[50vh] w-full items-center justify-center gap-2 text-muted-foreground">
-    <Loader2 className="size-5 animate-spin" aria-hidden="true" />
-    Loading…
-  </div>
-);
+// Shown while a page's code loads.
+const LoadingSpinner: React.FC = () => <CarLoader label="Loading…" size="xl" className="min-h-[50vh] w-full" />;
 
 export default LoadingSpinner;

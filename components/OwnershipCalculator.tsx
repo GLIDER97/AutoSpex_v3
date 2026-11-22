@@ -122,7 +122,7 @@ function CarEditor({ id, car, onChange, onRemove }: { id: string; car: CarForm; 
       </div>
       <div className="rounded-lg bg-muted/60 p-3">
         <VehicleFields value={car.vehicle} onChange={(vehicle) => set({ vehicle })} />
-        <SecondaryButton type="button" onClick={lookUp} disabled={looking} className="mt-3 h-10">
+        <SecondaryButton type="button" onClick={lookUp} loading={looking} className="mt-3 h-10">
           {looking ? 'Looking up…' : 'Get EPA fuel economy'}
         </SecondaryButton>
         {variants.length > 1 && (
