@@ -2,6 +2,32 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-22: owner instruction, wrap gallery (not a daily run; day numbering unchanged)
+
+- **New: `/wrap-gallery`** with one page per design, showing Wrap Designer images with all their details: vehicle, coverage, finish, color with hex, extras and date. `docs/WRAP-GALLERY.md`, decision 12.
+- **Privacy call:**
+  - Previews made from a visitor's own photo are never saved or published.
+  - Previews drawn from year, make and model are saved (once per unique design, capped at 80 a day and 2,500 in total), and the daily run reviews them before publishing.
+  - Only anonymous option counts are kept for every preview. The privacy policy and the tool say so.
+- **Images:**
+  - WebP 1200 px (55–150 KB) and 640 px (20–50 KB) via sharp at q72, plus a JPEG made on demand for shares.
+  - Every file carries IPTC/XMP metadata: title, caption, credit, CC BY 4.0, "AI-generated".
+  - Descriptive file names, alt text and captions built from the design.
+  - srcset with real width and height; lazy loading below the fold.
+- **SEO/AEO:**
+  - `ImageObject` with credit, license and `acquireLicensePage`; `CollectionPage` + `ItemList` on the hub; breadcrumbs
+  - an image sitemap (`image:image`) and `llms.txt` entries
+  - question headings and an FAQ
+  - "Use this image" with a ready credit line, so reuse earns links
+  - Pinterest save and copy-link sharing
+  - "Try this design" opens the Wrap Designer prefilled
+- **Navigation:** new **Explore** menu (wrap gallery, code guides, vehicle reports, articles) replaces the "Articles" link; code guides moved there from Tools. Footer link added.
+- **Starter set:**
+  - 20 designs made with Flux 3 Klein, the tool's own model and prompts, at **$0.0090 each, $0.171 in total**. That's the measured cost of a from-scratch preview, matching the estimate given to the owner.
+  - 19 published. The Nissan GT-R was rejected: labeled blue chrome, but it looked like gloss paint.
+  - OpenRouter this month: $3.40 of $10.
+- **Daily runs from now on:** review new visitor designs with `scripts/wraps/review.mjs` (GROWTH-PLAN section 3, step 4).
+
 ## 2026-11-22: owner instruction, charts on every data page (not a daily run; day numbering unchanged)
 
 - **New standing rule (owner):** every page with data or data insights shows it with charts, drawn by Claude in code, never with an AI or paid API. Saved in GROWTH-PLAN section 0 (charts rule) and decision 11, `docs/owner-requests.md`, and the spec `docs/DATA-VIZ.md`.

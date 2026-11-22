@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { FactList, HeaderWithImage, Panel, focusRing } from './tool/kit';
 
 const FEEDBACK_URL = 'https://forms.gle/XtuvETokH5R83r1q7';
-const UPDATED = 'November 16, 2026';
+const UPDATED = 'November 22, 2026';
 
 const linkClass = cn('font-semibold text-foreground underline underline-offset-4', focusRing);
 
@@ -150,7 +150,13 @@ export const PrivacyPolicy: React.FC = () => (
       <p>
         Codes, vehicle details, ZIP codes, quote lines and photos you enter are used to answer your request. When a tool uses AI, what you
         entered is sent to our AI providers (OpenRouter, which routes the request to Anthropic or another model provider) to produce the
-        answer. Photos are used for that one answer; we don&apos;t store them or your other inputs on our servers.
+        answer. Photos are used for that one answer; we don&apos;t store them or your other inputs on our servers, with one exception below.
+      </p>
+      <p>
+        <strong>Wrap Designer previews made without a photo.</strong> When you draw a wrap from a year, make and model (no photo), we keep that
+        picture with the vehicle name and the options you chose, and it may be published in our public{' '}
+        <a href="/wrap-gallery">wrap gallery</a> after we check it. Nothing about you is kept with it. We also count which wrap options
+        people choose (for example how many chose matte black), without any personal data. Photos you upload are never kept or published.
       </p>
       <p>
         Recall, VIN and fuel economy lookups go to U.S. government services (NHTSA and fueleconomy.gov). Shop searches send the ZIP code you

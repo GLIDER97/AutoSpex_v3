@@ -128,6 +128,14 @@ export const STATIC_PAGES: PageMeta[] = [
     priority: 0.7,
   },
   {
+    path: '/wrap-gallery',
+    updated: '2026-11-22',
+    title: 'Car Wrap Gallery: Colors and Finishes',
+    description:
+      'Car wrap ideas on real models: matte, satin, gloss, chrome and color-shift wraps, stripes and roof wraps, as AI previews you can try on your own car.',
+    priority: 0.7,
+  },
+  {
     path: '/mechanic-finder',
     updated: '2026-11-16',
     title: 'Find Trusted Local Mechanics Near You',

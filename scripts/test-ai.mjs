@@ -19,7 +19,7 @@ import { pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 
 const root = new URL('..', import.meta.url).pathname;
-// Inside node_modules so the bundles can import the real @neondatabase/serverless.
+// Inside node_modules so the bundles can import the real @neondatabase/serverless (and sharp, which has native code).
 mkdirSync(join(root, 'node_modules/.cache'), { recursive: true });
 const out = mkdtempSync(join(root, 'node_modules/.cache/test-ai-'));
 
@@ -31,7 +31,7 @@ async function load(entry, name) {
     bundle: true,
     format: 'esm',
     platform: 'node',
-    external: ['@neondatabase/serverless'],
+    external: ['@neondatabase/serverless', 'sharp'],
     logLevel: 'error',
   });
   return import(pathToFileURL(file).href);
@@ -277,6 +277,34 @@ try {
     assert.equal(res.status, 500);
     assert.equal(upstream.length, 0);
   });
+
+  await test('wrap previews tell the gallery whether a photo was used', () => {
+    const drawn = buildToolRequest({ tool: 'wrap-render', fields: VALID['wrap-render'] }).request.gallery;
+    assert.equal(drawn.fromPhoto, false);
+    const photo = buildToolRequest({ tool: 'wrap-photo', fields: VALID['wrap-photo'] }).request.gallery;
+    assert.equal(photo.fromPhoto, true);
+    assert.equal(photo.vehicle, '', 'nothing from a photo preview is kept for publishing');
+  });
+
+  const wrapImage = await load('api/wrap-image.ts', 'wrapimage');
+  const wraps = await load('api/wraps.ts', 'wraps');
+  const dbUrl = process.env.DATABASE_URL;
+  delete process.env.DATABASE_URL;
+
+  await test('wrap gallery image URLs only accept the known sizes', async () => {
+    for (const q of ['id=1&file=x-1200.png', 'id=0&file=a-1200.webp', 'id=1&file=../a-640.webp', 'id=abc&file=a-share.jpg']) {
+      const res = await wrapImage.GET(new Request(`https://www.myautospex.com/api/wrap-image?${q}`));
+      assert.equal(res.status, 404, q);
+    }
+  });
+
+  await test('without a database the gallery endpoints answer safely', async () => {
+    const img = await wrapImage.GET(new Request('https://www.myautospex.com/api/wrap-image?id=1&file=2023-tesla-model-3-1200.webp'));
+    assert.equal(img.status, 404);
+    const list = await (await wraps.GET(new Request('https://www.myautospex.com/api/wraps'))).json();
+    assert.deepEqual(list, { configured: false, designs: [], stats: null });
+  });
+  if (dbUrl) process.env.DATABASE_URL = dbUrl;
 } finally {
   rmSync(out, { recursive: true, force: true });
 }

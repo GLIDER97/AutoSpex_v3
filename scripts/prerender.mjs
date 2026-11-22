@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -52,6 +52,34 @@ const ORGANIZATION = {
 
 // Share image for pages without their own (public/og-image.png, 1200x630).
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+
+// One wrap gallery design as schema.org ImageObject, with credit, license and "AI-generated" in plain words.
+const WRAP_LICENSE = 'https://creativecommons.org/licenses/by/4.0/';
+function wrapImageObject(d) {
+  const page = absoluteUrl(designPath(d));
+  return {
+    '@type': 'ImageObject',
+    '@id': `${page}#image`,
+    url: page,
+    contentUrl: absoluteUrl(designImage(d, 'large')),
+    thumbnailUrl: absoluteUrl(designImage(d, 'small')),
+    name: designTitle(d),
+    caption: `${designAlt(d)}. AI-generated preview made with the MyAutoSpex Wrap Designer.`,
+    description: designDescription(d),
+    width: d.width,
+    height: d.height,
+    encodingFormat: 'image/webp',
+    datePublished: d.created,
+    creator: { '@type': 'Organization', name: 'MyAutoSpex', url: `${SITE_URL}/` },
+    creditText: 'MyAutoSpex Wrap Designer (AI-generated)',
+    copyrightNotice: 'MyAutoSpex, CC BY 4.0',
+    license: WRAP_LICENSE,
+    acquireLicensePage: `${page}#use-this-image`,
+    isFamilyFriendly: true,
+    keywords: [`${d.make} ${d.model} wrap`, `${finishLabel(d.finish).toLowerCase()} wrap`, `${d.color.name.toLowerCase()} car wrap`, coverageLabel(d.coverage).toLowerCase(), 'car wrap ideas'].join(', '),
+    about: { '@type': 'Car', name: vehicleOf(d), brand: { '@type': 'Brand', name: d.make }, model: d.model, ...(d.year && { vehicleModelDate: String(d.year) }) },
+  };
+}
 
 function buildHead({ title, description, canonical, noindex, image = DEFAULT_IMAGE, type = 'website', structuredData = [] }) {
   const tags = [];
@@ -132,6 +160,20 @@ for (const page of pages) {
         },
       ],
     });
+  } else if (page.path === '/wrap-gallery') {
+    structuredData.push({
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Car wrap gallery',
+      url: canonical,
+      description: page.description,
+      publisher: { '@id': ORGANIZATION['@id'] },
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: WRAP_DESIGNS.length,
+        itemListElement: WRAP_DESIGNS.map((d, i) => ({ '@type': 'ListItem', position: i + 1, item: wrapImageObject(d) })),
+      },
+    });
   } else {
     const tool = TOOLS.find((t) => t.path === page.path);
     if (tool) {
@@ -158,16 +200,23 @@ for (const page of pages) {
       ],
     });
   }
+  const galleryImage = page.path === '/wrap-gallery' && WRAP_DESIGNS[0] ? absoluteUrl(designImage(WRAP_DESIGNS[0], 'share')) : undefined;
   await writePage(page.path, {
     title: formatTitle(page.title, page.rawTitle),
     description: page.description,
     canonical,
     noindex: page.noindex,
-    image: shareImage,
+    image: galleryImage ?? shareImage,
     structuredData,
   });
   count++;
-  if (!page.noindex && page.sitemap !== false) sitemapEntries.push({ loc: canonical, lastmod: page.updated, priority: page.priority });
+  if (!page.noindex && page.sitemap !== false)
+    sitemapEntries.push({
+      loc: canonical,
+      lastmod: page.path === '/wrap-gallery' ? [page.updated, ...WRAP_DESIGNS.map((d) => d.created)].sort().pop() : page.updated,
+      priority: page.priority,
+      images: page.path === '/wrap-gallery' ? WRAP_DESIGNS.map((d) => absoluteUrl(designImage(d, 'large'))) : undefined,
+    });
 }
 
 // Articles.
@@ -305,6 +354,33 @@ for (const v of VEHICLES) {
   sitemapEntries.push({ loc: canonical, lastmod: v.asOf, priority: 0.8 });
 }
 
+// Wrap gallery designs (data/wraps/gallery.json): one page per published preview.
+for (const d of WRAP_DESIGNS) {
+  const routePath = designPath(d);
+  const canonical = absoluteUrl(routePath);
+  await writePage(routePath, {
+    title: formatTitle(designSeoTitle(d)),
+    description: designDescription(d),
+    canonical,
+    type: 'article',
+    image: absoluteUrl(designImage(d, 'share')),
+    structuredData: [
+      { '@context': 'https://schema.org', ...wrapImageObject(d), mainEntityOfPage: { '@type': 'WebPage', '@id': canonical } },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: 'Wrap gallery', item: `${SITE_URL}/wrap-gallery` },
+          { '@type': 'ListItem', position: 3, name: designTitle(d), item: canonical },
+        ],
+      },
+    ],
+  });
+  count++;
+  sitemapEntries.push({ loc: canonical, lastmod: d.created, priority: 0.6, images: [absoluteUrl(designImage(d, 'large'))] });
+}
+
 // 404 page: Vercel serves dist/404.html with a 404 status for unknown URLs.
 {
   const body = await render('/__page-not-found__');
@@ -319,13 +395,13 @@ for (const v of VEHICLES) {
 
 sitemapEntries.sort((a, b) => (b.priority ?? 0.5) - (a.priority ?? 0.5));
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${sitemapEntries
   .map(
     (e) =>
       `  <url>\n    <loc>${escapeHtml(e.loc)}</loc>\n${e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>\n` : ''}${
         e.priority != null ? `    <priority>${e.priority.toFixed(1)}</priority>\n` : ''
-      }  </url>`,
+      }${(e.images ?? []).map((src) => `    <image:image>\n      <image:loc>${escapeHtml(src)}</image:loc>\n    </image:image>\n`).join('')}  </url>`,
   )
   .join('\n')}
 </urlset>
@@ -363,6 +439,11 @@ await fs.writeFile(
     '## Vehicle reports (NHTSA and EPA data, refreshed weekly)',
     '',
     ...VEHICLES.map((v) => line(`${vehicleName(v)}: problems, recalls and safety ratings`, vehiclePath(v), `${vehicleDescription(v)} CSV: ${absoluteUrl(vehicleCsvPath(v))}`)),
+    '',
+    '## Car wrap gallery (AI wrap previews, free to reuse with credit under CC BY 4.0)',
+    '',
+    line('Car wrap gallery', '/wrap-gallery', 'Wrap colors, finishes and coverage on real models, filterable by finish and coverage.'),
+    ...WRAP_DESIGNS.map((d) => line(designTitle(d), designPath(d), `Image: ${absoluteUrl(designImage(d, 'large'))}`)),
     '',
     '## About',
     '',

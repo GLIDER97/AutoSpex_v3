@@ -6,3 +6,4 @@ date,model,purpose,images,cost_usd,month_total_usd
 2026-11-21,google/gemini-3-pro-image,homepage hero options (style 2: car; parts; car with parts),3,0.4166,2.3325
 2026-11-21,google/gemini-nano-banana-2.1,one image per page (14 tools; /codes; P0300; P0171; P0128; 404); 5 more refused with HTTP 402 (account balance),19,0.6966,3.0291
 2026-11-21,google/gemini-nano-banana-2.1,the last 5 page images after the owner added credit (P0455; P0442; about; editorial policy; contact) + 1 closer retake of editorial policy,6,0.2194,3.2485
+2026-11-22,black-forest-labs/flux-3-image-klein,wrap gallery starter designs (20 made at $0.009 each; 1 rejected: GT-R did not look chrome),20,0.1710,3.4014
