@@ -114,7 +114,8 @@ const COMPONENT_NAMES: Record<string, string> = {
   'HYBRID PROPULSION SYSTEM': 'Hybrid system',
 };
 export const componentName = (c: string) =>
-  COMPONENT_NAMES[c] ?? c.charAt(0) + c.slice(1).toLowerCase();
+  COMPONENT_NAMES[c] ??
+  (c.charAt(0) + c.slice(1).toLowerCase()).replace(/\(([a-z]+)\)/g, (_, x: string) => `(${x.toUpperCase()})`);
 
 /** Code guides that cover a complaint area, when one exists. */
 export const COMPONENT_CODE_GUIDES: Record<string, string[]> = {

@@ -2,6 +2,24 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-22: owner instruction, charts on every data page (not a daily run; day numbering unchanged)
+
+- **New standing rule (owner):** every page with data or data insights shows it with charts, drawn by Claude in code, never with an AI or paid API. Saved in GROWTH-PLAN section 0 (charts rule) and decision 11, `docs/owner-requests.md`, and the spec `docs/DATA-VIZ.md`.
+- **Chart kit extended** (`components/tool/charts.tsx`; HTML/SVG, server-rendered, $0):
+  - `StatTile` with `Sparkline`
+  - `MeterList` (share of a total per row)
+  - `ColumnChart` (y-axis, hairline grid, peak and latest labeled, hover, tap or focus readout, partial year drawn lighter, "Show as table")
+  - `Timeline` (dated events, numbered, no overlaps)
+  - `Stars` (ratings out of 5)
+- **Both Ford Escape reports now use them:**
+  - key-number tiles with a complaints-per-year sparkline and star ratings
+  - complaint areas as share meters, and reported crashes, fires, injuries and deaths as tiles
+  - complaints per year as a column chart
+  - recalls on a timeline, numbered to match the list
+  - crash ratings as stars, with the rollover risk under each
+  - EPA combined MPG as ranked bars, with city and highway figures in a table
+- Checked at 390 px and 1280 px in light and dark mode: no sideways scroll, no console or hydration errors.
+
 ## 2026-11-22: day 4 (week 1, day 4)
 
 ### What changed
