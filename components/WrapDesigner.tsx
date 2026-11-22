@@ -42,6 +42,7 @@ import {
   type Vehicle,
 } from './tool/kit';
 import ShopResults from './tool/ShopResults';
+import { GalleryBanner, GalleryShowcase } from './WrapGalleryTeaser';
 
 interface Render {
   id: number;
@@ -257,6 +258,7 @@ export default function WrapDesigner() {
       intro="Upload a photo of your car, pick a film color, finish and coverage, and get a realistic preview with a before and after view. You'll also see what it costs for your size of car and find wrap shops near you."
       sources="AI image editing (Flux) for previews; typical 2026 US wrap shop prices for costs; Google Places for shops."
     >
+      <GalleryBanner />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:items-start">
         <div className="space-y-6">
           <Panel aria-labelledby="car-title">
@@ -568,6 +570,8 @@ export default function WrapDesigner() {
             />
             <p className="mt-4 text-sm text-muted-foreground">Typical 2026 US prices for premium cast film. Prices vary by area and shop, so get two or three quotes.</p>
           </Panel>
+
+          <GalleryShowcase finish={finish} coverage={coverage} />
         </div>
       </div>
 

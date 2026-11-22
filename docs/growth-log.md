@@ -27,6 +27,7 @@ Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
   - 19 published. The Nissan GT-R was rejected: labeled blue chrome, but it looked like gloss paint.
   - OpenRouter this month: $3.40 of $10.
 - **Daily runs from now on:** review new visitor designs with `scripts/wraps/review.mjs` (GROWTH-PLAN section 3, step 4).
+- **Follow-up (owner):** the Wrap Designer now promotes the gallery with a highlighted "Need ideas? Browse the car wrap gallery" banner under the title, using the 3 most colorful designs. Below "What it costs" it shows 4 gallery images matched to the visitor's chosen finish and a large green "View the complete wrap gallery" card (`components/WrapGalleryTeaser.tsx`).
 
 ## 2026-11-22: owner instruction, charts on every data page (not a daily run; day numbering unchanged)
 
