@@ -39,6 +39,15 @@ People increasingly ask ChatGPT, Gemini and Google's AI answers instead of click
 - a **downloadable CSV** of the table, the method in plain words, and a **"How to cite this"** line ("Source: MyAutoSpex analysis of NHTSA complaint data, updated <date>, <URL>")
 - matching structured data (`Dataset` where there is a table; `Car` or `Vehicle` details on vehicle pages)
 - a listing in `llms.txt`
+- **charts for every set of numbers** (rule below)
+
+**Charts rule (owner, 22 Nov 2026; binding).** Every page or section that shows data or data insights (vehicle reports, data studies, code guides with data, community prices, tool results) shows that data as charts as well as text, so a visitor understands it in seconds:
+- **Pick the chart that reads fastest for the data's job:** ranked bars to compare amounts, columns or a line for change over time, a share bar or meter for parts of a whole, a timeline for dated events, star rows for ratings, big-number tiles (with a sparkline where there's a trend) for headline figures. Pies and donuts only for one whole split into 2–4 parts that stand alone; for anything else a share bar reads faster.
+- **Drawn by Claude in code** (SVG or HTML/CSS with React) from the sourced data, using the shared kit in `components/tool/charts.tsx`. **Never an AI image or any paid API** (OpenRouter or anything else) for a chart, graph or diagram: charts cost $0.
+- **Looks:** the site's validated chart colors (`--chart-1`, `--chart-2`), right in light and dark mode, thin rounded bars, hairline grid, values and labels in text colors, a legend when there are two or more series.
+- **Easy to read for everyone:** a one-line takeaway above each chart, a source caption under it, hover or tap details, a "Show as table" view, and nothing that relies on color alone.
+- **Checked before shipping:** screenshot each chart at phone (390 px) and desktop width, in light and dark mode; no overlapping or clipped labels, no sideways scroll.
+- Full spec: `docs/DATA-VIZ.md`.
 - AI crawlers stay allowed in `robots.txt` (GPTBot, OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended, Bingbot). Never block them.
 
 **What stops:**
@@ -226,7 +235,7 @@ The owner added an OpenRouter key, saved as a hidden network secret for `openrou
 - **Volume:** at most **1 AI image per new article** or code page (code pages get a Style 1 image of the part the code is about), plus the rollout batch in `docs/IMAGE-STYLE.md`, at most **4 rollout images a run**. Update the rollout table's status column as items are done.
 - **Homepage hero:** the owner picked it on 21 Nov (parts and tools, `public/images/hero-parts-color-block.webp`). Don't change it in a daily run; a new hero needs the owner's OK.
 - **Never use AI images to show facts** such as a part's location, a wiring diagram or a warning-light chart: image models get those wrong, and on a car-repair site that is misinformation.
-- **Charts and diagrams that carry facts are drawn in code** (SVG or HTML) from the sourced data, with a source caption. Examples: repair cost by model, recalls by year.
+- **Charts and diagrams that carry facts are drawn in code** (SVG or HTML) from the sourced data, with a source caption, never with an AI image model or any paid API (charts rule in section 0, `docs/DATA-VIZ.md`). Examples: repair cost by model, recalls by year.
 - **Every image:**
   - WebP, at most 1200 px wide and about 120 KB
   - a descriptive file name (`p0420-catalytic-converter.webp`)
@@ -329,6 +338,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 8. **Outreach drafts in Gmail (21 Nov):** the agent may save outreach emails as drafts in the owner's Gmail through the Gmail connector, one draft per site, personalized, and never sends anything. The owner reviews and sends. If the session running the work has no Gmail tools, it writes the drafts to `docs/outreach/<date>.md` and the owner's main session saves them to Gmail at the next "status".
 9. **Image style (21 Nov):** studio catalog plus brand color-block, as set out in `docs/IMAGE-STYLE.md`. Nano Banana Pro (about $0.14) is allowed above the $0.10 cap for hero images and any image showing a car; everything else uses Nano Banana 2.1 (about $0.04).
 10. **AI-proof direction (21 Nov):** yes to all three of A, B and C, and to section 0's rule: every piece of work must be something AI apps can't replace, or something they cite as a source. The owner's words: "make sure you must always use your energy on something that AI apps/models cant beat and also do something that AI apps/models also compliments and cite as a source for answers." A: vehicle report pages from live government data, from day 4, with code guides cut to at most 1 a day. B: community real prices and "What fixed it?" from week 2 instead of day 15. C: a free embeddable recall checker in week 3; this lifts section 4c's one-new-tool limit.
+11. **Charts on every data page (22 Nov):** wherever a page shows data or data insights, show it with bar charts, histograms, timelines, share bars, rating stars and similar, so it looks good and is understood quickly. Charts are drawn by Claude in code, never with an AI or other paid API (no AI cost). Saved as the charts rule in section 0 and `docs/DATA-VIZ.md`.
 
 ---
 
