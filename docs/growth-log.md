@@ -2,6 +2,68 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-22: day 4 (week 1, day 4)
+
+### What changed
+- **Vehicle report pages, the first page type under the new section 0 rule** (only work AI apps can't replace or will cite):
+  - `/cars/ford/escape/2018` and `/cars/ford/escape/2017`.
+  - Each page has:
+    - a key-numbers box with dated source links
+    - complaints by component, as a bar chart drawn in HTML
+    - **complaints by the year they were filed**, our own computed trend
+    - every recall with its risk and fix
+    - NHTSA crash ratings for each version tested
+    - EPA MPG for each engine and drive
+    - links to the VIN check, the recall check, the code guides for the top complaint areas and the cost tools
+    - the method, a CSV download and a "How to cite this" line
+    - `Dataset` structured data with a `Car` and a `DataDownload`, plus breadcrumbs
+  - The pages are in the sitemap (lastmod = data date) and in a new "Vehicle reports" section of `llms.txt`, and are linked from `/recalls` under "Vehicle reports". Both years link to each other.
+- **Data pipeline:** `scripts/vehicles/snapshot.mjs` reads the NHTSA complaints, recalls and 5-Star ratings APIs and EPA fueleconomy.gov for each entry in `data/vehicles/list.json` and writes `data/vehicles/<slug>.json`. It keeps counts only, no complaint text or VINs. The build never calls the APIs. `data/vehicles/index.ts` publishes a model-year only with 25+ complaints or 1+ recall. Re-run the snapshot weekly (Mondays).
+- `robots.txt` still allows every crawler, AI crawlers included.
+- `docs/growth-metrics.csv` has a new `ai_referrals` column (section 0); earlier rows are blank.
+
+### Keyword research and choice (section 4a)
+Bing US, last 90 days, "<year> <make> <model> problems" for 16 best-selling 2015–2022 model-years: only the Ford Escape had measurable volume.
+
+| Query | Bing US (90 days) | NHTSA complaints | Recalls |
+|---|---|---|---|
+| 2018 ford escape problems | 179 (plus "2018 ford escape reliability" 111) | 1,833 | 4 |
+| 2017 ford escape problems | 113 | 2,714 | 4 |
+| 2019 ford escape problems | 40 | not built yet | |
+| 2018 honda cr-v, 2017 nissan rogue, 2015 jeep grand cherokee, 2019 toyota rav4, 2016 honda civic, 2018 chevy equinox, 2015/2017 f-150, 2016 explorer, 2019 ram 1500, 2016 altima, 2017 cherokee, 2018 silverado (problems or recalls) | 0 | CR-V 2017: 1,787; Grand Cherokee 2015: 1,372; RAV4 2019: 891 | |
+
+Bing's year-level volumes are thin, so from tomorrow NHTSA complaint counts (section 4a item 4) break the ties.
+
+**What the data shows (our own computed figures):**
+- 2017 Escape: 59% of 2,714 complaints involve the engine, and complaints are still rising: 645 were filed in 2025 against 50 in 2017.
+- 2018 Escape: 490 complaints filed in 2025.
+- Both get a 5-star overall NHTSA crash rating.
+
+### Numbers
+| | Last 28 days (24 Oct–20 Nov) | Last 3 days (18–20 Nov) |
+|---|---|---|
+| Clicks | 1 (India) | 0 |
+| Impressions | 129 (tier-1 about 115) | 19 |
+| Average position | 45.2 | 10.1 |
+| Tier-1 clicks | 0 | 0 |
+
+- **Index: 16 indexed (was 7)**, after the owner's indexing requests on 21 Nov.
+  - Indexed: `/fault-code-decoder`, `/vin-lookup`, `/codes`, `/maintenance-validator`, `/insurance-estimator`, the P0420 guide, and all code pages except P0442 (unknown to Google yet).
+  - 19 discovered but not indexed, 2 crawled but not indexed. No manual action, no drop.
+  - Sitemap last read 20 Nov.
+- **Code guides: 5 of 6 indexed (83%)**, above the 60% line in rule 5. Under section 0, though, code guides stay at most 1 a day, with unique data.
+- **Week 1 so far (latest 7 days of data, 14–20 Nov):** 39 tier-1 impressions (goal 50+), 0 tier-1 clicks (goal 0). Indexed pages 16 is **above the week 1 goal of 12**.
+- **Clarity, last day:** 1 session (India, likely the owner) over 5 pages. 1 dead click, 4 quick-backs, 71% scroll depth, 25 bot sessions. **AI-app referrals: 0** (no referrers recorded).
+- **OpenRouter:** $3.25 used this month (the owner's page-image work on 21 Nov), $6.75 left. No images today: the vehicle pages need no image, and a car image would need Nano Banana Pro at about $0.14.
+- **Community data:** not live yet. It moves up to week 2 (section 0, B).
+
+### Blocked
+- Nothing. No open owner requests.
+
+### Tomorrow (day 5)
+- 2 more vehicle pages, chosen by NHTSA complaint count among best-sellers with any Bing demand: likely the 2019 Ford Escape (Bing 40) and the 2017 Honda CR-V (1,787 complaints).
+- A `/cars` hub (make, model, year), linked from the Tools menu, `/recalls`, the VIN tool and the code guides. The vehicle-page breadcrumb then moves to `/cars`.
+
 ## 2026-11-21: owner session note (not a daily run; day numbering unchanged)
 
 - **Direction change (owner, 21 Nov evening):** GROWTH-PLAN section 0 is now the top rule. Only work that AI apps can't replace (live official data per vehicle, real prices people paid, working tools, an embeddable widget) or that they will cite (original numbers, dates, sources, CSV, "How to cite this"). Owner said yes to A, B and C (decision 10).

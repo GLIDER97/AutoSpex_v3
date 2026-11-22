@@ -1,0 +1,314 @@
+{
+ "make": "Ford",
+ "model": "Escape",
+ "year": 2018,
+ "asOf": "2026-11-22",
+ "complaints": {
+  "total": 1833,
+  "crashes": 26,
+  "fires": 6,
+  "injuries": 30,
+  "deaths": 0,
+  "byComponent": [
+   {
+    "component": "ENGINE",
+    "count": 1180
+   },
+   {
+    "component": "ENGINE AND ENGINE COOLING",
+    "count": 345
+   },
+   {
+    "component": "POWER TRAIN",
+    "count": 279
+   },
+   {
+    "component": "UNKNOWN OR OTHER",
+    "count": 107
+   },
+   {
+    "component": "ELECTRICAL SYSTEM",
+    "count": 57
+   },
+   {
+    "component": "FUEL/PROPULSION SYSTEM",
+    "count": 46
+   },
+   {
+    "component": "STEERING",
+    "count": 30
+   },
+   {
+    "component": "SERVICE BRAKES",
+    "count": 27
+   },
+   {
+    "component": "VEHICLE SPEED CONTROL",
+    "count": 23
+   },
+   {
+    "component": "WHEELS",
+    "count": 22
+   },
+   {
+    "component": "STRUCTURE",
+    "count": 20
+   },
+   {
+    "component": "EXTERIOR LIGHTING",
+    "count": 12
+   },
+   {
+    "component": "FUEL SYSTEM",
+    "count": 12
+   },
+   {
+    "component": "GASOLINE",
+    "count": 12
+   },
+   {
+    "component": "SUSPENSION",
+    "count": 11
+   },
+   {
+    "component": "AIR BAGS",
+    "count": 9
+   },
+   {
+    "component": "SEAT BELTS",
+    "count": 9
+   },
+   {
+    "component": "FORWARD COLLISION AVOIDANCE",
+    "count": 7
+   },
+   {
+    "component": "VISIBILITY/WIPER",
+    "count": 7
+   },
+   {
+    "component": "LANE DEPARTURE",
+    "count": 6
+   },
+   {
+    "component": "VISIBILITY",
+    "count": 6
+   },
+   {
+    "component": "BACK OVER PREVENTION",
+    "count": 6
+   },
+   {
+    "component": "LATCHES/LOCKS/LINKAGES",
+    "count": 5
+   },
+   {
+    "component": "EQUIPMENT",
+    "count": 3
+   },
+   {
+    "component": "ELECTRONIC STABILITY CONTROL (ESC)",
+    "count": 3
+   },
+   {
+    "component": "HYDRAULIC",
+    "count": 2
+   },
+   {
+    "component": "TIRES",
+    "count": 2
+   },
+   {
+    "component": "PARKING BRAKE",
+    "count": 1
+   },
+   {
+    "component": "TRACTION CONTROL SYSTEM",
+    "count": 1
+   },
+   {
+    "component": "FIRERELATED",
+    "count": 1
+   },
+   {
+    "component": "SEATS",
+    "count": 1
+   }
+  ],
+  "byFiledYear": [
+   {
+    "year": 2018,
+    "count": 25
+   },
+   {
+    "year": 2019,
+    "count": 42
+   },
+   {
+    "year": 2020,
+    "count": 43
+   },
+   {
+    "year": 2021,
+    "count": 55
+   },
+   {
+    "year": 2022,
+    "count": 150
+   },
+   {
+    "year": 2023,
+    "count": 256
+   },
+   {
+    "year": 2024,
+    "count": 462
+   },
+   {
+    "year": 2025,
+    "count": 490
+   },
+   {
+    "year": 2026,
+    "count": 310
+   }
+  ]
+ },
+ "recalls": [
+  {
+   "campaign": "26V011000",
+   "date": "2026-01-16",
+   "component": "EQUIPMENT:ELECTRICAL:ENGINE BLOCK HEATER",
+   "summary": "Ford Motor Company (Ford) is recalling certain 2013-2018 Focus, 2013-2019 Escape, and 2015-2016 MKC vehicles equipped with a 2.0L engine. The engine block heater may crack and develop a coolant leak, causing it to short circuit when the block heater is plugged in.",
+   "consequence": "An electrical short circuit can increase the risk of a fire.",
+   "remedy": "Owners are advised not to plug in their block heater until the vehicle is remedied. Dealers will replace the block heater, free of charge. Owners will also have a alternative option to replace engine block heater element with a threaded plug, and remove the block heater electrical cord. Interim letters, notifying owners of the safety risk, were mailed March 6, 2026. Additional letters will be sent once the final remedy is available. Owners may contact Ford customer service at 1-866-436-7332. Ford's number for this recall is 26S01. Vehicle Identification Numbers (VINs) involved in this recall became searchable on NHTSA.gov on January 16, 2026.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "22V413000",
+   "date": "2022-06-10",
+   "component": "POWER TRAIN:AUTOMATIC TRANSMISSION:GEAR POSITION INDICATION (PRNDL)",
+   "summary": "Ford Motor Company (Ford) is recalling certain 2013-2019 Escape, 2013-2018 C-Max, 2013-2016 Fusion, 2013-2021 Transit Connect, and  2015-2018 Edge vehicles.  The bushing that attaches the shifter cable to the transmission may degrade or detach.",
+   "consequence": "A damaged or missing bushing may prevent the vehicle from shifting into the intended gear, and cause the vehicle to move in an unexpected direction.  Additionally, the vehicle may roll after the driver selects the 'Park' position.  Either scenario increases the risk of a crash or injury.",
+   "remedy": "Dealers will replace the under hood shift bushing and add a protective cap over the shift cable bushing, free of charge.  Interim owner notification letters, informing owners of the safety risk, were mailed July 1, 2022.  Remedy parts are expected to be available in 4th Quarter 2022.  Owner notification letters were mailed October 27, 2022.  Owners may contact Ford customer service at 1-866-436-7332.  Ford's number for this recall is 22S43.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "18V104000",
+   "date": "2018-02-12",
+   "component": "SERVICE BRAKES, HYDRAULIC:FOUNDATION COMPONENTS:HOSES, LINES/PIPING, AND FITTINGS",
+   "summary": "Ford Motor Company (Ford) is recalling certain 2018 Ford Escape and Lincoln MKC vehicles.  These vehicles may be equipped with incorrect front brake hoses that may chafe against other components, possibly resulting in a brake fluid leak.",
+   "consequence": "A brake fluid leak may lengthen the distance needed to stop the vehicle, increasing the risk of a crash.",
+   "remedy": "Ford will notify owners, and dealers will inspect the brake hoses, replacing any that are incorrect, free of charge.  The recall is expected to begin March 2018.  Owners may contact Ford customer service at 1-866-436-7332.  Ford's number for this recall is 18S04.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "17V803000",
+   "date": "2017-12-18",
+   "component": "AIR BAGS:SIDE/WINDOW",
+   "summary": "Ford Motor Company (Ford) is recalling certain 2018 Ford Escape vehicles. The side curtain air bags on these vehicles have a component that may detach during deployment of the inflatable curtain air bag.",
+   "consequence": "If the component detaches during deployment, it may enter the passenger compartment and be a projectile within the vehicle cabin, increasing the risk of injury.",
+   "remedy": "Ford will notify owners, and dealers will replace the driver and passenger side curtain air bags, as necessary, free of charge.  The recall is expected to begin January 2018.  Owners may contact Ford customer service at 1-866-436-7332.  Ford's number for this recall is 17S44.",
+   "parkIt": false,
+   "parkOutside": false
+  }
+ ],
+ "ratings": [
+  {
+   "vehicle": "2018 Ford Escape SUV AWD",
+   "overall": "5",
+   "frontal": "5",
+   "side": "5",
+   "rollover": "4",
+   "rolloverRisk": 0.185,
+   "url": "https://www.nhtsa.gov/vehicle/2018/FORD/ESCAPE"
+  },
+  {
+   "vehicle": "2018 Ford Escape SUV FWD",
+   "overall": "5",
+   "frontal": "5",
+   "side": "5",
+   "rollover": "4",
+   "rolloverRisk": 0.191,
+   "url": "https://www.nhtsa.gov/vehicle/2018/FORD/ESCAPE"
+  }
+ ],
+ "mpg": [
+  {
+   "epaId": 39463,
+   "model": "Escape FWD",
+   "engine": "Auto (S6), 4 cyl, 1.5 L, Turbo",
+   "drive": "Front-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 23,
+   "highway": 30,
+   "combined": 26,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+  },
+  {
+   "epaId": 39469,
+   "model": "Escape AWD",
+   "engine": "Auto (S6), 4 cyl, 1.5 L, Turbo",
+   "drive": "All-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 22,
+   "highway": 28,
+   "combined": 24,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+  },
+  {
+   "epaId": 39464,
+   "model": "Escape FWD",
+   "engine": "Auto (S6), 4 cyl, 2.0 L, Turbo",
+   "drive": "Front-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 21,
+   "highway": 28,
+   "combined": 24,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+  },
+  {
+   "epaId": 39466,
+   "model": "Escape FWD",
+   "engine": "Auto (S6), 4 cyl, 2.5 L",
+   "drive": "Front-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 21,
+   "highway": 29,
+   "combined": 24,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+  },
+  {
+   "epaId": 39465,
+   "model": "Escape FWD FFV",
+   "engine": "Auto (S6), 4 cyl, 2.5 L",
+   "drive": "Front-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 21,
+   "highway": 29,
+   "combined": 24,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+  },
+  {
+   "epaId": 39470,
+   "model": "Escape AWD",
+   "engine": "Auto (S6), 4 cyl, 2.0 L, Turbo",
+   "drive": "All-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 20,
+   "highway": 27,
+   "combined": 23,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+  }
+ ],
+ "sources": {
+  "complaints": "https://api.nhtsa.gov/complaints/complaintsByVehicle?make=Ford&model=Escape&modelYear=2018",
+  "recalls": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=Ford&model=Escape&modelYear=2018",
+  "ratings": "https://api.nhtsa.gov/SafetyRatings/modelyear/2018/make/Ford/model/Escape",
+  "nhtsaPage": "https://www.nhtsa.gov/vehicle/2018/FORD/ESCAPE",
+  "epa": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2018&year2=2018&make=Ford&baseModel=Escape&srchtyp=ymm"
+ }
+}

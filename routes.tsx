@@ -22,6 +22,7 @@ const DiyToolkits = React.lazy(() => import('./components/DiyToolkits'));
 const Blog = React.lazy(() => import('./components/Blog'));
 const CodePage = React.lazy(() => import('./components/CodePage'));
 const CodeIndex = React.lazy(() => import('./components/CodeIndex'));
+const VehiclePage = React.lazy(() => import('./components/VehiclePage'));
 // const FreeObd2CodeDecoderPost - Removed (Handled by ArticleLoader + Redirect)
 const LegalPages = React.lazy(() => import('./components/LegalPages').then(module => ({ default: module.PrivacyPolicy })));
 // Actually, LegalPages exports multiple components. React.lazy expects a default export.
@@ -66,6 +67,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/article/:slug" element={<ArticleLoader />} />
         <Route path="/codes" element={<CodeIndex />} />
         <Route path="/codes/:code" element={<CodePage />} />
+        <Route path="/cars/:make/:model/:year" element={<VehiclePage />} />
 
 
         {/* Legal Pages */}
