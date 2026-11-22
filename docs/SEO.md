@@ -35,6 +35,8 @@ Pages without their own image share `public/og-image.png` (1200×630) on social 
   listed source; no dollar amounts without one). It is pre-rendered at `/codes/<code>`, added to the
   sitemap and `llms.txt`, and listed under "Code guides" on `/fault-code-decoder` automatically.
   After the deploy, run `node scripts/indexnow.mjs /codes/<code>`.
+- **Wrap gallery designs:** reviewed and published by the daily run with `scripts/wraps/review.mjs` (see `docs/WRAP-GALLERY.md`);
+  each lands in `data/wraps/gallery.json` and is prerendered at `/wrap-gallery/<slug>` with `ImageObject` markup and an image sitemap entry.
 - **New tool or info page:** add the route in `routes.tsx` **and** an entry (path, title,
   description) in `seo/site.ts`. Pages missing from `seo/site.ts` are not prerendered and
   return a 404 on Vercel.

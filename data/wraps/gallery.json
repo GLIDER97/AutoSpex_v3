@@ -1,0 +1,409 @@
+{
+ "designs": [
+  {
+   "slug": "2023-tesla-model-3-matte-black-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Tesla",
+   "model": "Model 3",
+   "size": "sedan",
+   "coverage": "full",
+   "finish": "matte",
+   "color": {
+    "name": "Black",
+    "hex": [
+     "#111214"
+    ]
+   },
+   "extras": [
+    "blackWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2024-tesla-model-y-satin-battleship-grey-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2024,
+   "make": "Tesla",
+   "model": "Model Y",
+   "size": "suvSmall",
+   "coverage": "full",
+   "finish": "satin",
+   "color": {
+    "name": "Battleship grey",
+    "hex": [
+     "#6b6f72"
+    ]
+   },
+   "extras": [
+    "blackWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2022-ford-mustang-gt-gloss-white-racing-stripes",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2022,
+   "make": "Ford",
+   "model": "Mustang GT",
+   "size": "compact",
+   "coverage": "stripes",
+   "finish": "gloss",
+   "color": {
+    "name": "White",
+    "hex": [
+     "#f2f2ef"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-ford-f-150-matte-olive-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Ford",
+   "model": "F-150",
+   "size": "suvLarge",
+   "coverage": "full",
+   "finish": "matte",
+   "color": {
+    "name": "Olive",
+    "hex": [
+     "#5b6340"
+    ]
+   },
+   "extras": [
+    "blackWheels",
+    "tintedWindows"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2021-jeep-wrangler-unlimited-matte-sand-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2021,
+   "make": "Jeep",
+   "model": "Wrangler Unlimited",
+   "size": "suvLarge",
+   "coverage": "full",
+   "finish": "matte",
+   "color": {
+    "name": "Sand",
+    "hex": [
+     "#c9b38f"
+    ]
+   },
+   "extras": [
+    "blackWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-bmw-m3-color-shift-purple-to-green-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "BMW",
+   "model": "M3",
+   "size": "sedan",
+   "coverage": "full",
+   "finish": "colorShift",
+   "color": {
+    "name": "Purple to green",
+    "hex": [
+     "#5b2a86",
+     "#2e8b57"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2022-toyota-gr-supra-gloss-orange-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2022,
+   "make": "Toyota",
+   "model": "GR Supra",
+   "size": "compact",
+   "coverage": "full",
+   "finish": "gloss",
+   "color": {
+    "name": "Orange",
+    "hex": [
+     "#f26a1b"
+    ]
+   },
+   "extras": [
+    "blackRoof"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-honda-civic-type-r-satin-light-grey-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Honda",
+   "model": "Civic Type R",
+   "size": "compact",
+   "coverage": "full",
+   "finish": "satin",
+   "color": {
+    "name": "Light grey",
+    "hex": [
+     "#a9adb0"
+    ]
+   },
+   "extras": [
+    "redCalipers"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2024-toyota-camry-gloss-black-roof-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2024,
+   "make": "Toyota",
+   "model": "Camry",
+   "size": "sedan",
+   "coverage": "roof",
+   "finish": "gloss",
+   "color": {
+    "name": "Black",
+    "hex": [
+     "#111214"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-dodge-charger-gloss-black-chrome-delete",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Dodge",
+   "model": "Charger",
+   "size": "sedan",
+   "coverage": "chromeDelete",
+   "finish": "gloss",
+   "color": {
+    "name": "Black",
+    "hex": [
+     "#111214"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2022-chevrolet-corvette-stingray-metallic-red-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2022,
+   "make": "Chevrolet",
+   "model": "Corvette Stingray",
+   "size": "compact",
+   "coverage": "full",
+   "finish": "metallic",
+   "color": {
+    "name": "Red",
+    "hex": [
+     "#b3141e"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-porsche-911-carrera-gloss-racing-green-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Porsche",
+   "model": "911 Carrera",
+   "size": "compact",
+   "coverage": "full",
+   "finish": "gloss",
+   "color": {
+    "name": "Racing green",
+    "hex": [
+     "#1d4a32"
+    ]
+   },
+   "extras": [
+    "bronzeWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-ram-1500-matte-dark-grey-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Ram",
+   "model": "1500",
+   "size": "suvLarge",
+   "coverage": "full",
+   "finish": "matte",
+   "color": {
+    "name": "Dark grey",
+    "hex": [
+     "#3a3d41"
+    ]
+   },
+   "extras": [
+    "blackBadges",
+    "blackTrim"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2022-subaru-wrx-gloss-royal-blue-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2022,
+   "make": "Subaru",
+   "model": "WRX",
+   "size": "sedan",
+   "coverage": "full",
+   "finish": "gloss",
+   "color": {
+    "name": "Royal blue",
+    "hex": [
+     "#1f4fb4"
+    ]
+   },
+   "extras": [
+    "bronzeWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-toyota-tacoma-matte-black-hood-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Toyota",
+   "model": "Tacoma",
+   "size": "suvLarge",
+   "coverage": "hood",
+   "finish": "matte",
+   "color": {
+    "name": "Black",
+    "hex": [
+     "#111214"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-hyundai-elantra-n-black-carbon-fiber-hood-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Hyundai",
+   "model": "Elantra N",
+   "size": "sedan",
+   "coverage": "hood",
+   "finish": "carbon",
+   "color": {
+    "name": "Black carbon fiber",
+    "hex": [
+     "#1b1b1d"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-mazda-mx-5-miata-satin-purple-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Mazda",
+   "model": "MX-5 Miata",
+   "size": "compact",
+   "coverage": "full",
+   "finish": "satin",
+   "color": {
+    "name": "Purple",
+    "hex": [
+     "#4b2a7b"
+    ]
+   },
+   "extras": [],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2023-kia-telluride-satin-sage-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2023,
+   "make": "Kia",
+   "model": "Telluride",
+   "size": "suvLarge",
+   "coverage": "full",
+   "finish": "satin",
+   "color": {
+    "name": "Sage",
+    "hex": [
+     "#8fa88a"
+    ]
+   },
+   "extras": [
+    "blackWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2024-ford-bronco-gloss-yellow-full-wrap",
+   "source": "starter",
+   "created": "2026-11-22",
+   "year": 2024,
+   "make": "Ford",
+   "model": "Bronco",
+   "size": "suvLarge",
+   "coverage": "full",
+   "finish": "gloss",
+   "color": {
+    "name": "Yellow",
+    "hex": [
+     "#f4c400"
+    ]
+   },
+   "extras": [
+    "blackWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  }
+ ]
+}

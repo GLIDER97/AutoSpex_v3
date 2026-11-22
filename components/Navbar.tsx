@@ -23,6 +23,14 @@ const FEEDBACK_URL = 'https://forms.gle/XtuvETokH5R83r1q7';
 const focusRing =
   'outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
+/** Content hubs: the "Explore" menu, the mobile menu and the footer. */
+export const EXPLORE_LINKS = [
+  { to: '/wrap-gallery', label: 'Car wrap gallery', note: 'Wrap colors and finishes on real models' },
+  { to: '/codes', label: 'Check engine code guides', note: 'What a code means and what to check first' },
+  { to: '/recalls#vehicle-reports', label: 'Vehicle reports', note: 'Owner complaints, recalls and ratings by model' },
+  { to: '/blog', label: 'Articles', note: 'Guides to repairs, costs and buying' },
+];
+
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
     'rounded-md px-3 py-2 text-[0.9375rem] font-semibold transition-colors',
@@ -74,11 +82,6 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                             <Link to={tool.path}>{tool.name}</Link>
                           </DropdownMenuItem>
                         ))}
-                        {category.id === 'warnings' && (
-                          <DropdownMenuItem asChild className="rounded-md px-2 py-1.5 text-[0.9375rem]">
-                            <Link to="/codes">Code guides</Link>
-                          </DropdownMenuItem>
-                        )}
                       </div>
                     );
                   })}
@@ -86,9 +89,27 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <NavLink to="/blog" className={navLinkClass}>
-            Articles
-          </NavLink>
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger
+              className={cn(
+                'group inline-flex items-center gap-1 rounded-md px-3 py-2 text-[0.9375rem] font-semibold text-muted-foreground transition-colors hover:text-foreground data-[state=open]:text-foreground',
+                focusRing,
+              )}
+            >
+              Explore
+              <ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" sideOffset={10} className="w-[22rem] rounded-xl p-2">
+              {EXPLORE_LINKS.map((item) => (
+                <DropdownMenuItem key={item.to} asChild className="flex-col items-start gap-0.5 rounded-md px-3 py-2.5">
+                  <Link to={item.to}>
+                    <span className="text-[0.9375rem] font-semibold">{item.label}</span>
+                    <span className="text-sm text-muted-foreground">{item.note}</span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <NavLink to="/about" className={navLinkClass}>
             About
           </NavLink>
@@ -164,8 +185,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                 ))}
                 <ul className="border-t border-border pt-4">
                   {[
-                    { to: '/codes', label: 'Code guides' },
-                    { to: '/blog', label: 'Articles' },
+                    ...EXPLORE_LINKS.map(({ to, label }) => ({ to, label })),
                     { to: '/about', label: 'About' },
                     { to: '/contact', label: 'Contact' },
                   ].map((item) => (

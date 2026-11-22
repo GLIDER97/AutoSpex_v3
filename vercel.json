@@ -7,6 +7,12 @@
         },
         "api/places.ts": {
             "maxDuration": 15
+        },
+        "api/wrap-image.ts": {
+            "maxDuration": 15
+        },
+        "api/wraps.ts": {
+            "maxDuration": 15
         }
     },
     "redirects": [
@@ -50,6 +56,21 @@
                     "value": "public, max-age=31536000, immutable"
                 }
             ]
+        },
+        {
+            "source": "/images/wraps/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/images/wraps/v/:id/:file",
+            "destination": "/api/wrap-image?id=:id&file=:file"
         }
     ]
 }

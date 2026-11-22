@@ -128,6 +128,11 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
    Then read the Clarity insights for the last day: rage clicks, dead clicks, scroll depth and quick-backs by page. Append one row per day to `docs/growth-metrics.csv`: date, clicks, impressions, tier-1 clicks, pages indexed and pages published.
 3. **Index.** Submit every new or changed URL from yesterday's deploy to IndexNow (Bing, Yandex and others). Note any page that has been "Discovered – currently not indexed" for more than 7 days.
 4. **Do today's work item** from the roadmap below: build pages, improve pages or fix problems. **At most 2 new pages a day**, each meeting the quality bar in section 5.
+   - **Wrap gallery review (every run, about 5 minutes):**
+     - Run `scripts/wraps/review.mjs fetch` and look at every new Wrap Designer preview.
+     - Publish the ones that pass the checklist in `docs/WRAP-GALLERY.md`, at most 6 a day. These don't count against the 2-page limit: each is one image page with its own details.
+     - Then run `done`, and log how many were reviewed and published, plus the preview count behind `stats.json`.
+     - Photo-based previews are never saved or published.
 5. **Ship:**
    - Build (`npm run build` must pass).
    - Run the page checks (claude-seo `page_checks.py` on the changed pages).
@@ -339,6 +344,11 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 9. **Image style (21 Nov):** studio catalog plus brand color-block, as set out in `docs/IMAGE-STYLE.md`. Nano Banana Pro (about $0.14) is allowed above the $0.10 cap for hero images and any image showing a car; everything else uses Nano Banana 2.1 (about $0.04).
 10. **AI-proof direction (21 Nov):** yes to all three of A, B and C, and to section 0's rule: every piece of work must be something AI apps can't replace, or something they cite as a source. The owner's words: "make sure you must always use your energy on something that AI apps/models cant beat and also do something that AI apps/models also compliments and cite as a source for answers." A: vehicle report pages from live government data, from day 4, with code guides cut to at most 1 a day. B: community real prices and "What fixed it?" from week 2 instead of day 15. C: a free embeddable recall checker in week 3; this lifts section 4c's one-new-tool limit.
 11. **Charts on every data page (22 Nov):** wherever a page shows data or data insights, show it with bar charts, histograms, timelines, share bars, rating stars and similar, so it looks good and is understood quickly. Charts are drawn by Claude in code, never with an AI or other paid API (no AI cost). Saved as the charts rule in section 0 and `docs/DATA-VIZ.md`.
+12. **Wrap gallery (22 Nov):** every Wrap Designer image is shown on the site, with its details, light compressed files and SEO/AEO markup, at `/wrap-gallery`, with a new "Explore" header menu.
+    - The agent's call, flagged to the owner: previews made from a visitor's own photo are never saved or published (privacy). Previews drawn from year, make and model are saved and, after the daily review, published.
+    - Images are free to reuse under CC BY 4.0 with a credit link, to earn links as they spread.
+    - 19 starter designs were made with Flux 3 Klein ($0.171).
+    - Details: `docs/WRAP-GALLERY.md`.
 
 ---
 

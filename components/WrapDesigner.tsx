@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Download, ImagePlus, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { imageDataUrl, runTool } from '../utils/ai';
 import { searchShops, type ShopSearch } from '../utils/places';
@@ -160,6 +161,25 @@ export default function WrapDesigner() {
   const preview = useRef<HTMLElement>(null);
 
   useEffect(() => setZip(rememberedZip()), []);
+
+  // "Try this design" links from the wrap gallery prefill the choices (/wrap-designer?finish=matte&color=Black...).
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    if (![...p.keys()].length) return;
+    const f = FINISHES.find((x) => x.id === p.get('finish'));
+    if (f) {
+      setFinish(f.id);
+      setColor(f.colors.find((c) => c.name === p.get('color')) ?? f.colors[0]);
+    }
+    const cov = COVERAGE.find((x) => x.id === p.get('coverage'));
+    if (cov) setCoverage(cov.id);
+    const ex = (p.get('extras') ?? '').split(',').filter((id): id is WrapExtraId => WRAP_EXTRAS.some((x) => x.id === id));
+    if (ex.length) setExtras(ex.slice(0, MAX_WRAP_EXTRAS));
+    const year = p.get('year') ?? '';
+    const make = (p.get('make') ?? '').slice(0, 40);
+    const model = (p.get('model') ?? '').slice(0, 40);
+    if (make || model) setVehicle({ year: /^(19|20)\d\d$/.test(year) ? year : '', make, model });
+  }, []);
 
   const finishInfo = FINISHES.find((f) => f.id === finish)!;
   const standardFinish = finishInfo.colors === FINISHES[0].colors;
@@ -431,6 +451,13 @@ export default function WrapDesigner() {
                 {renderError}
               </Notice>
             )}
+            <p className="mt-3 text-sm text-muted-foreground">
+              Previews drawn from a year, make and model (without a photo) can appear in our public{' '}
+              <Link to="/wrap-gallery" className="underline underline-offset-4">
+                wrap gallery
+              </Link>
+              . Photos you upload are never published or kept.
+            </p>
           </Panel>
         </div>
 

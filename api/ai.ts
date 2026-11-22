@@ -17,6 +17,7 @@
 import { BadRequest, clientIp, createRateLimiter, isAllowedOrigin, isPlainObject, json } from './_shared.js';
 import { buildToolRequest, type BuiltRequest, type ChatTurn, type Part, type Tier } from './_aiTools.js';
 import { getShared, putShared, takeDaily } from './_limits.js';
+import { recordWrap } from './_wrapGallery.js';
 
 const TEXT_MODEL = () => process.env.AI_TEXT_MODEL || 'anthropic/claude-haiku-5.5';
 const IMAGE_MODEL = () => process.env.AI_IMAGE_MODEL || 'black-forest-labs/flux-3-image-klein';
@@ -193,6 +194,8 @@ export async function POST(request: Request): Promise<Response> {
       let data: string | undefined = image?.b64_json;
       if (!data && typeof image?.url === 'string' && image.url.startsWith('data:')) data = image.url.split(',')[1];
       if (!data) return upstreamError(502, body);
+      // Wrap previews: count the options and keep eligible designs for the gallery. Never fails the request.
+      if (input.gallery) await recordWrap(input.gallery, data);
       return json({ candidates: [{ content: { parts: [{ inlineData: { mimeType: detectImageType(data), data } }] } }] });
     }
 

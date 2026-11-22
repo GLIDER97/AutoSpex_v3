@@ -41,6 +41,8 @@ export interface BuiltRequest {
   aspectRatio?: string;
   /** The tool takes no input, so every visitor gets the same answer: reuse it for this many seconds. */
   cacheSeconds?: number;
+  /** Wrap previews: what was chosen, for the wrap gallery and its anonymous option counts (api/_wrapGallery.ts). */
+  gallery?: { vehicle: string; size: SizeId; choice: WrapChoice; fromPhoto: boolean };
 }
 
 // The coupons page loads on every page view; one answer serves everyone for 12 hours.
@@ -610,7 +612,13 @@ const wrapPhoto: ToolDef = {
     const width = num(f, 'width', 16, 4_096);
     const height = num(f, 'height', 16, 4_096);
     const choice = wrapChoice(f);
-    return { tier: 'image', contents: [image, { text: photoPrompt(choice) }], aspectRatio: nearestAspect(width, height) };
+    return {
+      tier: 'image',
+      contents: [image, { text: photoPrompt(choice) }],
+      aspectRatio: nearestAspect(width, height),
+      // The visitor's photo is never saved or published; only the options chosen are counted.
+      gallery: { vehicle: '', size: 'sedan', choice, fromPhoto: true },
+    };
   },
 };
 
@@ -621,7 +629,7 @@ const wrapRender: ToolDef = {
     const vehicle = VEHICLE(f);
     const size = oneOf(f, 'size', SIZES.map((s) => s.id) as SizeId[]);
     const choice = wrapChoice(f);
-    return { tier: 'image', contents: vehiclePrompt(choice, vehicle, size), aspectRatio: '3:2' };
+    return { tier: 'image', contents: vehiclePrompt(choice, vehicle, size), aspectRatio: '3:2', gallery: { vehicle, size, choice, fromPhoto: false } };
   },
 };
 
