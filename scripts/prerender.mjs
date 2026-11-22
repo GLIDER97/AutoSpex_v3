@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -253,6 +253,58 @@ for (const page of CODE_PAGES) {
   sitemapEntries.push({ loc: canonical, lastmod: page.reviewed, priority: 0.8 });
 }
 
+// Vehicle report pages (data/vehicles/), each with its CSV download.
+for (const v of VEHICLES) {
+  const routePath = vehiclePath(v);
+  const canonical = absoluteUrl(routePath);
+  const csvPath = vehicleCsvPath(v);
+  const csvFile = path.join(distDir, csvPath.replace(/^\//, ''));
+  await fs.mkdir(path.dirname(csvFile), { recursive: true });
+  await fs.writeFile(csvFile, vehicleCsv(v));
+  const name = vehicleName(v);
+  const description = vehicleDescription(v);
+  await writePage(routePath, {
+    title: formatTitle(vehicleSeoTitle(v)),
+    description,
+    canonical,
+    type: 'article',
+    structuredData: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: `${name} owner complaints, recalls, crash ratings and fuel economy`,
+        description,
+        url: canonical,
+        dateModified: v.asOf,
+        creator: ORGANIZATION,
+        isBasedOn: Object.values(v.sources),
+        isAccessibleForFree: true,
+        keywords: [`${name} problems`, `${name} recalls`, `${name} complaints`, `${name} MPG`, `${name} safety rating`],
+        variableMeasured: ['Owner complaints by component', 'Owner complaints by year filed', 'Recalls', 'NHTSA crash ratings', 'EPA fuel economy'],
+        distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: absoluteUrl(csvPath) }],
+        about: {
+          '@type': 'Car',
+          name,
+          brand: { '@type': 'Brand', name: v.make },
+          model: v.model,
+          vehicleModelDate: String(v.year),
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: 'Recalls and vehicle reports', item: `${SITE_URL}/recalls` },
+          { '@type': 'ListItem', position: 3, name, item: canonical },
+        ],
+      },
+    ],
+  });
+  count++;
+  sitemapEntries.push({ loc: canonical, lastmod: v.asOf, priority: 0.8 });
+}
+
 // 404 page: Vercel serves dist/404.html with a 404 status for unknown URLs.
 {
   const body = await render('/__page-not-found__');
@@ -307,6 +359,10 @@ await fs.writeFile(
     '',
     line('All check engine code guides', '/codes', 'Every code guide, grouped by system.'),
     ...CODE_PAGES.map((p) => line(`${p.code}: ${p.title}`, `/codes/${p.code.toLowerCase()}`, p.description)),
+    '',
+    '## Vehicle reports (NHTSA and EPA data, refreshed weekly)',
+    '',
+    ...VEHICLES.map((v) => line(`${vehicleName(v)}: problems, recalls and safety ratings`, vehiclePath(v), `${vehicleDescription(v)} CSV: ${absoluteUrl(vehicleCsvPath(v))}`)),
     '',
     '## About',
     '',

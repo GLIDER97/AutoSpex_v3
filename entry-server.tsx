@@ -12,6 +12,8 @@ import { toDay, toPublished, type ArticleSummary } from './Article/articleIndex'
 export { SITE_URL, SITE_NAME, STATIC_PAGES, NOT_FOUND_META, formatTitle, absoluteUrl } from './seo/site';
 // Reviewed OBD-II code pages, rendered at /codes/<code>.
 export { CODE_PAGES } from './data/codePages';
+// Vehicle report pages from the NHTSA/EPA snapshot, rendered at /cars/<make>/<model>/<year>.
+export { VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription } from './data/vehicles';
 export { pageImageFor, pageShareImageSrc } from './data/pageImages';
 
 // Tool pages (name, path, one-line description), for WebApplication markup and llms.txt.

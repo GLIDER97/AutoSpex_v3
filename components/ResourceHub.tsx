@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { VEHICLES, vehicleName, vehiclePath } from '../data/vehicles';
 import { runTool } from '../utils/ai';
 import { latestFeaturedRecalls, searchRecalls, type Recall } from '../utils/nhtsaRecalls';
 import {
@@ -259,6 +260,30 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
           <span className="sr-only">(opens in a new tab)</span>
         </a>
       </Notice>
+
+      {type === 'recalls' && VEHICLES.length > 0 && (
+        <section aria-labelledby="vehicle-reports" className="mt-10 max-w-3xl">
+          <h2 id="vehicle-reports" className="font-heading text-2xl font-extrabold">
+            Vehicle reports
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            Owner complaints, every recall, crash ratings and fuel economy for one model-year, counted from NHTSA and EPA data.
+          </p>
+          <ul className="mt-4 divide-y divide-border border-y border-border">
+            {VEHICLES.map((v) => (
+              <li key={vehiclePath(v)} className="py-3">
+                <Link to={vehiclePath(v)} className={cn('font-semibold underline underline-offset-4', focusRing)}>
+                  {vehicleName(v)}
+                </Link>
+                <span className="text-muted-foreground">
+                  {' '}
+                  · {v.complaints.total.toLocaleString('en-US')} complaints, {v.recalls.length} recall{v.recalls.length === 1 ? '' : 's'}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <Faq id="recall-faq" title="Questions about recalls" items={RECALL_FAQS} />
     </ToolPage>
