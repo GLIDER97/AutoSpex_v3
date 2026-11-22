@@ -175,3 +175,21 @@
   0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.1); transform: scale(1); }
   50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); transform: scale(1.02); }
 }
+
+/* Road under the wheel loader (components/tool/CarLoader.tsx): dashes slide left so the wheel looks like it is driving. */
+.car-loader-road {
+  background-image: linear-gradient(90deg, var(--muted-foreground) 0 55%, transparent 55% 100%);
+  background-size: 22px 4px;
+  opacity: 0.55;
+  animation: car-loader-road 0.22s linear infinite;
+}
+@keyframes car-loader-road {
+  to {
+    background-position: -22px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .car-loader-road {
+    animation: none;
+  }
+}
