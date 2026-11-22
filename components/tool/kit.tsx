@@ -185,7 +185,7 @@ export function PrimaryButton({ className, children, loading, ...props }: React.
   );
 }
 
-export function SecondaryButton({ className, children, ...props }: React.ComponentProps<'button'>) {
+export function SecondaryButton({ className, children, loading, ...props }: React.ComponentProps<'button'> & { loading?: boolean }) {
   return (
     <button
       className={cn(
@@ -195,7 +195,9 @@ export function SecondaryButton({ className, children, ...props }: React.Compone
         className,
       )}
       {...props}
+      disabled={loading || props.disabled}
     >
+      {loading && <WheelIcon className="size-5" />}
       {children}
     </button>
   );

@@ -7,6 +7,7 @@ import { searchRecalls, type Recall } from '../utils/nhtsaRecalls';
 import { formatComponent } from '../utils/nhtsa';
 import { searchComplaints, type ComplaintSummary } from '../utils/nhtsaComplaints';
 import { findEpaVariants, getEpaRating, type EpaRating } from '../utils/fuelEconomy';
+import { WheelIcon } from './tool/CarLoader';
 import {
   FactList,
   Field,
@@ -143,6 +144,13 @@ function Report({ vin, decoded }: { vin: string; decoded: DecodedVin }) {
   const airbags = AIRBAGS.filter(([k]) => f[k]).map(([k, label]) => [label, f[k]] as const);
 
   const openRecalls = recalls.data?.length ?? null;
+  // Shown in a summary tile while its section is still loading.
+  const pending = (
+    <span className="inline-flex items-center gap-2">
+      <WheelIcon className="size-7 text-foreground" />
+      <span className="sr-only">Loading</span>
+    </span>
+  );
   const overall = ratings.data?.[0]?.overall;
 
   return (
@@ -152,12 +160,14 @@ function Report({ vin, decoded }: { vin: string; decoded: DecodedVin }) {
         <h2 className="mt-1 font-heading text-3xl leading-tight font-extrabold tracking-[-0.015em] sm:text-4xl">{name}</h2>
         <p className="mt-1 text-lg text-muted-foreground">{[f.BodyClass, engine, f.DriveType].filter(Boolean).join(', ')}</p>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-border pt-5 sm:grid-cols-4">
-          {[
-            ['Recalls on this model', openRecalls == null ? '…' : String(openRecalls), '#vin-recalls'],
-            ['Owner complaints', complaints.data ? complaints.data.total.toLocaleString('en-US') : '…', '#vin-complaints'],
-            ['Overall crash rating', overall && Number(overall) ? `${overall} of 5 stars` : ratings.data ? 'Not rated' : '…', '#vin-ratings'],
-            ['Combined fuel economy', fuel.data ? `${fuel.data.rating.combined} MPG` : canLookUp && !fuel.loaded ? '…' : 'Not listed', '#vin-fuel'],
-          ].map(([label, value, href]) => (
+          {(
+            [
+              ['Recalls on this model', openRecalls == null ? pending : String(openRecalls), '#vin-recalls'],
+            ['Owner complaints', complaints.data ? complaints.data.total.toLocaleString('en-US') : pending, '#vin-complaints'],
+            ['Overall crash rating', overall && Number(overall) ? `${overall} of 5 stars` : ratings.data ? 'Not rated' : pending, '#vin-ratings'],
+            ['Combined fuel economy', fuel.data ? `${fuel.data.rating.combined} MPG` : canLookUp && !fuel.loaded ? pending : 'Not listed', '#vin-fuel'],
+          ] as [string, React.ReactNode, string][]
+          ).map(([label, value, href]) => (
             <div key={label}>
               <dt className="text-sm text-muted-foreground">{label}</dt>
               <dd>

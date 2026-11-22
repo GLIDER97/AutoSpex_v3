@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { runTool } from '../../utils/ai';
 import type { Diagnosis } from '../../utils/diagnosis';
 import { Panel, PanelTitle, focusRing, inputClass } from '../tool/kit';
+import { WheelIcon } from '../tool/CarLoader';
 
 interface Message {
   role: 'user' | 'model';
@@ -111,7 +112,12 @@ export default function MechanicChat({ codes, vehicle, diagnosis }: { codes: str
               </div>
             </div>
           ))}
-          {sending && <p className="text-[0.9375rem] text-muted-foreground">The mechanic is typing…</p>}
+          {sending && (
+            <p role="status" className="flex items-center gap-2.5 text-[0.9375rem] font-semibold text-muted-foreground">
+              <WheelIcon className="size-8 text-foreground" />
+              The mechanic is typing…
+            </p>
+          )}
           <div ref={endRef} />
         </div>
       )}
@@ -164,7 +170,7 @@ export default function MechanicChat({ codes, vehicle, diagnosis }: { codes: str
             focusRing,
           )}
         >
-          <Send className="size-5" />
+          {sending ? <WheelIcon className="size-6" /> : <Send className="size-5" />}
         </button>
       </form>
     </Panel>
