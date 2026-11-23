@@ -24,6 +24,7 @@ const CodePage = React.lazy(() => import('./components/CodePage'));
 const CodeIndex = React.lazy(() => import('./components/CodeIndex'));
 const VehiclePage = React.lazy(() => import('./components/VehiclePage'));
 const WrapGallery = React.lazy(() => import('./components/WrapGallery'));
+const CarsHub = React.lazy(() => import('./components/CarsHub'));
 const WrapDesignPage = React.lazy(() => import('./components/WrapDesignPage'));
 // const FreeObd2CodeDecoderPost - Removed (Handled by ArticleLoader + Redirect)
 const LegalPages = React.lazy(() => import('./components/LegalPages').then(module => ({ default: module.PrivacyPolicy })));
@@ -69,6 +70,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/article/:slug" element={<ArticleLoader />} />
         <Route path="/codes" element={<CodeIndex />} />
         <Route path="/codes/:code" element={<CodePage />} />
+        <Route path="/cars" element={<CarsHub />} />
         <Route path="/cars/:make/:model/:year" element={<VehiclePage />} />
         <Route path="/wrap-gallery" element={<WrapGallery />} />
         <Route path="/wrap-gallery/:slug" element={<WrapDesignPage />} />

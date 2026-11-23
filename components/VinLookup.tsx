@@ -438,7 +438,16 @@ const VinLookup: React.FC = () => {
     <ToolPage
       category="warnings"
       title="VIN decoder and vehicle report"
-      intro="Enter a 17-character VIN to get the car's factory specs, safety recalls, owner complaints, crash-test ratings and fuel economy in one free report."
+      intro={
+        <>
+          Enter a 17-character VIN to get the car&apos;s factory specs, safety recalls, owner complaints, crash-test ratings and fuel economy in one
+          free report. No VIN handy? Browse the{' '}
+          <Link to="/cars" className="font-semibold text-foreground underline underline-offset-4">
+            vehicle reports by model-year
+          </Link>
+          .
+        </>
+      }
       sources="NHTSA VIN decoder (vPIC), NHTSA recalls, complaints and 5-Star Safety Ratings, EPA fueleconomy.gov"
     >
       <Panel>

@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -160,6 +160,38 @@ for (const page of pages) {
         },
       ],
     });
+  } else if (page.path === '/cars') {
+    // The hub's comparison table as a CSV next to the page.
+    const csvFile = path.join(distDir, CARS_CSV.replace(/^\//, ''));
+    await fs.mkdir(path.dirname(csvFile), { recursive: true });
+    await fs.writeFile(csvFile, carsCsv());
+    structuredData.push(
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Vehicle reports',
+        url: canonical,
+        description: page.description,
+        publisher: { '@id': ORGANIZATION['@id'] },
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: VEHICLES.length,
+          itemListElement: VEHICLES.map((v, i) => ({ '@type': 'ListItem', position: i + 1, name: vehicleName(v), url: absoluteUrl(vehiclePath(v)) })),
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: 'Owner complaints, recalls, crash ratings and fuel economy by model-year',
+        description: page.description,
+        url: canonical,
+        dateModified: VEHICLES.map((v) => v.asOf).sort().pop(),
+        creator: ORGANIZATION,
+        isAccessibleForFree: true,
+        isBasedOn: ['https://www.nhtsa.gov/nhtsa-datasets-and-apis', 'https://www.fueleconomy.gov/feg/ws/'],
+        distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: absoluteUrl(CARS_CSV) }],
+      },
+    );
   } else if (page.path === '/wrap-gallery') {
     structuredData.push({
       '@context': 'https://schema.org',
@@ -213,7 +245,12 @@ for (const page of pages) {
   if (!page.noindex && page.sitemap !== false)
     sitemapEntries.push({
       loc: canonical,
-      lastmod: page.path === '/wrap-gallery' ? [page.updated, ...WRAP_DESIGNS.map((d) => d.created)].sort().pop() : page.updated,
+      lastmod:
+        page.path === '/wrap-gallery'
+          ? [page.updated, ...WRAP_DESIGNS.map((d) => d.created)].sort().pop()
+          : page.path === '/cars'
+            ? [page.updated, ...VEHICLES.map((v) => v.asOf)].sort().pop()
+            : page.updated,
       priority: page.priority,
       images: page.path === '/wrap-gallery' ? WRAP_DESIGNS.map((d) => absoluteUrl(designImage(d, 'large'))) : undefined,
     });
@@ -344,7 +381,7 @@ for (const v of VEHICLES) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: 'Recalls and vehicle reports', item: `${SITE_URL}/recalls` },
+          { '@type': 'ListItem', position: 2, name: 'Vehicle reports', item: `${SITE_URL}/cars` },
           { '@type': 'ListItem', position: 3, name, item: canonical },
         ],
       },
@@ -438,6 +475,7 @@ await fs.writeFile(
     '',
     '## Vehicle reports (NHTSA and EPA data, refreshed weekly)',
     '',
+    line('All vehicle reports', '/cars', `Model-years compared by owner complaints, engine share and recalls. CSV: ${absoluteUrl(CARS_CSV)}`),
     ...VEHICLES.map((v) => line(`${vehicleName(v)}: problems, recalls and safety ratings`, vehiclePath(v), `${vehicleDescription(v)} CSV: ${absoluteUrl(vehicleCsvPath(v))}`)),
     '',
     '## Car wrap gallery (AI wrap previews, free to reuse with credit under CC BY 4.0)',

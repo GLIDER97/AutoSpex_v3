@@ -140,6 +140,9 @@ const Obd2FaultCodeDecoderGuide: React.FC = () => {
             <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
                 For a full list, our <a href="/fault-code-decoder" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">OBD-II Fault Code Decoder & Repair Guide</a> breaks down thousands of codes with repair advice.
             </p>
+            <p className="text-slate-600 dark:text-slate-300 mb-6 leading-loose">
+                For the most common codes there are full reviewed guides, with symptoms, causes, what to check first and whether it&apos;s safe to drive: see the <a href="/codes" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">check engine code guides</a>. To see which parts of a specific model owners report problems with most, open the <a href="/cars" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">vehicle reports</a>, which count NHTSA owner complaints and recalls by model-year.
+            </p>
 
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mt-16 mb-8">
                 Decoding Fault Codes: Step-by-Step for California Drivers

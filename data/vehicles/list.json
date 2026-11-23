@@ -1,4 +1,22 @@
 [
-  { "make": "Ford", "model": "Escape", "year": 2018 },
-  { "make": "Ford", "model": "Escape", "year": 2017 }
+  {
+    "make": "Ford",
+    "model": "Escape",
+    "year": 2018
+  },
+  {
+    "make": "Ford",
+    "model": "Escape",
+    "year": 2017
+  },
+  {
+    "make": "Ford",
+    "model": "Escape",
+    "year": 2019
+  },
+  {
+    "make": "Honda",
+    "model": "CR-V",
+    "year": 2017
+  }
 ]
