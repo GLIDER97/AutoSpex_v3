@@ -1,0 +1,322 @@
+{
+ "make": "Honda",
+ "model": "CR-V",
+ "year": 2017,
+ "asOf": "2026-11-23",
+ "complaints": {
+  "total": 1787,
+  "crashes": 42,
+  "fires": 4,
+  "injuries": 36,
+  "deaths": 0,
+  "byComponent": [
+   {
+    "component": "ENGINE",
+    "count": 535
+   },
+   {
+    "component": "ELECTRICAL SYSTEM",
+    "count": 404
+   },
+   {
+    "component": "FUEL/PROPULSION SYSTEM",
+    "count": 350
+   },
+   {
+    "component": "FORWARD COLLISION AVOIDANCE",
+    "count": 284
+   },
+   {
+    "component": "UNKNOWN OR OTHER",
+    "count": 268
+   },
+   {
+    "component": "SERVICE BRAKES",
+    "count": 179
+   },
+   {
+    "component": "POWER TRAIN",
+    "count": 145
+   },
+   {
+    "component": "STEERING",
+    "count": 67
+   },
+   {
+    "component": "ELECTRONIC STABILITY CONTROL (ESC)",
+    "count": 54
+   },
+   {
+    "component": "VEHICLE SPEED CONTROL",
+    "count": 52
+   },
+   {
+    "component": "LANE DEPARTURE",
+    "count": 40
+   },
+   {
+    "component": "AIR BAGS",
+    "count": 36
+   },
+   {
+    "component": "SEAT BELTS",
+    "count": 32
+   },
+   {
+    "component": "STRUCTURE",
+    "count": 32
+   },
+   {
+    "component": "FUEL SYSTEM",
+    "count": 30
+   },
+   {
+    "component": "GASOLINE",
+    "count": 30
+   },
+   {
+    "component": "VISIBILITY/WIPER",
+    "count": 30
+   },
+   {
+    "component": "EXTERIOR LIGHTING",
+    "count": 23
+   },
+   {
+    "component": "SEATS",
+    "count": 13
+   },
+   {
+    "component": "ENGINE AND ENGINE COOLING",
+    "count": 10
+   },
+   {
+    "component": "BACK OVER PREVENTION",
+    "count": 8
+   },
+   {
+    "component": "VISIBILITY",
+    "count": 7
+   },
+   {
+    "component": "SUSPENSION",
+    "count": 5
+   },
+   {
+    "component": "WHEELS",
+    "count": 5
+   },
+   {
+    "component": "HYDRAULIC",
+    "count": 4
+   },
+   {
+    "component": "EQUIPMENT",
+    "count": 4
+   },
+   {
+    "component": "TIRES",
+    "count": 4
+   },
+   {
+    "component": "AIR",
+    "count": 3
+   },
+   {
+    "component": "LATCHES/LOCKS/LINKAGES",
+    "count": 1
+   },
+   {
+    "component": "PARKING BRAKE",
+    "count": 1
+   }
+  ],
+  "byFiledYear": [
+   {
+    "year": 2017,
+    "count": 77
+   },
+   {
+    "year": 2018,
+    "count": 418
+   },
+   {
+    "year": 2019,
+    "count": 340
+   },
+   {
+    "year": 2020,
+    "count": 111
+   },
+   {
+    "year": 2021,
+    "count": 137
+   },
+   {
+    "year": 2022,
+    "count": 180
+   },
+   {
+    "year": 2023,
+    "count": 140
+   },
+   {
+    "year": 2024,
+    "count": 129
+   },
+   {
+    "year": 2025,
+    "count": 138
+   },
+   {
+    "year": 2026,
+    "count": 117
+   }
+  ]
+ },
+ "recalls": [
+  {
+   "campaign": "26V332000",
+   "date": "2026-05-22",
+   "component": "AIR BAGS:SENSOR:OCCUPANT CLASSIFICATION:FRONT PASSENGER",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2018-2021, 2023 Acura TLX, 2019-2024 RDX, 2017-2020, 2022-2026 MDX, 2017-2021, 2023, 2025 Honda Ridgeline, 2017-2022 Pilot, 2019-2021 Passport, 2018-2026 Odyssey, 2019-2022 Insight, 2019-2021 HR-V, 2018-2020 Fit, 2020-2022 CR-V Hybrid, 2017-2022 CR-V, 2017-2018, 2021 Civic Type R, 2017-2021 Civic hatchback, 2016-2020 Civic coupe, 2016-2022 Civic, 2017-2022 Accord Hybrid, and 2016-2022 Accord vehicles. The front passenger seat weight sensor may crack and short circuit, which can cause the air bags to deploy unintentionally during a crash.",
+   "consequence": "Air bags that deploy unintentionally during a crash increase the risk of injury.",
+   "remedy": "Dealers will replace the seat weight sensors, free of charge. Owner notification letters were mailed July 7, 2026. Owners may contact Honda's customer service at 1-888-234-2138. Honda's numbers for this recall are BOL, WO9, OOA, WOM, XOH, NOC, POD, BOE, UOF, POB, EOG, AOI, QO8, TOJ, DO7, and SOK. This recall expands previous NHTSA recall number 24V064. Vehicle Identification Numbers (VINs) involved in this recall will be searchable on NHTSA.gov beginning May 29, 2026.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "23V858000",
+   "date": "2023-12-19",
+   "component": "FUEL SYSTEM, GASOLINE:DELIVERY:FUEL PUMP",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2013-2023 Honda Accord, Civic Coupe, Civic Sedan, Civic Hatchback, Civic Type R, CR-V, HR-V, Ridgeline, Odyssey, Acura ILX, MDX, MDX Hybrid, RDX, RLX, TLX, 2019-2022 Honda Insight, Passport, 2020 Honda CR-V Hybrid, 2018-2019 Honda Clarity PHEV, Fit, and 2015-2020 Honda Accord Hybrid, Pilot, Acura NSX vehicles.  The fuel pump inside the fuel tank may fail.",
+   "consequence": "Fuel pump failure can cause an engine stall while driving, increasing the risk of a crash.",
+   "remedy": "Dealers will replace the fuel pump module, free of charge.  Owner letters were mailed September 6, 2024.  Owners may contact Honda customer service at 1-888-234-2138.  Honda's numbers for this recall are KGC and KGD.  This recall is an expansion of NHTSA recall numbers 21V-215 and 20V-314.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "23V524000",
+   "date": "2023-07-27",
+   "component": "EQUIPMENT:OTHER:LABELS",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2017, 2020, and 2022 CR-V vehicles.  The certification label on the driver's side door states incorrect Gross Vehicle Weight Rating (GVWR), Gross Axle Weight Rating (GAWR), and tire size information.  As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard number 110, \"Tire Selection and Rims.\"",
+   "consequence": "An incorrectly sized tire may cause premature tread wear, or a tire blow out, increasing the risk of a crash.",
+   "remedy": "Dealers will install a new corrected label, free of charge.  Owner notification letters were mailed September 18, 2023.  Owners may contact Honda customer service at 1-888-234-2138.  Honda's number for this recall is CF7.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "23V158000",
+   "date": "2023-03-09",
+   "component": "SEAT BELTS:FRONT:BUCKLE ASSEMBLY",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2017-2020 CR-V, 2018-2019 Accord and Accord Hybrid, 2018-2020 Odyssey, 2019 Insight, and 2019-2020 Acura RDX vehicles.  A manufacturing issue with the front seat belts may cause the seat belt buckle channel to interfere with the release button, preventing the seat belt buckle from latching.",
+   "consequence": "An unlatched seat belt cannot properly restrain the seat occupant during a crash, increasing their risk of injury.",
+   "remedy": "Dealers will replace the driver and front passenger seat belt buckle release buttons or the buckle assemblies as necessary, free of charge.  Owner notification letters were mailed April 18, 2023.  Owners may contact Honda customer service at 1-888-234-2138.  Honda's numbers for this recall are NDA, QDB, BDC, MDD, LD9. TDF, FDG, ODH, YDI, ZDE.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "18V663000",
+   "date": "2018-09-27",
+   "component": "STEERING:ELECTRIC POWER ASSIST SYSTEM",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2017-2018 Honda Civic and CR-V vehicles.  The magnet that controls the\r\ntorque sensor output signal for the electronic power steering system may not be properly secured, allowing the magnet to become dislodged.  During a full lock turn, the dislodged magnet may cause steering assist to be applied in the opposite direction.",
+   "consequence": "The unintended steering input reduces vehicle maneuverability and increases the risk of a crash.",
+   "remedy": "Honda will notify owners, and dealers will replace the steering gearbox assembly, free of charge.  The recall began November 9, 2018.  Owners may contact Honda customer service at 1-888-234-2138.  Honda's numbers for this recall are C2N, P2O.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "17V442000",
+   "date": "2017-07-13",
+   "component": "FUEL SYSTEM, GASOLINE:DELIVERY:HOSES, LINES/PIPING, AND FITTINGS",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2017 Honda CR-V 2WD and AWD vehicles.  The affected vehicles have a fuel supply pipe that may have been improperly manufactured, possibly resulting in the pipe disconnecting and leaking while driving.",
+   "consequence": "If the pipe disconnects, the engine will stall, increasing the risk of a crash.  Additionally, the disconnected pipe may leak fuel, which, in the presence of an ignition source, can increase the risk of a fire.",
+   "remedy": "Honda will notify owners, and dealers will replace the fuel supply pipe, free of charge.  The recall began August 31, 2017.  Owners may contact Honda customer service at 1-888-234-2138.  Honda's number for this recall is KH1.",
+   "parkIt": false,
+   "parkOutside": false
+  },
+  {
+   "campaign": "17V256000",
+   "date": "2017-04-18",
+   "component": "EQUIPMENT:OTHER:LABELS",
+   "summary": "Honda (American Honda Motor Co.) is recalling certain 2017 CR-V and Acura RDX vehicles.  The Certification Labels on the affected vehicles were printed with ink that may be inadvertently wiped away with an alcohol solvent.  As such, these vehicles fail to comply with the requirements of 49 CFR Part 567, \"Certification.\"",
+   "consequence": "If the label information can be wiped away, the operator may not be able to refer to the information, possibly resulting in the vehicle being overloaded, which can increase the risk of a crash.",
+   "remedy": "Honda and Acura will notify owners, and dealers will replace the Certification Label, free of charge.  The recall began June 2017.  Owners may contact Honda customer service at 1-888-234-2138.  Honda's numbers for this recall are KF3 (CR-V)and KF4 (RDX).",
+   "parkIt": false,
+   "parkOutside": false
+  }
+ ],
+ "ratings": [
+  {
+   "vehicle": "2017 Honda CR-V SUV AWD",
+   "overall": "5",
+   "frontal": "5",
+   "side": "5",
+   "rollover": "4",
+   "rolloverRisk": 0.162,
+   "url": "https://www.nhtsa.gov/vehicle/2017/HONDA/CR-V"
+  },
+  {
+   "vehicle": "2017 Honda CR-V SUV FWD",
+   "overall": "5",
+   "frontal": "5",
+   "side": "5",
+   "rollover": "4",
+   "rolloverRisk": 0.163,
+   "url": "https://www.nhtsa.gov/vehicle/2017/HONDA/CR-V"
+  }
+ ],
+ "mpg": [
+  {
+   "epaId": 38449,
+   "model": "CR-V FWD",
+   "engine": "Auto (variable gear ratios), 4 cyl, 1.5 L, Turbo",
+   "drive": "Front-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 28,
+   "highway": 34,
+   "combined": 30,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2017&year2=2017&make=Honda&baseModel=CR-V&srchtyp=ymm"
+  },
+  {
+   "epaId": 38453,
+   "model": "CR-V AWD",
+   "engine": "Auto (variable gear ratios), 4 cyl, 1.5 L, Turbo",
+   "drive": "All-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 27,
+   "highway": 33,
+   "combined": 29,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2017&year2=2017&make=Honda&baseModel=CR-V&srchtyp=ymm"
+  },
+  {
+   "epaId": 38448,
+   "model": "CR-V FWD",
+   "engine": "Auto (variable gear ratios), 4 cyl, 2.4 L",
+   "drive": "Front-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 26,
+   "highway": 32,
+   "combined": 28,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2017&year2=2017&make=Honda&baseModel=CR-V&srchtyp=ymm"
+  },
+  {
+   "epaId": 38452,
+   "model": "CR-V AWD",
+   "engine": "Auto (variable gear ratios), 4 cyl, 2.4 L",
+   "drive": "All-Wheel Drive",
+   "fuel": "Regular Gasoline",
+   "city": 25,
+   "highway": 31,
+   "combined": 27,
+   "url": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2017&year2=2017&make=Honda&baseModel=CR-V&srchtyp=ymm"
+  }
+ ],
+ "sources": {
+  "complaints": "https://api.nhtsa.gov/complaints/complaintsByVehicle?make=Honda&model=CR-V&modelYear=2017",
+  "recalls": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=Honda&model=CR-V&modelYear=2017",
+  "ratings": "https://api.nhtsa.gov/SafetyRatings/modelyear/2017/make/Honda/model/CR-V",
+  "nhtsaPage": "https://www.nhtsa.gov/vehicle/2017/HONDA/CR-V",
+  "epa": "https://www.fueleconomy.gov/feg/PowerSearch.do?action=noform&path=1&year1=2017&year2=2017&make=Honda&baseModel=CR-V&srchtyp=ymm"
+ }
+}

@@ -180,6 +180,13 @@ const CodePage: React.FC = () => {
             </ul>
             <p className="mt-3 text-sm text-muted-foreground">General information, not a diagnosis. Have a qualified mechanic confirm the cause.</p>
           </Panel>
+          <Panel>
+            <PanelTitle>Which cars have the most engine complaints?</PanelTitle>
+            <p className="mt-1 text-[0.9375rem] text-muted-foreground">Owner complaints, recalls and crash ratings by model-year, from NHTSA data.</p>
+            <Link to="/cars" className={cn('mt-3 inline-block', linkClass)}>
+              See the vehicle reports
+            </Link>
+          </Panel>
         </aside>
       </div>
 

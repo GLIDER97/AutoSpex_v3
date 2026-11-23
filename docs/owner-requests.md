@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-Nothing open.
+1. **Test the wrap gallery with one preview (1 minute, or let me do it).** The gallery has recorded 0 previews since it went live on 22 Nov, so I can't tell whether nobody has drawn a wrap yet or whether saving fails. On www.myautospex.com/wrap-designer, enter a year, make and model (no photo), pick any wrap and click "Draw my wrap", then reply "done". Or reply "you do it" and I'll run one test preview myself (about $0.009 on the website's OpenRouter key; my own attempt was blocked by the permission check). If saving works, the design shows up for the next daily review.
 
 ## Answered
 

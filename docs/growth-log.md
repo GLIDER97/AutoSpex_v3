@@ -2,6 +2,52 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-23: day 5 (week 1, day 5; Monday)
+
+### What changed
+- **`/cars` hub**, the section 0 day-5 item. It compares every vehicle report:
+  - key numbers: 4 model-years, 6,940 owner complaints counted, 18 recalls
+  - three ranked bar charts drawn in code: most complaints, share of complaints in NHTSA's "Engine" category, most recalls
+  - a VIN-check box, all reports by make, the method, a comparison CSV (`/data/cars/all-vehicle-reports.csv`) and "How to cite this"
+  - `CollectionPage` + `Dataset` structured data
+  - Linked from the Explore menu, the footer, `/recalls`, the VIN tool's intro and every code guide ("Which cars have the most engine complaints?"). Vehicle-page breadcrumbs (visible and structured data) now point to `/cars`.
+- **Two new vehicle reports:**
+  - `/cars/ford/escape/2019`: 606 complaints, 3 recalls; Bing US 40 for "2019 ford escape problems"; completes 2017–2019
+  - `/cars/honda/cr-v/2017`: 1,787 complaints, 7 recalls (the most of any report); chosen by NHTSA complaint count, since Bing had no year-level volume
+  - Both have all the charts.
+- **Weekly vehicle data refresh:** all 4 snapshots re-run (2018 Escape: 1,833 complaints).
+- **Monday loop:**
+  - Quick wins: none. No query has 50+ impressions; the top is "wrap visualizer for designers" with 25, at position 81.
+  - Low CTR: not enough impressions to judge.
+  - Audit: claude-seo `page_checks.py` on the 6 most-visited pages (home, Wrap Designer, blog, code lookup, wrap gallery, affordability) found **0 issues**. Lighthouse isn't available in the sandbox and was skipped.
+  - 4b refresh: `obd2-fault-code-decoder-guide` and `check-engine-light-meaning` now link to the code guides hub, four code guides and the vehicle reports. Dates unchanged (no content change).
+  - Regex mining starts in week 2.
+- **Wrap gallery review:** 0 new designs and 0 recorded previews since launch. A test preview from here was blocked by the permission check, so the owner is asked to make one (owner request 1). `stats.json` refreshed (0).
+
+### Numbers
+| | Last 28 days (25 Oct–21 Nov) | Last 3 days (19–21 Nov) |
+|---|---|---|
+| Clicks | 1 | 0 |
+| Impressions | 127 (tier-1 106) | 9 |
+| Average position | 44.8 | 16.2 |
+| Tier-1 clicks | 0 | 0 |
+
+- **Index: 32 of 60 inspected URLs (was 16)**, after the owner's indexing requests and the new internal links.
+  - Newly indexed: the 2017 Escape report and **14 of 19 wrap gallery pages**.
+  - Not yet indexed: 21 discovered (the 2018 Escape, P0442, 4 tools, 13 older articles), 5 unknown, 2 crawled but not indexed. No manual action, no drop.
+  - The sitemap was read 22 Nov: 60 web URLs and 38 image entries.
+- **Week 1:** indexed 32 against the 12+ goal (**met**). Tier-1 impressions 33 in the latest 7 days of data (goal 50+; amber so far). Tier-1 clicks 0 (goal 0).
+- **Clarity, last day:** 8 human sessions, 6 users (4 US, 4 India), 12 bots filtered. Pages: home 3, Wrap Designer 3, blog 2, code lookup 2, wrap gallery 2. 66% scroll depth, 8 dead clicks (25% of sessions), 12 quick-backs (37.5% of sessions), 0 rage clicks. Referrers: Google 1, internal 2. **AI-app referrals: 0.** The live API gives no per-page breakdown, so nothing specific to fix yet.
+- **OpenRouter:** $3.43 of $10 this month. No images today.
+- **Community data:** not live yet (week 2).
+
+### Needs the owner
+- Owner request 1: one wrap preview to confirm the gallery saves designs.
+
+### Tomorrow (day 6)
+- First data study from the NHTSA data (section 0, days 6–7), with charts, method, CSV and "How to cite this". For example: complaint trends by filing year across the reported model-years, extended to more best-selling 2015–2022 SUVs where the data supports it.
+- The wrap gallery review, as every run.
+
 ## 2026-11-22: owner instruction, wrap gallery (not a daily run; day numbering unchanged)
 
 - **New: `/wrap-gallery`** with one page per design, showing Wrap Designer images with all their details: vehicle, coverage, finish, color with hex, extras and date. `docs/WRAP-GALLERY.md`, decision 12.

@@ -18,6 +18,7 @@ const COMPANY_LINKS = [
   { to: '/blog', label: 'Articles' },
   { to: '/codes', label: 'Check engine code guides' },
   { to: '/wrap-gallery', label: 'Car wrap gallery' },
+  { to: '/cars', label: 'Vehicle reports' },
   { to: '/privacy-policy', label: 'Privacy policy' },
   { to: '/terms-of-service', label: 'Terms of service' },
   { to: '/cookie-policy', label: 'Cookie policy' },

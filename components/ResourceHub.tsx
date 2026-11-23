@@ -267,7 +267,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ type }) => {
             Vehicle reports
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Owner complaints, every recall, crash ratings and fuel economy for one model-year, counted from NHTSA and EPA data.
+            Owner complaints, every recall, crash ratings and fuel economy for one model-year, counted from NHTSA and EPA data.{' '}
+            <Link to="/cars" className={cn('font-semibold text-foreground underline underline-offset-4', focusRing)}>
+              Compare all vehicle reports
+            </Link>
           </p>
           <ul className="mt-4 divide-y divide-border border-y border-border">
             {VEHICLES.map((v) => (

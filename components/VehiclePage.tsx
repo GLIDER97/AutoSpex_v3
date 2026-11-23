@@ -93,8 +93,8 @@ const VehiclePage: React.FC = () => {
       <SEO title={vehicleSeoTitle(v)} description={vehicleDescription(v)} />
 
       <nav aria-label="Breadcrumb" className="text-[0.9375rem] text-muted-foreground">
-        <Link to="/recalls" className={cn('font-semibold text-foreground underline-offset-4 hover:underline', focusRing)}>
-          Recalls and vehicle reports
+        <Link to="/cars" className={cn('font-semibold text-foreground underline-offset-4 hover:underline', focusRing)}>
+          Vehicle reports
         </Link>
         <span aria-hidden="true" className="mx-2">
           ›

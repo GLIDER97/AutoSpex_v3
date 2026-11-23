@@ -128,6 +128,14 @@ export const STATIC_PAGES: PageMeta[] = [
     priority: 0.7,
   },
   {
+    path: '/cars',
+    updated: '2026-11-23',
+    title: 'Vehicle Reports: Problems, Recalls, Ratings',
+    description:
+      'Owner complaints, recalls, crash ratings and fuel economy for popular cars by model-year, counted from NHTSA and EPA data and compared side by side.',
+    priority: 0.8,
+  },
+  {
     path: '/wrap-gallery',
     updated: '2026-11-22',
     title: 'Car Wrap Gallery: Colors and Finishes',
