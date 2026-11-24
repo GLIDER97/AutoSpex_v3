@@ -18,9 +18,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 
 SITE = "https://www.myautospex.com"
 SITE_ENC = "https%3A%2F%2Fwww.myautospex.com%2F"
-TIER1 = {"usa", "gbr", "can", "aus", "nzl", "irl", "deu", "fra", "nld", "bel", "aut", "esp", "ita", "prt", "swe", "dnk",
-         "fin", "nor", "che", "lux", "pol", "cze", "grc", "hun", "rou", "svk", "svn", "hrv", "bgr", "est", "lva", "ltu",
-         "cyp", "mlt"}
+TIER1 = {"usa", "gbr", "can", "aus", "nzl", "irl", "deu", "fra", "nld", "bel", "lux", "aut", "che", "swe", "dnk", "fin", "nor", "isl"}  # tier 1 as defined in GROWTH-PLAN section 9
 CPC_FILE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "keyword-cpc.csv")
 
 # Estimated commercial value when no CPC is on file: advertisers pay most for money decisions.

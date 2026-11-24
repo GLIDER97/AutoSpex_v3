@@ -18,7 +18,7 @@ It works with `docs/GROWTH-PLAN.md` section 0 (only work AI apps can't replace o
 
 ## Step 1: the top 20 keywords
 
-Run `python3 -I scripts/growth/top_keywords.py <scratchpad>/top-keywords.json`. It ranks the last 28 days of Search Console queries by tier-1 impressions and maps each to the page Google ranks for it. Save the printed table in the log.
+Tier-1 visitors are the goal (GROWTH-PLAN section 0), so keywords are ranked by tier-1 impressions. Run `python3 -I scripts/growth/top_keywords.py <scratchpad>/top-keywords.json`. It ranks the last 28 days of Search Console queries by tier-1 impressions and maps each to the page Google ranks for it. Save the printed table in the log.
 
 ## Step 2: the high-CPC ones
 
@@ -31,6 +31,14 @@ Run `python3 -I scripts/growth/top_keywords.py <scratchpad>/top-keywords.json`. 
 Take the top-scoring page group (score = impressions x CPC, or x the value weight). Skip a page if it got a content piece in the last 4 weeks and its keywords haven't been re-measured yet; take the next group.
 
 **Update that page; don't create a competing one.** A second page on the same keywords splits Google's signals (cannibalization). For a tool page, the tool stays first, and the content goes below it as a guide section with its own heading and table of contents. Only when the keywords clearly want a separate page (a different intent) does it get one, linked both ways.
+
+## Step 3b: silo check
+
+If the target page ranks for 30+ tier-1 queries that ask 2+ different questions, follow `docs/SILOS.md`:
+- The page becomes the pillar and gets this week's piece for its main question.
+- Each other question gets a supporting page in the silo plan, built in order of expected tier-1 visits.
+
+Never stretch one page to answer questions it isn't about.
 
 ## Step 4: research before writing
 

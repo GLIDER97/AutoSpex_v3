@@ -20,6 +20,15 @@ This file is the agent's instructions as well as the owner's plan. The agent rea
 
 **Binding. This section overrides the rest of this plan, and the daily task's own instructions, wherever they conflict.**
 
+**The one goal (owner, 24 Nov 2026): the most visitors and users from tier-1 countries.** Tier 1 means the US, UK, Canada, Australia, New Zealand, Ireland and western/northern Europe (section 9). Every effort goes in that direction only:
+- **Choose work by expected tier-1 visits:** tier-1 demand (Search Console tier-1 impressions, or US search volume) times the click share we can realistically reach. The highest goes first. Work that mainly brings visitors from other countries isn't done.
+- **Research tier-1 demand only:** Bing US volumes and Search Console's tier-1 rows (`scripts/growth/top_keywords.py`). Queries whose impressions come mostly from outside tier 1 are ignored.
+- **Write for US readers first** (the largest tier-1 market, and where our official data comes from): US English, dollars, miles, gallons, US laws and state-level detail.
+- **Other tier-1 countries:** pages for the UK, Canada or Australia (for example a UK MOT history check, or Canadian recalls) only when Search Console shows real demand from that country and an official data source exists. Each such opportunity is logged and asked of the owner first, since it's a new site section.
+- **Outreach** targets tier-1 sites only.
+- **Every status reply and scoreboard leads with tier-1 numbers.**
+
+
 People increasingly ask ChatGPT, Gemini and Google's AI answers instead of clicking a search result. A page that only explains something general ("what does P0300 mean") is exactly what those apps answer without sending anyone to us. So every hour of work goes into one of two things:
 
 1. **What AI apps can't replace:**
@@ -66,6 +75,8 @@ People increasingly ask ChatGPT, Gemini and Google's AI answers instead of click
 | Monthly | One new data study; the vehicle snapshot refreshed weekly; Monday refresh adds unique data to older pages. |
 
 **Content rule (owner, 24 Nov 2026; binding).** Every week, find the 20 keywords with the most impressions (`scripts/growth/top_keywords.py`), pick the high-CPC ones, and turn the page Google already ranks for them into the most useful, citable answer on the web: original numbers from official data, at least 3 charts and 1 explanatory diagram drawn in code, direct answers under question headings, embeddable charts, CSV, "How to cite this", and outreach drafts so other sites link to it. Full steps and quality bar: `docs/CONTENT-RULE.md`. One piece a week, built on Mondays; the first is `/insurance-estimator` on day 8 (26 Nov), which holds 13 of the top 20 keywords.
+
+**Silo rule (owner, 24 Nov 2026; binding).** When a page ranks for 30+ tier-1 queries that split into 2+ different questions, plan a silo: the ranking page becomes the pillar, and each different question gets a supporting page with its own tool or official data, linked up to the pillar and across the silo, with a keyword map so no two pages target the same cluster. Rules and the first silo (car insurance: pillar `/insurance-estimator`, then gap insurance, coverage needed, SR-22, average cost, teen drivers): `docs/SILOS.md`.
 
 **Measure the new channel:** each run records visits referred by AI apps (chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com, claude.ai) from Clarity's referrer data where available, in `docs/growth-metrics.csv` and the status reply. There's no goal yet; set one at day 30.
 
@@ -143,6 +154,7 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
 6. **Log:** in `docs/growth-log.md`, record what changed, why, which numbers moved, and tomorrow's work item.
 
 **Every Monday, additionally:**
+- **Silo check (`docs/SILOS.md`):** for the content rule's target page, sort its queries by question; plan or extend a silo when the rule's trigger is met, and build the next supporting page by expected tier-1 visits.
 - **Content rule (`docs/CONTENT-RULE.md`):** run `scripts/growth/top_keywords.py`, pick the week's target page, and ship its content piece today or in the next run.
 - **Quick wins:** queries ranking 5–20 with 50+ impressions → improve the matching page's title, intro, headings and FAQ for that query.
 - **Low click-through:** pages with impressions but CTR under 1% → rewrite the title and description.
@@ -349,6 +361,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 11. **Charts on every data page (22 Nov):** wherever a page shows data or data insights, show it with bar charts, histograms, timelines, share bars, rating stars and similar, so it looks good and is understood quickly. Charts are drawn by Claude in code, never with an AI or other paid API (no AI cost). Saved as the charts rule in section 0 and `docs/DATA-VIZ.md`.
 12. **Wrap gallery (22 Nov):** every Wrap Designer image is shown on the site, with its details, light compressed files and SEO/AEO markup, at `/wrap-gallery`, with a new "Explore" header menu.
 13. **Content rule (24 Nov):** the owner asked for a standing rule: each week, take the top 20 keywords by impressions, pick the high-CPC ones, and upgrade the page that ranks for them with content good enough for AI answers to cite and other sites to link to, with graphs and diagrams that make complex information easy (`docs/CONTENT-RULE.md`). CPC comes from a real source (`data/keyword-cpc.csv`); until then, an intent-based value estimate guides the choice and is never published. The owner also answered the 24 Nov keyword review: the insurance estimator goes first, then the VIN lookup.
+14. **Tier-1 only, and silos (24 Nov):** the owner's words: "make sure everything we are doing here is the get maximum number of website visitors and users from tier one countries so all our efforts should be in that direction only", and "if there are too many keywords that are ranking from the same page ... you must plan a silo structure as well". Section 0's goal and silo rule; `docs/SILOS.md` holds silo 1 (car insurance), with demand checked on Bing US. The scripts' tier-1 country list was corrected to section 9's definition the same day.
     - The agent's call, flagged to the owner: previews made from a visitor's own photo are never saved or published (privacy). Previews drawn from year, make and model are saved and, after the daily review, published.
     - Images are free to reuse under CC BY 4.0 with a credit link, to earn links as they spread.
     - 19 starter designs were made with Flux 3 Klein ($0.171).
@@ -432,7 +445,7 @@ Never run paid data sources (DataForSEO, Moz, Keywords Everywhere) without the o
 ## 9. Goals the owner tracks (set 19 Nov 2026)
 
 **What counts:**
-- **Tier-1 clicks:** Google Search Console clicks from tier-1 countries (US, UK, Canada, Australia, New Zealand, Ireland and western/northern EU), plus Bing Webmaster clicks once Bing reports by country.
+- **Tier-1 clicks:** Google Search Console clicks from tier-1 countries (US, UK, Canada, Australia, New Zealand, Ireland and western/northern Europe: Germany, France, the Netherlands, Belgium, Luxembourg, Austria, Switzerland, Sweden, Denmark, Finland, Norway and Iceland; the scripts' `TIER1` lists match this since 24 Nov, when eastern and southern European countries were removed), plus Bing Webmaster clicks once Bing reports by country.
 - **Indexed pages:** sitemap URLs that URL Inspection reports as "Submitted and indexed".
 - **Impressions:** tier-1 impressions in Search Console.
 - **Linking sites:** distinct external sites linking to us (Search Console Links report, or `seo-backlinks` / `commoncrawl_graph.py`).
