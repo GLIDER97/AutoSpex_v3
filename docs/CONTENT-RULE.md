@@ -25,6 +25,7 @@ Tier-1 visitors are the goal (GROWTH-PLAN section 0), so keywords are ranked by 
 - **Real CPC first:** if `data/keyword-cpc.csv` lists the keyword (columns `keyword,cpc_usd,source,date`), the script uses it. That file comes from a real source: a Google Keyword Planner export from the owner (free with a Google Ads account), or a paid keyword API **only after the owner says yes** (GROWTH-PLAN section 10).
 - **Otherwise an estimate:** the script tags each keyword's commercial value (high, medium or low) from its intent. Insurance, loans, warranties, prices and repair costs are high. This estimate guides the choice only. It is never shown on the site or presented as a CPC.
 - Never invent a CPC figure.
+- **Owner's choice (24 Nov): C now, A later.** Use the estimate for now. Once tier-1 impressions pass **1,000 a week**, the status reply asks the owner for a Google Keyword Planner export of the top keywords (option A), and from then on `data/keyword-cpc.csv` is kept current monthly.
 
 ## Step 3: pick the target
 
@@ -46,42 +47,16 @@ Never stretch one page to answer questions it isn't about.
 - **What currently ranks** for the main keyword: what it covers, and what it lacks (usually original data, clear visuals and sources). The piece must beat the best result on usefulness, not on length.
 - **Official, free data** to build original numbers from. Examples: BLS consumer price index for motor vehicle insurance, NHTSA, EPA, FHWA, Census, the Federal Reserve. Note every source with its URL and date.
 
-## Step 5: the content piece (the quality bar)
+## Step 5: the content piece
 
-**Search optimization**
-- Main keyword in the title tag (about 60 characters, written to be clicked), the H1 or the guide's H2, and the first 100 words. Close variants in the H2s and body, naturally, never stuffed.
-- Meta description of 120–160 characters that promises the specific answer and data.
-- Question-style H2s taken from step 4. Each starts with a direct one- or two-sentence answer (what AI answers quote), then the detail.
-- A short table of contents with anchor links for long sections.
-- Links to the related tools, vehicle reports, studies and code guides, and from them back to this page.
-- Structured data that matches the content: `FAQPage` only for real Q&A on the page, and `Dataset` for any table we publish. `HowTo` only for real steps.
+It must meet **`docs/PUBLISHING-STANDARD.md` in full**, at the highest tier:
+- excellent SEO for tier-1 searchers
+- at least one original, sourced finding that AI answers will cite
+- at least 3 charts and 1 explanatory diagram drawn in code
+- an embeddable, linkable asset with a CSV and "How to cite this"
+- 10 outreach drafts
 
-**Original, citable data (required)**
-- At least **one finding nobody else publishes**, computed by us from official data. For example: "car insurance prices rose X% from <month year> to <month year> (BLS CPI, motor vehicle insurance)". Every figure has its source link and date.
-- A **key numbers** box at the top of the section, and a **Key findings** list of 3–5 short, quotable sentences that a writer or an AI answer can lift as-is.
-- **Method and limitations** in plain words. Say what the data can't tell you.
-- **Never invented:** no made-up stats, quotes, experts, reviews, ratings or testimonials (GROWTH-PLAN section 5).
-
-**Charts and diagrams (required, drawn in code, $0)**
-- **At least 3 charts** from the chart kit, picked by `docs/DATA-VIZ.md` section 1: trends over time, comparisons, and shares.
-- **At least 1 explanatory diagram** that makes a complex idea simple. Examples: what makes up a premium (a share bar with labels), how a factor changes the price (a flow or before-and-after), a decision path ("do I need full coverage?").
-  - Drawn in SVG or HTML in code, never an AI image (IMAGE-STYLE rule 2: no facts in AI images).
-- **Every chart and diagram gets:**
-  - a title that states the takeaway
-  - a source line
-  - "Show as table"
-  - alt text or a text summary
-  - readability at 390 px wide and in dark mode
-
-**Made to earn links**
-- **Embed this chart:** a copy-paste snippet for each main chart, with a credit link back to the page.
-- A **CSV download** of the data, and a **"How to cite this"** line with the page URL and the date.
-- A permanent URL, a visible "Updated <date>", and "Reviewed by the MyAutoSpex Editorial Team" (linked to the editorial policy).
-- **Outreach:** after it ships, draft 10 short, personal emails to relevant sites (car blogs, consumer finance and insurance writers, local news money columns). Each offers the finding and the embeddable chart. They're saved as Gmail drafts the owner sends (decision 8); the agent never sends anything.
-
-**Plain writing**
-- Short sentences, US English, no filler or hype.
-- Length set by what answers the questions: usually 1,200–2,500 words added. A page doesn't get longer just to be longer.
+Paste the standard's definition-of-done checklist into the PR. The standard began as this step and now applies to everything the site publishes.
 
 ## Step 6: checks before shipping
 

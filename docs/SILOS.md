@@ -24,7 +24,7 @@ A sub-question the page can answer in one section stays on the page (as a conten
   - links **across** only to other pages in the same silo where it helps the reader
   - links **out** only to closely related pages, such as a vehicle report
   - has breadcrumbs: Home › pillar › page (visible and structured data)
-  - meets the content rule's full quality bar (steps 4–6)
+  - meets `docs/PUBLISHING-STANDARD.md` in full (3+ charts and 1+ diagram, original sourced data, embeddable, outreach drafts)
 - **Demand evidence before building:** each supporting page needs either Search Console queries already landing on the pillar, or at least 100 US searches in 90 days on Bing. Record that evidence in this file.
 - **Build order:** by expected tier-1 visits, meaning search demand times the click share we can realistically reach, highest first. Supporting pages count toward the daily page pace (rule 5).
 - **YMYL care:** insurance and money pages need exact, current, sourced facts. Check every legal requirement against the state's own site (DMV, department of insurance or statute) and show the "checked" date. Say plainly that the page isn't financial or legal advice.

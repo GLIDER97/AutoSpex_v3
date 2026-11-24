@@ -74,6 +74,14 @@ People increasingly ask ChatGPT, Gemini and Google's AI answers instead of click
 | Week 3 (3–9 Dec) | **Free embeddable recall checker (owner yes, 21 Nov, C):** a small script or iframe other sites add, showing the official NHTSA result with a "Powered by MyAutoSpex" link, plus a `/recall-checker-widget` page with the copy-paste code. Outreach drafts offering it to car blogs, independent mechanics and local news. Follow-ups on the study outreach. |
 | Monthly | One new data study; the vehicle snapshot refreshed weekly; Monday refresh adds unique data to older pages. |
 
+**Publishing standard (owner, 24 Nov 2026; binding).** Everything we create or substantially update to attract visitors must pass `docs/PUBLISHING-STANDARD.md`, whatever its type: content pieces, blog posts, guides, vehicle reports, code guides, data studies, silo pages, tool pages and hubs. That means:
+- excellent SEO for tier-1 searchers
+- valuable enough for AI search to cite (an original sourced finding, key numbers, quotable findings, method, CSV, "How to cite this")
+- impressive charts and diagrams drawn in code that make complex information easy (minimums by page type)
+- authoritative enough that other sites in the niche want to link to it (a linkable asset, "Embed this chart", outreach for the bigger pieces)
+
+Every PR ticks the standard's definition-of-done checklist. A page that can't meet it isn't published. Older pages are brought up to it on Mondays, highest tier-1 impressions first.
+
 **Content rule (owner, 24 Nov 2026; binding).** Every week, find the 20 keywords with the most impressions (`scripts/growth/top_keywords.py`), pick the high-CPC ones, and turn the page Google already ranks for them into the most useful, citable answer on the web: original numbers from official data, at least 3 charts and 1 explanatory diagram drawn in code, direct answers under question headings, embeddable charts, CSV, "How to cite this", and outreach drafts so other sites link to it. Full steps and quality bar: `docs/CONTENT-RULE.md`. One piece a week, built on Mondays; the first is `/insurance-estimator` on day 8 (26 Nov), which holds 13 of the top 20 keywords.
 
 **Silo rule (owner, 24 Nov 2026; binding).** When a page ranks for 30+ tier-1 queries that split into 2+ different questions, plan a silo: the ranking page becomes the pillar, and each different question gets a supporting page with its own tool or official data, linked up to the pillar and across the silo, with a keyword map so no two pages target the same cluster. Rules and the first silo (car insurance: pillar `/insurance-estimator`, then gap insurance, coverage needed, SR-22, average cost, teen drivers): `docs/SILOS.md`.
@@ -320,6 +328,8 @@ The owner chose these two features on 16 Nov, to build a real, owner-reported da
 
 ## 5. Quality rules the agent must follow (non-negotiable)
 
+**Every page must also pass `docs/PUBLISHING-STANDARD.md` (owner, 24 Nov), which sets the full bar for SEO, AI citation, charts and diagrams, and linkability.**
+
 - **New pages: at most 2 a day by default,** each with something a reader can't get from a generic AI answer: real data (NHTSA, EPA), a working tool link, specific symptoms and steps. **Up to 4 a day** for a page type once at least 60% of its published pages are indexed and the type is getting impressions (section 8). Never more, whatever the deadline: scaled thin content is what gets new sites demoted.
 - **Every price, statistic, law or rule links to its source.** No source means the figure stays out.
 - **No first-person experience claims,** no invented people, reviews, ratings or testimonials. Pages are credited to the MyAutoSpex Editorial Team.
@@ -362,6 +372,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 12. **Wrap gallery (22 Nov):** every Wrap Designer image is shown on the site, with its details, light compressed files and SEO/AEO markup, at `/wrap-gallery`, with a new "Explore" header menu.
 13. **Content rule (24 Nov):** the owner asked for a standing rule: each week, take the top 20 keywords by impressions, pick the high-CPC ones, and upgrade the page that ranks for them with content good enough for AI answers to cite and other sites to link to, with graphs and diagrams that make complex information easy (`docs/CONTENT-RULE.md`). CPC comes from a real source (`data/keyword-cpc.csv`); until then, an intent-based value estimate guides the choice and is never published. The owner also answered the 24 Nov keyword review: the insurance estimator goes first, then the VIN lookup.
 14. **Tier-1 only, and silos (24 Nov):** the owner's words: "make sure everything we are doing here is the get maximum number of website visitors and users from tier one countries so all our efforts should be in that direction only", and "if there are too many keywords that are ranking from the same page ... you must plan a silo structure as well". Section 0's goal and silo rule; `docs/SILOS.md` holds silo 1 (car insurance), with demand checked on Bing US. The scripts' tier-1 country list was corrected to section 9's definition the same day.
+15. **Publishing standard and CPC source (24 Nov):** the owner made the content rule's quality bar apply to everything published (`docs/PUBLISHING-STANDARD.md`), in their words: "make sure any content piece or blog post or anything you create have excellent SEO optimization that AI search engines would consider valuable enough to cite in their responses. It should also include impressive graphs and diagrams that make complex information easy for users to understand. The content should be so valuable and authoritative that other website owners in the same niche would naturally want to link to it and give it backlinks." CPC source: C now (intent-based estimate), A later (Google Keyword Planner export, asked for once tier-1 impressions pass 1,000 a week).
     - The agent's call, flagged to the owner: previews made from a visitor's own photo are never saved or published (privacy). Previews drawn from year, make and model are saved and, after the daily review, published.
     - Images are free to reuse under CC BY 4.0 with a credit link, to earn links as they spread.
     - 19 starter designs were made with Flux 3 Klein ($0.171).

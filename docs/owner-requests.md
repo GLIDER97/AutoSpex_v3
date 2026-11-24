@@ -4,10 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Where should real CPC (cost per click) figures come from? (24 Nov)** The content rule ranks keywords by impressions x CPC. Until there's a real source it uses an estimate of commercial value from each keyword's intent, which is good enough to pick the insurance estimator first but can't tell close calls apart. Choose one:
-   - **A. Google Keyword Planner (free; you, 5 minutes a month):** in Google Ads, go to Tools, then Keyword Planner, then "Get search volume and forecasts". Paste the keyword list from the latest status, download the CSV and send it to me; I'll keep `data/keyword-cpc.csv` updated. You need a Google Ads account, but no ads have to run.
-   - **B. A paid keyword API (automatic, small cost):** for example Keywords Everywhere or DataForSEO, pay-as-you-go. At 20 keywords a week the usage cost is a few cents a month, plus whatever minimum top-up the service requires. I'll confirm the exact price before you sign up, then ask for the API key through the secure form, never in chat.
-   - **C. Keep the estimate for now:** no cost. Revisit when traffic grows.
+Nothing open.
 
 ## Answered
 
@@ -35,3 +32,5 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-24 | Test the wrap gallery with one preview | **"You do it."** Done from the owner's main session through the live Wrap Designer in a browser: 2021 Tesla Model 3, full matte light-grey wrap, black wheels. It drew in 8 seconds (about $0.009 on the website's key) and was **saved as design #1**: `/api/wraps` lists it, the anonymous option counts went up, and `/images/wraps/v/1/...-1200.webp`, `-640.webp` and `-share.jpg` are served with the embedded metadata. Saving works; the empty gallery meant nobody had drawn a vehicle yet. The next daily run reviews it. Note: `/api/wraps` is cached for 5 minutes at the CDN, so check with a new query string |
 | 2026-11-24 | Content rule: top 20 keywords by impressions, high-CPC ones, citable content with charts and diagrams on the ranking page | **Owner's own request.** Written as `docs/CONTENT-RULE.md` + `scripts/growth/top_keywords.py`; GROWTH-PLAN section 0, section 3 (Mondays), decision 13. First piece: `/insurance-estimator` on 26 Nov, then the VIN lookup |
 | 2026-11-24 | Silo structure when one page ranks for many different questions; every effort aimed at tier-1 visitors only | **Owner's own instruction.** Section 0 goal + silo rule, `docs/SILOS.md` with silo 1 (car insurance: pillar `/insurance-estimator`; then gap insurance 6,436, coverage/full coverage 1,608, SR-22 4,739, average cost 788, teen drivers 470 Bing US searches in 90 days). Decision 14. Tier-1 country list in the scripts corrected to section 9's definition |
+| 2026-11-24 | Where real CPC figures come from (A Keyword Planner export, B paid API, C estimate) | **C now, A later.** The intent-based estimate guides the content rule. Once tier-1 impressions pass 1,000 a week, the status reply asks for a Google Keyword Planner export (`data/keyword-cpc.csv`) |
+| 2026-11-24 | Apply the quality bar to everything published | **Owner's own instruction.** `docs/PUBLISHING-STANDARD.md`: SEO, AI-citable, charts and diagrams, linkable, for every page type, with a definition-of-done checklist in every PR. Decision 15 |
