@@ -28,6 +28,7 @@ export const EXPLORE_LINKS = [
   { to: '/wrap-gallery', label: 'Car wrap gallery', note: 'Wrap colors and finishes on real models' },
   { to: '/codes', label: 'Check engine code guides', note: 'What a code means and what to check first' },
   { to: '/cars', label: 'Vehicle reports', note: 'Owner complaints, recalls and ratings by model' },
+  { to: '/studies/suv-owner-complaints', label: 'Data study: SUV complaints', note: 'Which used SUVs get the most owner complaints' },
   { to: '/blog', label: 'Articles', note: 'Guides to repairs, costs and buying' },
 ];
 

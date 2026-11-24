@@ -593,6 +593,14 @@ const VehiclePage: React.FC = () => {
             </ul>
           </Panel>
 
+          <Panel>
+            <PanelTitle>How does it compare?</PanelTitle>
+            <p className="mt-1 text-[0.9375rem] text-muted-foreground">Owner complaints for 20 popular SUVs, 2015–2022, side by side.</p>
+            <Link to="/studies/suv-owner-complaints" className={cn('mt-3 inline-block', linkClass)}>
+              Read the SUV complaints study
+            </Link>
+          </Panel>
+
           {siblings.length > 0 && (
             <Panel>
               <PanelTitle>Other {shortName} years</PanelTitle>

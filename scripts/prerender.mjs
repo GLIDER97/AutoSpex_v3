@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -160,6 +160,48 @@ for (const page of pages) {
         },
       ],
     });
+  } else if (page.path === SUV_STUDY_PATH) {
+    // Data study: the full table as CSV, and Article + Dataset markup so search and AI answers can cite it.
+    const csvFile = path.join(distDir, SUV_STUDY_CSV.replace(/^\//, ''));
+    await fs.mkdir(path.dirname(csvFile), { recursive: true });
+    await fs.writeFile(csvFile, studyCsv());
+    structuredData.push(
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: 'Which used SUVs get the most owner complaints? NHTSA data for 20 popular SUVs, 2015–2022',
+        description: page.description,
+        datePublished: page.updated,
+        dateModified: STUDY_AS_OF,
+        author: { '@type': 'Organization', name: 'MyAutoSpex Editorial Team', url: `${SITE_URL}/editorial-policy` },
+        publisher: ORGANIZATION,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+        isBasedOn: 'https://www.nhtsa.gov/nhtsa-datasets-and-apis',
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: 'NHTSA owner complaints for 20 popular SUVs, model-years 2015–2022',
+        description: `Owner complaint counts by model-year, problem area and filing year, plus reported crashes, fires, injuries, deaths and recalls, for ${STUDY_ROWS.length} model-years.`,
+        url: canonical,
+        dateModified: STUDY_AS_OF,
+        temporalCoverage: '2015/2022',
+        creator: ORGANIZATION,
+        isAccessibleForFree: true,
+        isBasedOn: 'https://www.nhtsa.gov/nhtsa-datasets-and-apis',
+        variableMeasured: ['Owner complaints', 'Problem area', 'Reported crashes', 'Reported fires', 'Recalls'],
+        distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: absoluteUrl(SUV_STUDY_CSV) }],
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: 'Vehicle reports', item: `${SITE_URL}/cars` },
+          { '@type': 'ListItem', position: 3, name: 'SUV owner complaints study', item: canonical },
+        ],
+      },
+    );
   } else if (page.path === '/cars') {
     // The hub's comparison table as a CSV next to the page.
     const csvFile = path.join(distDir, CARS_CSV.replace(/^\//, ''));
@@ -472,6 +514,10 @@ await fs.writeFile(
     '',
     line('All check engine code guides', '/codes', 'Every code guide, grouped by system.'),
     ...CODE_PAGES.map((p) => line(`${p.code}: ${p.title}`, `/codes/${p.code.toLowerCase()}`, p.description)),
+    '',
+    '## Data studies (original analysis of government data, with CSV)',
+    '',
+    line('Which used SUVs get the most owner complaints? (2015–2022)', SUV_STUDY_PATH, `NHTSA complaint counts for 20 popular SUVs by model-year, model, problem area and filing year. CSV: ${absoluteUrl(SUV_STUDY_CSV)}`),
     '',
     '## Vehicle reports (NHTSA and EPA data, refreshed weekly)',
     '',

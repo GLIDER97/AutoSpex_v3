@@ -533,3 +533,128 @@ export function Stars({ rating }: { rating: string }) {
     </span>
   );
 }
+
+/**
+ * A grid of values (e.g. complaints per model and model-year), shaded in one hue from light (few) to dark
+ * (many) in fixed steps, with the number in each cell and a legend. Empty cells (no data) stay blank.
+ * Wide grids scroll inside their own box on small screens; a table toggle gives every value as text.
+ */
+export function Heatmap({
+  title,
+  rows,
+  columns,
+  value,
+  href,
+  steps,
+}: {
+  title: string;
+  rows: string[];
+  columns: (string | number)[];
+  value: (row: string, column: string | number) => number | null;
+  /** Optional link for a cell (e.g. to that vehicle's report). */
+  href?: (row: string, column: string | number) => string | undefined;
+  /** Upper bounds of each shade, ascending; values above the last bound get the darkest shade. */
+  steps: number[];
+}) {
+  const id = useId();
+  const [table, setTable] = useState(false);
+  const shades = [16, 34, 52, 72, 100];
+  const shadeOf = (v: number) => {
+    const i = steps.findIndex((s) => v <= s);
+    return i === -1 ? shades.length - 1 : Math.min(i, shades.length - 1);
+  };
+  const bg = (i: number) => `color-mix(in oklab, var(--chart-1) ${shades[i]}%, var(--card))`;
+  const labels = steps.map((s, i) => (i === 0 ? `up to ${count(s)}` : `${count(steps[i - 1] + 1)} to ${count(s)}`));
+  labels.push(`over ${count(steps[steps.length - 1])}`);
+
+  return (
+    <figure>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground" aria-label="Shading">
+          {shades.map((_, i) => (
+            <li key={i} className="flex items-center gap-1.5">
+              <span className="inline-block size-3 rounded-[3px]" style={{ background: bg(i) }} aria-hidden="true" />
+              {labels[i]}
+            </li>
+          ))}
+        </ul>
+        <TableToggle open={table} onToggle={() => setTable((t) => !t)} id={`${id}-table`} />
+      </div>
+      <figcaption className="sr-only">{title}</figcaption>
+      <p className="mt-2 text-xs text-muted-foreground sm:hidden">Scroll sideways to see every column.</p>
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full min-w-[34rem] border-separate border-spacing-[2px] text-sm" aria-label={title}>
+          <thead>
+            <tr>
+              <th className="sticky left-0 bg-card" />
+              {columns.map((c) => (
+                <th key={c} scope="col" className="px-1 pb-1 text-center text-xs font-semibold text-muted-foreground tabular-nums">
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r}>
+                <th scope="row" className="sticky left-0 bg-card pr-2 text-left font-semibold whitespace-nowrap">
+                  {r}
+                </th>
+                {columns.map((c) => {
+                  const v = value(r, c);
+                  if (v == null) return <td key={c} className="rounded-[4px] bg-muted/40" aria-label={`${r} ${c}: no data`} />;
+                  const i = shadeOf(v);
+                  const link = href?.(r, c);
+                  const text = count(v);
+                  const cls = cn('block rounded-[4px] px-1 py-1.5 text-center tabular-nums', i >= 3 ? 'font-semibold text-white' : 'text-foreground');
+                  return (
+                    <td key={c} className="p-0" title={`${r} ${c}: ${text}`}>
+                      {link ? (
+                        <a href={link} className={cn(cls, 'hover:outline-2 hover:outline-foreground', focusRing)} style={{ background: bg(i) }}>
+                          {text}
+                        </a>
+                      ) : (
+                        <span className={cls} style={{ background: bg(i) }}>
+                          {text}
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {table && (
+        <table id={`${id}-table`} className="mt-4 w-full text-[0.9375rem]">
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className="py-1.5 font-semibold" />
+              {columns.map((c) => (
+                <th key={c} className="py-1.5 text-right font-semibold">
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r} className="border-b border-border">
+                <td className="py-1.5">{r}</td>
+                {columns.map((c) => {
+                  const v = value(r, c);
+                  return (
+                    <td key={c} className="py-1.5 text-right tabular-nums">
+                      {v == null ? '–' : count(v)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </figure>
+  );
+}
