@@ -153,6 +153,20 @@ const CarsHub: React.FC = () => {
           </Panel>
         </div>
 
+        <Link
+          to="/studies/suv-owner-complaints"
+          className={cn(
+            'group mt-6 flex flex-col gap-1 rounded-xl border border-border border-l-[6px] border-l-sign-yellow bg-card p-5 transition-colors hover:bg-muted',
+            focusRing,
+          )}
+        >
+          <span className="text-sm font-bold tracking-wide text-muted-foreground uppercase">Data study</span>
+          <span className="font-heading text-xl font-extrabold">Which used SUVs get the most owner complaints?</span>
+          <span className="text-[0.9375rem] text-muted-foreground">
+            NHTSA complaint counts for 20 popular SUVs, model-years 2015–2022, by year, model and problem area, with the data to download.
+          </span>
+        </Link>
+
         <section aria-labelledby="all-reports" className="mt-10">
           <h2 id="all-reports" className="font-heading text-2xl font-extrabold">
             All vehicle reports
