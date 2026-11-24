@@ -404,6 +404,75 @@
    ],
    "width": 1200,
    "height": 800
+  },
+  {
+   "slug": "2021-tesla-model-3-matte-light-grey-full-wrap",
+   "source": "visitor",
+   "id": 1,
+   "created": "2026-11-24",
+   "year": 2021,
+   "make": "Tesla",
+   "model": "Model 3",
+   "size": "sedan",
+   "coverage": "full",
+   "finish": "matte",
+   "color": {
+    "name": "Light grey",
+    "hex": [
+     "#a9adb0"
+    ]
+   },
+   "extras": [
+    "blackWheels"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2026-kia-sorento-metallic-purple-chrome-delete",
+   "source": "visitor",
+   "id": 2,
+   "created": "2026-11-24",
+   "year": 2026,
+   "make": "Kia",
+   "model": "Sorento",
+   "size": "sedan",
+   "coverage": "chromeDelete",
+   "finish": "metallic",
+   "color": {
+    "name": "Purple",
+    "hex": [
+     "#4b2a7b"
+    ]
+   },
+   "extras": [
+    "blackTrim"
+   ],
+   "width": 1200,
+   "height": 800
+  },
+  {
+   "slug": "2026-kia-sorento-metallic-purple-full-wrap",
+   "source": "visitor",
+   "id": 3,
+   "created": "2026-11-24",
+   "year": 2026,
+   "make": "Kia",
+   "model": "Sorento",
+   "size": "sedan",
+   "coverage": "full",
+   "finish": "metallic",
+   "color": {
+    "name": "Purple",
+    "hex": [
+     "#4b2a7b"
+    ]
+   },
+   "extras": [
+    "blackTrim"
+   ],
+   "width": 1200,
+   "height": 800
   }
  ]
 }

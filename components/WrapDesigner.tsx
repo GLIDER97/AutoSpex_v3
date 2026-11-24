@@ -458,7 +458,7 @@ export default function WrapDesigner() {
               <Link to="/wrap-gallery" className="underline underline-offset-4">
                 wrap gallery
               </Link>
-              . Photos you upload are never published or kept.
+              after a quick review, usually within a day. Photos you upload are never published or kept.
             </p>
           </Panel>
         </div>
