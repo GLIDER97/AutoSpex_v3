@@ -65,6 +65,8 @@ People increasingly ask ChatGPT, Gemini and Google's AI answers instead of click
 | Week 3 (3–9 Dec) | **Free embeddable recall checker (owner yes, 21 Nov, C):** a small script or iframe other sites add, showing the official NHTSA result with a "Powered by MyAutoSpex" link, plus a `/recall-checker-widget` page with the copy-paste code. Outreach drafts offering it to car blogs, independent mechanics and local news. Follow-ups on the study outreach. |
 | Monthly | One new data study; the vehicle snapshot refreshed weekly; Monday refresh adds unique data to older pages. |
 
+**Content rule (owner, 24 Nov 2026; binding).** Every week, find the 20 keywords with the most impressions (`scripts/growth/top_keywords.py`), pick the high-CPC ones, and turn the page Google already ranks for them into the most useful, citable answer on the web: original numbers from official data, at least 3 charts and 1 explanatory diagram drawn in code, direct answers under question headings, embeddable charts, CSV, "How to cite this", and outreach drafts so other sites link to it. Full steps and quality bar: `docs/CONTENT-RULE.md`. One piece a week, built on Mondays; the first is `/insurance-estimator` on day 8 (26 Nov), which holds 13 of the top 20 keywords.
+
 **Measure the new channel:** each run records visits referred by AI apps (chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com, claude.ai) from Clarity's referrer data where available, in `docs/growth-metrics.csv` and the status reply. There's no goal yet; set one at day 30.
 
 ---
@@ -141,6 +143,7 @@ Organic search can't deliver 10,000 tier-1 visitors in 30 days for this site:
 6. **Log:** in `docs/growth-log.md`, record what changed, why, which numbers moved, and tomorrow's work item.
 
 **Every Monday, additionally:**
+- **Content rule (`docs/CONTENT-RULE.md`):** run `scripts/growth/top_keywords.py`, pick the week's target page, and ship its content piece today or in the next run.
 - **Quick wins:** queries ranking 5–20 with 50+ impressions → improve the matching page's title, intro, headings and FAQ for that query.
 - **Low click-through:** pages with impressions but CTR under 1% → rewrite the title and description.
 - **UX fixes:** act on Clarity's findings on the top 5 pages (move the main action above the fold, fix dead clicks, shorten forms).
@@ -345,6 +348,7 @@ Those drive the weekly UX fixes (section 3). It doesn't bring visitors by itself
 10. **AI-proof direction (21 Nov):** yes to all three of A, B and C, and to section 0's rule: every piece of work must be something AI apps can't replace, or something they cite as a source. The owner's words: "make sure you must always use your energy on something that AI apps/models cant beat and also do something that AI apps/models also compliments and cite as a source for answers." A: vehicle report pages from live government data, from day 4, with code guides cut to at most 1 a day. B: community real prices and "What fixed it?" from week 2 instead of day 15. C: a free embeddable recall checker in week 3; this lifts section 4c's one-new-tool limit.
 11. **Charts on every data page (22 Nov):** wherever a page shows data or data insights, show it with bar charts, histograms, timelines, share bars, rating stars and similar, so it looks good and is understood quickly. Charts are drawn by Claude in code, never with an AI or other paid API (no AI cost). Saved as the charts rule in section 0 and `docs/DATA-VIZ.md`.
 12. **Wrap gallery (22 Nov):** every Wrap Designer image is shown on the site, with its details, light compressed files and SEO/AEO markup, at `/wrap-gallery`, with a new "Explore" header menu.
+13. **Content rule (24 Nov):** the owner asked for a standing rule: each week, take the top 20 keywords by impressions, pick the high-CPC ones, and upgrade the page that ranks for them with content good enough for AI answers to cite and other sites to link to, with graphs and diagrams that make complex information easy (`docs/CONTENT-RULE.md`). CPC comes from a real source (`data/keyword-cpc.csv`); until then, an intent-based value estimate guides the choice and is never published. The owner also answered the 24 Nov keyword review: the insurance estimator goes first, then the VIN lookup.
     - The agent's call, flagged to the owner: previews made from a visitor's own photo are never saved or published (privacy). Previews drawn from year, make and model are saved and, after the daily review, published.
     - Images are free to reuse under CC BY 4.0 with a credit link, to earn links as they spread.
     - 19 starter designs were made with Flux 3 Klein ($0.171).
