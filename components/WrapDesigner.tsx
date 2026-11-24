@@ -457,8 +457,8 @@ export default function WrapDesigner() {
               Previews drawn from a year, make and model (without a photo) can appear in our public{' '}
               <Link to="/wrap-gallery" className="underline underline-offset-4">
                 wrap gallery
-              </Link>
-              . Photos you upload are never published or kept.
+              </Link>{' '}
+              after a quick review, usually within a day. Photos you upload are never published or kept.
             </p>
           </Panel>
         </div>

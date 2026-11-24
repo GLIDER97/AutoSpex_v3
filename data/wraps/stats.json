@@ -1,9 +1,21 @@
 {
  "asOf": "2026-11-24",
  "days": 90,
- "total": 0,
- "finish": {},
- "color": {},
- "coverage": {},
- "extra": {}
+ "total": 3,
+ "finish": {
+  "matte": 1,
+  "metallic": 2
+ },
+ "color": {
+  "matte:Light grey": 1,
+  "metallic:Purple": 2
+ },
+ "coverage": {
+  "chromeDelete": 1,
+  "full": 2
+ },
+ "extra": {
+  "blackTrim": 2,
+  "blackWheels": 1
+ }
 }
