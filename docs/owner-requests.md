@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Test the wrap gallery with one preview (1 minute, or let me do it).** The gallery has recorded 0 previews since it went live on 22 Nov, so I can't tell whether nobody has drawn a wrap yet or whether saving fails. On www.myautospex.com/wrap-designer, enter a year, make and model (no photo), pick any wrap and click "Draw my wrap", then reply "done". Or reply "you do it" and I'll run one test preview myself (about $0.009 on the website's OpenRouter key; my own attempt was blocked by the permission check). If saving works, the design shows up for the next daily review.
+Nothing open.
 
 ## Answered
 
@@ -29,3 +29,4 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-21 | Re-aim the plan at work AI apps can't replace or will cite: A vehicle report pages from live NHTSA and EPA data, B community real prices sooner, C an embeddable recall checker | **Yes to all.** Standing rule: only work AI apps can't beat or will cite (GROWTH-PLAN section 0, decision 10) |
 | 2026-11-22 | Charts on every data page | **Yes (owner's instruction):** every page with data or data insights shows it with charts (bars, histograms, timelines, share bars, rating stars and similar), drawn by Claude in code, never with an AI or paid API. Standing rule: GROWTH-PLAN section 0 charts rule, `docs/DATA-VIZ.md` |
 | 2026-11-22 | Show every Wrap Designer image on the site, with details, light files and SEO/AEO; change the navigation if useful | **Yes (owner's instruction).** Built as `/wrap-gallery` with an "Explore" menu. Previews from visitors' own photos are never published (privacy); drawn previews are published after the daily review. Images free to reuse under CC BY 4.0 with credit. `docs/WRAP-GALLERY.md`, decision 12 |
+| 2026-11-24 | Test the wrap gallery with one preview | **"You do it."** Done from the owner's main session through the live Wrap Designer in a browser: 2021 Tesla Model 3, full matte light-grey wrap, black wheels. It drew in 8 seconds (about $0.009 on the website's key) and was **saved as design #1**: `/api/wraps` lists it, the anonymous option counts went up, and `/images/wraps/v/1/...-1200.webp`, `-640.webp` and `-share.jpg` are served with the embedded metadata. Saving works; the empty gallery meant nobody had drawn a vehicle yet. The next daily run reviews it. Note: `/api/wraps` is cached for 5 minutes at the CDN, so check with a new query string |
