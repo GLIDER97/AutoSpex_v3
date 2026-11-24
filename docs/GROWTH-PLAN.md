@@ -12,6 +12,17 @@
 
 **Direction (21 Nov): section 0 comes first.** Only work that AI apps can't replace or will cite.
 
+**Start here, every run (required reading, 24 Nov).** The daily task's own instructions were written on 19 Nov and can only be edited from its session, so this list is what keeps it current. Before any work, read in full:
+1. This file's **section 0**: the one goal (tier-1 visitors), what AI apps can't replace or will cite, the charts, content and silo rules, the publishing standard, and **"Each run: what to work on"**
+2. `docs/PUBLISHING-STANDARD.md`: the bar for every page, with the definition-of-done checklist each PR ticks
+3. `docs/CONTENT-RULE.md`: the weekly top-20-keyword content piece
+4. `docs/SILOS.md`: silo 1, car insurance, and its keyword map
+5. `docs/DATA-VIZ.md`: charts and diagrams
+6. `docs/IMAGE-STYLE.md`: images, models, budget, and the account balance check
+7. `docs/WRAP-GALLERY.md`: the daily wrap review
+
+Where the task's instructions disagree with these files, these files win. That includes the old "cheapest model, max $0.10" image line and "follow the section 4 roadmap".
+
 This file is the agent's instructions as well as the owner's plan. The agent reads it at the start of every run and records its progress in `docs/growth-log.md`.
 
 ---
@@ -62,6 +73,30 @@ People increasingly ask ChatGPT, Gemini and Google's AI answers instead of click
 **What stops:**
 - No new general explainer articles.
 - Code guides drop to **at most 1 a day**, and only with a unique-data element. Examples: NHTSA complaint counts for that system on the most affected models, with links to those vehicle pages; or, once live, community prices and "What fixed it?" results. Existing code guides get these added on Monday refreshes.
+
+**Each run: what to work on (priority order, 24 Nov).** Pick from the top; the daily limit is 2 **new** pages (rule 5). Upgrades to existing pages don't count toward that limit, but each still meets the publishing standard.
+1. **Anything broken on the live site:** fix or revert first.
+2. **The content-rule piece:** one a week, built on the Monday loop and shipped that day or the next run. The first is `/insurance-estimator`, the silo 1 pillar, on **day 8 (Thu 26 Nov)**.
+3. **Silo 1 supporting pages, about 2 a week,** in `docs/SILOS.md` order (gap insurance first). They have the most tier-1 demand of anything in the plan.
+4. **Week 2 one-off builds:**
+   - community real prices and "What fixed it?" (section 4d)
+   - week 3: the embeddable recall checker
+   - outreach drafts for each study or bigger piece
+5. **Vehicle reports** fill the remaining new-page slots: 1–2 a day, picked by tier-1 demand, then NHTSA complaint counts.
+6. **Code guides:** at most 1 a day, and only with unique data and the diagram the publishing standard requires. Usually skipped while 2–5 have work.
+7. **Monday upkeep:**
+   - the weekly loop, silo check and regex mining
+   - bringing 1–2 older pages up to the publishing standard, highest tier-1 impressions first
+
+**Build notes for the new rules:**
+- **The first content piece (day 8) also builds the shared parts later pieces reuse.** Build them once and add them to `docs/DATA-VIZ.md`:
+  - an "Embed this chart" route (for example `/embed/chart/<id>`, an iframe-friendly page with the chart, its source and a credit link)
+  - a diagram component for flows and decision paths in the chart kit
+- **Official data hosts:** `api.bls.gov` (CPI series, for example `CUUR0000SETE` motor vehicle insurance) was added to this environment's network on 24 Nov.
+  - The public v2 API works without a key at a low daily limit. If a response has no series, check its `status` and `message` and request a narrower year range; don't retry in a loop.
+  - `crashviewer.nhtsa.dot.gov` is also allowed but refuses automated requests (HTTP 403). For crash data by driver age, use NHTSA's published Traffic Safety Facts on `www.nhtsa.gov` instead.
+- **State rules** (minimum coverage, SR-22) are checked on each state's own site with **WebFetch**, which doesn't need the sandbox's network allow-list. Record the URL and the checked date for every state.
+- **Outreach drafts:** the daily runs have no Gmail tools. Write them to `docs/outreach/<date>-<piece>.md`, and the owner's main session saves them as Gmail drafts at the next "status" (decision 8).
 
 **Schedule (replaces section 4 from day 4):**
 
