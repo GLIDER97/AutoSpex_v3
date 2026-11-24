@@ -2,6 +2,54 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-24: day 6 (week 1, day 6)
+
+### What changed
+- **First data study: `/studies/suv-owner-complaints`**, "Which used SUVs get the most owner complaints?" (section 0, days 6–7).
+  - **Data:** NHTSA complaint and recall counts for 20 best-selling SUVs, model-years 2015–2022: 160 model-years, all with complaints, 83,871 complaints in total.
+    - New script `scripts/studies/suv-complaints.mjs`, writing `data/studies/suv-complaints.json`. It keeps counts only, never complaint text or VINs.
+  - **Page:**
+    - key numbers and a "read this first" caveat (counts aren't adjusted for sales; complaints are unverified)
+    - the top 12 model-years, all 20 models combined, a **model × year heatmap** (new `Heatmap` chart, linked to our reports), problem areas, fires, and complaints by filing year
+    - the method, a CSV of all 160 model-years, "How to cite this", and Article + Dataset + Breadcrumb markup
+    - listed in the sitemap and `llms.txt`
+  - **Linked from:** the Explore menu ("Data study: SUV complaints"), a highlighted card on `/cars`, and a "How does it compare?" box on every vehicle report.
+- **Findings (computed, sourced to NHTSA):**
+  - Most complaints for one model-year: 2017 Ford Escape 2,714, then the 2016 Ford Explorer 2,467 and the 2018 Honda CR-V 2,172.
+  - Most across 2015–2022: Ford Escape 9,665, Ford Explorer 9,053, Jeep Cherokee 7,526.
+  - Engine is named in 26% of complaints; transmission and drivetrain 17%; electrical 17%.
+  - 960 complaints report a fire, the most for the 2016 Kia Sorento (50); 2,979 report a crash.
+  - Owners filed 645 complaints in 2025 about the 2017 Escape alone.
+
+### Keyword research (section 4a)
+| Query | Bing US, 90 days | Google suggestions |
+|---|---|---|
+| most reliable suv | 2,060 (broad 3,014) | |
+| most reliable used suv | 342 | |
+| suvs to avoid / suv complaints / worst used suvs / most problematic suvs | 0 | "suvs to avoid buying used", "…in 2025"; "worst used suv to buy", "…midsize", "…compact", "…under $20,000" |
+
+The page answers "which used SUVs get the most complaints" and says plainly that complaint counts aren't a reliability score, since they aren't adjusted for sales.
+
+### Numbers
+| | Last 28 days (26 Oct–22 Nov) | Last 3 days (20–22 Nov) |
+|---|---|---|
+| Clicks | **2** | 1 |
+| Impressions | **191** (tier-1 168) | 66 |
+| Average position | 36.2 | 19.9 |
+| Tier-1 clicks | **1, the first:** the P0420 guide at position 14.7 | 1 |
+
+- **Week 1 (latest 7 days of data, 16–22 Nov): 94 tier-1 impressions (goal 50+, met) and 1 tier-1 click (goal 0, met).**
+  - The insurance estimator had 41 impressions at position 17, and the VIN lookup 16 at position 22.
+  - New queries: "car insurance calculator" (position 21), "affordable vin check with recall data" (7.8).
+- **Index: 33 indexed** (was 32): all 5 indexed code guides, `/codes` and the 2017 Escape report. 23 discovered but not indexed, 5 unknown, 2 crawled but not indexed. No manual action, no drop. Sitemap last read 22 Nov.
+- **Clarity, last day:** 2 human sessions (US 1, India 1), both on the homepage; no dead clicks or quick-backs. AI-app referrals: 0.
+- **OpenRouter:** $3.43 of $10. No images today.
+- **Wrap gallery review:** 0 new designs, 0 recorded previews (owner request 1 still open).
+
+### Tomorrow (day 7, last day of week 1)
+- **Study outreach** (section 0, week 2 item, starting early): a list of 15 relevant sites (car blogs, used-car buying guides, local consumer columns, "free car tools" lists), each with a short, personal email. Saved as **Gmail drafts** for the owner to send (decision 8), never sent by the agent.
+- One code guide with unique data, or vehicle reports for the study's top model-years (2016 Ford Explorer, 2018 Honda CR-V, 2015 Jeep Cherokee), which link straight from the heatmap.
+
 ## 2026-11-23: day 5 (week 1, day 5; Monday)
 
 ### What changed

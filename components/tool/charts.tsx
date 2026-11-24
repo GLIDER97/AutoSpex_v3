@@ -581,6 +581,7 @@ export function Heatmap({
         <TableToggle open={table} onToggle={() => setTable((t) => !t)} id={`${id}-table`} />
       </div>
       <figcaption className="sr-only">{title}</figcaption>
+      <p className="mt-2 text-xs text-muted-foreground sm:hidden">Scroll sideways to see every column.</p>
       <div className="mt-3 overflow-x-auto">
         <table className="w-full min-w-[34rem] border-separate border-spacing-[2px] text-sm" aria-label={title}>
           <thead>

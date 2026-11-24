@@ -132,7 +132,7 @@ export const STATIC_PAGES: PageMeta[] = [
     updated: '2026-11-24',
     title: 'SUVs With the Most Owner Complaints, 2015–2022',
     description:
-      'Which used SUVs get the most owner complaints? NHTSA complaint counts for 20 popular SUVs, model-years 2015–2022, by year, model and problem area, with the data.',
+      'Which used SUVs get the most owner complaints? NHTSA complaint counts for 20 popular SUVs, model-years 2015–2022, by year, model and problem area.',
     priority: 0.8,
   },
   {

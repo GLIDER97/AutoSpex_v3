@@ -105,7 +105,7 @@ const SuvComplaintsStudy: React.FC = () => {
             </StatTile>
           )}
           {topArea && (
-            <StatTile value={`${pct(topArea.count, f.total)}%`} label={<>of complaints name the {topArea.name.toLowerCase()}, the top problem area</>}>
+            <StatTile value={`${pct(topArea.count, f.total)}%`} label={<>Share of complaints naming the {topArea.name.toLowerCase()}, the top problem area</>}>
               <Source />
             </StatTile>
           )}
@@ -148,7 +148,7 @@ const SuvComplaintsStudy: React.FC = () => {
           <PanelTitle>Which models have the most complaints across all eight years?</PanelTitle>
           {topModel && (
             <p className="mt-3 text-[0.9375rem]">
-              The {topModel.name}: {num(topModel.complaints)} complaints over {topModel.years} model-years, most for the {topModel.worst.year}.
+              The {topModel.name}: {num(topModel.complaints)} complaints over {topModel.years} model-years, the most for its {topModel.worst.year} model-year.
             </p>
           )}
           <figure className="mt-4">
@@ -228,8 +228,8 @@ const SuvComplaintsStudy: React.FC = () => {
         <PanelTitle>Are owners still filing complaints about older SUVs?</PanelTitle>
         {old && old.n > 0 && (
           <p className="mt-3 text-[0.9375rem]">
-            Yes. In {f.lastFull}, owners filed {num(old.n)} complaints about the {rowName(old.r)} alone, a vehicle at least {f.lastFull - old.r.year} years old by then.
-            Problems that appear with age keep the counts climbing long after a model-year is sold.
+            Yes. In {f.lastFull}, owners filed {num(old.n)} complaints about the {rowName(old.r)} alone, {f.lastFull - old.r.year} model-years after it went on sale.
+            Complaints keep coming in long after a model-year is sold.
           </p>
         )}
         <div className="mt-5">

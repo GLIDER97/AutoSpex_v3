@@ -32,7 +32,7 @@ export const SUV_STUDY_PATH = '/studies/suv-owner-complaints';
 export const SUV_STUDY_CSV = '/data/studies/suv-owner-complaints-2015-2022.csv';
 export const SUV_STUDY_TITLE = 'SUVs With the Most Owner Complaints, 2015–2022';
 export const SUV_STUDY_DESCRIPTION =
-  'Which used SUVs get the most owner complaints? NHTSA complaint counts for 20 popular SUVs, model-years 2015–2022, by year, model and problem area, with the data.';
+  'Which used SUVs get the most owner complaints? NHTSA complaint counts for 20 popular SUVs, model-years 2015–2022, by year, model and problem area.';
 
 export const STUDY_AS_OF = raw.asOf;
 export const STUDY_YEARS = raw.years;

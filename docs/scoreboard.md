@@ -8,7 +8,7 @@ Baseline (19 Nov 2026, day 1): 5 pages indexed; about 25 tier-1 impressions and 
 
 | Week | Dates | New/improved pages (goal) | Pages indexed (goal) | Tier-1 impressions (goal) | Tier-1 clicks (goal) | Grade |
 |---|---|---|---|---|---|---|
-| 1 | 19–25 Nov | 12 data and code pages (5 code guides, `/codes`, 4 vehicle reports, `/cars`, `/wrap-gallery`) + 19 wrap gallery image pages (12+) | **32** (12+) | 33 in the latest 7 days of data, 15–21 Nov (50+) | 0 (0) | in progress |
+| 1 | 19–25 Nov | 13 data and code pages (5 code guides, `/codes`, 4 vehicle reports, `/cars`, `/wrap-gallery`, first data study) + 19 wrap gallery image pages (12+) | **33** (12+) | **94** in the latest 7 days of data, 16–22 Nov (50+) | **1** (0) | in progress, on track for green |
 | 2 | 26 Nov–2 Dec | (12+) | (25+) | (300+) | (3+) | |
 | 3 | 3–9 Dec | (12+) | (40+) | (800+) | (10+) | |
 | 4 | 10–16 Dec | (12+) | (60+) | (1,500+) | (25+) | |
