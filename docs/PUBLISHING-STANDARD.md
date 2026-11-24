@@ -94,6 +94,25 @@ All drawn in code from the chart kit (`components/tool/charts.tsx`), following `
   - saved as Gmail drafts the owner sends (decision 8)
   - the agent never sends anything
 
+## 4b. Writing that reads like an expert, not like AI
+
+A final editing pass on every page's prose, run after the draft and before the checks. Adapted from the "marks of default AI text" list in the MIT-licensed antialgorithm skill (github.com/mankidev/antialgorithm), owner's request, 24 Nov. Expert-sounding text earns trust, and AI answers prefer to quote specific, plain sentences.
+
+**Cut these:**
+- **Generic sentences:** if a sentence could be pasted onto any other site unchanged, rewrite it with this page's facts: the vehicle, the code, the state, the number, the source.
+- **Empty claims:** "comprehensive", "ultimate", "everything you need to know", "in today's world". Show the fact instead.
+- **Hype:** questions that only build hype ("Ever wondered...?"), exclamation marks, cheerleading calls to action. A link that says what it does ("Check your VIN for recalls") is enough.
+- **Habit patterns:** three adjectives in a row, lists of three by habit, mirrored slogan pairs ("not X, but Y" used as decoration).
+- **Summing up:** a closing paragraph that restates the page ("In conclusion..."). End when the last useful thing is said.
+- **Flat rhythm:** every sentence the same length. Mix short and long.
+- **Named feelings:** "frustrating", "stressful" stated outright, where a concrete detail would show it ("the light came back on two days after the repair").
+- **Notes about the text itself:** "this guide will...", "as mentioned above", word counts.
+- **Numbers for decoration:** use a count, date or price only when the reader needs it, and always with its source.
+
+**Keep these, even though the checklist would normally question them:** question-style headings, key-findings lists, tables of contents, tables and short bullet lists. Search engines and AI answers rely on that structure, and section 1 requires it. The checklist applies to the sentences inside them, not to the structure.
+
+**Never** invent a detail to sound concrete. Every fact still needs its source (section 2).
+
 ## 5. Definition of done
 
 Every PR that adds or substantially updates a page puts this checklist in its description, ticked for each page, with a one-line note where an item doesn't apply:
@@ -106,6 +125,7 @@ Every PR that adds or substantially updates a page puts this checklist in its de
 - [ ] Charts and diagrams at the minimum for the page type, each with a takeaway title, source and table or summary
 - [ ] Linkable asset and "Embed this chart"
 - [ ] Structured data, sitemap, `llms.txt`, IndexNow
+- [ ] Writing pass done (section 4b): no generic, hype, summing-up or decorative-number sentences
 - [ ] Build, `test:api`, `page_checks.py` 0 issues, browser check at 390 and 1280 px in light and dark mode
 
 ## 6. Older pages
