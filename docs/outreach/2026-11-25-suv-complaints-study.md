@@ -7,6 +7,7 @@
 - The agent never sends anything.
 - All targets are US outlets (tier 1).
 - Replace `[Your name]` before sending.
+- **Owner's line (25 Nov), in every draft from now on, just above the signature:** "We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking." Added to the 4 unsent Gmail drafts (Center for Auto Safety, Jalopnik, CarEdge, ABC7).
 - **Address check:**
   - "Confirmed" means the address appears on the outlet's own page (linked).
   - "Confirm first" means it came from an older or third-party page. Check it on the outlet's site before sending.
@@ -177,11 +178,11 @@ MyAutoSpex
 
 | # | Outlet | Sent | Reply | Link earned |
 |---|---|---|---|---|
-| 1 | The Drive | | | |
-| 2 | The Autopian | | | |
-| 3 | Motorious | | | |
-| 4 | The Truth About Cars | | | |
-| 5 | Motor1 | | | |
+| 1 | The Drive | 25 Nov (sent by the owner, before the backlink line was added) | | |
+| 2 | The Autopian | 25 Nov (sent by the owner, before the backlink line was added) | | |
+| 3 | Motorious | 25 Nov (sent by the owner, before the backlink line was added) | | |
+| 4 | The Truth About Cars | 25 Nov (sent by the owner, before the backlink line was added) | | |
+| 5 | Motor1 | 25 Nov (sent by the owner, before the backlink line was added) | | |
 | 6 | Center for Auto Safety | | | |
 | 7 | Jalopnik | | | |
 | 8 | CarEdge | | | |
