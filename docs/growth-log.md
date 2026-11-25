@@ -2,6 +2,79 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-25: day 7 (week 1, day 7, last day of the week)
+
+Read first, as the new required reading says: GROWTH-PLAN section 0 (tier-1 goal, priority order, build notes), `PUBLISHING-STANDARD.md`, `CONTENT-RULE.md`, `SILOS.md`. Today's picks, by section 0's priority order:
+- Nothing broken.
+- The content-rule piece is due day 8.
+- Silo pages start after the pillar.
+- So today: the study upgrade, then the week-2 one-off outreach drafts.
+- The reusable embed and diagram parts the build notes ask for are built today, ahead of the day-8 piece.
+
+### What changed
+- **SUV study brought up to the publishing standard**, before any outreach points to it (`/studies/suv-owner-complaints`):
+  - **5 quotable key findings**, each with its number, date and source
+  - an "On this page" table of contents and anchored sections
+  - **an explanatory diagram:** "How do you check a used SUV? Four steps before you buy", a flow from the heatmap to the model-year report, the VIN check and an inspection
+  - **"Embed this chart"** under the 3 main charts
+- **Shared parts for the content rule (build notes), added to `docs/DATA-VIZ.md`:**
+  - **`FlowDiagram`** in the chart kit (numbered steps, arrows, stacked on phones)
+  - **`EmbedThisChart`:** a copy-paste iframe snippet with the credit link outside the iframe, so each embed links back to us
+  - **`/embed/chart/<id>`:** bare chart pages, prerendered, noindex, canonical to the source page, out of the sitemap, following light or dark mode. Only `/embed/*` may be framed by other sites (`vercel.json`); every other page stays same-origin only. Ids live in `data/embedIds.ts`, so unknown ids get a clean 404.
+  - First 3 embeds: the top model-years, the model × year heatmap, and problem areas.
+- **Diagram sourcing:** I first wanted an "NHTSA complaint → investigation → recall" diagram. nhtsa.gov (403), eCFR (redirects to a block page) and Cornell LII (outside this environment's network) couldn't be read from the sandbox, so that diagram isn't published. The buyer's 4-step flow needs no outside facts.
+- **Outreach drafts:** `docs/outreach/2026-11-25-suv-complaints-study.md` holds 9 personal emails to US outlets (The Drive, The Autopian, Motorious, TTAC, Motor1, Center for Auto Safety, Jalopnik, CarEdge, ABC7 7 On Your Side) and 1 tips-form text (Autoblog).
+  - Each address is marked "confirmed" (on the outlet's own page) or "confirm first".
+  - The daily runs have no Gmail tools, so this is owner request 1: the main session saves them as Gmail drafts. Nothing is sent.
+
+### Content rule, step 1 (`top_keywords.py`, 27 Oct–23 Nov)
+**`/insurance-estimator` scores 444** (148 tier-1 impressions, 14 of the top 20 queries, all high value), then `/wrap-designer` 50, `/vin-lookup` 30, `/recalls` 18, the P0420 guide 6. That confirms day 8's piece. Top queries:
+
+| Query | Tier-1 impressions | Position |
+|---|---|---|
+| auto insurance calculator | 26 | 48.1 |
+| car insurance estimate | 21 | 31.3 |
+| car insurance estimator | 17 | 24.2 |
+| car insurance calculator | 13 | 28.7 |
+| auto insurance estimator | 12 | 19.8 |
+| calculate car insurance | 8 | 13.9 |
+| vin lookup | 8 | 19.6 |
+| p0420 code | 6 | 9.3 |
+
+### Numbers
+| | Last 28 days (27 Oct–23 Nov) | Last 3 days (21–23 Nov) |
+|---|---|---|
+| Clicks | 2 | 1 |
+| Impressions | **636** (tier-1 609) | **517** |
+| Average position | 27.6 | 24.2 |
+| Tier-1 clicks | 1 | 1 |
+
+- **Latest 7 days of data (17–23 Nov): 530 tier-1 impressions** (94 a day earlier), almost all on `/insurance-estimator` (392 in 3 days at position 21.5), then `/vin-lookup` (89).
+- **Index: 35 indexed** (was 33): `/cars` and the 2017 CR-V report are new. 21 discovered but not indexed, 8 unknown, 2 crawled but not indexed, 1 inspection error (connection reset). No manual action, no drop. Sitemap read 24 Nov.
+- **Clarity, last day:** 0 human sessions, 14 bots. AI-app referrals: 0.
+- **OpenRouter:** $3.43 of $10. No images.
+- **Wrap gallery:** 3 previews recorded and 3 designs published by the owner session on 24 Nov (owner request answered: "saving works"). 0 new since #3.
+
+### Week 1 (19–25 Nov) going into Thursday's grading
+| Goal | Result |
+|---|---|
+| 12+ new code pages + `/codes` hub | 5 code guides + hub. Under section 0, code guides were capped and the effort went into 4 vehicle reports, `/cars`, the data study and the wrap gallery. |
+| Every deploy to IndexNow, 0 broken builds | yes / yes |
+| 12+ pages indexed | **35** |
+| 50+ tier-1 impressions in the week | **530** (latest 7 days of data) |
+| 0 tier-1 clicks | 1 |
+
+### Needs the owner
+- Owner request 1: save the 10 outreach drafts to Gmail.
+
+### Tomorrow (day 8, Thu 26 Nov)
+- **Content-rule piece on `/insurance-estimator`** (silo 1 pillar, `CONTENT-RULE.md` steps 4–7):
+  - a monthly-cost view
+  - the BLS CPI chart of motor-vehicle-insurance prices (`api.bls.gov`, series CUUR0000SETE)
+  - a premium-breakdown diagram, 3+ charts, embeds, CSV, "How to cite this"
+  - 10 outreach drafts
+- **Grade week 1 and the scoreboard** (Thursday).
+
 ## 2026-11-24: day 6 (week 1, day 6)
 
 ### What changed

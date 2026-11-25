@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, EMBEDS, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -458,6 +458,17 @@ for (const d of WRAP_DESIGNS) {
   });
   count++;
   sitemapEntries.push({ loc: canonical, lastmod: d.created, priority: 0.6, images: [absoluteUrl(designImage(d, 'large'))] });
+}
+
+// Embeddable charts: iframe pages for other sites. Not indexed; canonical points to the page each chart comes from.
+for (const [id, e] of Object.entries(EMBEDS)) {
+  await writePage(`/embed/chart/${id}`, {
+    title: formatTitle(e.title.length > 60 ? `${e.title.slice(0, 57)}…` : e.title, true),
+    description: `${e.title}. Source: ${e.source}. From ${SITE_NAME}.`,
+    canonical: absoluteUrl(e.page),
+    noindex: true,
+  });
+  count++;
 }
 
 // 404 page: Vercel serves dist/404.html with a 404 status for unknown URLs.

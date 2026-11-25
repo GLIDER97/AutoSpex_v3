@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-Nothing open.
+1. **Save the SUV study's outreach emails as Gmail drafts (about 5 minutes).** Nine personal emails plus one tips-form note are in `docs/outreach/2026-11-25-suv-complaints-study.md` (The Drive, The Autopian, Motorious, The Truth About Cars, Motor1, Center for Auto Safety, Jalopnik, CarEdge, ABC7 7 On Your Side, Autoblog). Four addresses are marked "confirm first". If yes, the main session saves them as drafts in your Gmail; you review, edit `[Your name]`, and send the ones you like. Nothing is sent without you.
 
 ## Answered
 

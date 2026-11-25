@@ -15,6 +15,8 @@
 | Read a rating out of 5 | A row of stars plus the number | `Stars` |
 | Compare two series per category (car A vs car B) | Paired bars with a legend | `PairedBars` |
 | Split a total per period into two parts | Stacked columns with a legend | `StackedColumns` |
+| Compare a value across two dimensions (model × year) | Heatmap: one hue, 5 shades, number in each cell, legend, table | `Heatmap` |
+| Explain a process or decision path ("check a used SUV in 4 steps") | Flow diagram: numbered steps with arrows, stacked on phones | `FlowDiagram` |
 
 - **Pies and donuts** only for one whole split into 2–4 parts that stand alone. Anything else reads faster as a share bar or ranked bars.
 - **Never use these:**
@@ -61,3 +63,14 @@
    - a legend where needed
 2. No console or hydration errors.
 3. Check it against the "Never use these" list in section 1.
+
+## 6. Embed this chart
+
+- **Every main chart on a data page gets an "Embed this chart" box** (`EmbedThisChart`). It shows a copy-paste snippet: an iframe of `/embed/chart/<id>`, plus a credit link to our page that sits outside the iframe, so the embedding page links back to ours.
+- **To add an embeddable chart:**
+  1. Add the id to `data/embedIds.ts`.
+  2. Add its definition (takeaway title, source, date, height, render) to `EMBEDS` in `components/EmbedChart.tsx`.
+- **The embed pages:**
+  - are prerendered without the site header and footer, `noindex`, with the canonical set to the source page, and kept out of the sitemap
+  - follow the visitor's light or dark setting (`?theme=dark|light` overrides it)
+  - can be framed by any site; only `/embed/*` allows this (`vercel.json`), and every other page stays same-origin only

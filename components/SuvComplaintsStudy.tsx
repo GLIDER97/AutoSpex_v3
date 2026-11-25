@@ -21,7 +21,8 @@ import {
 import SEO from './SEO';
 import { SignMarker } from './brand';
 import { Notice, Panel, PanelTitle, focusRing } from './tool/kit';
-import { BarList, ColumnChart, Heatmap, MeterList, StatTile } from './tool/charts';
+import { BarList, ColumnChart, EmbedThisChart, FlowDiagram, Heatmap, MeterList, StatTile } from './tool/charts';
+import { EMBEDS } from './EmbedChart';
 
 const linkClass = cn('font-semibold underline underline-offset-4', focusRing);
 const longDate = (iso: string) =>
@@ -36,6 +37,23 @@ function Source({ children = 'NHTSA complaints API' }: { children?: React.ReactN
     </a>
   );
 }
+
+const CREDIT_URL = `${SITE_URL}/studies/suv-owner-complaints`;
+const CREDIT_TEXT = 'MyAutoSpex analysis of NHTSA owner complaint data';
+const Embed = ({ id }: { id: keyof typeof EMBEDS }) => (
+  <EmbedThisChart id={id} title={EMBEDS[id].title} height={EMBEDS[id].height} creditUrl={CREDIT_URL} creditText={CREDIT_TEXT} />
+);
+
+const TOC: [string, string][] = [
+  ['key-findings', 'Key findings'],
+  ['most-model-years', 'Which model-years have the most complaints?'],
+  ['heatmap', 'How do complaints compare by model and year?'],
+  ['problem-areas', 'What do SUV owners complain about most?'],
+  ['fires', 'Which model-years report the most fires?'],
+  ['still-filing', 'Are owners still filing complaints about older SUVs?'],
+  ['check-a-used-suv', 'How do you check a used SUV?'],
+  ['method', 'How was this study made?'],
+];
 
 const SuvComplaintsStudy: React.FC = () => {
   const f = studyFacts();
@@ -115,13 +133,58 @@ const SuvComplaintsStudy: React.FC = () => {
         </dl>
       </Panel>
 
+      <Panel id="key-findings" className="mt-6 scroll-mt-24">
+        <PanelTitle>Key findings</PanelTitle>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-[0.9375rem]">
+          {top && (
+            <li>
+              The {rowName(top)} has the most owner complaints to NHTSA of the {f.rows.length} SUV model-years studied: {num(top.complaints)}, as of {asOf}.
+            </li>
+          )}
+          {topModel && (
+            <li>
+              Across model-years {STUDY_YEARS[0]}–{STUDY_YEARS[STUDY_YEARS.length - 1]}, the {topModel.name} collects the most complaints of the 20 models: {num(topModel.complaints)}.
+            </li>
+          )}
+          {topArea && (
+            <li>
+              {pct(topArea.count, f.total)}% of the {num(f.total)} complaints name the {topArea.name.toLowerCase()}, the most-reported problem area.
+            </li>
+          )}
+          {f.byFires[0] && (
+            <li>
+              {num(f.fires)} complaints report a fire; the {rowName(f.byFires[0])} has the most, {num(f.byFires[0].fires)}.
+            </li>
+          )}
+          {old && old.n > 0 && (
+            <li>
+              Owners filed {num(old.n)} complaints in {f.lastFull} about the {rowName(old.r)}, {f.lastFull - old.r.year} model-years after it went on sale.
+            </li>
+          )}
+        </ul>
+        <p className="mt-3 text-sm text-muted-foreground">Source: MyAutoSpex analysis of NHTSA complaint data, as of {asOf}.</p>
+      </Panel>
+
+      <nav aria-label="On this page" className="mt-6 rounded-xl border border-border bg-card p-4">
+        <p className="text-sm font-bold">On this page</p>
+        <ol className="mt-2 grid gap-x-6 gap-y-1 text-[0.9375rem] sm:grid-cols-2">
+          {TOC.map(([id, label]) => (
+            <li key={id}>
+              <a href={`#${id}`} className="underline-offset-4 hover:underline">
+                {label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
       <Notice tone="info" className="mt-6" title="Read this first">
         These are raw counts, not adjusted for how many of each SUV were sold, so best-sellers collect more complaints. A complaint is what an owner reported to
         NHTSA, not a confirmed defect. Use the numbers to see where problems cluster, then check a specific car by its VIN.
       </Notice>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Panel>
+        <Panel id="most-model-years" className="scroll-mt-24">
           <PanelTitle>Which model-years have the most complaints?</PanelTitle>
           {top && f.byModelYear[1] && (
             <p className="mt-3 text-[0.9375rem]">
@@ -142,6 +205,7 @@ const SuvComplaintsStudy: React.FC = () => {
           <p className="mt-3 text-sm text-muted-foreground">
             Top 12 of {f.rows.length}. Source: <Source />, to {asOf}.
           </p>
+          <Embed id="suv-complaints-top-model-years" />
         </Panel>
 
         <Panel>
@@ -161,7 +225,7 @@ const SuvComplaintsStudy: React.FC = () => {
         </Panel>
       </div>
 
-      <Panel className="mt-6">
+      <Panel id="heatmap" className="mt-6 scroll-mt-24">
         <PanelTitle>How do complaints compare by model and year?</PanelTitle>
         <p className="mt-3 text-[0.9375rem]">
           Darker cells have more complaints. Problem years stand out against the same model&apos;s other years; cells with a link open our full report for that
@@ -186,10 +250,11 @@ const SuvComplaintsStudy: React.FC = () => {
         <p className="mt-3 text-sm text-muted-foreground">
           A blank cell means NHTSA lists no complaints for that model-year (often because it wasn&apos;t sold that year). Source: <Source />, to {asOf}.
         </p>
+        <Embed id="suv-complaints-heatmap" />
       </Panel>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Panel>
+        <Panel id="problem-areas" className="scroll-mt-24">
           <PanelTitle>What do SUV owners complain about most?</PanelTitle>
           {topArea && f.topComponents[1] && (
             <p className="mt-3 text-[0.9375rem]">
@@ -204,9 +269,10 @@ const SuvComplaintsStudy: React.FC = () => {
           <p className="mt-3 text-sm text-muted-foreground">
             One complaint can name several areas, so shares add up to more than 100%. Source: <Source />.
           </p>
+          <Embed id="suv-complaints-problem-areas" />
         </Panel>
 
-        <Panel>
+        <Panel id="fires" className="scroll-mt-24">
           <PanelTitle>Which model-years report the most fires?</PanelTitle>
           {f.byFires[0] && (
             <p className="mt-3 text-[0.9375rem]">
@@ -224,7 +290,7 @@ const SuvComplaintsStudy: React.FC = () => {
         </Panel>
       </div>
 
-      <Panel className="mt-6">
+      <Panel id="still-filing" className="mt-6 scroll-mt-24">
         <PanelTitle>Are owners still filing complaints about older SUVs?</PanelTitle>
         {old && old.n > 0 && (
           <p className="mt-3 text-[0.9375rem]">
@@ -244,8 +310,37 @@ const SuvComplaintsStudy: React.FC = () => {
         </p>
       </Panel>
 
+      <Panel id="check-a-used-suv" className="mt-6 scroll-mt-24">
+        <PanelTitle>How do you check a used SUV? Four steps before you buy</PanelTitle>
+        <p className="mt-3 text-[0.9375rem]">
+          Start with the model-year&apos;s record here, then check the one car you&apos;re looking at. Complaint counts show where problems cluster; the VIN check
+          and an inspection show whether this car has them.
+        </p>
+        <div className="mt-5">
+          <FlowDiagram
+            title="Check a used SUV in four steps"
+            steps={[
+              { title: 'Find the model-year', text: 'Look it up in the heatmap above: a dark cell means many owner complaints.', href: '#heatmap', linkLabel: 'Go to the heatmap' },
+              {
+                title: 'Read its report',
+                text: 'See which parts owners complain about, every recall and the crash ratings.',
+                href: '/cars',
+                linkLabel: 'Vehicle reports',
+              },
+              { title: 'Check the VIN', text: 'Open recalls and the factory specs for the exact car, from NHTSA.', href: '/vin-lookup', linkLabel: 'Check a VIN' },
+              {
+                title: 'Get it inspected',
+                text: 'Ask an independent mechanic to look at the problem areas owners report most for that model-year.',
+                href: '/mechanic-finder',
+                linkLabel: 'Find a mechanic',
+              },
+            ]}
+          />
+        </div>
+      </Panel>
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_minmax(0,22rem)]">
-        <Panel>
+        <Panel id="method" className="scroll-mt-24">
           <PanelTitle>How was this study made?</PanelTitle>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-[0.9375rem]">
             <li>

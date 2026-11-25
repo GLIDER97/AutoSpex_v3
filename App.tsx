@@ -8,6 +8,7 @@ import AppRoutes from './routes';
 import SEO from './components/SEO';
 import { ToolGuides } from './components/GuideList';
 import { findStaticPage } from './seo/site';
+import { isEmbedPath } from './data/embedIds';
 
 // Type declaration for Google Tag Manager dataLayer
 declare global {
@@ -62,6 +63,17 @@ function App() {
     }
   };
   const pageMeta = findStaticPage(location.pathname);
+
+  // Embeddable charts (/embed/chart/<id>) sit in iframes on other sites: no header, footer or site chrome.
+  if (isEmbedPath(location.pathname)) {
+    return (
+      <div className="min-h-screen bg-background p-3 font-sans text-foreground sm:p-4">
+        <ErrorBoundary>
+          <AppRoutes />
+        </ErrorBoundary>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-sign-yellow selection:text-sign-ink flex flex-col font-sans">

@@ -16,6 +16,7 @@ export { CODE_PAGES } from './data/codePages';
 // Wrap gallery designs, rendered at /wrap-gallery/<slug>.
 export { WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel } from './data/wraps';
 export { carsCsv, CARS_CSV } from './components/CarsHub';
+export { EMBEDS } from './components/EmbedChart';
 export { studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS } from './data/studies';
 export { VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription } from './data/vehicles';
 export { pageImageFor, pageShareImageSrc } from './data/pageImages';
