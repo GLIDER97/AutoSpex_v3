@@ -174,6 +174,8 @@ MyAutoSpex
 
 ---
 
+**Replies:** the owner's main session checks Gmail for replies at each "status" and records them here; reply drafts are saved for the owner to send.
+
 **Tracking:** after sending, note the date and any replies below. Links earned show up in Search Console's Links report and in `docs/content-log.md`.
 
 | # | Outlet | Sent | Reply | Link earned |
@@ -183,8 +185,8 @@ MyAutoSpex
 | 3 | Motorious | 25 Nov (sent by the owner, before the backlink line was added) | | |
 | 4 | The Truth About Cars | 25 Nov (sent by the owner, before the backlink line was added) | | |
 | 5 | Motor1 | 25 Nov (sent by the owner, before the backlink line was added) | | |
-| 6 | Center for Auto Safety | | | |
-| 7 | Jalopnik | | | |
-| 8 | CarEdge | | | |
-| 9 | ABC7 7 On Your Side | | | |
+| 6 | Center for Auto Safety | 25 Nov (sent by the owner, with the backlink line) | | |
+| 7 | Jalopnik | 25 Nov (sent by the owner, with the backlink line) | | |
+| 8 | CarEdge | 25 Nov (sent by the owner, with the backlink line) | | |
+| 9 | ABC7 7 On Your Side | 25 Nov (sent by the owner, with the backlink line) | | |
 | 10 | Autoblog (form) | | | |
