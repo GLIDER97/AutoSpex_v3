@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Save the SUV study's outreach emails as Gmail drafts (about 5 minutes).** Nine personal emails plus one tips-form note are in `docs/outreach/2026-11-25-suv-complaints-study.md` (The Drive, The Autopian, Motorious, The Truth About Cars, Motor1, Center for Auto Safety, Jalopnik, CarEdge, ABC7 7 On Your Side, Autoblog). Four addresses are marked "confirm first". If yes, the main session saves them as drafts in your Gmail; you review, edit `[Your name]`, and send the ones you like. Nothing is sent without you.
+Nothing open.
 
 ## Answered
 
@@ -34,3 +34,4 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-24 | Silo structure when one page ranks for many different questions; every effort aimed at tier-1 visitors only | **Owner's own instruction.** Section 0 goal + silo rule, `docs/SILOS.md` with silo 1 (car insurance: pillar `/insurance-estimator`; then gap insurance 6,436, coverage/full coverage 1,608, SR-22 4,739, average cost 788, teen drivers 470 Bing US searches in 90 days). Decision 14. Tier-1 country list in the scripts corrected to section 9's definition |
 | 2026-11-24 | Where real CPC figures come from (A Keyword Planner export, B paid API, C estimate) | **C now, A later.** The intent-based estimate guides the content rule. Once tier-1 impressions pass 1,000 a week, the status reply asks for a Google Keyword Planner export (`data/keyword-cpc.csv`) |
 | 2026-11-24 | Apply the quality bar to everything published | **Owner's own instruction.** `docs/PUBLISHING-STANDARD.md`: SEO, AI-citable, charts and diagrams, linkable, for every page type, with a definition-of-done checklist in every PR. Decision 15 |
+| 2026-11-25 | Save the SUV study's outreach emails as Gmail drafts | **Done by the main session (decision 8):** 9 drafts saved in the owner's Gmail (The Drive, The Autopian, Motorious, TTAC, Motor1, Center for Auto Safety, Jalopnik, CarEdge, ABC7). Nothing sent. The owner checks the 4 "confirm first" addresses (Center for Auto Safety, Jalopnik, CarEdge, ABC7), replaces [Your name] and sends. The Autoblog tips-form text is in `docs/outreach/2026-11-25-suv-complaints-study.md` for the owner to paste if they want. Record sends in that file's tracking table |
