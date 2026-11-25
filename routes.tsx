@@ -26,6 +26,7 @@ const VehiclePage = React.lazy(() => import('./components/VehiclePage'));
 const WrapGallery = React.lazy(() => import('./components/WrapGallery'));
 const CarsHub = React.lazy(() => import('./components/CarsHub'));
 const SuvComplaintsStudy = React.lazy(() => import('./components/SuvComplaintsStudy'));
+const EmbedChart = React.lazy(() => import('./components/EmbedChart'));
 const WrapDesignPage = React.lazy(() => import('./components/WrapDesignPage'));
 // const FreeObd2CodeDecoderPost - Removed (Handled by ArticleLoader + Redirect)
 const LegalPages = React.lazy(() => import('./components/LegalPages').then(module => ({ default: module.PrivacyPolicy })));
@@ -73,6 +74,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/codes/:code" element={<CodePage />} />
         <Route path="/cars" element={<CarsHub />} />
         <Route path="/studies/suv-owner-complaints" element={<SuvComplaintsStudy />} />
+        <Route path="/embed/chart/:id" element={<EmbedChart />} />
         <Route path="/cars/:make/:model/:year" element={<VehiclePage />} />
         <Route path="/wrap-gallery" element={<WrapGallery />} />
         <Route path="/wrap-gallery/:slug" element={<WrapDesignPage />} />

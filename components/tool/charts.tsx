@@ -658,3 +658,93 @@ export function Heatmap({
     </figure>
   );
 }
+
+/**
+ * An explanatory flow: numbered steps joined by arrows, left to right on wide screens and top to bottom on phones.
+ * Use for decision paths and "how it works" sequences (docs/PUBLISHING-STANDARD.md section 3). Each step can link
+ * to where the reader does it. An ordered list underneath, so screen readers get it in order.
+ */
+export function FlowDiagram({
+  title,
+  steps,
+}: {
+  /** States the takeaway, e.g. "Check a used SUV in 4 steps". */
+  title: string;
+  steps: { title: string; text: React.ReactNode; href?: string; linkLabel?: string }[];
+}) {
+  return (
+    <figure>
+      <figcaption className="sr-only">{title}</figcaption>
+      <ol className="grid gap-7 md:auto-cols-fr md:grid-flow-col md:gap-0">
+        {steps.map((s, i) => (
+          <li key={s.title} className="relative flex md:flex-col">
+            <div className="flex w-full grow flex-col rounded-xl border border-border bg-card p-4 md:mr-6">
+              <span
+                className="flex size-8 items-center justify-center rounded-full text-sm font-extrabold text-white"
+                style={{ background: 'var(--chart-1)' }}
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <p className="mt-3 font-bold leading-snug">{s.title}</p>
+              <p className="mt-1 text-[0.9375rem] text-muted-foreground">{s.text}</p>
+              {s.href && (
+                <a href={s.href} className={cn('mt-auto pt-3 text-[0.9375rem] font-semibold underline underline-offset-4', focusRing)}>
+                  {s.linkLabel ?? 'Open'}
+                </a>
+              )}
+            </div>
+            {i < steps.length - 1 && (
+              <>
+                {/* Arrow to the next step: right on wide screens, down on phones. */}
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="absolute top-1/2 right-0 hidden size-6 -translate-y-1/2 md:block">
+                  <path d="M4 12h14m-5-5 5 5-5 5" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="absolute -bottom-7 left-5 size-7 md:hidden">
+                  <path d="M12 4v14m-5-5 5 5 5-5" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </>
+            )}
+          </li>
+        ))}
+      </ol>
+    </figure>
+  );
+}
+
+/**
+ * "Embed this chart": a copy-paste snippet for another site. The chart loads from /embed/chart/<id> in an iframe;
+ * the credit link sits outside the iframe, so the embedding page links back to ours.
+ */
+export function EmbedThisChart({ id, title, height, creditUrl, creditText }: { id: string; title: string; height: number; creditUrl: string; creditText: string }) {
+  const [done, setDone] = useState(false);
+  const snippet =
+    `<iframe src="https://www.myautospex.com/embed/chart/${id}" title="${title.replace(/"/g, '&quot;')}" width="100%" height="${height}" style="border:0" loading="lazy"></iframe>\n` +
+    `<p style="font:13px/1.4 sans-serif">Chart: <a href="${creditUrl}">${creditText}</a></p>`;
+  return (
+    <details className="mt-3 text-sm">
+      <summary className={cn('cursor-pointer font-semibold text-muted-foreground underline underline-offset-4 hover:text-foreground', focusRing)}>
+        Embed this chart
+      </summary>
+      <p className="mt-2 text-muted-foreground">Free to use on your site with this credit line. The chart updates when our data does.</p>
+      <pre className="mt-2 overflow-x-auto rounded-lg bg-muted p-3 text-xs whitespace-pre-wrap">
+        <code>{snippet}</code>
+      </pre>
+      <button
+        type="button"
+        onClick={() =>
+          navigator.clipboard?.writeText(snippet).then(
+            () => {
+              setDone(true);
+              setTimeout(() => setDone(false), 2000);
+            },
+            () => undefined,
+          )
+        }
+        className={cn('mt-2 inline-flex h-9 items-center rounded-lg border border-input bg-card px-3 font-semibold hover:bg-muted', focusRing)}
+      >
+        {done ? 'Copied' : 'Copy embed code'}
+      </button>
+    </details>
+  );
+}
