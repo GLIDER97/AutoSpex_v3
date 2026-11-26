@@ -95,7 +95,7 @@ People increasingly ask ChatGPT, Gemini and Google's AI answers instead of click
 - **Official data hosts:** `api.bls.gov` (CPI series, for example `CUUR0000SETE` motor vehicle insurance) was added to this environment's network on 24 Nov.
   - The public v2 API works without a key at a low daily limit. If a response has no series, check its `status` and `message` and request a narrower year range; don't retry in a loop.
   - `crashviewer.nhtsa.dot.gov` is also allowed but refuses automated requests (HTTP 403). For crash data by driver age, use NHTSA's published Traffic Safety Facts on `www.nhtsa.gov` instead.
-- **State rules** (minimum coverage, SR-22) are checked on each state's own site with **WebFetch**, which doesn't need the sandbox's network allow-list. Record the URL and the checked date for every state.
+- **State rules** (minimum coverage, SR-22) are checked on each state's own site with **WebFetch**, which doesn't need the sandbox's network allow-list. Record the URL and the checked date for every state. *(26 Nov: in the daily-run session WebFetch failed for a host outside the network, iii.org, with ENOTFOUND, so test a state site first before planning on it.)*
 - **Outreach drafts:** the daily runs have no Gmail tools. Write them to `docs/outreach/<date>-<piece>.md`, and the owner's main session saves them as Gmail drafts at the next "status" (decision 8).
 
 **Schedule (replaces section 4 from day 4):**

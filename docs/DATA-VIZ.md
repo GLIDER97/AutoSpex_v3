@@ -17,6 +17,10 @@
 | Split a total per period into two parts | Stacked columns with a legend | `StackedColumns` |
 | Compare a value across two dimensions (model × year) | Heatmap: one hue, 5 shades, number in each cell, legend, table | `Heatmap` |
 | Explain a process or decision path ("check a used SUV in 4 steps") | Flow diagram: numbered steps with arrows, stacked on phones | `FlowDiagram` |
+| See a continuous measure over many periods (a monthly price index), alone or against a second series | Line chart on one shared axis (index both to 100 at the start), gaps where a value is missing, arrow-key and hover readout | `LineChart` |
+| See changes that can be negative, per period (yearly % change) | Columns above and below a zero line, every column labeled | `ChangeColumns` |
+| Compare changes that can be negative across named things (5-year price change by cost) | Bars left or right of a zero line, the subject highlighted | `ChangeBars` |
+| Show what something is made of and which packages include which parts (a policy's coverages; state minimum vs full coverage) | Labeled breakdown: grouped cards with brackets underneath, stacked on phones | `BreakdownDiagram` |
 
 - **Pies and donuts** only for one whole split into 2–4 parts that stand alone. Anything else reads faster as a share bar or ranked bars.
 - **Never use these:**
