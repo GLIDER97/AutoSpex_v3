@@ -51,6 +51,8 @@ A supporting page that stays unindexed or gets no tier-1 impressions after 6 wee
 
 `/car-insurance` redirects to the pillar (301), so the folder has one clear head.
 
+**Pillar piece shipped 26 Nov** (`docs/content-log.md`): the BLS CPI price guide (3 embeddable charts, CSV), the coverage breakdown diagram and the monthly-cost view. The supporting pages are next, gap insurance first.
+
 **Supporting pages, in build order** (Bing US, 90 days):
 
 | # | Page | Targets (keyword cluster) | Demand evidence | AI-proof / citable element | Data source (must be official or verified) |

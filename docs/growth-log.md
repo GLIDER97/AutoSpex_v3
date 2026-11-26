@@ -2,6 +2,79 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-26: day 8 (week 2, day 1)
+
+The required reading was done first. Owner changes since the last run:
+- the 9 SUV-study emails were saved as Gmail drafts and **all sent by the owner on 25 Nov**
+- decision 8 gained the owner's backlink line, now in every outreach draft
+
+Today's pick, by section 0's priority order:
+- Nothing broken.
+- **The first content-rule piece, on `/insurance-estimator`** (silo 1 pillar), as scheduled.
+- The weekly grading.
+
+### What changed
+- **`/insurance-estimator` upgraded with the content-rule piece.** The calculator stays first; its maths is unchanged. New:
+  - **Monthly-cost view** in the result: per month, per 6-month policy and per year.
+  - **Guide below the tool**, "How much has car insurance gone up?", built on the BLS consumer price index (CPI-U, US city average, not seasonally adjusted):
+    - key numbers and 5 quotable findings
+    - a table of contents
+    - 3 charts, each with a takeaway title, source, table or printed values, and "Embed this chart"
+    - method and limits, a CSV of 118 months, "How to cite this", the reviewed-by line, "not advice"
+  - **2 diagrams:**
+    - what each part of a policy pays for, with state-minimum and full-coverage brackets (sourced to the NAIC consumer guide, checked today)
+    - how the calculator works out the estimate (4 steps)
+  - **SEO:**
+    - title "Car Insurance Calculator: Monthly Cost Estimate" (was "Car Insurance Cost Estimator (US)")
+    - H1 "Car insurance calculator" (was "Insurance cost estimate")
+    - new meta description
+    - Dataset markup and an `llms.txt` line
+    - sitemap date 26 Nov
+- **Findings (BLS series CUUR0000SETE, data to October 2026, published November 2026):**
+  - +51.4% in the five years to October 2026, against +22.0% for all items
+  - the peak was February 2026; October was 4.8% below it, and the 12 months to September 2026 were −5.0%
+  - +52.9% from December 2021 to December 2024, including +20.3% in 2023
+  - over five years, repair and maintenance rose 45.0%, gasoline 31.9% and new vehicles 10.8%, while used vehicles fell 7.4%
+- **New data pipeline:** `scripts/insurance/cpi.mjs` writes `data/insurance/cpi.json`; refresh it monthly after each CPI release.
+  - The BLS API's no-key daily limit was used up after the first request today, so the Consumer Expenditure series (household spending on vehicle insurance) waits for another day; they suit the average-cost silo page.
+- **Chart kit:** `LineChart`, `ChangeColumns`, `ChangeBars` and `BreakdownDiagram` added (`docs/DATA-VIZ.md`). Embed descriptions are now capped at 160 characters.
+- **Sources not reachable from the sandbox:** iii.org (premium by coverage type, NAIC data) and the state insurance department sites. WebFetch follows the same network rules here. So the policy diagram has no dollar split. content.naic.org was reachable and is the source.
+- **Outreach:** `docs/outreach/2026-11-26-car-insurance-prices.md` holds 10 emails, each ending with the owner's backlink line, plus 2 contact-form texts. Owner request 1.
+- **`docs/content-log.md` started:** this piece's keyword baseline, and the SUV study.
+
+### Numbers
+| | Last 28 days (29 Oct–23 Nov) | Last 3 days (21–23 Nov) |
+|---|---|---|
+| Clicks | 2 | 0 |
+| Impressions | **1,202** | **1,022** |
+| Average position | 32.8 | 32.5 |
+| Tier-1 clicks | 1 | 0 |
+
+- **Latest 7 days of data (17–23 Nov): 1,098 tier-1 impressions** (530 in yesterday's reading of the same days; the 23 Nov data were still incomplete then).
+  - 23 Nov alone had 568 tier-1 impressions.
+  - `/insurance-estimator` had 848 tier-1 impressions in 28 days, at position 32 across 176 queries; `/vin-lookup` 165.
+- **Index: 35 indexed** (unchanged). 25 discovered but not indexed, 2 crawled but not indexed, 4 unknown, 1 inspection error (HTTP 500 from the API). No manual action, no drop.
+  - Not indexed for more than 7 days: 4 tools (MPG, affordability, value shock, ownership) and 10 older articles. The Monday upkeep looks at their internal links and content.
+- **Clarity, last day:** 6 human sessions (France 3, India 2, US 1), including 2 on the insurance estimator and 2 on the SUV study. No dead clicks, rage clicks or quick-backs; average scroll depth 32%. AI-app referrals: 0.
+- **OpenRouter:** $3.43 of $10. No images.
+- **Wrap gallery review:** 0 new designs since #3 (3 previews in 90 days).
+
+### Week 1 graded (19–25 Nov): green
+| Goal | Result | Grade |
+|---|---|---|
+| 12+ pages indexed | 35 | green |
+| 50+ tier-1 impressions | 1,098 (latest 7 days, 17–23 Nov) | green |
+| 0 tier-1 clicks | 1 | green |
+| 12+ new pages, `/codes` hub, IndexNow, 0 broken builds | 13 data and code pages + 22 gallery pages; every deploy submitted; 0 broken builds. 5 of them were code guides: section 0 capped code guides on 21 Nov. | green |
+
+### Needs the owner
+- Owner request 1: save the 10 car insurance outreach drafts to Gmail.
+
+### Tomorrow (day 9, Fri 27 Nov)
+- **Silo 1, supporting page 1: `/car-insurance/gap-insurance-calculator`.** `SILOS.md` requires a cited depreciation source before publishing, so check the Value Shock calculator's source first.
+- **Risk for supporting pages 2 and 3** (coverage, SR-22): they need every state's rules checked on the state's own site. Today WebFetch couldn't reach sites outside this environment's network (iii.org failed with ENOTFOUND). Tomorrow, test whether content.naic.org (reachable) links usable state data; if not, raise it as an owner request.
+- 1 vehicle report in a remaining slot (2016 Ford Explorer, the study's #2 model-year).
+
 ## 2026-11-25: day 7 (week 1, day 7, last day of the week)
 
 Read first, as the new required reading says: GROWTH-PLAN section 0 (tier-1 goal, priority order, build notes), `PUBLISHING-STANDARD.md`, `CONTENT-RULE.md`, `SILOS.md`. Today's picks, by section 0's priority order:

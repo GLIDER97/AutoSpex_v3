@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, EMBEDS, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, EMBEDS, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, insuranceCsv, insuranceFacts, INSURANCE_CSV, INSURANCE_PATH, CPI_AS_OF, monthName, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -265,6 +265,27 @@ for (const page of pages) {
         publisher: { '@id': ORGANIZATION['@id'] },
       });
     }
+    if (page.path === INSURANCE_PATH) {
+      // The insurance guide's price data (BLS CPI) as a CSV next to the page, and Dataset markup so it can be cited.
+      const csvFile = path.join(distDir, INSURANCE_CSV.replace(/^\//, ''));
+      await fs.mkdir(path.dirname(csvFile), { recursive: true });
+      await fs.writeFile(csvFile, insuranceCsv());
+      const f = insuranceFacts();
+      structuredData.push({
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: `US car insurance prices, ${monthName(f.first)} to ${monthName(f.latest)} (BLS consumer price index)`,
+        description: `Monthly consumer price index values for motor vehicle insurance, compared with all items, car maintenance and repair, new and used vehicles and gasoline, with car insurance up ${f.fiveYearInsurance}% in the five years to ${monthName(f.latest)}.`,
+        url: canonical,
+        dateModified: CPI_AS_OF,
+        temporalCoverage: `${f.first}/${f.latest}`,
+        creator: ORGANIZATION,
+        isAccessibleForFree: true,
+        isBasedOn: 'https://www.bls.gov/cpi/',
+        variableMeasured: ['Consumer price index, motor vehicle insurance', 'Consumer price index, all items'],
+        distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: absoluteUrl(INSURANCE_CSV) }],
+      });
+    }
     structuredData.push({
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -464,7 +485,8 @@ for (const d of WRAP_DESIGNS) {
 for (const [id, e] of Object.entries(EMBEDS)) {
   await writePage(`/embed/chart/${id}`, {
     title: formatTitle(e.title.length > 60 ? `${e.title.slice(0, 57)}…` : e.title, true),
-    description: `${e.title}. Source: ${e.source}. From ${SITE_NAME}.`,
+    // Kept to 160 characters: the takeaway, then the source if it fits.
+    description: [`${e.title}. Source: ${e.source}. From ${SITE_NAME}.`, `${e.title}. From ${SITE_NAME}.`, e.title].find((d) => d.length <= 160) ?? `${e.title.slice(0, 159)}…`,
     canonical: absoluteUrl(e.page),
     noindex: true,
   });
@@ -528,6 +550,11 @@ await fs.writeFile(
     '',
     '## Data studies (original analysis of government data, with CSV)',
     '',
+    line(
+      'How much has car insurance gone up? (BLS price data)',
+      INSURANCE_PATH,
+      `US car insurance prices from the BLS consumer price index, ${monthName(insuranceFacts().first)} to ${monthName(insuranceFacts().latest)}: trend, yearly changes and other driving costs, with a car insurance calculator. CSV: ${absoluteUrl(INSURANCE_CSV)}`,
+    ),
     line('Which used SUVs get the most owner complaints? (2015–2022)', SUV_STUDY_PATH, `NHTSA complaint counts for 20 popular SUVs by model-year, model, problem area and filing year. CSV: ${absoluteUrl(SUV_STUDY_CSV)}`),
     '',
     '## Vehicle reports (NHTSA and EPA data, refreshed weekly)',
