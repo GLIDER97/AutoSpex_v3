@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { runTool } from '../utils/ai';
+import InsuranceGuide from './InsuranceGuide';
 import type { InsuranceFormData } from '../types';
 import {
   ChoiceGroup,
@@ -135,8 +136,8 @@ const InsuranceEstimator: React.FC = () => {
   return (
     <ToolPage
       category="money"
-      title="Insurance cost estimate"
-      intro="A ballpark monthly premium for your age, record, credit, car and coverage, and what each change would save. No contact details needed."
+      title="Car insurance calculator"
+      intro="Estimate your car insurance cost per month and per year for your age, driving record, credit, car and coverage, and see what each change would save. No contact details needed. Below it: how much US car insurance prices have risen, from official BLS data."
       sources="A published rule-of-thumb model calibrated to 2026 national average full-coverage rates (Insurify, NerdWallet, The Zebra, MoneyGeek). Location isn't modeled. Explanation written by AI (Anthropic's Claude)."
     >
       <div className="grid gap-6 lg:grid-cols-[minmax(0,26rem)_1fr]">
@@ -229,9 +230,22 @@ const InsuranceEstimator: React.FC = () => {
                   {money(result.min)}–{money(result.max)}
                   <span className="ml-1 text-2xl text-muted-foreground">a month</span>
                 </p>
-                <p className="mt-2 text-lg text-muted-foreground">
-                  About {money(result.min * 12)} to {money(result.max * 12)} a year.
-                </p>
+                <dl className="mt-4 grid gap-2 border-y border-border py-3 sm:grid-cols-3 sm:gap-3">
+                  {(
+                    [
+                      ['Per month', 1],
+                      ['6-month policy', 6],
+                      ['Per year', 12],
+                    ] as const
+                  ).map(([label, months]) => (
+                    <div key={label} className="flex items-baseline justify-between gap-3 sm:block">
+                      <dt className="text-sm text-muted-foreground">{label}</dt>
+                      <dd className="font-bold whitespace-nowrap tabular-nums sm:mt-0.5">
+                        {money(result.min * months)}–{money(result.max * months)}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
                 <div className="mt-4">
                   <Verdict tone={result.avg < 160 ? 'go' : result.avg > 240 ? 'stop' : 'caution'}>
                     {result.avg < 160 ? 'Below the national average' : result.avg > 240 ? 'Above the national average' : 'Near the national average'}
@@ -286,6 +300,8 @@ const InsuranceEstimator: React.FC = () => {
           )}
         </div>
       </div>
+
+      <InsuranceGuide />
 
       <Faq id="insurance-faq" title="Questions about car insurance costs" items={FAQS} />
     </ToolPage>

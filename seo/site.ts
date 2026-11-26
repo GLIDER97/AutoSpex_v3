@@ -73,10 +73,10 @@ export const STATIC_PAGES: PageMeta[] = [
   },
   {
     path: '/insurance-estimator',
-    updated: '2026-11-16',
-    title: 'Car Insurance Cost Estimator (US)',
+    updated: '2026-11-26',
+    title: 'Car Insurance Calculator: Monthly Cost Estimate',
     description:
-      'Estimate a ballpark monthly car insurance premium for your age, driving record, credit, car and coverage, and see what each change would save.',
+      'Free car insurance calculator: estimate your monthly premium by age, record, credit, car and coverage, plus official data on how much prices have risen.',
     priority: 0.8,
   },
   {

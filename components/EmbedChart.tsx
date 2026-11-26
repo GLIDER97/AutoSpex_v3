@@ -8,6 +8,8 @@ import { SITE_URL } from '../seo/site';
 import { num } from '../data/vehicles';
 import { STUDY_AS_OF, STUDY_ROWS, STUDY_YEARS, SUV_STUDY_PATH, modelName, rowName, studyFacts } from '../data/studies';
 import { type EmbedId } from '../data/embedIds';
+import { CPI_AS_OF, INSURANCE_PATH, insuranceFacts, monthName } from '../data/insurance';
+import { DrivingCostsChart, InsuranceTrendChart, InsuranceYearlyChart } from './InsuranceCharts';
 import NotFound from './NotFound';
 import { BarList, Heatmap, MeterList } from './tool/charts';
 
@@ -25,6 +27,7 @@ export interface EmbedDef {
 }
 
 const STUDY_CREDIT = 'MyAutoSpex analysis of NHTSA owner complaint data';
+const INSURANCE_CREDIT = 'MyAutoSpex analysis of BLS car insurance price data';
 
 export const EMBEDS: Record<EmbedId, EmbedDef> = {
   'suv-complaints-top-model-years': {
@@ -75,8 +78,47 @@ export const EMBEDS: Record<EmbedId, EmbedDef> = {
       return <MeterList items={f.topComponents.slice(0, 8).map((c) => ({ label: c.name, value: c.count }))} total={f.total} />;
     },
   },
+  'car-insurance-price-trend': {
+    get title() {
+      const f = insuranceFacts();
+      return `Car insurance prices are up ${f.sinceFirst.toFixed(0)}% since ${monthName(f.first)}; all consumer prices are up ${f.allItemsSinceFirst.toFixed(0)}%`;
+    },
+    page: INSURANCE_PATH,
+    pageTitle: INSURANCE_CREDIT,
+    source: 'BLS consumer price index (CPI-U), motor vehicle insurance and all items',
+    asOf: CPI_AS_OF,
+    height: 520,
+    render: () => <InsuranceTrendChart />,
+  },
+  'car-insurance-yearly-change': {
+    get title() {
+      const f = insuranceFacts();
+      const ytd = f.years[f.years.length - 1];
+      const big = f.biggestYear;
+      return big && ytd?.partial
+        ? `Car insurance prices rose most in ${big.label} (+${big.value.toFixed(1)}%) and are ${ytd.value < 0 ? 'down' : 'up'} ${Math.abs(ytd.value).toFixed(1)}% in ${ytd.label} so far`
+        : 'Yearly change in US car insurance prices';
+    },
+    page: INSURANCE_PATH,
+    pageTitle: INSURANCE_CREDIT,
+    source: 'BLS consumer price index (CPI-U), motor vehicle insurance, December to December',
+    asOf: CPI_AS_OF,
+    height: 480,
+    render: () => <InsuranceYearlyChart />,
+  },
+  'driving-costs-5-years': {
+    get title() {
+      const f = insuranceFacts();
+      return `Car insurance rose ${f.fiveYearInsurance.toFixed(0)}% in five years to ${monthName(f.latest)}, faster than repairs, gas or cars`;
+    },
+    page: INSURANCE_PATH,
+    pageTitle: INSURANCE_CREDIT,
+    source: 'BLS consumer price index (CPI-U)',
+    asOf: CPI_AS_OF,
+    height: 420,
+    render: () => <DrivingCostsChart />,
+  },
 };
-
 
 const EmbedChart: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();

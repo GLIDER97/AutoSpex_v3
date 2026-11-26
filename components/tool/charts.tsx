@@ -748,3 +748,458 @@ export function EmbedThisChart({ id, title, height, creditUrl, creditText }: { i
     </details>
   );
 }
+
+/** Axis ticks covering lo..hi (which may be negative), in steps of 1, 2 or 5 times a power of ten. */
+function rangeTicks(lo: number, hi: number, target = 4) {
+  const span = hi - lo || 1;
+  const rough = span / target;
+  const mag = 10 ** Math.floor(Math.log10(rough));
+  const norm = rough / mag;
+  const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag;
+  const start = Math.floor(lo / step) * step;
+  const ticks: number[] = [];
+  for (let t = start; t <= hi + step * 0.999; t += step) ticks.push(Math.round(t * 1e6) / 1e6);
+  return ticks;
+}
+
+const signedPct = (v: number, digits = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(digits)}%`;
+
+/**
+ * Lines over time for one or two series on one shared axis (e.g. two price indexes, both set to 100 in the first
+ * month). Gaps where a value is missing. Hover, tap, or focus and use the arrow keys to read any month; the latest
+ * values are printed; the table lists the rows the caller picks (e.g. every January and the latest month).
+ */
+export function LineChart({
+  title,
+  labels,
+  series,
+  ticks,
+  tableRows,
+  format = (v) => v.toLocaleString('en-US', { maximumFractionDigits: 1 }),
+  tickFormat = format,
+  baseline,
+}: {
+  title: string;
+  /** One label per point, e.g. "Oct 2026". */
+  labels: string[];
+  series: { name: string; values: (number | null)[] }[];
+  /** Points that get an x-axis label, with the label to show (e.g. the year). */
+  ticks: { index: number; label: string }[];
+  tableRows?: number[];
+  format?: (v: number) => string;
+  /** Y-axis labels (defaults to format). */
+  tickFormat?: (v: number) => string;
+  /** A reference value drawn as a darker gridline (e.g. 100 for an index). */
+  baseline?: number;
+}) {
+  const id = useId();
+  const [active, setActive] = useState<number | null>(null);
+  const [table, setTable] = useState(false);
+  const n = labels.length;
+  const all = series.flatMap((s) => s.values.filter((v): v is number => v !== null));
+  const yTicks = rangeTicks(Math.min(...all, baseline ?? Infinity), Math.max(...all, baseline ?? -Infinity), 5);
+  const lo = yTicks[0];
+  const hi = yTicks[yTicks.length - 1];
+  const x = (i: number) => (n > 1 ? (i / (n - 1)) * 100 : 50);
+  const y = (v: number) => ((v - lo) / (hi - lo || 1)) * 100;
+  const lastIndex = (vals: (number | null)[]) => vals.reduce<number>((last, v, i) => (v !== null ? i : last), -1);
+  const latest = Math.max(...series.map((s) => lastIndex(s.values)));
+  const shown = active ?? latest;
+  const segments = (vals: (number | null)[]) => {
+    const out: string[] = [];
+    let cur: string[] = [];
+    vals.forEach((v, i) => {
+      if (v === null) {
+        if (cur.length > 1) out.push(cur.join(' '));
+        cur = [];
+      } else cur.push(`${x(i) * 10},${1000 - y(v) * 10}`);
+    });
+    if (cur.length > 1) out.push(cur.join(' '));
+    return out;
+  };
+  const pick = (clientX: number, el: HTMLElement) => {
+    const r = el.getBoundingClientRect();
+    setActive(Math.min(n - 1, Math.max(0, Math.round(((clientX - r.left) / (r.width || 1)) * (n - 1)))));
+  };
+  const rows = tableRows ?? labels.map((_, i) => i);
+
+  return (
+    <figure>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {series.length > 1 ? <Legend names={series.map((s) => s.name)} /> : <span />}
+        <TableToggle open={table} onToggle={() => setTable((t) => !t)} id={`${id}-table`} />
+      </div>
+      <figcaption className="sr-only">{title}</figcaption>
+      <p className="mt-3 min-h-6 text-[0.9375rem]" aria-live="polite">
+        {shown >= 0 && (
+          <>
+            <strong>{labels[shown]}:</strong>{' '}
+            {series.map((s, si) => (
+              <span key={s.name}>
+                {si > 0 && <span className="mx-1.5 text-muted-foreground">·</span>}
+                {s.name} {s.values[shown] === null ? 'not published' : format(s.values[shown]!)}
+              </span>
+            ))}
+          </>
+        )}
+      </p>
+      <div className="mt-2 grid grid-cols-[2.75rem_1fr] gap-2">
+        <div className="relative h-56 text-right text-xs text-muted-foreground tabular-nums" aria-hidden="true">
+          {yTicks.map((t) => (
+            <span key={t} className="absolute right-0 leading-none" style={{ bottom: `${y(t)}%`, transform: 'translateY(50%)' }}>
+              {tickFormat(t)}
+            </span>
+          ))}
+        </div>
+        <div className="min-w-0">
+          <div
+            className={cn('relative h-56 touch-pan-y rounded-sm', focusRing)}
+            tabIndex={0}
+            role="group"
+            aria-label={`${title}. Use the left and right arrow keys to read each month.`}
+            onPointerMove={(e) => pick(e.clientX, e.currentTarget)}
+            onPointerDown={(e) => pick(e.clientX, e.currentTarget)}
+            onPointerLeave={() => setActive(null)}
+            onBlur={() => setActive(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setActive((a) => Math.min(n - 1, Math.max(0, (a ?? latest) + (e.key === 'ArrowRight' ? 1 : -1))));
+              }
+            }}
+          >
+            {yTicks.map((t) => (
+              <span
+                key={t}
+                aria-hidden="true"
+                className={cn('absolute inset-x-0 h-px', t === baseline ? 'bg-muted-foreground/60' : 'bg-border')}
+                style={{ bottom: `${y(t)}%` }}
+              />
+            ))}
+            <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+              {series.map((s, si) =>
+                segments(s.values).map((pts, k) => (
+                  <polyline
+                    key={`${s.name}-${k}`}
+                    points={pts}
+                    fill="none"
+                    stroke={SERIES[si]}
+                    strokeWidth={2.5}
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                )),
+              )}
+            </svg>
+            {shown >= 0 && (
+              <span aria-hidden="true" className="absolute inset-y-0 w-px bg-muted-foreground/50" style={{ left: `${x(shown)}%` }} />
+            )}
+            {series.map((s, si) =>
+              shown >= 0 && s.values[shown] !== null ? (
+                <span
+                  key={s.name}
+                  aria-hidden="true"
+                  className="absolute size-2.5 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-card"
+                  style={{ left: `${x(shown)}%`, bottom: `${y(s.values[shown]!)}%`, background: SERIES[si], boxSizing: 'content-box' }}
+                />
+              ) : null,
+            )}
+          </div>
+          <div className="relative mt-1.5 h-4 text-xs text-muted-foreground tabular-nums" aria-hidden="true">
+            {ticks.map((t, k) => (
+              <span
+                key={t.index}
+                className={cn('absolute top-0 whitespace-nowrap', k % 2 === 1 && 'hidden sm:inline')}
+                style={{ left: `${x(t.index)}%`, transform: t.index === 0 ? 'none' : t.index === n - 1 ? 'translateX(-100%)' : 'translateX(-50%)' }}
+              >
+                {t.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      {table && (
+        <div className="mt-4 overflow-x-auto">
+          <table id={`${id}-table`} className="w-full text-[0.9375rem]">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="py-1.5 font-semibold">Month</th>
+                {series.map((s) => (
+                  <th key={s.name} className="py-1.5 pl-3 text-right font-semibold">
+                    {s.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((i) => (
+                <tr key={labels[i]} className="border-b border-border">
+                  <td className="py-1.5">{labels[i]}</td>
+                  {series.map((s) => (
+                    <td key={s.name} className="py-1.5 pl-3 text-right tabular-nums">
+                      {s.values[i] === null ? 'not published' : format(s.values[i]!)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </figure>
+  );
+}
+
+/**
+ * Columns above and below a zero line, for changes per period (e.g. the yearly % change in a price). Every column
+ * is labeled; hover, tap or focus shows the exact value; a partial period (the year so far) is drawn lighter.
+ */
+export function ChangeColumns({
+  title,
+  periods,
+  format = (v) => signedPct(v),
+  labelFormat = (v) => signedPct(v, 0),
+}: {
+  title: string;
+  periods: { label: string; value: number; partial?: boolean }[];
+  format?: (v: number) => string;
+  /** Short form printed on each column. */
+  labelFormat?: (v: number) => string;
+}) {
+  const id = useId();
+  const [active, setActive] = useState<number | null>(null);
+  const [table, setTable] = useState(false);
+  const vals = periods.map((p) => p.value);
+  const yTicks = rangeTicks(Math.min(0, ...vals), Math.max(0, ...vals));
+  const lo = yTicks[0];
+  const hi = yTicks[yTicks.length - 1];
+  const y = (v: number) => ((v - lo) / (hi - lo || 1)) * 100;
+  const zero = y(0);
+  const partial = periods.find((p) => p.partial);
+  const shown = active ?? periods.length - 1;
+
+  return (
+    <figure>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {partial ? (
+          <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2">
+              <span className="inline-block size-3 rounded-[3px]" style={{ background: 'var(--chart-1)' }} aria-hidden="true" />
+              Full year
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="inline-block size-3 rounded-[3px]" style={{ background: SOFT }} aria-hidden="true" />
+              {partial.label} so far
+            </li>
+          </ul>
+        ) : (
+          <span />
+        )}
+        <TableToggle open={table} onToggle={() => setTable((t) => !t)} id={`${id}-table`} />
+      </div>
+      <figcaption className="sr-only">{title}</figcaption>
+      <p className="mt-3 min-h-6 text-[0.9375rem]" aria-live="polite">
+        {shown >= 0 && (
+          <>
+            <strong>
+              {periods[shown].label}
+              {periods[shown].partial ? ' (so far)' : ''}:
+            </strong>{' '}
+            {format(periods[shown].value)}
+          </>
+        )}
+      </p>
+      <div className="mt-2 grid grid-cols-[2.75rem_1fr] gap-2">
+        <div className="relative h-52 text-right text-xs text-muted-foreground tabular-nums" aria-hidden="true">
+          {yTicks.map((t) => (
+            <span key={t} className="absolute right-0 leading-none" style={{ bottom: `${y(t)}%`, transform: 'translateY(50%)' }}>
+              {signedPct(t, 0)}
+            </span>
+          ))}
+        </div>
+        <div className="min-w-0">
+          <div className="relative h-52">
+            {yTicks.map((t) => (
+              <span key={t} aria-hidden="true" className={cn('absolute inset-x-0 h-px', t === 0 ? 'bg-muted-foreground/60' : 'bg-border')} style={{ bottom: `${y(t)}%` }} />
+            ))}
+            <div className="relative flex h-full gap-1 sm:gap-2" role="list" aria-label={title}>
+              {periods.map((p, i) => {
+                const up = p.value >= 0;
+                const h = (Math.abs(p.value) / (hi - lo || 1)) * 100;
+                return (
+                  <button
+                    key={p.label}
+                    type="button"
+                    role="listitem"
+                    aria-label={`${p.label}${p.partial ? ' so far' : ''}: ${format(p.value)}`}
+                    onMouseEnter={() => setActive(i)}
+                    onMouseLeave={() => setActive(null)}
+                    onFocus={() => setActive(i)}
+                    onBlur={() => setActive(null)}
+                    onClick={() => setActive(i)}
+                    className={cn('relative h-full min-w-0 flex-1 cursor-default rounded-[4px]', focusRing, active === i && 'bg-muted/70')}
+                  >
+                    <span
+                      className={cn('absolute left-1/2 w-full max-w-7 -translate-x-1/2', up ? 'rounded-t-[4px]' : 'rounded-b-[4px]')}
+                      style={{
+                        bottom: up ? `${zero}%` : `${zero - h}%`,
+                        height: `${Math.max(h, p.value ? 0.8 : 0)}%`,
+                        background: p.partial ? SOFT : 'var(--chart-1)',
+                      }}
+                    />
+                    <span
+                      className="absolute inset-x-0 text-center text-[0.6875rem] font-semibold whitespace-nowrap text-foreground tabular-nums sm:text-xs"
+                      style={up ? { bottom: `calc(${zero + h}% + 3px)` } : { top: `calc(${100 - zero + h}% + 3px)` }}
+                    >
+                      {labelFormat(p.value)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="mt-1.5 flex gap-1 sm:gap-2" aria-hidden="true">
+            {periods.map((p) => (
+              <span key={p.label} className="min-w-0 flex-1 text-center text-xs text-muted-foreground tabular-nums">
+                <span className="sm:hidden">{/^\d{4}$/.test(p.label) ? `'${p.label.slice(2)}` : p.label}</span>
+                <span className="hidden sm:inline">{p.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      {table && (
+        <table id={`${id}-table`} className="mt-4 w-full text-[0.9375rem]">
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className="py-1.5 font-semibold">Period</th>
+              <th className="py-1.5 text-right font-semibold">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {periods.map((p) => (
+              <tr key={p.label} className="border-b border-border">
+                <td className="py-1.5">
+                  {p.label}
+                  {p.partial ? ' (so far)' : ''}
+                </td>
+                <td className="py-1.5 text-right tabular-nums">{format(p.value)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </figure>
+  );
+}
+
+/**
+ * Horizontal bars left or right of a zero line, for changes that can be negative (e.g. % price change over five
+ * years by cost). Largest first; every value printed, so it needs no tooltip or table. A highlighted row is bold.
+ */
+export function ChangeBars({
+  items,
+  format = (v) => signedPct(v),
+}: {
+  items: { label: string; value: number; highlight?: boolean }[];
+  format?: (v: number) => string;
+}) {
+  const vals = items.map((i) => i.value);
+  const lo = Math.min(0, ...vals);
+  const hi = Math.max(0, ...vals);
+  const span = hi - lo || 1;
+  const zero = (-lo / span) * 100;
+  return (
+    <ul className="space-y-3">
+      {items.map((item) => {
+        const w = (Math.abs(item.value) / span) * 100;
+        return (
+          <li
+            key={item.label}
+            className={cn('grid grid-cols-[minmax(0,8.5rem)_1fr_auto] items-center gap-3 text-[0.9375rem] sm:grid-cols-[minmax(0,12rem)_1fr_auto]', item.highlight && 'font-bold')}
+          >
+            <span className="leading-snug">{item.label}</span>
+            <span className="relative h-3" aria-hidden="true">
+              <span className="absolute -inset-y-1 w-px bg-muted-foreground/60" style={{ left: `${zero}%` }} />
+              <span
+                className={cn('absolute inset-y-0', item.value >= 0 ? 'rounded-r-[4px]' : 'rounded-l-[4px]')}
+                style={{
+                  left: item.value >= 0 ? `${zero}%` : `${zero - w}%`,
+                  width: `${Math.max(w, 1)}%`,
+                  background: item.highlight ? 'var(--chart-1)' : SOFT,
+                }}
+              />
+            </span>
+            <span className="text-right font-semibold tabular-nums">{format(item.value)}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+const GRID_COLS: Record<number, string> = { 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-4' };
+
+/**
+ * A labeled breakdown: what something is made of, in groups (e.g. the parts of a car insurance policy), with
+ * brackets underneath showing which groups a package includes (e.g. "full coverage"). Columns on wide screens,
+ * stacked on phones, where each package is listed with the groups it includes.
+ */
+export function BreakdownDiagram({
+  title,
+  groups,
+  packages = [],
+}: {
+  title: string;
+  groups: { label: string; note?: React.ReactNode; tone?: 0 | 1; items: { title: string; text: React.ReactNode }[] }[];
+  /** span: first and last group index the package includes. */
+  packages?: { label: string; text: React.ReactNode; span: [number, number] }[];
+}) {
+  const cols = GRID_COLS[groups.length] ?? 'md:grid-cols-3';
+  return (
+    <figure>
+      <figcaption className="sr-only">{title}</figcaption>
+      <ul className={cn('grid gap-4', cols)}>
+        {groups.map((g) => (
+          <li key={g.label} className="flex flex-col rounded-xl border border-border bg-card">
+            <span className="h-1.5 rounded-t-xl" style={{ background: SERIES[g.tone ?? 0] }} aria-hidden="true" />
+            <div className="flex grow flex-col p-4">
+              <p className="font-heading text-lg font-extrabold leading-snug">{g.label}</p>
+              {g.note && <p className="mt-1 text-sm text-muted-foreground">{g.note}</p>}
+              <ul className="mt-3 space-y-3">
+                {g.items.map((it) => (
+                  <li key={it.title} className="border-t border-border pt-3">
+                    <p className="font-bold leading-snug">{it.title}</p>
+                    <p className="mt-0.5 text-[0.9375rem] text-muted-foreground">{it.text}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {packages.length > 0 && (
+        <>
+          <div className={cn('mt-3 hidden gap-x-4 gap-y-4 md:grid', cols)} aria-hidden="true">
+            {packages.map((p) => (
+              <div key={p.label} className="text-center" style={{ gridColumn: `${p.span[0] + 1} / ${p.span[1] + 2}` }}>
+                <span className="block h-3 rounded-b-md border-x-2 border-b-2 border-muted-foreground/50" />
+                <p className="mt-2 text-[0.9375rem]">
+                  <strong>{p.label}:</strong> <span className="text-muted-foreground">{p.text}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+          <ul className="mt-4 space-y-2 text-[0.9375rem] md:sr-only">
+            {packages.map((p) => (
+              <li key={p.label} className="rounded-lg bg-muted p-3">
+                <strong>{p.label}:</strong> <span className="text-muted-foreground">{p.text}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </figure>
+  );
+}
