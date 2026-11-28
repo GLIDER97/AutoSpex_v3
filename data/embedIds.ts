@@ -7,6 +7,8 @@ export const EMBED_IDS = [
   'car-insurance-price-trend',
   'car-insurance-yearly-change',
   'driving-costs-5-years',
+  'car-insurance-spending-by-year',
+  'car-insurance-spending-by-region',
 ] as const;
 export type EmbedId = (typeof EMBED_IDS)[number];
 export const isEmbedPath = (pathname: string) => {

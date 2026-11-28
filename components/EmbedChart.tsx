@@ -9,7 +9,8 @@ import { num } from '../data/vehicles';
 import { STUDY_AS_OF, STUDY_ROWS, STUDY_YEARS, SUV_STUDY_PATH, modelName, rowName, studyFacts } from '../data/studies';
 import { type EmbedId } from '../data/embedIds';
 import { CPI_AS_OF, INSURANCE_PATH, insuranceFacts, monthName } from '../data/insurance';
-import { DrivingCostsChart, InsuranceTrendChart, InsuranceYearlyChart } from './InsuranceCharts';
+import { DrivingCostsChart, InsuranceTrendChart, InsuranceYearlyChart, SpendingByRegionChart, SpendingByYearChart } from './InsuranceCharts';
+import { AVERAGE_COST_PATH, SPENDING_AS_OF, spendingFacts } from '../data/insurance/spending';
 import NotFound from './NotFound';
 import { BarList, Heatmap, MeterList } from './tool/charts';
 
@@ -28,6 +29,7 @@ export interface EmbedDef {
 
 const STUDY_CREDIT = 'MyAutoSpex analysis of NHTSA owner complaint data';
 const INSURANCE_CREDIT = 'MyAutoSpex analysis of BLS car insurance price data';
+const SPENDING_CREDIT = 'MyAutoSpex analysis of BLS consumer spending data';
 
 export const EMBEDS: Record<EmbedId, EmbedDef> = {
   'suv-complaints-top-model-years': {
@@ -117,6 +119,34 @@ export const EMBEDS: Record<EmbedId, EmbedDef> = {
     asOf: CPI_AS_OF,
     height: 420,
     render: () => <DrivingCostsChart />,
+  },
+  'car-insurance-spending-by-year': {
+    get title() {
+      const f = spendingFacts();
+      return `US households spent an average of $${f.latest.toLocaleString('en-US')} on car insurance in ${f.year}, up ${f.sinceFirst}% from ${f.first}`;
+    },
+    page: AVERAGE_COST_PATH,
+    pageTitle: SPENDING_CREDIT,
+    source: 'BLS Consumer Expenditure Surveys, vehicle insurance, mean per household',
+    asOf: SPENDING_AS_OF,
+    height: 460,
+    render: () => <SpendingByYearChart />,
+  },
+  'car-insurance-spending-by-region': {
+    get title() {
+      const f = spendingFacts();
+      const top = f.region[0];
+      const low = f.region[f.region.length - 1];
+      return top && low
+        ? `Car insurance costs households most in the ${top.label} ($${top.value.toLocaleString('en-US')} a year) and least in the ${low.label} ($${low.value.toLocaleString('en-US')})`
+        : 'Household spending on car insurance by region';
+    },
+    page: AVERAGE_COST_PATH,
+    pageTitle: SPENDING_CREDIT,
+    source: 'BLS Consumer Expenditure Surveys, vehicle insurance, mean per household',
+    asOf: SPENDING_AS_OF,
+    height: 340,
+    render: () => <SpendingByRegionChart />,
   },
 };
 

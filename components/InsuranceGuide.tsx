@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { SITE_URL } from '../seo/site';
 import { ALL_ITEMS_ID, CPI_AS_OF, INSURANCE_CSV, INSURANCE_ID, INSURANCE_PATH, blsSeriesUrl, insuranceFacts, monthName } from '../data/insurance';
 import { EMBEDS } from './EmbedChart';
+import { AVERAGE_COST_PATH } from '../data/insurance/spending';
 import type { EmbedId } from '../data/embedIds';
 import { Panel, PanelTitle, focusRing } from './tool/kit';
 import { BreakdownDiagram, EmbedThisChart, FlowDiagram, StatTile } from './tool/charts';
@@ -340,6 +341,19 @@ const InsuranceGuide: React.FC = () => {
           </Link>
           .
         </p>
+      </Panel>
+      <Panel aria-labelledby="insurance-guides" className="mt-6">
+        <PanelTitle>
+          <span id="insurance-guides">Car insurance guides</span>
+        </PanelTitle>
+        <ul className="mt-3 space-y-3 text-[0.9375rem]">
+          <li>
+            <Link to={AVERAGE_COST_PATH} className={linkClass}>
+              Average car insurance cost: what US households spend a year and a month
+            </Link>
+            <span className="block text-muted-foreground">BLS household spending by region, age and income, and why prices keep rising.</span>
+          </li>
+        </ul>
       </Panel>
     </section>
   );

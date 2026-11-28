@@ -19,6 +19,7 @@ export { carsCsv, CARS_CSV } from './components/CarsHub';
 export { EMBEDS } from './components/EmbedChart';
 export { studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS } from './data/studies';
 export { insuranceCsv, insuranceFacts, INSURANCE_CSV, INSURANCE_PATH, CPI_AS_OF, monthName } from './data/insurance';
+export { spendingCsv, spendingFacts, AVERAGE_COST_CSV, AVERAGE_COST_PATH, SPENDING_AS_OF } from './data/insurance/spending';
 export { VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription } from './data/vehicles';
 export { pageImageFor, pageShareImageSrc } from './data/pageImages';
 
