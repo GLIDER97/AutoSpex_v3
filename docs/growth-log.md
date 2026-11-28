@@ -2,6 +2,73 @@
 
 Newest entry first. Written by the daily growth run; see `docs/GROWTH-PLAN.md`.
 
+## 2026-11-28: day 10 (week 2, day 3)
+
+### Day 9 (Fri 27 Nov): no run
+The 27 Nov trigger reached this session only on 28 Nov, together with today's, so day 9 had no run and no deploy. Today is numbered by the calendar (day 1 = 19 Nov), which keeps the week dates in section 9 right.
+
+### What changed
+- **New silo 1 supporting page: `/car-insurance/average-cost`**, "What is the average car insurance cost?":
+  - what US households spend on vehicle insurance, from the BLS Consumer Expenditure Surveys, 2019–2025: by year, region, age of the household head and income fifth
+  - "Why is car insurance so expensive?", answered from the BLS CPI and linked to the pillar's price charts
+  - a 4-step "Are you paying too much?" diagram
+  - key numbers, 5 quotable findings, a table of contents, method and limits, a CSV, "How to cite this"
+  - Article + Dataset + Breadcrumb markup, a sitemap entry, `llms.txt`, and 2 embeddable charts
+- **Why page 4 first, not gap insurance:**
+  - the gap calculator needs a cited depreciation source (`SILOS.md`), and the Value Shock calculator's figures are an AI estimate
+  - the coverage and SR-22 pages need state sites, which the sandbox can't reach
+- **Keyword research (Bing US, 90 days):**
+
+  | Query | Searches |
+  |---|---|
+  | average car insurance cost | 670 |
+  | how much is car insurance per month | 563 |
+  | average cost of car insurance | 138 |
+  | why is car insurance so expensive | 118 |
+  | average car insurance cost per month | 17 |
+  | by age / by state / "how much should I be paying" | 0 |
+
+  Google suggests the per-month, by-age-and-state and state-name variants. "How much is car insurance per month" stays with the pillar (cost per month); this page targets "average cost" and "why so expensive".
+- **Findings (BLS CE, 2025):**
+  - $2,153 per household ($179 a month), +8.0% on 2024 and +39.4% on 2019
+  - South $2,400, West $2,379, Northeast $1,913, Midwest $1,649
+  - households headed by 45–54-year-olds spent the most ($2,816)
+  - the top income fifth spent 3.1 times the bottom fifth
+  - car insurance took 2.6% of all household spending
+- **Data note:** the BLS series is about 58% higher from 2019 than in 2016–2018 ($976 in 2018, $1,545 in 2019). That comparability isn't confirmed, so the page starts in 2019 and says so. The series ID came from FRED (CXU500110LB0101M), since bls.gov itself is blocked from the sandbox.
+- **Pillar:** a "Car insurance guides" block now links to the new page. `/car-insurance` redirects (301) to the pillar, as `SILOS.md` plans.
+- **Outreach:** the new page is a P.S. in each of the 10 unsent car insurance drafts (owner request 1), so no outlet is pitched twice in a week.
+
+### Numbers
+| | Last 28 days (to 25 Nov) | Last 3 days (23–25 Nov) |
+|---|---|---|
+| Clicks | 2 | 0 |
+| Impressions | **2,448** | **1,249** |
+| Average position | 35.9 | 38.9 |
+| Tier-1 clicks | 1 | 0 |
+
+- **Week 1's full data is in: 2,315 tier-1 impressions (19–25 Nov)** and 1 click. Daily tier-1 impressions: 568 on 23 Nov, 638 on 24 Nov, 594 on 25 Nov.
+  - `/insurance-estimator` had 1,810 tier-1 impressions in 28 days, at position 37 across 197 queries; `/vin-lookup` had 344.
+  - The pillar piece went live on 26 Nov, so its effect starts in the data from about 28–30 Nov.
+- **Index: 38 indexed** (was 35). 25 discovered but not indexed, 2 crawled but not indexed, 2 unknown. No manual action, no drop. Sitemap read 26 Nov.
+  - Still not indexed after 7+ days: 3 tools (affordability, value shock, ownership), 11 older articles, `/codes/p0442` and the 2018 Escape report. Monday's upkeep looks at their links and content.
+- **Clarity, last day:** 1 human session (India, 4 pages, 1 quick-back), no bots. AI-app referrals: 0.
+- **OpenRouter:** $3.43 of $10. No images.
+- **Wrap gallery review:** 0 new designs since #3 (3 previews in 90 days).
+
+### Needs the owner
+- Owner request 1: save the 10 car insurance outreach drafts to Gmail; each now also mentions the average-cost page.
+
+### Blocked
+- Silo pages 2 (coverage) and 3 (SR-22) need each state's rules from the state's own site. Neither this sandbox nor WebFetch can reach them (26 Nov). If no workaround turns up on Monday, this becomes an owner request for the main session to check the state sites, or for those hosts to be allowed.
+- Silo page 1 (gap insurance) needs a citable depreciation source.
+
+### Next (Sun 29 Nov, then Mon 30 Nov)
+- **29 Nov:** a vehicle report for the 2016 Ford Explorer (the SUV study's #2 model-year), and a check of whether content.naic.org links usable state minimum-coverage data.
+- **30 Nov (Monday):**
+  - the weekly loop: top-20 keywords, silo check, regex mining (first week), quick wins
+  - 1–2 older pages brought up to the publishing standard, highest tier-1 impressions first (`/vin-lookup`)
+
 ## 2026-11-26: day 8 (week 2, day 1)
 
 The required reading was done first. Owner changes since the last run:
