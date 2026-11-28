@@ -2,6 +2,34 @@
 
 Each content-rule piece and data study, with its target keywords' baseline, finding, charts and outreach (`docs/CONTENT-RULE.md` step 7). Pieces are re-measured at 14 and 28 days. Links earned (Search Console Links report) and AI-app referrals (Clarity) are recorded per piece. Newest first.
 
+## 2026-11-28: `/car-insurance/average-cost`, silo 1 supporting page 4
+
+- **Target cluster** (`docs/SILOS.md` keyword map), with Bing US searches in the last 90 days:
+  - average car insurance cost: 670
+  - average cost of car insurance: 138
+  - why is car insurance so expensive: 118
+  - Google suggests "...per month", "...by age and state" and states (California, Florida, Michigan...).
+  - Baseline: new URL, no impressions yet.
+- **Why page 4 before pages 1–3:**
+  - gap insurance (1) has no citable depreciation source; the Value Shock calculator uses an AI estimate
+  - coverage (2) and SR-22 (3) need each state's own site, which the sandbox can't reach
+  - page 4's data (BLS) was available
+- **Finding (BLS Consumer Expenditure Surveys, 2025 data):**
+  - US households spent an average of $2,153 on vehicle insurance in 2025 ($179 a month), up 8.0% from 2024 and 39.4% from 2019
+  - South $2,400, West $2,379, Northeast $1,913, Midwest $1,649 (a 45.5% gap)
+  - by age, households headed by 45–54-year-olds spent the most ($2,816)
+  - the highest-income fifth spent 3.1 times as much as the lowest
+  - car insurance took 2.6% of all household spending
+- **Charts:**
+  - yearly columns, 2019–2025
+  - bars by region, age and income
+  - 2 embeddable: `/embed/chart/car-insurance-spending-by-year` and `/embed/chart/car-insurance-spending-by-region`
+- **Diagram:** "Are you paying too much?", 4 steps.
+- **Links:** up to the pillar (breadcrumb, intro, end card); the pillar links down from a new "Car insurance guides" block.
+- **Outreach:** added as a P.S. to each of the 10 unsent car insurance drafts (owner request 1), so no outlet is pitched twice in one week.
+- **Re-measure:** 12 Dec and 26 Dec.
+- **Links earned:** none yet.
+
 ## 2026-11-26: `/insurance-estimator`, silo 1 pillar (first content-rule piece)
 
 - **Target cluster** (`docs/SILOS.md` keyword map): car / auto insurance calculator, estimator, estimate, quote estimate, premium calculator, cost per month.
