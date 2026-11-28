@@ -53,6 +53,12 @@ A supporting page that stays unindexed or gets no tier-1 impressions after 6 wee
 
 **Pillar piece shipped 26 Nov** (`docs/content-log.md`): the BLS CPI price guide (3 embeddable charts, CSV), the coverage breakdown diagram and the monthly-cost view. The supporting pages are next, gap insurance first.
 
+**Page 4 (average cost) shipped 28 Nov, ahead of 1–3:**
+- Demand: Bing US, 90 days, average car insurance cost 670, average cost of car insurance 138, why is car insurance so expensive 118.
+- Gap insurance (1) waits for a citable depreciation source; the Value Shock calculator's figures are an AI estimate.
+- Coverage (2) and SR-22 (3) wait until each state's own site can be checked; this sandbox can't reach them (26 Nov).
+- The page uses the BLS Consumer Expenditure Surveys, not the CPI chart planned above; the CPI trend stays on the pillar.
+
 **Supporting pages, in build order** (Bing US, 90 days):
 
 | # | Page | Targets (keyword cluster) | Demand evidence | AI-proof / citable element | Data source (must be official or verified) |

@@ -19,7 +19,7 @@ const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const ssrEntry = path.join(root, 'dist-ssr', 'entry-server.js');
 
-const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, EMBEDS, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, insuranceCsv, insuranceFacts, INSURANCE_CSV, INSURANCE_PATH, CPI_AS_OF, monthName, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
+const { render, ARTICLES, ARTICLE_INDEX, TOOLS, CODE_PAGES, carsCsv, CARS_CSV, EMBEDS, studyCsv, SUV_STUDY_CSV, SUV_STUDY_PATH, STUDY_AS_OF, STUDY_ROWS, insuranceCsv, insuranceFacts, INSURANCE_CSV, INSURANCE_PATH, CPI_AS_OF, monthName, spendingCsv, spendingFacts, AVERAGE_COST_CSV, AVERAGE_COST_PATH, SPENDING_AS_OF, WRAP_DESIGNS, designPath, designImage, designTitle, designSeoTitle, designDescription, designAlt, vehicleOf, coverageLabel, finishLabel, VEHICLES, vehiclePath, vehicleName, vehicleCsvPath, vehicleCsv, vehicleSeoTitle, vehicleDescription, STATIC_PAGES, NOT_FOUND_META, SITE_URL, SITE_NAME, formatTitle, absoluteUrl, pageImageFor, pageShareImageSrc } =
   await import(pathToFileURL(ssrEntry).href);
 
 // A page's own studio photo (data/pageImages.ts) as its share image; pages without one use the default.
@@ -199,6 +199,49 @@ for (const page of pages) {
           { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
           { '@type': 'ListItem', position: 2, name: 'Vehicle reports', item: `${SITE_URL}/cars` },
           { '@type': 'ListItem', position: 3, name: 'SUV owner complaints study', item: canonical },
+        ],
+      },
+    );
+  } else if (page.path === AVERAGE_COST_PATH) {
+    // Silo 1 supporting page: BLS household spending on car insurance as CSV, Article + Dataset + Breadcrumb markup.
+    const csvFile = path.join(distDir, AVERAGE_COST_CSV.replace(/^\//, ''));
+    await fs.mkdir(path.dirname(csvFile), { recursive: true });
+    await fs.writeFile(csvFile, spendingCsv());
+    const f = spendingFacts();
+    structuredData.push(
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: 'What is the average car insurance cost? What US households spend, by region, age and income',
+        description: page.description,
+        datePublished: page.updated,
+        dateModified: SPENDING_AS_OF,
+        author: { '@type': 'Organization', name: 'MyAutoSpex Editorial Team', url: `${SITE_URL}/editorial-policy` },
+        publisher: ORGANIZATION,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+        isBasedOn: 'https://www.bls.gov/cex/',
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: `US household spending on vehicle insurance, ${f.first}–${f.year} (BLS Consumer Expenditure Surveys)`,
+        description: `Mean annual spending on vehicle insurance per household: all households ($${f.latest} in ${f.year}) and by region, age of the household head and income fifth.`,
+        url: canonical,
+        dateModified: SPENDING_AS_OF,
+        temporalCoverage: `${f.first}/${f.year}`,
+        creator: ORGANIZATION,
+        isAccessibleForFree: true,
+        isBasedOn: 'https://www.bls.gov/cex/',
+        variableMeasured: ['Annual household spending on vehicle insurance (USD)'],
+        distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: absoluteUrl(AVERAGE_COST_CSV) }],
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: 'Car insurance calculator', item: `${SITE_URL}/insurance-estimator` },
+          { '@type': 'ListItem', position: 3, name: 'Average cost', item: canonical },
         ],
       },
     );
@@ -554,6 +597,11 @@ await fs.writeFile(
       'How much has car insurance gone up? (BLS price data)',
       INSURANCE_PATH,
       `US car insurance prices from the BLS consumer price index, ${monthName(insuranceFacts().first)} to ${monthName(insuranceFacts().latest)}: trend, yearly changes and other driving costs, with a car insurance calculator. CSV: ${absoluteUrl(INSURANCE_CSV)}`,
+    ),
+    line(
+      'What is the average car insurance cost? (BLS household spending)',
+      AVERAGE_COST_PATH,
+      `What US households spend on car insurance a year and a month, ${spendingFacts().first}–${spendingFacts().year}, by region, age and income. CSV: ${absoluteUrl(AVERAGE_COST_CSV)}`,
     ),
     line('Which used SUVs get the most owner complaints? (2015–2022)', SUV_STUDY_PATH, `NHTSA complaint counts for 20 popular SUVs by model-year, model, problem area and filing year. CSV: ${absoluteUrl(SUV_STUDY_CSV)}`),
     '',

@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Save the car insurance outreach emails as Gmail drafts (about 5 minutes).** Ten personal emails are in `docs/outreach/2026-11-26-car-insurance-prices.md`, each ending with your backlink line: Insurance Journal, Claims Journal, Carrier Management, InsuranceNewsNet, CollisionWeek, Autobody News, Consumer Federation of America, United Policyholders, Axios and Repairer Driven News. Three addresses are marked "confirm first": Claims Journal and Carrier Management, whose pages disagree, and Repairer Driven News, whose address didn't show. If yes, the main session saves them as drafts; you check them, replace `[Your name]` and send the ones you like. Two contact-form texts (Clark.com, Money Talks News) are there to paste if you want. Nothing is sent without you.
+1. **Save the car insurance outreach emails as Gmail drafts (about 5 minutes).** Ten personal emails are in `docs/outreach/2026-11-26-car-insurance-prices.md`, each ending with your backlink line: Insurance Journal, Claims Journal, Carrier Management, InsuranceNewsNet, CollisionWeek, Autobody News, Consumer Federation of America, United Policyholders, Axios and Repairer Driven News. Three addresses are marked "confirm first": Claims Journal and Carrier Management, whose pages disagree, and Repairer Driven News, whose address didn't show. If yes, the main session saves them as drafts; you check them, replace `[Your name]` and send the ones you like. Two contact-form texts (Clark.com, Money Talks News) are there to paste if you want. Nothing is sent without you. *(28 Nov: each email now also has a one-line P.S. about the new average-cost page.)*
 
 ## Answered
 

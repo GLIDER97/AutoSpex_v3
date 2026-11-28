@@ -20,6 +20,11 @@
             "source": "/free-obd2-code-decoder-repair-costs",
             "destination": "/article/free-obd2-code-decoder-repair-costs",
             "permanent": true
+        },
+        {
+            "source": "/car-insurance",
+            "destination": "/insurance-estimator",
+            "permanent": true
         }
     ],
     "headers": [

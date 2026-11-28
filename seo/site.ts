@@ -80,6 +80,14 @@ export const STATIC_PAGES: PageMeta[] = [
     priority: 0.8,
   },
   {
+    path: '/car-insurance/average-cost',
+    updated: '2026-11-28',
+    title: 'Average Car Insurance Cost per Year and Month',
+    description:
+      'The average US household spent $2,153 on car insurance in 2025, about $179 a month (BLS). By region, age and income, and why prices keep rising.',
+    priority: 0.7,
+  },
+  {
     path: '/mpg-calculator',
     updated: '2026-11-16',
     title: 'MPG Calculator & Fuel Cost Analyzer',

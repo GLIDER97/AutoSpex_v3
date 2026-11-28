@@ -20,6 +20,8 @@
 - Since January 2017: car insurance +67.3%, all items +39.0%.
 - Caveat in the emails where it matters: this is a national price index, not dollar premiums, and it isn't broken down by state.
 
+**Added 28 Nov, before any were sent:** each email now has a P.S. about the new silo page, `/car-insurance/average-cost` (BLS household spending on car insurance, by region, age and income). That page's outreach goes out with this batch, so no outlet is pitched twice in one week.
+
 **Embeddable charts:** `/embed/chart/car-insurance-price-trend`, `/embed/chart/car-insurance-yearly-change`, `/embed/chart/driving-costs-5-years`. Each page's "Embed this chart" box gives the snippet with the credit link.
 
 ---
@@ -37,6 +39,8 @@ The charts, the method and a CSV of all 118 months are here:
 https://www.myautospex.com/insurance-estimator
 
 The three charts can be embedded with a credit link if they'd help a story.
+
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
 
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
@@ -57,6 +61,8 @@ https://www.myautospex.com/insurance-estimator
 
 Free to use with a link; each chart has an embed code.
 
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
+
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
 [Your name]
@@ -72,6 +78,8 @@ Hi Susanne,
 In case it's useful for a personal auto piece: we published the BLS motor vehicle insurance index as monthly charts from 2017 to October 2026. After rising 52.9% from December 2021 to December 2024, it peaked in February 2026 and fell 4.8% by October; in the 12 months to September it was down 5.0%.
 
 Charts, method and a CSV of every month: https://www.myautospex.com/insurance-estimator. The charts can be embedded with a credit line.
+
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
 
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
@@ -92,6 +100,8 @@ We've published free, embeddable charts of US car insurance prices from the BLS 
 
 https://www.myautospex.com/insurance-estimator. The page has the method and a CSV, and each chart has an embed code with a credit link.
 
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
+
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
 [Your name]
@@ -108,6 +118,8 @@ A comparison your readers may want: over the five years to October 2026, the BLS
 
 The chart and the monthly index values (CSV) are here: https://www.myautospex.com/insurance-estimator. The chart can be embedded with a credit link.
 
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
+
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
 [Your name]
@@ -123,6 +135,8 @@ Hi,
 A data tip for your editors. We charted the BLS consumer price index for the costs of running a car over the five years to October 2026: motor vehicle insurance +51.4%, maintenance and repair +45.0%, gasoline +31.9%, new vehicles +10.8%, used cars and trucks −7.4%. Insurance prices peaked in February 2026 and have since eased 4.8%.
 
 Charts and a CSV: https://www.myautospex.com/insurance-estimator. Free to use or embed with a link.
+
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
 
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
@@ -142,6 +156,8 @@ The page states the method and its limits (a national price index, not dollar pr
 
 We'd welcome any correction to how we've presented it. Could you pass this to whoever covers auto insurance?
 
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
+
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
 [Your name]
@@ -157,6 +173,8 @@ Hello,
 If it helps your consumer resources: we've published free charts of US car insurance prices from the BLS consumer price index. Prices are up 67.3% since January 2017 (all consumer prices: 39.0%), with the steepest rise in 2023 (20.3%). They peaked in February 2026 and have eased 4.8% since.
 
 The same page has a plain guide to what each part of a policy pays for, sourced to the NAIC, and a free premium calculator that asks for no contact details: https://www.myautospex.com/insurance-estimator
+
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
 
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
@@ -174,6 +192,8 @@ A chart-ready number for your economy or cost-of-living coverage: the BLS consum
 
 Charts and the monthly data (CSV): https://www.myautospex.com/insurance-estimator
 
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
+
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
 [Your name]
@@ -189,6 +209,8 @@ Hi,
 A data point for your coverage of repair costs and insurers: over the five years to October 2026, the BLS consumer price index rose 51.4% for motor vehicle insurance and 45.0% for maintenance and repair. New vehicles rose 10.8%; used cars and trucks fell 7.4%. Insurance prices have eased 4.8% since their February 2026 peak.
 
 Chart, method and monthly CSV: https://www.myautospex.com/insurance-estimator. Free to embed with a credit link.
+
+P.S. We also published what US households actually spend on car insurance, from the BLS Consumer Expenditure Surveys: $2,153 on average in 2025 (about $179 a month), most in the South ($2,400) and least in the Midwest ($1,649), with a CSV: https://www.myautospex.com/car-insurance/average-cost
 
 We are doing this so that you can give us a backlink by embedding these stats on your website. It will help your users too and my SEO ranking.
 
