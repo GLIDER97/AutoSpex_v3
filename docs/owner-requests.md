@@ -4,7 +4,7 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 
 ## Open
 
-1. **Save the car insurance outreach emails as Gmail drafts (about 5 minutes).** Ten personal emails are in `docs/outreach/2026-11-26-car-insurance-prices.md`, each ending with your backlink line: Insurance Journal, Claims Journal, Carrier Management, InsuranceNewsNet, CollisionWeek, Autobody News, Consumer Federation of America, United Policyholders, Axios and Repairer Driven News. Three addresses are marked "confirm first": Claims Journal and Carrier Management, whose pages disagree, and Repairer Driven News, whose address didn't show. If yes, the main session saves them as drafts; you check them, replace `[Your name]` and send the ones you like. Two contact-form texts (Clark.com, Money Talks News) are there to paste if you want. Nothing is sent without you. *(28 Nov: each email now also has a one-line P.S. about the new average-cost page.)*
+Nothing open.
 
 ## Answered
 
@@ -35,3 +35,4 @@ Things the daily runs need the owner's permission for (`docs/GROWTH-PLAN.md` sec
 | 2026-11-24 | Where real CPC figures come from (A Keyword Planner export, B paid API, C estimate) | **C now, A later.** The intent-based estimate guides the content rule. Once tier-1 impressions pass 1,000 a week, the status reply asks for a Google Keyword Planner export (`data/keyword-cpc.csv`) |
 | 2026-11-24 | Apply the quality bar to everything published | **Owner's own instruction.** `docs/PUBLISHING-STANDARD.md`: SEO, AI-citable, charts and diagrams, linkable, for every page type, with a definition-of-done checklist in every PR. Decision 15 |
 | 2026-11-25 | Save the SUV study's outreach emails as Gmail drafts | **Done by the main session (decision 8):** 9 drafts saved in the owner's Gmail (The Drive, The Autopian, Motorious, TTAC, Motor1, Center for Auto Safety, Jalopnik, CarEdge, ABC7). Nothing sent. The owner checks the 4 "confirm first" addresses (Center for Auto Safety, Jalopnik, CarEdge, ABC7), replaces [Your name] and sends. The Autoblog tips-form text is in `docs/outreach/2026-11-25-suv-complaints-study.md` for the owner to paste if they want. Record sends in that file's tracking table |
+| 2026-11-28 | Save the car insurance outreach emails as Gmail drafts | **Done by the main session (decision 8):** 10 drafts saved, each with the average-cost P.S. and the owner's backlink line. Nothing sent. Repairer Driven News has no recipient yet (copy the address from its contact page); confirm Claims Journal (newsdesk@ vs editorial@) and Carrier Management (carriermanagement.com vs wellsmedia.com) first. Clark.com and Money Talks News are contact forms (text in the outreach file). No replies yet to the 9 SUV-study emails (checked 28 Nov) |
